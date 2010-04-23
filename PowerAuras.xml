@@ -1417,6 +1417,48 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   <OnLeave>GameTooltip:Hide();</OnLeave>
                 </Scripts>
               </Frame>
+              <Frame name="PowaDropDownGTFO"
+                     inherits="UIDropDownMenuTemplate"
+                     id="12">
+                <Size>
+                  <AbsDimension x="210" />
+                </Size>
+                <Anchors>
+                  <Anchor point="TOPLEFT"
+                          relativeTo="PowaBarBuffName"
+                          relativePoint="BOTTOMLEFT">
+                    <Offset>
+                      <AbsDimension x="40"
+                                    y="20" />
+                    </Offset>
+                  </Anchor>
+                </Anchors>
+                <Layers>
+                  <Layer level="BACKGROUND">
+                    <FontString name="$parentLabel"
+                                inherits="GameFontNormalSmall">
+                      <Anchors>
+                        <Anchor point="TOPRIGHT"
+                                relativePoint="TOPLEFT">
+                          <Offset>
+                            <AbsDimension x="10"
+                                          y="-5" />
+                          </Offset>
+                        </Anchor>
+                      </Anchors>
+                    </FontString>
+                  </Layer>
+                </Layers>
+                <Scripts>
+                  <OnLoad>
+                  	getglobal("PowaDropDownGTFOLabel"):SetText(PowaAuras.Text.nomGTFO); 
+                  	UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);
+                  </OnLoad>
+                  <OnShow>UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);</OnShow>
+                  <OnEnter>GameTooltip:SetOwner(self, "ANCHOR_RIGHT"); GameTooltip:SetText(PowaAuras.Text.aideGTFO, nil, nil, nil, nil, 1);</OnEnter>
+                  <OnLeave>GameTooltip:Hide();</OnLeave>
+                </Scripts>
+              </Frame>
               <Slider name="PowaBarThresholdSlider"
                       inherits="PowaBarSliderTemplate">
                 <Size>

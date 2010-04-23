@@ -931,6 +931,7 @@ function PowaAuras:InitPage()
 	getglobal("PowaDropDownAnimEndText"):SetText(self.EndAnimDisplay[aura.finish]);
 	getglobal("PowaDropDownSoundText"):SetText(self.Sound[aura.sound]);
 	getglobal("PowaDropDownStanceText"):SetText(self.PowaStance[aura.stance]);
+	getglobal("PowaDropDownGTFOText"):SetText(self.PowaGTFO[aura.GTFO]);
 	getglobal("PowaBarCustomSound").aide = self.Text.aideCustomSound;
 	getglobal("PowaBarBuffStacks").aide = self.Text.aideStacks;
 	-- ---------------
@@ -1686,6 +1687,15 @@ function PowaAuras.DropDownMenu_Initialize(owner)
 		end				
 		UIDropDownMenu_SetSelectedValue(PowaDropDownStance, PowaAuras.PowaStance[aura.stance]);
 		UIDropDownMenu_SetWidth(PowaDropDownStance, 210, 1);
+	elseif (owner:GetName() == "PowaDropDownGTFOButton" or owner:GetName() == "PowaDropDownGTFO") then
+		info = {func = PowaAuras.DropDownMenu_OnClickGTFO, owner = owner};
+		for i = 0, #(PowaAuras.PowaGTFO) do
+			info.text = PowaAuras.PowaGTFO[i]; 
+			info.value = i;
+			UIDropDownMenu_AddButton(info);
+		end				
+		UIDropDownMenu_SetSelectedValue(PowaDropDownGTFO, PowaAuras.PowaGTFO[aura.GTFO]);
+		UIDropDownMenu_SetWidth(PowaDropDownGTFO, 110, 1);
 	elseif (owner:GetName() == "PowaDropDownSoundButton" or owner:GetName() == "PowaDropDownSound") then
 		for i = 0, #PowaAuras.Sound do
 			info = {}; 
@@ -1748,7 +1758,8 @@ function PowaAuras.DropDownMenu_OnClickBuffType()
 	 or aura.bufftype == PowaAuras.BuffTypes.EnergyRagePower
 	 or aura.bufftype == PowaAuras.BuffTypes.Aggro
 	 or aura.bufftype == PowaAuras.BuffTypes.PvP
-	 or aura.bufftype == PowaAuras.BuffTypes.Stance) then
+	 or aura.bufftype == PowaAuras.BuffTypes.Stance
+	 or aura.bufftype == PowaAuras.BuffTypes.GTFO) then
 		aura.owntex = false;
 	end
 
@@ -1826,6 +1837,17 @@ function PowaAuras.DropDownMenu_OnClickStance()
 
 	if (PowaAuras.Auras[auraId].stance ~= this.value) then
 		PowaAuras.Auras[auraId].stance = this.value;
+		PowaAuras.Auras[auraId].icon = "";
+	end
+	PowaAuras:InitPage();
+end
+
+function PowaAuras.DropDownMenu_OnClickGTFO()
+	UIDropDownMenu_SetSelectedValue(this.owner, this.value);
+	local auraId = PowaAuras.CurrentAuraId;
+
+	if (PowaAuras.Auras[auraId].GTFO ~= this.value) then
+		PowaAuras.Auras[auraId].GTFO = this.value;
 		PowaAuras.Auras[auraId].icon = "";
 	end
 	PowaAuras:InitPage();

@@ -50,6 +50,8 @@ PowaAuras = {
 
 	PowaStance = {[0] = "Humanoid"};
 	
+	PowaGTFO = {[0] = "High Damage", [1] = "Low Damage", [2] = "Fail Alert"};
+	
 	allowedOperators = {
 		["="] = true,
 		[">"] = true,
@@ -201,6 +203,8 @@ PowaAuras = {
 		PlayerSpells = false,
 		
 		OwnSpells = false,
+		
+		GTFO = false,
 	};
 
 	BuffTypes =
@@ -222,6 +226,7 @@ PowaAuras = {
 		OwnSpell=15,
 		StealableSpell=16,
 		PurgeableSpell=17,
+		GTFO=50
 	};
 
 	
@@ -329,6 +334,10 @@ PowaAuras = {
 		PurgeableFocusSpells = {},
 
 		OwnSpells = {},
+		
+		GTFOHigh = {},
+		GTFOLow = {},
+		GTFOFail = {},
 	};
 	
 	DebuffCatType =
@@ -527,6 +536,7 @@ PowaAuras = {
 		"PowaThresholdInvertButton",
 		"PowaBarBuffStacks",
 		"PowaDropDownStance",
+		"PowaDropDownGTFO"
 	};
 
 };
@@ -867,4 +877,3 @@ function PowaClass(base,ctor)
   setmetatable(c,mt)
   return c
 end
-

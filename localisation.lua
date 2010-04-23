@@ -85,6 +85,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		[PowaAuras.BuffTypes.OwnSpell] = "My Spell Cooldown", 
 		[PowaAuras.BuffTypes.StealableSpell] = "Stealable Spell",
 		[PowaAuras.BuffTypes.PurgeableSpell] = "Purgeable Spell",
+		[PowaAuras.BuffTypes.GTFO] = "GTFO Alert",
 	},
 
 	-- main
@@ -192,6 +193,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideThreshInv = "Check this to invert the threshold logic. Unchecked = Low Warning / Checked = High Warning.",
 	nomThreshInv = "</>",
 	nomStance = "Stance",
+	nomGTFO = "Alert Type",
 
 	nomMine = "Cast by me",
 	aideMine = "Check this to test only buffs/debuffs cast by the player",
@@ -222,6 +224,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideOptunitn = "Check this to test a special char in raid/group only.",	
 	aideExact = "Check this to test the exact name of the buff/debuff/action.",
 	aideStance = "Select which Stance,Aura or Form trigger the event.",
+	aideGTFO = "Select which GTFO Alert will trigger the event.",
 
 	aideShowSpinAtBeginning= "At the end of the begin animation show a 360 degree spin",
 	nomCheckShowSpinAtBeginning = "Show Spin after begin animation ends",
@@ -333,8 +336,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideTimerRounding = "When checked will round the timer up",
 	nomTimerRounding = "Round Timer Up",
 
-	aideGTFO = "Use GTFO (Boss) spell matches for AoE detection",
-	nomGTFO = "Use GTFO for AoE",
+	aideGTFOforAOE = "Use GTFO (Boss) spell matches for AoE detection",
+	nomGTFOforAOE = "Use GTFO for AoE",
 
 	nomIgnoreUseable = "Display Only Depends on Cooldown",
 	aideIgnoreUseable = "Ignores if spell is usable (just uses cooldown)",
@@ -444,6 +447,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	
 	nomReasonStance = "Current Stance $1, matches $2", -- $1=Current Stance, $2=Match Stance
 	nomReasonNoStance = "Current Stance $1, does not match $2", -- $1=Current Stance, $2=Match Stance
+
+	nomReasonGTFOAlerts = "GTFO alerts are never always on.",
 
 	ReasonStat = {
 		Health     = {MatchReason="$1 Health low",          NoMatchReason="$1 Health not low enough"},

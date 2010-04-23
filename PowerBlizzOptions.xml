@@ -320,9 +320,9 @@
 			</Anchors>				
 				<Scripts>
 					<OnLoad>
-						self.tooltipText = PowaAuras.Text.aideGTFO;
-						getglobal("PowaGTFOButtonText"):SetText(PowaAuras.Text.nomGTFO);
-					</OnLoad>
+            self.tooltipText = PowaAuras.Text.aideGTFOforAOE;
+            getglobal("PowaGTFOButtonText"):SetText(PowaAuras.Text.nomGTFOforAOE);
+          </OnLoad>
 					<OnClick>
 						PowaAuras:GTFOChecked(self);
 					</OnClick>

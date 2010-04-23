@@ -87,6 +87,7 @@ cPowaAura = PowaClass(function(aura, id, base)
 	aura.spec2 = true;
 	aura.gcd = false;
 	aura.stance = 10;
+	aura.GTFO = 0;
 	aura.multiids = "";
 	aura.tooltipCheck = "";
 	aura.UseOldAnimations = false;
@@ -201,6 +202,9 @@ function cPowaAura:AddExtraTooltipInfo(tooltip)
 	end
 	if (self.TooltipOptions.showStance) then
 		tooltip:AddLine(PowaAuras.PowaStance[self.stance], self.TooltipOptions.r, self.TooltipOptions.g, self.TooltipOptions.b, 1);
+	end
+	if (self.TooltipOptions.showGTFO) then
+		tooltip:AddLine(PowaAuras.PowaGTFO[self.GTFO], self.TooltipOptions.r, self.TooltipOptions.g, self.TooltipOptions.b, 1);
 	end
 end
 
@@ -2222,3 +2226,46 @@ function PowaAuras:AuraFactory(auraType, id, base)
 	self:Message("AuraFactory unknown "..tostring(auraType).." id="..tostring(id)); --OK
 	return nil;
 end
+
+
+cPowaGTFO = PowaClass(cPowaAura, {ValueName = "GTFO Alert"});
+cPowaGTFO.OptionText={typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.GTFO]};
+
+cPowaGTFO.CheckBoxes={};
+cPowaGTFO.TooltipOptions = {r=1.0, g=0.4, b=0.2, showGTFO=true};
+cPowaGTFO.ShowOptions={["PowaDropDownGTFO"]=1};
+cPowaGTFO.OptionText={typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.GTFO]};
+
+function cPowaGTFO:AddEffect()
+	if (self.GTFO == 0) then
+		table.insert(PowaAuras.AurasByType.GTFOHigh, self.id);
+	elseif (self.GTFO == 1) then
+		table.insert(PowaAuras.AurasByType.GTFOLow, self.id);
+	elseif (self.GTFO == 2) then
+		table.insert(PowaAuras.AurasByType.GTFOFail, self.id);
+	end
+	
+end
+
+function cPowaGTFO:CheckIfShouldShow(giveReason)
+	if (self.icon == "") then
+		if (self.GTFO == 1) then
+		    getglobal("PowaIconTexture"):SetTexture("Interface\\icons\\spell_fire_bluefire");
+		elseif (self.GTFO == 2) then
+		    getglobal("PowaIconTexture"):SetTexture("Interface\\icons\\ability_suffocate");
+		else
+		    getglobal("PowaIconTexture"):SetTexture("Interface\\icons\\spell_fire_fire");
+		end
+		self.icon = getglobal("PowaIconTexture"):GetTexture();
+	end
+	--PowaAuras:Debug("GTFO alert");
+	if (GTFO) then
+	    if (GTFO.ShowAlert) then
+	        return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonGTFOAlerts);
+	    end
+	end
+	return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonGTFOAlerts);
+end
+
+PowaAuras.AuraClasses[PowaAuras.BuffTypes.GTFO] = cPowaGTFO;
+
