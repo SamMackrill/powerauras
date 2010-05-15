@@ -44,6 +44,9 @@ PowaAuras = {
 	WeAreMounted = false;
 	WeAreInVehicle = false;
 	WeAreAlive = true;
+	PvPFlagSet = false;
+	InInstance = false;
+	InstanceType = "None";
 
 	Pending = {}; --- Workaround for 'silent' cooldown end (no event fired)
 	Cascade = {}; -- Dependant auras that need checking
@@ -140,7 +143,8 @@ PowaAuras = {
 		"UNIT_SPELLCAST_SUCCEEDED",
 		"UNIT_THREAT_SITUATION_UPDATE",
 		"UPDATE_SHAPESHIFT_FORM",
-		"UPDATE_SHAPESHIFT_FORMS";
+		"UPDATE_SHAPESHIFT_FORMS",
+		"ZONE_CHANGED_NEW_AREA";
 	};
 	
 	ChangedUnits =

@@ -1595,6 +1595,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   <OnClick>PowaAuras:InverseChecked();</OnClick>
                 </Scripts>
               </CheckButton>
+			  
               <CheckButton name="PowaMineButton"
                            inherits="PowaCheckTemplate">
                 <Size>
@@ -1621,7 +1622,25 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Scripts>
               </CheckButton>
 
-			  
+			 <CheckButton name="PowaPvPButton" inherits="PowaTernarySelectorTemplate">
+                <Anchors>
+                  <Anchor point="TOPLEFT"
+                          relativeTo="PowaMineButton"
+                          relativePoint="TOPRIGHT">
+                    <Offset>
+                      <AbsDimension x="100"
+                                    y="0" />
+                    </Offset>
+                  </Anchor>
+                </Anchors>
+                <Scripts>
+					<OnShow>
+						self.Parameter = "PvP"; 
+						getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.Ternary[self.Parameter]);
+					</OnShow>
+                </Scripts>
+			  </CheckButton>	  
+		 
 			  <CheckButton name="PowaInCombatButton" inherits="PowaTernarySelectorTemplate">
                 <Anchors>
                   <Anchor point="TOPLEFT"
@@ -1718,8 +1737,80 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
 						getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.Ternary[self.Parameter]);
 					</OnShow>
                 </Scripts>
-			  </CheckButton>	  
+			  </CheckButton>	
 			  
+			 <CheckButton name="Powa5ManInstance" inherits="PowaTernarySelectorTemplate">
+                <Anchors>
+                  <Anchor point="TOPLEFT"
+                          relativeTo="PowaIsInRaidButton"
+                          relativePoint="TOPRIGHT">
+                    <Offset>
+                      <AbsDimension x="100"
+                                    y="0" />
+                    </Offset>
+                  </Anchor>
+                </Anchors>
+                <Scripts>
+					<OnShow>
+						self.Parameter = "FiveMan"; 
+						getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.Ternary[self.Parameter]);
+					</OnShow>
+                </Scripts>
+			  </CheckButton>
+			  <CheckButton name="PowaRaidInstance" inherits="PowaTernarySelectorTemplate">
+                <Anchors>
+                  <Anchor point="TOPLEFT"
+                          relativeTo="Powa5ManInstance"
+                          relativePoint="BOTTOMLEFT">
+                    <Offset>
+                      <AbsDimension x="0"
+                                    y="7" />
+                    </Offset>
+                  </Anchor>
+                </Anchors>
+                <Scripts>
+					<OnShow>
+						self.Parameter = "Raid"; 
+						getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.Ternary[self.Parameter]);
+					</OnShow>
+                </Scripts>
+			  </CheckButton>		  
+			  <CheckButton name="PowaBgInstance" inherits="PowaTernarySelectorTemplate">
+                <Anchors>
+                  <Anchor point="TOPLEFT"
+                          relativeTo="PowaRaidInstance"
+                          relativePoint="BOTTOMLEFT">
+                    <Offset>
+                      <AbsDimension x="0"
+                                    y="7" />
+                    </Offset>
+                  </Anchor>
+                </Anchors>
+                <Scripts>
+					<OnShow>
+						self.Parameter = "Bg"; 
+						getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.Ternary[self.Parameter]);
+					</OnShow>
+                </Scripts>
+			  </CheckButton>		  
+			  <CheckButton name="PowaArenaInstance" inherits="PowaTernarySelectorTemplate">
+                <Anchors>
+                  <Anchor point="TOPLEFT"
+                          relativeTo="PowaBgInstance"
+                          relativePoint="BOTTOMLEFT">
+                    <Offset>
+                      <AbsDimension x="0"
+                                    y="7" />
+                    </Offset>
+                  </Anchor>
+                </Anchors>
+                <Scripts>
+					<OnShow>
+						self.Parameter = "Arena"; 
+						getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.Ternary[self.Parameter]);
+					</OnShow>
+                </Scripts>
+			  </CheckButton>		  
 			  
 			  <CheckButton name="PowaIsMountedButton" inherits="PowaTernarySelectorTemplate">
                 <Anchors>

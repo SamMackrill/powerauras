@@ -82,6 +82,7 @@ cPowaAura = PowaClass(function(aura, id, base)
 	aura.inVehicle = false;	
 	aura.combat = 0;
 	aura.isAlive = true;
+	aura.PvP = 0;
 	
 	aura.spec1 = true;
 	aura.spec2 = true;
@@ -410,6 +411,14 @@ function cPowaAura:CheckState(giveReason)
 			return false, PowaAuras.Text.nomReasonNotInCombat;
 		end
 		return false, PowaAuras.Text.nomReasonInCombat;		
+	end
+		
+	if ((PowaAuras.PvPFlagSet == true and self.PvP == false) or (PowaAuras.PvPFlagSet == false and self.PvP == true)) then
+		if (not giveReason) then return false; end
+		if (self.inRaid == true) then
+			return false, PowaAuras.Text.nomReasonPvPFlagNotSet;
+		end
+		return false, PowaAuras.Text.nomReasonPvPFlagSet;		
 	end
 		
 	if ((PowaAuras.WeAreInRaid == true and self.inRaid == false) or (PowaAuras.WeAreInRaid == false and self.inRaid == true)) then

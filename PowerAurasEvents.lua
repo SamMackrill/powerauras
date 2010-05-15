@@ -77,6 +77,8 @@ function PowaAuras:Setup()
 	if UnitIsDeadOrGhost("player") then
 		self.WeAreAlive = false;
 	end
+	
+	self.PvPFlagSet = UnitIsPVP("player");
 
 	self.WeAreInRaid = (GetNumRaidMembers() > 0);
 	self.WeAreInParty = (GetNumPartyMembers() > 0);
@@ -85,6 +87,8 @@ function PowaAuras:Setup()
 	self.WeAreInVehicle = (UnitInVehicle("player")~=nil);
 
 	self.ActiveTalentGroup = GetActiveTalentGroup();
+	
+	self.InInstance, self.InstanceType = IsInInstance();
 	
 	self:GetStances();
 	
@@ -390,21 +394,31 @@ function PowaAuras:PLAYER_TARGET_CHANGED(...)
 end
 	 
 function PowaAuras:PLAYER_REGEN_DISABLED(...)
+	self.WeAreInCombat = true;
+	self.PvPFlagSet = UnitIsPVP("player");
 	if (self.ModTest == false) then
 		--self:ShowText("PLAYER_REGEN_DISABLED");
-		self.WeAreInCombat = true;
 		self.DoCheck.All = true;
 	end	   
 end
 	   
 function PowaAuras:PLAYER_REGEN_ENABLED(...)
+	self.WeAreInCombat = false;
+	self.PvPFlagSet = UnitIsPVP("player");
 	if (self.ModTest == false) then
 		--self:ShowText("PLAYER_REGEN_ENABLED");
-		self.WeAreInCombat = false;
 		self.DoCheck.All = true;
 	end
 end   
-	
+
+function PowaAuras:ZONE_CHANGED_NEW_AREA()
+	self.InInstance, self.InstanceType = IsInInstance();
+	if (self.ModTest == false) then
+		--self:ShowText("ZONE_CHANGED_NEW_AREA");
+		self.DoCheck.All = true;
+	end
+end
+
 function PowaAuras:UNIT_COMBO_POINTS(...)
 	local unit = ...;
 	if (unit ~= "player") then return; end
