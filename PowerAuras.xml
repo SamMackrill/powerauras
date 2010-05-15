@@ -1739,7 +1739,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Scripts>
 			  </CheckButton>	
 			  
-			 <CheckButton name="Powa5ManInstance" inherits="PowaTernarySelectorTemplate">
+			 <CheckButton name="PowaFiveManInstanceButton" inherits="PowaTernarySelectorTemplate">
                 <Anchors>
                   <Anchor point="TOPLEFT"
                           relativeTo="PowaIsInRaidButton"
@@ -1757,10 +1757,10 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
 					</OnShow>
                 </Scripts>
 			  </CheckButton>
-			  <CheckButton name="PowaRaidInstance" inherits="PowaTernarySelectorTemplate">
+			  <CheckButton name="PowaRaidInstanceButton" inherits="PowaTernarySelectorTemplate">
                 <Anchors>
                   <Anchor point="TOPLEFT"
-                          relativeTo="Powa5ManInstance"
+                          relativeTo="PowaFiveManInstanceButton"
                           relativePoint="BOTTOMLEFT">
                     <Offset>
                       <AbsDimension x="0"
@@ -1775,10 +1775,10 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
 					</OnShow>
                 </Scripts>
 			  </CheckButton>		  
-			  <CheckButton name="PowaBgInstance" inherits="PowaTernarySelectorTemplate">
+			  <CheckButton name="PowaBgInstanceButton" inherits="PowaTernarySelectorTemplate">
                 <Anchors>
                   <Anchor point="TOPLEFT"
-                          relativeTo="PowaRaidInstance"
+                          relativeTo="PowaRaidInstanceButton"
                           relativePoint="BOTTOMLEFT">
                     <Offset>
                       <AbsDimension x="0"
@@ -1793,10 +1793,10 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
 					</OnShow>
                 </Scripts>
 			  </CheckButton>		  
-			  <CheckButton name="PowaArenaInstance" inherits="PowaTernarySelectorTemplate">
+			  <CheckButton name="PowaArenaInstanceButton" inherits="PowaTernarySelectorTemplate">
                 <Anchors>
                   <Anchor point="TOPLEFT"
-                          relativeTo="PowaBgInstance"
+                          relativeTo="PowaBgInstanceButton"
                           relativePoint="BOTTOMLEFT">
                     <Offset>
                       <AbsDimension x="0"

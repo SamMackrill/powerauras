@@ -417,10 +417,14 @@ function cPowaAura:CheckState(giveReason)
 		end
 		return false, PowaAuras.Text.nomReasonInCombat;		
 	end
-		
-	if ((PowaAuras.PvPFlagSet == true and self.PvP == false) or (PowaAuras.PvPFlagSet == false and self.PvP == true)) then
+
+	--if (self.PvP==true) then
+	--	PowaAuras:ShowText("PvPFlagSet=", PowaAuras.PvPFlagSet, " aura.PvP=", self.PvP);
+	--end
+	
+	if ((PowaAuras.PvPFlagSet == 1 and self.PvP == false) or (PowaAuras.PvPFlagSet ~= 1 and self.PvP == true)) then
 		if (not giveReason) then return false; end
-		if (self.inRaid == true) then
+		if (self.PvP == true) then
 			return false, PowaAuras.Text.nomReasonPvPFlagNotSet;
 		end
 		return false, PowaAuras.Text.nomReasonPvPFlagSet;		
@@ -459,36 +463,40 @@ function cPowaAura:CheckState(giveReason)
 	end
 	
 	-- Instance checks
-	if (PowaAuras.InInstance) then
-		if ((PowaAuras.InstanceType=="party" and self.FiveManInstance == false) or (PowaAuras.InstanceType~="party" and self.FiveManInstance == true)) then
-			if (not giveReason) then return false; end
-			if (self.FiveManInstance == true) then
-				return false, PowaAuras.Text.nomReasonNotInFiveManInstance;
-			end
-			return false, PowaAuras.Text.nomReasonInFiveManInstance;		
+	--PowaAuras:ShowText("In Instance ", PowaAuras.InstanceType);
+	--PowaAuras:ShowText("  FiveManInstance ", self.FiveManInstance);
+	--PowaAuras:ShowText("  RaidInstance ", self.RaidInstance);
+	--PowaAuras:ShowText("  BattlegroundInstance ", self.BgInstance);
+	--PowaAuras:ShowText("  ArenaInstance ", self.ArenaInstance);
+	if ((PowaAuras.InstanceType=="party" and self.FiveManInstance == false) or (PowaAuras.InstanceType~="party" and self.FiveManInstance == true)) then
+		if (not giveReason) then return false; end
+		if (self.FiveManInstance == true) then
+			return false, PowaAuras.Text.nomReasonNotInFiveManInstance;
 		end
-		if ((PowaAuras.InstanceType=="raid" and self.RaidInstance == false) or (PowaAuras.InstanceType~="raid" and self.RaidInstance == true)) then
-			if (not giveReason) then return false; end
-			if (self.RaidInstance == true) then
-				return false, PowaAuras.Text.nomReasonNotInRaidInstance;
-			end
-			return false, PowaAuras.Text.nomReasonInRaidInstance;		
-		end
-		if ((PowaAuras.InstanceType=="pvp" and self.BattlegroundInstance == false) or (PowaAuras.InstanceType~="pvp" and self.BattlegroundInstance == true)) then
-			if (not giveReason) then return false; end
-			if (self.FiveManInstance == true) then
-				return false, PowaAuras.Text.nomReasonNotInBattlegroundInstance;
-			end
-			return false, PowaAuras.Text.nomReasonInBattlegroundInstance;		
-		end
-		if ((PowaAuras.InstanceType=="arena" and self.ArenaInstance == false) or (PowaAuras.InstanceType~="arena" and self.ArenaInstance == true)) then
-			if (not giveReason) then return false; end
-			if (self.FiveManInstance == true) then
-				return false, PowaAuras.Text.nomReasonNotInArenaInstance;
-			end
-			return false, PowaAuras.Text.nomReasonInArenaInstance;		
-		end		
+		return false, PowaAuras.Text.nomReasonInFiveManInstance;		
 	end
+	if ((PowaAuras.InstanceType=="raid" and self.RaidInstance == false) or (PowaAuras.InstanceType~="raid" and self.RaidInstance == true)) then
+		if (not giveReason) then return false; end
+		if (self.RaidInstance == true) then
+			return false, PowaAuras.Text.nomReasonNotInRaidInstance;
+		end
+		return false, PowaAuras.Text.nomReasonInRaidInstance;		
+	end
+	if ((PowaAuras.InstanceType=="pvp" and self.BgInstance == false) or (PowaAuras.InstanceType~="pvp" and self.BgInstance == true)) then
+		if (not giveReason) then return false; end
+		if (self.FiveManInstance == true) then
+			return false, PowaAuras.Text.nomReasonNotInBattlegroundInstance;
+		end
+		return false, PowaAuras.Text.nomReasonInBattlegroundInstance;		
+	end
+	if ((PowaAuras.InstanceType=="arena" and self.ArenaInstance == false) or (PowaAuras.InstanceType~="arena" and self.ArenaInstance == true)) then
+		if (not giveReason) then return false; end
+		if (self.FiveManInstance == true) then
+			return false, PowaAuras.Text.nomReasonNotInArenaInstance;
+		end
+		return false, PowaAuras.Text.nomReasonInArenaInstance;		
+	end		
+
 	
 	-- It's not dead it's restin'
 	if ((self.isResting==false and IsResting()==1 and not PowaAuras.WeAreInCombat) or (self.isResting==true and (IsResting()~=1))) then	

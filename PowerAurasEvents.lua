@@ -395,7 +395,6 @@ end
 	 
 function PowaAuras:PLAYER_REGEN_DISABLED(...)
 	self.WeAreInCombat = true;
-	self.PvPFlagSet = UnitIsPVP("player");
 	if (self.ModTest == false) then
 		--self:ShowText("PLAYER_REGEN_DISABLED");
 		self.DoCheck.All = true;
@@ -404,7 +403,6 @@ end
 	   
 function PowaAuras:PLAYER_REGEN_ENABLED(...)
 	self.WeAreInCombat = false;
-	self.PvPFlagSet = UnitIsPVP("player");
 	if (self.ModTest == false) then
 		--self:ShowText("PLAYER_REGEN_ENABLED");
 		self.DoCheck.All = true;
@@ -414,7 +412,7 @@ end
 function PowaAuras:ZONE_CHANGED_NEW_AREA()
 	self.InInstance, self.InstanceType = IsInInstance();
 	if (self.ModTest == false) then
-		--self:ShowText("ZONE_CHANGED_NEW_AREA");
+		--self:ShowText("ZONE_CHANGED_NEW_AREA ", self.InInstance, " - ", self.InstanceType);
 		self.DoCheck.All = true;
 	end
 end
@@ -448,21 +446,31 @@ end
 	
 function PowaAuras:UNIT_FACTION(...) --- GetPVPTimer() returns the time until unflag in ms
 	local unit = ...;
+	--self:ShowText("UNIT_FACTION unit = ",unit);
+	if (unit == "player") then
+		local flag = UnitIsPVP("player");
+		if (flag ~= self.PvPFlagSet) then
+			self.PvPFlagSet = flag;
+			--self:ShowText("UNIT_FACTION Player PvP = ",flag);
+			if (self.ModTest == false) then
+				self.DoCheck.All = true;
+			end
+		end
+		return;
+	end
 	if (self.ModTest == false) then
-		if unit == "player" then
-			self.DoCheck.PvP = true;
-		elseif unit == "target" then
+		if (unit == "target") then
 			self.DoCheck.TargetPvP = true;
 		end
 
 		for i=1,GetNumPartyMembers() do
-			if unit == "party"..i then
+			if (unit == "party"..i) then
 				self.DoCheck.PartyPvP = true;
 				break;
 			end
 		end
 		for i=1, GetNumRaidMembers() do
-			if unit == "raid"..i then
+			if (unit == "raid"..i) then
 				self.DoCheck.RaidPvP = true;
 				break;
 			end

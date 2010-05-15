@@ -966,7 +966,14 @@ function PowaAuras:InitPage()
 	self:TernarySetState(getglobal("PowaIsMountedButton"), aura.ismounted);
 	self:TernarySetState(getglobal("PowaInVehicleButton"), aura.inVehicle);
 	self:TernarySetState(getglobal("PowaIsAliveButton"), aura.isAlive);
+	self:TernarySetState(getglobal("PowaPvPButton"), aura.PvP);
+	
+	self:TernarySetState(getglobal("PowaFiveManInstanceButton"), aura.FiveManInstance);
+	self:TernarySetState(getglobal("PowaRaidInstanceButton"), aura.RaidInstance);
+	self:TernarySetState(getglobal("PowaBgInstanceButton"), aura.BgInstance);
+	self:TernarySetState(getglobal("PowaArenaInstanceButton"), aura.ArenaInstance);
 
+	
 	getglobal("PowaTimerDurationSlider"):SetValue(aura.timerduration);
 	getglobal("PowaBarThresholdSlider"):SetValue(aura.threshold);
 	----------------
