@@ -1752,7 +1752,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Anchors>
                 <Scripts>
 					<OnShow>
-						self.Parameter = "FiveMan"; 
+						self.Parameter = "FiveManInstance"; 
 						getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.Ternary[self.Parameter]);
 					</OnShow>
                 </Scripts>
@@ -1770,7 +1770,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Anchors>
                 <Scripts>
 					<OnShow>
-						self.Parameter = "Raid"; 
+						self.Parameter = "RaidInstance"; 
 						getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.Ternary[self.Parameter]);
 					</OnShow>
                 </Scripts>
@@ -1788,7 +1788,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Anchors>
                 <Scripts>
 					<OnShow>
-						self.Parameter = "Bg"; 
+						self.Parameter = "BgInstance"; 
 						getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.Ternary[self.Parameter]);
 					</OnShow>
                 </Scripts>
@@ -1806,7 +1806,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Anchors>
                 <Scripts>
 					<OnShow>
-						self.Parameter = "Arena"; 
+						self.Parameter = "ArenaInstance"; 
 						getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.Ternary[self.Parameter]);
 					</OnShow>
                 </Scripts>

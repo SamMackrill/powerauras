@@ -84,6 +84,11 @@ cPowaAura = PowaClass(function(aura, id, base)
 	aura.isAlive = true;
 	aura.PvP = 0;
 	
+	aura.FiveManInstance = 0;
+	aura.RaidInstance = 0;
+	aura.BgInstance = 0;
+	aura.ArenaInstance = 0;
+	
 	aura.spec1 = true;
 	aura.spec2 = true;
 	aura.gcd = false;
@@ -452,7 +457,39 @@ function cPowaAura:CheckState(giveReason)
 		end
 		return false, PowaAuras.Text.nomReasonInVehicle;		
 	end
-
+	
+	-- Instance checks
+	if (PowaAuras.InInstance) then
+		if ((PowaAuras.InstanceType=="party" and self.FiveManInstance == false) or (PowaAuras.InstanceType~="party" and self.FiveManInstance == true)) then
+			if (not giveReason) then return false; end
+			if (self.FiveManInstance == true) then
+				return false, PowaAuras.Text.nomReasonNotInFiveManInstance;
+			end
+			return false, PowaAuras.Text.nomReasonInFiveManInstance;		
+		end
+		if ((PowaAuras.InstanceType=="raid" and self.RaidInstance == false) or (PowaAuras.InstanceType~="raid" and self.RaidInstance == true)) then
+			if (not giveReason) then return false; end
+			if (self.RaidInstance == true) then
+				return false, PowaAuras.Text.nomReasonNotInRaidInstance;
+			end
+			return false, PowaAuras.Text.nomReasonInRaidInstance;		
+		end
+		if ((PowaAuras.InstanceType=="pvp" and self.BattlegroundInstance == false) or (PowaAuras.InstanceType~="pvp" and self.BattlegroundInstance == true)) then
+			if (not giveReason) then return false; end
+			if (self.FiveManInstance == true) then
+				return false, PowaAuras.Text.nomReasonNotInBattlegroundInstance;
+			end
+			return false, PowaAuras.Text.nomReasonInBattlegroundInstance;		
+		end
+		if ((PowaAuras.InstanceType=="arena" and self.ArenaInstance == false) or (PowaAuras.InstanceType~="arena" and self.ArenaInstance == true)) then
+			if (not giveReason) then return false; end
+			if (self.FiveManInstance == true) then
+				return false, PowaAuras.Text.nomReasonNotInArenaInstance;
+			end
+			return false, PowaAuras.Text.nomReasonInArenaInstance;		
+		end		
+	end
+	
 	-- It's not dead it's restin'
 	if ((self.isResting==false and IsResting()==1 and not PowaAuras.WeAreInCombat) or (self.isResting==true and (IsResting()~=1))) then	
 		if (not giveReason) then return false; end
