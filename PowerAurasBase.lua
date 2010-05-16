@@ -45,8 +45,7 @@ PowaAuras = {
 	WeAreInVehicle = false;
 	WeAreAlive = true;
 	PvPFlagSet = false;
-	InInstance = false;
-	InstanceType = "None";
+	Instance = "none";
 
 	Pending = {}; --- Workaround for 'silent' cooldown end (no event fired)
 	Cascade = {}; -- Dependant auras that need checking

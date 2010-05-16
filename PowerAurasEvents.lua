@@ -88,7 +88,7 @@ function PowaAuras:Setup()
 
 	self.ActiveTalentGroup = GetActiveTalentGroup();
 	
-	self.InInstance, self.InstanceType = IsInInstance();
+	self.Instance = self:GetInstanceType();
 	
 	self:GetStances();
 	
@@ -101,6 +101,38 @@ function PowaAuras:Setup()
 	end
 	self.SetupDone = true;
 
+end
+
+function PowaAuras:GetInstanceType()
+	local _, instanceType = IsInInstance();
+	if (instanceType=="pvp") then
+		instanceType = "Bg";
+	elseif (instanceType=="arena") then
+		instanceType = "Arena";
+	elseif (instanceType=="party" or instanceType=="raid") then
+		instanceDifficulty = GetInstanceDifficulty();
+		if (instanceType=="party") then
+			if (instanceDifficulty==1) then
+				instanceType = "5Man";
+			else
+				instanceType = "5ManHeroic";
+			end
+		else
+			if (instanceDifficulty==1) then
+				instanceType = "10Man";
+			elseif (instanceDifficulty==2) then
+				instanceType = "25Man";
+			elseif (instanceDifficulty==3) then
+				instanceType = "10ManHeroic";
+			else
+				instanceType = "25ManHeroic";
+			end
+		end
+	else
+		instanceType = "None";
+	end
+	--self:ShowText("Instance type set to "..instanceType);
+	return instanceType;
 end
 
 function PowaAuras:PLAYER_ENTERING_WORLD(...)
@@ -409,8 +441,11 @@ function PowaAuras:PLAYER_REGEN_ENABLED(...)
 	end
 end   
 
+
 function PowaAuras:ZONE_CHANGED_NEW_AREA()
-	self.InInstance, self.InstanceType = IsInInstance();
+	local instanceType = self:GetInstanceType();
+	if (self.Instance == instanceType) then return; end
+	self.Instance = instanceType;
 	if (self.ModTest == false) then
 		--self:ShowText("ZONE_CHANGED_NEW_AREA ", self.InInstance, " - ", self.InstanceType);
 		self.DoCheck.All = true;

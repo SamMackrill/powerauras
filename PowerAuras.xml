@@ -1739,7 +1739,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Scripts>
 			  </CheckButton>	
 			  
-			 <CheckButton name="PowaFiveManInstanceButton" inherits="PowaTernarySelectorTemplate">
+			 <CheckButton name="Powa5ManInstanceButton" inherits="PowaTernarySelectorTemplate">
                 <Anchors>
                   <Anchor point="TOPLEFT"
                           relativeTo="PowaIsInRaidButton"
@@ -1752,43 +1752,116 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Anchors>
                 <Scripts>
 					<OnShow>
-						self.Parameter = "FiveManInstance"; 
+						self.Parameter = "Instance5Man"; 
 						getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.Ternary[self.Parameter]);
 					</OnShow>
                 </Scripts>
 			  </CheckButton>
-			  <CheckButton name="PowaRaidInstanceButton" inherits="PowaTernarySelectorTemplate">
+			  <CheckButton name="Powa5ManHeroicInstanceButton" inherits="PowaTernarySelectorTemplate">
                 <Anchors>
                   <Anchor point="TOPLEFT"
-                          relativeTo="PowaFiveManInstanceButton"
+                          relativeTo="Powa5ManInstanceButton"
                           relativePoint="BOTTOMLEFT">
                     <Offset>
                       <AbsDimension x="0"
-                                    y="7" />
+                                    y="9" />
                     </Offset>
                   </Anchor>
                 </Anchors>
                 <Scripts>
 					<OnShow>
-						self.Parameter = "RaidInstance"; 
+						self.Parameter = "Instance5ManHeroic"; 
 						getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.Ternary[self.Parameter]);
 					</OnShow>
                 </Scripts>
-			  </CheckButton>		  
-			  <CheckButton name="PowaBgInstanceButton" inherits="PowaTernarySelectorTemplate">
+			  </CheckButton>
+			  <CheckButton name="Powa10ManInstanceButton" inherits="PowaTernarySelectorTemplate">
                 <Anchors>
                   <Anchor point="TOPLEFT"
-                          relativeTo="PowaRaidInstanceButton"
+                          relativeTo="Powa5ManHeroicInstanceButton"
                           relativePoint="BOTTOMLEFT">
                     <Offset>
                       <AbsDimension x="0"
-                                    y="7" />
+                                    y="9" />
                     </Offset>
                   </Anchor>
                 </Anchors>
                 <Scripts>
 					<OnShow>
-						self.Parameter = "BgInstance"; 
+						self.Parameter = "Instance10Man"; 
+						getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.Ternary[self.Parameter]);
+					</OnShow>
+                </Scripts>
+			  </CheckButton>
+			  <CheckButton name="Powa10ManHeroicInstanceButton" inherits="PowaTernarySelectorTemplate">
+                <Anchors>
+                  <Anchor point="TOPLEFT"
+                          relativeTo="Powa10ManInstanceButton"
+                          relativePoint="BOTTOMLEFT">
+                    <Offset>
+                      <AbsDimension x="0"
+                                    y="9" />
+                    </Offset>
+                  </Anchor>
+                </Anchors>
+                <Scripts>
+					<OnShow>
+						self.Parameter = "Instance10ManHeroic"; 
+						getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.Ternary[self.Parameter]);
+					</OnShow>
+                </Scripts>
+			  </CheckButton>
+			  <CheckButton name="Powa25ManInstanceButton" inherits="PowaTernarySelectorTemplate">
+                <Anchors>
+                  <Anchor point="TOPLEFT"
+                          relativeTo="Powa10ManHeroicInstanceButton"
+                          relativePoint="BOTTOMLEFT">
+                    <Offset>
+                      <AbsDimension x="0"
+                                    y="9" />
+                    </Offset>
+                  </Anchor>
+                </Anchors>
+                <Scripts>
+					<OnShow>
+						self.Parameter = "Instance25Man"; 
+						getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.Ternary[self.Parameter]);
+					</OnShow>
+                </Scripts>
+			  </CheckButton>
+			  <CheckButton name="Powa25ManHeroicInstanceButton" inherits="PowaTernarySelectorTemplate">
+                <Anchors>
+                  <Anchor point="TOPLEFT"
+                          relativeTo="Powa25ManInstanceButton"
+                          relativePoint="BOTTOMLEFT">
+                    <Offset>
+                      <AbsDimension x="0"
+                                    y="9" />
+                    </Offset>
+                  </Anchor>
+                </Anchors>
+                <Scripts>
+					<OnShow>
+						self.Parameter = "Instance25ManHeroic"; 
+						getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.Ternary[self.Parameter]);
+					</OnShow>
+                </Scripts>
+			  </CheckButton>
+			  
+			  <CheckButton name="PowaBgInstanceButton" inherits="PowaTernarySelectorTemplate">
+                <Anchors>
+                  <Anchor point="TOPLEFT"
+                          relativeTo="Powa25ManHeroicInstanceButton"
+                          relativePoint="BOTTOMLEFT">
+                    <Offset>
+                      <AbsDimension x="0"
+                                    y="9" />
+                    </Offset>
+                  </Anchor>
+                </Anchors>
+                <Scripts>
+					<OnShow>
+						self.Parameter = "InstanceBg"; 
 						getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.Ternary[self.Parameter]);
 					</OnShow>
                 </Scripts>
@@ -1800,13 +1873,13 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                           relativePoint="BOTTOMLEFT">
                     <Offset>
                       <AbsDimension x="0"
-                                    y="7" />
+                                    y="9" />
                     </Offset>
                   </Anchor>
                 </Anchors>
                 <Scripts>
 					<OnShow>
-						self.Parameter = "ArenaInstance"; 
+						self.Parameter = "InstanceArena"; 
 						getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.Ternary[self.Parameter]);
 					</OnShow>
                 </Scripts>
@@ -2003,30 +2076,6 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   <OnClick>PowaAuras:RaidChecked();</OnClick>
                 </Scripts>
               </CheckButton>
-              <CheckButton name="PowaGroupAnyButton"
-                           inherits="PowaCheckTemplate">
-                <Size>
-                  <AbsDimension x="25"
-                                y="25" />
-                </Size>
-                <Anchors>
-                  <Anchor point="LEFT"
-                          relativeTo="PowaRaidButton"
-                          relativePoint="RIGHT">
-                    <Offset>
-                      <AbsDimension x="100"
-                                    y="0" />
-                    </Offset>
-                  </Anchor>
-                </Anchors>
-                <Scripts>
-                  <OnLoad>
-                  	self.tooltipText = PowaAuras.Text.aideGroupAny; 
-                  	getglobal("PowaGroupAnyButtonText"):SetText(PowaAuras.Text.nomCheckGroupAny); 
-                  </OnLoad>
-                  <OnClick>PowaAuras:GroupAnyChecked();</OnClick>
-                </Scripts>
-              </CheckButton>
               <CheckButton name="PowaOptunitnButton"
                            inherits="PowaCheckTemplate">
                 <Size>
@@ -2065,7 +2114,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                           relativeTo="PowaOptunitnButtonText"
                           relativePoint="TOPLEFT">
                     <Offset>
-                      <AbsDimension x="80"
+                      <AbsDimension x="60"
                                     y="3" />
                     </Offset>
                   </Anchor>
@@ -2140,7 +2189,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                           relativeTo="PowaTalentGroup1Button"
                           relativePoint="RIGHT">
                     <Offset>
-                      <AbsDimension x="100"
+                      <AbsDimension x="50"
                                     y="0" />
                     </Offset>
                   </Anchor>
@@ -2150,7 +2199,8 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   <OnClick>PowaAuras:SettingChecked(self, "spec2");</OnClick>
                 </Scripts>
               </CheckButton>
-              <CheckButton name="PowaAuraDebugButton"
+
+              <CheckButton name="PowaGroupAnyButton"
                            inherits="PowaCheckTemplate">
                 <Size>
                   <AbsDimension x="25"
@@ -2159,6 +2209,32 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 <Anchors>
                   <Anchor point="LEFT"
                           relativeTo="PowaTalentGroup2Button"
+                          relativePoint="RIGHT">
+                    <Offset>
+                      <AbsDimension x="60"
+                                    y="0" />
+                    </Offset>
+                  </Anchor>
+                </Anchors>
+                <Scripts>
+                  <OnLoad>
+                  	self.tooltipText = PowaAuras.Text.aideGroupAny; 
+                  	getglobal("PowaGroupAnyButtonText"):SetText(PowaAuras.Text.nomCheckGroupAny); 
+                  </OnLoad>
+                  <OnClick>PowaAuras:GroupAnyChecked();</OnClick>
+                </Scripts>
+              </CheckButton>
+
+
+              <CheckButton name="PowaAuraDebugButton"
+                           inherits="PowaCheckTemplate">
+                <Size>
+                  <AbsDimension x="25"
+                                y="25" />
+                </Size>
+                <Anchors>
+                  <Anchor point="LEFT"
+                          relativeTo="PowaGroupAnyButton"
                           relativePoint="RIGHT">
                     <Offset>
                       <AbsDimension x="100"

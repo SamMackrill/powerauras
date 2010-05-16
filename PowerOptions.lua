@@ -968,10 +968,15 @@ function PowaAuras:InitPage()
 	self:TernarySetState(getglobal("PowaIsAliveButton"), aura.isAlive);
 	self:TernarySetState(getglobal("PowaPvPButton"), aura.PvP);
 	
-	self:TernarySetState(getglobal("PowaFiveManInstanceButton"), aura.FiveManInstance);
-	self:TernarySetState(getglobal("PowaRaidInstanceButton"), aura.RaidInstance);
-	self:TernarySetState(getglobal("PowaBgInstanceButton"), aura.BgInstance);
-	self:TernarySetState(getglobal("PowaArenaInstanceButton"), aura.ArenaInstance);
+	self:TernarySetState(getglobal("Powa5ManInstanceButton"), aura.Instance5Man);
+	self:TernarySetState(getglobal("Powa5ManHeroicInstanceButton"), aura.Instance5ManHeroic);
+	self:TernarySetState(getglobal("Powa10ManInstanceButton"), aura.Instance10Man);
+	self:TernarySetState(getglobal("Powa10ManHeroicInstanceButton"), aura.Instance10ManHeroic);
+	self:TernarySetState(getglobal("Powa25ManInstanceButton"), aura.Instance25Man);
+	self:TernarySetState(getglobal("Powa25ManHeroicInstanceButton"), aura.Instance25ManHeroic);
+
+	self:TernarySetState(getglobal("PowaBgInstanceButton"), aura.InstanceBg);
+	self:TernarySetState(getglobal("PowaArenaInstanceButton"), aura.InstanceArena);
 
 	
 	getglobal("PowaTimerDurationSlider"):SetValue(aura.timerduration);
@@ -2552,12 +2557,12 @@ function PowaAuras.Ternary_OnClick()
 
 	local aura = PowaAuras.Auras[PowaAuras.CurrentAuraId];
 	--PowaAuras:ShowText("Ternary_OnClick control=",this:GetName(), " Parameter=", this.Parameter);
-	if (aura[this.Parameter]==false) then
-		aura[this.Parameter] = true; -- Off => On
+	if (aura[this.Parameter]==0) then
+		aura[this.Parameter] = true; -- Ignore => On
 	elseif (aura[this.Parameter]==true) then
-		aura[this.Parameter] = 0; -- On => Ingore
+		aura[this.Parameter] = false; -- On => Off
 	else
-		aura[this.Parameter] = false; -- Ignore => Off
+		aura[this.Parameter] = 0; -- Off => Ignore
 	end	
 
 	PowaAuras:TernarySetState(this, aura[this.Parameter]);

@@ -84,10 +84,14 @@ cPowaAura = PowaClass(function(aura, id, base)
 	aura.isAlive = true;
 	aura.PvP = 0;
 	
-	aura.FiveManInstance = 0;
-	aura.RaidInstance = 0;
-	aura.BgInstance = 0;
-	aura.ArenaInstance = 0;
+	aura.Instance5Man = 0;
+	aura.Instance5ManHeroic = 0;
+	aura.Instance10Man = 0;
+	aura.Instance10ManHeroic = 0;
+	aura.Instance25Man = 0;
+	aura.Instance25ManHeroic = 0;
+	aura.InstanceBg = 0;
+	aura.InstanceArena = 0;
 	
 	aura.spec1 = true;
 	aura.spec2 = true;
@@ -463,40 +467,33 @@ function cPowaAura:CheckState(giveReason)
 	end
 	
 	-- Instance checks
-	--PowaAuras:ShowText("In Instance ", PowaAuras.InstanceType);
-	--PowaAuras:ShowText("  FiveManInstance ", self.FiveManInstance);
-	--PowaAuras:ShowText("  RaidInstance ", self.RaidInstance);
-	--PowaAuras:ShowText("  BattlegroundInstance ", self.BgInstance);
-	--PowaAuras:ShowText("  ArenaInstance ", self.ArenaInstance);
-	if ((PowaAuras.InstanceType=="party" and self.FiveManInstance == false) or (PowaAuras.InstanceType~="party" and self.FiveManInstance == true)) then
-		if (not giveReason) then return false; end
-		if (self.FiveManInstance == true) then
-			return false, PowaAuras.Text.nomReasonNotInFiveManInstance;
-		end
-		return false, PowaAuras.Text.nomReasonInFiveManInstance;		
-	end
-	if ((PowaAuras.InstanceType=="raid" and self.RaidInstance == false) or (PowaAuras.InstanceType~="raid" and self.RaidInstance == true)) then
-		if (not giveReason) then return false; end
-		if (self.RaidInstance == true) then
-			return false, PowaAuras.Text.nomReasonNotInRaidInstance;
-		end
-		return false, PowaAuras.Text.nomReasonInRaidInstance;		
-	end
-	if ((PowaAuras.InstanceType=="pvp" and self.BgInstance == false) or (PowaAuras.InstanceType~="pvp" and self.BgInstance == true)) then
-		if (not giveReason) then return false; end
-		if (self.FiveManInstance == true) then
-			return false, PowaAuras.Text.nomReasonNotInBattlegroundInstance;
-		end
-		return false, PowaAuras.Text.nomReasonInBattlegroundInstance;		
-	end
-	if ((PowaAuras.InstanceType=="arena" and self.ArenaInstance == false) or (PowaAuras.InstanceType~="arena" and self.ArenaInstance == true)) then
-		if (not giveReason) then return false; end
-		if (self.FiveManInstance == true) then
-			return false, PowaAuras.Text.nomReasonNotInArenaInstance;
-		end
-		return false, PowaAuras.Text.nomReasonInArenaInstance;		
-	end		
-
+	--PowaAuras:ShowText("Instance ", PowaAuras.Instance);
+	--PowaAuras:ShowText("  Instance5Man ", self.Instance5Man);
+	local show, reason;
+	
+	show, reason = self:ShouldShowForInstanceType("5Man", giveReason);
+	if (not show) then return show, reason; end
+	
+	show, reason = self:ShouldShowForInstanceType("5ManHeroic", giveReason);
+	if (not show) then return show, reason; end
+	
+	show, reason = self:ShouldShowForInstanceType("10Man", giveReason);
+	if (not show) then return show, reason; end
+	
+	show, reason = self:ShouldShowForInstanceType("10ManHeroic", giveReason);
+	if (not show) then return show, reason; end
+	
+	show, reason = self:ShouldShowForInstanceType("25Man", giveReason);
+	if (not show) then return show, reason; end
+	
+	show, reason = self:ShouldShowForInstanceType("25ManHeroic", giveReason);
+	if (not show) then return show, reason; end
+	
+	show, reason = self:ShouldShowForInstanceType("Bg", giveReason);
+	if (not show) then return show, reason; end
+	
+	show, reason = self:ShouldShowForInstanceType("Arena", giveReason);
+	if (not show) then return show, reason; end
 	
 	-- It's not dead it's restin'
 	if ((self.isResting==false and IsResting()==1 and not PowaAuras.WeAreInCombat) or (self.isResting==true and (IsResting()~=1))) then	
@@ -509,6 +506,19 @@ function cPowaAura:CheckState(giveReason)
 	
 	if (not giveReason) then return true; end
 	return true, PowaAuras.Text.nomReasonStateOK;
+end
+
+function cPowaAura:ShouldShowForInstanceType(instanceType, giveReason)
+	local flag = "Instance"..instanceType;
+	--PowaAuras:ShowText(PowaAuras.Instance, "  ", instanceType, "  ", flag, "=", self[flag]);
+	if ((PowaAuras.Instance==instanceType and self[flag] == false) or (PowaAuras.Instance~=instanceType and self[flag] == true)) then
+		if (not giveReason) then return false; end
+		if (self[flag] == true) then
+			return false, PowaAuras.Text["nomReasonNotIn"..instanceType.."Instance"];
+		end
+		return false, PowaAuras.Text["nomReasonIn"..instanceType.."Instance"];		
+	end
+	return true;
 end
 
 function cPowaAura:ShouldShow(giveReason, reverse)
