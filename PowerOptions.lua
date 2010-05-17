@@ -929,7 +929,13 @@ function PowaAuras:InitPage()
 	getglobal("PowaDropDownAnim2Text"):SetText(self.Anim[aura.anim2]);
 	getglobal("PowaDropDownAnimBeginText"):SetText(self.BeginAnimDisplay[aura.begin]);
 	getglobal("PowaDropDownAnimEndText"):SetText(self.EndAnimDisplay[aura.finish]);
-	getglobal("PowaDropDownSoundText"):SetText(self.Sound[aura.sound]);
+	if (aura.sound<30) then
+		getglobal("PowaDropDownSoundText"):SetText(self.Sound[aura.sound]);
+		getglobal("PowaDropDownSound2Text"):SetText(self.Sound[30]);
+	else
+		getglobal("PowaDropDownSoundText"):SetText(self.Sound[0]);
+		getglobal("PowaDropDownSound2Text"):SetText(self.Sound[aura.sound]);
+	end
 	getglobal("PowaDropDownStanceText"):SetText(self.PowaStance[aura.stance]);
 	getglobal("PowaDropDownGTFOText"):SetText(self.PowaGTFO[aura.GTFO]);
 	getglobal("PowaBarCustomSound").aide = self.Text.aideCustomSound;
@@ -1406,10 +1412,16 @@ function PowaAuras:CustomSoundTextChanged()
 	local oldCustomSound = getglobal("PowaBarCustomSound"):GetText();
 	local auraId = self.CurrentAuraId;
 
-	if (oldCustomSound ~= self.Auras[auraId].customsound) then -- meme texte
+	if (oldCustomSound ~= self.Auras[auraId].customsound) then -- custom sound changed
 		self.Auras[auraId].customsound = getglobal("PowaBarCustomSound"):GetText();
 		if not (self.Auras[auraId].customsound == "") then
-			PlaySoundFile("Interface\\AddOns\\PowerAuras\\Sounds\\"..self.Auras[auraId].customsound);
+			local pathToSound = "Interface\\AddOns\\PowerAuras\\Sounds\\"..self.Auras[auraId].customsound;
+			self:ShowText("Playing sound "..pathToSound);
+			local played = PlaySoundFile(pathToSound);
+			self:ShowText("played = "..played);
+			if (not played) then
+				self:ShowText("Failed to play sound "..pathToSound);
+			end
 		end
 	end	
 end
@@ -1709,15 +1721,35 @@ function PowaAuras.DropDownMenu_Initialize(owner)
 		UIDropDownMenu_SetSelectedValue(PowaDropDownGTFO, PowaAuras.PowaGTFO[aura.GTFO]);
 		UIDropDownMenu_SetWidth(PowaDropDownGTFO, 110, 1);
 	elseif (owner:GetName() == "PowaDropDownSoundButton" or owner:GetName() == "PowaDropDownSound") then
-		for i = 0, #PowaAuras.Sound do
-			info = {}; 
-			info.text = PowaAuras.Sound[i]; 
-			info.func = PowaAuras.DropDownMenu_OnClickSound;
-			info.value = i;
-			UIDropDownMenu_AddButton(info);
+		info = {func = PowaAuras.DropDownMenu_OnClickSound, owner = owner};
+		for i = 0, 29 do
+			if (PowaAuras.Sound[i]) then
+				info.text = PowaAuras.Sound[i]; 
+				info.value = i;
+				UIDropDownMenu_AddButton(info);
+			end
 		end
-		UIDropDownMenu_SetSelectedValue(PowaDropDownSound, PowaAuras.Sound[aura.sound]);	
+		if (aura.sound<30) then
+			UIDropDownMenu_SetSelectedValue(PowaDropDownSound, PowaAuras.Sound[aura.sound]);	
+		else
+			UIDropDownMenu_SetSelectedValue(PowaDropDownSound, PowaAuras.Sound[0]);	
+		end
 		UIDropDownMenu_SetWidth(PowaDropDownSound, 220, 1);
+	elseif (owner:GetName() == "PowaDropDownSound2Button" or owner:GetName() == "PowaDropDownSound2") then
+		info = {func = PowaAuras.DropDownMenu_OnClickSound, owner = owner};
+		for i = 30, #PowaAuras.Sound do
+			if (PowaAuras.Sound[i]) then
+				info.text = PowaAuras.Sound[i]; 
+				info.value = i;
+				UIDropDownMenu_AddButton(info);
+			end
+		end
+		if (aura.sound>=30) then
+			UIDropDownMenu_SetSelectedValue(PowaDropDownSound, PowaAuras.Sound[aura.sound]);	
+		else
+			UIDropDownMenu_SetSelectedValue(PowaDropDownSound, PowaAuras.Sound[30]);	
+		end
+		UIDropDownMenu_SetWidth(PowaDropDownSound2, 220, 1);
 	elseif (owner:GetName() == "PowaDropDownAnimBeginButton" or owner:GetName() == "PowaDropDownAnimBegin") then
 		info = {func = PowaAuras.DropDownMenu_OnClickBegin, owner = owner}; 
 		for i = 0, #PowaAuras.BeginAnimDisplay do
@@ -1824,23 +1856,27 @@ function PowaAuras.DropDownMenu_OnClickAnim2(owner)
 	PowaAuras:RedisplayAura(auraId);
 end
 
-function PowaAuras.DropDownMenu_OnClickSound(owner)
-	local optionID = owner:GetID();
-	local aura = PowaAuras.Auras[PowaAuras.CurrentAuraId];
+function PowaAuras.DropDownMenu_OnClickSound()
+	--PowaAuras:ShowText("DropDownMenu_OnClickSound n=", this.owner:GetName()," v=",this.value, " t=", PowaAuras.Sound[this.value]);
+	UIDropDownMenu_SetSelectedValue(this.owner, this.value);
 
-	UIDropDownMenu_SetSelectedID(PowaDropDownSound, optionID); 
-	local optionName =  UIDropDownMenu_GetText(PowaDropDownSound); 
-	UIDropDownMenu_SetSelectedValue(PowaDropDownSound, optionName);
+	if (this.value==0 or this.value==30 or not PowaAuras.Sound[this.value]) then
+		return; 
+	end
 
-	aura.sound = optionID - 1;
+	PowaAuras.Auras[PowaAuras.CurrentAuraId].sound = this.value;
+	
+	if (this.value<30) then
+		PowaDropDownSound2Text:SetText(PowaAuras.Sound[30]);
+	else
+		PowaDropDownSoundText:SetText(PowaAuras.Sound[0]);
+	end
 
-	if (aura.sound>0 and PowaAuras.Sound[aura.sound]) then
-		if (string.find(PowaAuras.Sound[aura.sound], "%.")) then
-			PlaySoundFile("Interface\\AddOns\\PowerAuras\\Sounds\\"..PowaAuras.Sound[aura.sound]);
-		else
-			PlaySound(PowaAuras.Sound[aura.sound]);
-		end
-	end	
+	if (string.find(PowaAuras.Sound[this.value], "%.")) then
+		PlaySoundFile("Interface\\AddOns\\PowerAuras\\Sounds\\"..PowaAuras.Sound[this.value]);
+	else
+		PlaySound(PowaAuras.Sound[this.value]);
+	end
 end
 
 function PowaAuras.DropDownMenu_OnClickStance()

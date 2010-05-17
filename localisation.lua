@@ -34,6 +34,7 @@ PowaAuras.EndAnimDisplay[4] = "Spin";
 PowaAuras.EndAnimDisplay[5] = "Spin In";
 
 PowaAuras.Sound[0] = NONE;
+PowaAuras.Sound[30] = NONE;
 
 PowaAuras:MergeTables(PowaAuras.Text, 
 {
@@ -123,7 +124,9 @@ PowaAuras:MergeTables(PowaAuras.Text,
 
 	-- editor
 	nomSound = "Sound to play",
+	nomSound2 = "More sounds to play",
 	aideSound = "Plays a sound at the beginning.",
+	aideSound2 = "Plays a sound at the beginning.",
 	nomCustomSound = "OR soundfile:",
 	aideCustomSound = "Enter a soundfile that is in the Sounds folder, BEFORE you started the game. mp3 and wav are supported. example: 'cookie.mp3' ;)",
 

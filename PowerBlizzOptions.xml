@@ -15,8 +15,7 @@
         </Scripts>
 
 		<Frames>
-		
-		
+			
 			<!-- Enable PA Checkbox -->
 			<CheckButton name="PowaEnableButton" inherits="PowaCheckTemplate">
 				<Size>
@@ -85,7 +84,7 @@
 			</Anchors>
 			<Scripts>
 			  <OnLoad>
-				self:SetMinMaxValues(0,100); self:SetValue(100-200*PowaMisc.OnUpdateLimit); self:SetValueStep(2); 
+				self:SetMinMaxValues(0,100); self:SetValue(100-200*PowaMisc.OnUpdateLimit); self:SetValueStep(1); 
 				getglobal("PowaOptionsUpdateSlider2Text"):SetText(PowaAuras.Text.nomUpdateSpeed.." : "..self:GetValue().."%");
 				getglobal("PowaOptionsUpdateSlider2Low"):SetText("0%"); 
 				getglobal("PowaOptionsUpdateSlider2High"):SetText("100%");
@@ -139,7 +138,7 @@
 			</Anchors>
 			<Scripts>
 			  <OnLoad>
-				self:SetMinMaxValues(0,100); self:SetValue(100-1000*PowaMisc.AnimationLimit); self:SetValueStep(2); 
+				self:SetMinMaxValues(0,100); self:SetValue(100-1000*PowaMisc.AnimationLimit); self:SetValueStep(1); 
 				getglobal("PowaOptionsTimerUpdateSlider2Text"):SetText(PowaAuras.Text.nomTimerUpdate.." : "..self:GetValue().."%");
 				getglobal("PowaOptionsTimerUpdateSlider2Low"):SetText("0%"); 
 				getglobal("PowaOptionsTimerUpdateSlider2High"):SetText("100%");

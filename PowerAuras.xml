@@ -1477,7 +1477,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Anchors>
                 <Scripts>
                   <OnLoad>
-                  	self:SetMinMaxValues(0,100); self:SetValue(50); self:SetValueStep(2); 
+                  	self:SetMinMaxValues(0,100); self:SetValue(50); self:SetValueStep(1); 
                   	getglobal("PowaBarThresholdSliderText"):SetText(PowaAuras.Text.nomThreshold.." : 50");
                   	getglobal("PowaBarThresholdSliderLow"):SetText("0%"); 
                   	getglobal("PowaBarThresholdSliderHigh"):SetText("100%");
@@ -2647,6 +2647,49 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   <OnLeave>GameTooltip:Hide();</OnLeave>
                 </Scripts>
               </Frame>
+             <Frame name="PowaDropDownSound2"
+                     inherits="UIDropDownMenuTemplate"
+                     id="11">
+                <Size>
+                  <AbsDimension x="220" />
+                </Size>
+                <Anchors>
+                  <Anchor point="TOPLEFT"
+                          relativeTo="PowaDropDownSound"
+                          relativePoint="BOTTOMLEFT">
+                    <Offset>
+                      <AbsDimension x="0"
+                                    y="-10" />
+                    </Offset>
+                  </Anchor>
+                </Anchors>
+
+                <Layers>
+                  <Layer level="BACKGROUND">
+                    <FontString name="$parentLabel"
+                                inherits="GameFontNormalSmall">
+                      <Anchors>
+                        <Anchor point="BOTTOMLEFT"
+                                relativePoint="TOPLEFT">
+                          <Offset>
+                            <AbsDimension x="15"
+                                          y="0" />
+                          </Offset>
+                        </Anchor>
+                      </Anchors>
+                    </FontString>
+                  </Layer>
+                </Layers>
+                <Scripts>
+                  <OnLoad>
+                  	getglobal("PowaDropDownSound2Label"):SetText(PowaAuras.Text.nomSound2); 
+                  	UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);
+                  </OnLoad>
+                  <OnShow>UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);</OnShow>
+                  <OnEnter>GameTooltip:SetOwner(self, "ANCHOR_RIGHT"); GameTooltip:SetText(PowaAuras.Text.aideSound2, nil, nil, nil, nil, 1);</OnEnter>
+                  <OnLeave>GameTooltip:Hide();</OnLeave>
+                </Scripts>
+              </Frame>
               <EditBox name="PowaBarCustomSound"
                        autoFocus="false"
                        inherits="InputBoxTemplate">
@@ -2656,7 +2699,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Size>
                 <Anchors>
                   <Anchor point="TOPLEFT"
-                          relativeTo="PowaDropDownSound"
+                          relativeTo="PowaDropDownSound2"
                           relativePoint="BOTTOMLEFT">
                     <Offset>
                       <AbsDimension x="20"

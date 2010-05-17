@@ -5,7 +5,7 @@
 cPowaAura = PowaClass(function(aura, id, base)
 	--PowaAuras:ShowText("cPowaAura constructor id=", id, " base=", base);
 	aura.off = false;
-	aura.Debug = false;
+	aura.Debug = nil;
 	
 	aura.bufftype = PowaAuras.BuffTypes.Buff;
 	aura.buffname = "";
@@ -720,7 +720,7 @@ function cPowaAura:CreateAuraString(keepLink)
 	local varpref = "";
 	for k, v in pairs (self) do
 		--- multi condition checks not supported for export.
-		if (k == "multiids" and not keepLink) then
+		if ((k == "multiids" and not keepLink) or k=="Debug") then
 			v = "";
 		end
 		local varType = type(v);
@@ -2152,10 +2152,12 @@ function cPowaSpellAlert:CheckUnit(unit)
 	if not spellname then
 		spellname, _, _, spellicon, _, endtime, _, interrupt = UnitChannelInfo(unit);
 	end
+
 	if not spellname then -- not casting
 		--PowaAuras:UnitTestDebug(unit, " is not casting");
 		return false;
 	end
+	--PowaAuras:ShowText(unit, " is casting ", spellname);
 	
 	if (self.mine and not interrupt) then
 		return false;
@@ -2193,7 +2195,7 @@ function cPowaSpellAlert:CheckIfShouldShow(giveReason)
 
 	if not self.target and not self.focus then
 		if (self.targetfriend) then
-			--PowaAuras:ShowText("Check player");
+			PowaAuras:ShowText("Check player");
 			if (self:CheckUnit("player")) then
 				if (not giveReason) then return true; end
 				return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonYouAreCasting, self.buffname);
@@ -2285,6 +2287,7 @@ function PowaAuras:AuraFactory(auraType, id, base)
 			base = {};
 		end
 		base.bufftype = auraType;
+		base.Debug = nil;
 		return class(id, base);
 	end
 	self:Message("AuraFactory unknown "..tostring(auraType).." id="..tostring(id)); --OK
