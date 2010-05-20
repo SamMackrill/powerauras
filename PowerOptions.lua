@@ -784,6 +784,7 @@ function PowaAuras:UpdateTimerOptions()
 		getglobal("PowaBuffTimerLeadingZerosButton"):SetChecked(timer.HideLeadingZeros);
 		getglobal("PowaBuffTimerUpdatePingButton"):SetChecked(timer.UpdatePing);
 		getglobal("PowaBuffTimerTransparentButton"):SetChecked(timer.Transparent);
+		getglobal("PowaBuffTimerActivationTime"):SetChecked(timer.ShowActivation);
 		
 		UIDropDownMenu_SetSelectedValue(PowaDropDownTimerTexture, timer.Texture);
 		
@@ -1416,11 +1417,11 @@ function PowaAuras:CustomSoundTextChanged()
 		self.Auras[auraId].customsound = getglobal("PowaBarCustomSound"):GetText();
 		if not (self.Auras[auraId].customsound == "") then
 			local pathToSound = "Interface\\AddOns\\PowerAuras\\Sounds\\"..self.Auras[auraId].customsound;
-			self:ShowText("Playing sound "..pathToSound);
+			--self:ShowText("Playing sound "..pathToSound);
 			local played = PlaySoundFile(pathToSound);
-			self:ShowText("played = "..played);
+			--self:ShowText("played = "..played);
 			if (not played) then
-				self:ShowText("Failed to play sound "..pathToSound);
+				self:DisplayText("Failed to play sound "..pathToSound);
 			end
 		end
 	end	
@@ -2630,6 +2631,21 @@ function PowaAuras:OptionTest()
 		self.SecondaryAuras[aura.id] = nil; -- Force recreate
 		self:DisplayAura(aura.id);
 	end
+end
+
+function PowaAuras:OptionTestAll()
+
+	PowaAuras:OptionHideAll(true);
+	--self:ShowText("Test All Active Frames now=", now);
+	for id, aura in pairs(self.Auras) do
+		if (not aura.off) then 
+			aura.Active = true;
+			aura:CreateFrames();
+			self.SecondaryAuras[aura.id] = nil; -- Force recreate
+			self:DisplayAura(aura.id);
+		end
+	end
+	
 end
 
 

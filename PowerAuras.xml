@@ -2964,7 +2964,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   </Anchor>
                 </Anchors>
                 <Scripts>
-                  <OnLoad>getglobal("PowaBuffTimerCentsButtonText"):SetText(PowaAuras.Text.nomCentiemes);</OnLoad>
+                  <OnLoad>getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomCentiemes);</OnLoad>
                   <OnClick>PowaAuras:TimerChecked(self, "cents");</OnClick>
                 </Scripts>
               </CheckButton>
@@ -2985,7 +2985,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   </Anchor>
                 </Anchors>
                 <Scripts>
-                  <OnLoad>getglobal("PowaBuffTimerDualButtonText"):SetText(PowaAuras.Text.nomDual);</OnLoad>
+                  <OnLoad>getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomDual);</OnLoad>
                   <OnClick>PowaAuras:TimerChecked(self, "dual");</OnClick>
                 </Scripts>
               </CheckButton>
@@ -3007,7 +3007,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   </Anchor>
                 </Anchors>
                 <Scripts>
-                  <OnLoad>getglobal("PowaBuffTimerLeadingZerosButtonText"):SetText(PowaAuras.Text.nomHideLeadingZeros);</OnLoad>
+                  <OnLoad>getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomHideLeadingZeros);</OnLoad>
                   <OnClick>PowaAuras:TimerChecked(self, "HideLeadingZeros");</OnClick>
                 </Scripts>
               </CheckButton>
@@ -3023,13 +3023,13 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                           relativeTo="PowaBuffTimerLeadingZerosButtonText"
                           relativePoint="RIGHT">
                     <Offset>
-                      <AbsDimension x="10"
+                      <AbsDimension x="40"
                                     y="0" />
                     </Offset>
                   </Anchor>
                 </Anchors>
                 <Scripts>
-                  <OnLoad>getglobal("PowaBuffTimerUpdatePingButtonText"):SetText(PowaAuras.Text.nomUpdatePing);</OnLoad>
+                  <OnLoad>getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomUpdatePing);</OnLoad>
                   <OnClick>PowaAuras:TimerChecked(self, "UpdatePing");</OnClick>
                 </Scripts>
               </CheckButton>
@@ -3051,12 +3051,32 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   </Anchor>
                 </Anchors>
                 <Scripts>
-                  <OnLoad>getglobal("PowaBuffTimerTransparentButtonText"):SetText(PowaAuras.Text.nomTransparent);</OnLoad>
+                  <OnLoad>getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomTransparent);</OnLoad>
                   <OnClick>PowaAuras:TimerTransparentChecked(self);</OnClick>
                 </Scripts>
               </CheckButton>
 			  
-			  
+              <CheckButton name="PowaBuffTimerActivationTime"
+                           inherits="PowaCheckTemplate">
+                <Size>
+                  <AbsDimension x="25"
+                                y="25" />
+                </Size>
+                <Anchors>
+                 <Anchor point="TOP"
+                          relativeTo="PowaBuffTimerUpdatePingButton"
+                          relativePoint="BOTTOM">
+                    <Offset>
+                      <AbsDimension x="0"
+                                    y="4" />
+                    </Offset>
+                  </Anchor>
+                </Anchors>
+                <Scripts>
+                  <OnLoad>getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomActivationTime);</OnLoad>
+                  <OnClick>PowaAuras:TimerChecked(self, "ShowActivation");</OnClick>
+                </Scripts>
+              </CheckButton>			  
              <Frame name="PowaDropDownTimerTexture"
                      inherits="UIDropDownMenuTemplate">
                 <Size>
@@ -3119,12 +3139,12 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 <Scripts>
                   <OnLoad>
                   	self.aide = PowaAuras.Text.aidePowaTimerInvertAuraSlider;
-					self:SetMinMaxValues(0,60);
+					self:SetMinMaxValues(0,300);
 					self:SetValue(0);
 					self:SetValueStep(0.25);
                   	getglobal("PowaTimerInvertAuraSliderText"):SetText(PowaAuras.Text.nomTimerInvertAura.." : 0"); 
                   	getglobal("PowaTimerInvertAuraSliderLow"):SetText("0");
-                  	getglobal("PowaTimerInvertAuraSliderHigh"):SetText("60");
+                  	getglobal("PowaTimerInvertAuraSliderHigh"):SetText("300");
                   </OnLoad>
                   <OnValueChanged>PowaAuras:PowaTimerInvertAuraSliderChanged(self);</OnValueChanged>
                 </Scripts>

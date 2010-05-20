@@ -221,7 +221,7 @@ end
 function cPowaAura:CreateFrames()
 	local frame = self:GetFrame();
 	if (frame==nil) then
-		PowaAuras:UnitTestInfo("New Frames", self.id);
+		--PowaAuras:UnitTestInfo("New Frames", self.id);
 		--PowaAuras:UnitTestDebug("Creating frame for aura ", self.id);
 		--- Frame --- 
 		frame = CreateFrame("Frame","Frame"..self.id, UIParent);
@@ -236,7 +236,7 @@ function cPowaAura:CreateFrames()
 	
 	local texture = self:GetTexture();
 	if (texture==nil) then
-		PowaAuras:UnitTestInfo("New Texture", self.id);
+		--PowaAuras:UnitTestInfo("New Texture", self.id);
 		if self.textaura then
 			--PowaAuras:UnitTestDebug("Creating new textstring texture for aura ", self.id);
 			texture = frame:CreateFontString(nil, "OVERLAY");
@@ -256,7 +256,7 @@ function cPowaAura:CreateFrames()
 		if self.textaura then
 			--PowaAuras:UnitTestDebug("textaura ", texture:GetObjectType());
 			if texture:GetObjectType() == "Texture" then
-				PowaAuras:UnitTestInfo("Converting to textstring texture for aura ", self.id);
+				--PowaAuras:UnitTestInfo("Converting to textstring texture for aura ", self.id);
 				--PowaAuras:UnitTestDebug("Converting to textstring texture for aura ", self.id);
 				texture:SetTexture(nil);
 				texture = frame:CreateFontString(nil, "OVERLAY");
@@ -269,7 +269,7 @@ function cPowaAura:CreateFrames()
 			end
 		else
 			if texture:GetObjectType() == "FontString" then
-				PowaAuras:UnitTestInfo("Converting from textstring texture for aura ", self.id);
+				--PowaAuras:UnitTestInfo("Converting from textstring texture for aura ", self.id);
 				texture:SetText("");
 				texture = frame:CreateTexture(nil,"BACKGROUND");
 				texture:SetBlendMode("ADD");	
@@ -284,7 +284,7 @@ end
 
 
 function cPowaAura:Hide(skipEndAnimationStop)	
-	PowaAuras:UnitTestInfo("Aura.Hide ", self.id);
+	--PowaAuras:UnitTestInfo("Aura.Hide ", self.id);
 	--PowaAuras:ShowText("cPowaAura:Hide ", self.id);
 	
 	if (self.BeginAnimation and self.BeginAnimation:IsPlaying()) then
@@ -522,7 +522,7 @@ function cPowaAura:ShouldShowForInstanceType(instanceType, giveReason)
 end
 
 function cPowaAura:ShouldShow(giveReason, reverse)
-	--PowaAuras:UnitTestInfo("ShouldShow", self.id);
+	----PowaAuras:UnitTestInfo("ShouldShow", self.id);
 	--PowaAuras:ShowText("ShouldShow", self.id);
 	if (PowaMisc.Disabled) then
 		return false,  PowaAuras.Text.nomReasonDisabled;
@@ -1155,7 +1155,7 @@ function cPowaBuffBase:CheckGroup(group, count, giveReason)
 end
 
 function cPowaBuffBase:CheckIfShouldShow(giveReason)
-	PowaAuras:UnitTestInfo("CheckIfShouldShow ",self.buffAuraType," aura");
+	--PowaAuras:UnitTestInfo("CheckIfShouldShow ",self.buffAuraType," aura");
 	--PowaAuras:Debug("Check " .. self.buffAuraType .. " aura");
 	local numpm = GetNumPartyMembers();
 	local numrm = GetNumRaidMembers();
@@ -2195,7 +2195,7 @@ function cPowaSpellAlert:CheckIfShouldShow(giveReason)
 
 	if not self.target and not self.focus then
 		if (self.targetfriend) then
-			PowaAuras:ShowText("Check player");
+			--PowaAuras:ShowText("Check player");
 			if (self:CheckUnit("player")) then
 				if (not giveReason) then return true; end
 				return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonYouAreCasting, self.buffname);
