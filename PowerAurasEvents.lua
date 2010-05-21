@@ -528,35 +528,12 @@ function PowaAuras:COMBAT_LOG_EVENT_UNFILTERED(...)
 			elseif ((event=="SPELL_PERIODIC_DAMAGE"
 				  or event=="SPELL_DAMAGE"
 				  or ((event=="SPELL_AURA_APPLIED" or event=="SPELL_AURA_APPLIED_DOSE") and spellType=="DEBUFF"))) then
-				local matchFound = false;
 				--self:ShowText("SPELL_PERIODIC_DAMAGE ", spellId, " ", spellName);
-				if (PowaMisc.UseGTFO) then
-					if (GTFO.SpellID[spellId]) then
-						--self:ShowText(spellId.." - ID Match Found "..spellName);
-						matchFound = ((not GTFO.SpellID[spellId].applicationOnly)
-										 or (GTFO.SpellID[spellId].applicationOnly
-										 and (event == "SPELL_AURA_APPLIED"
-										   or event == "SPELL_AURA_APPLIED_DOSE")));
-					elseif (GTFO.SpellName[spellName]) then
-						--self:ShowText(spellName.." - Name Match Found");
-						matchFound = ((not GTFO.SpellName[spellName].applicationOnly)
-										 or (GTFO.SpellName[spellName].applicationOnly
-										 and (event == "SPELL_AURA_APPLIED"
-										   or event == "SPELL_AURA_APPLIED_DOSE")));
-					elseif (PowaGTFOPvP[spellId]) then
-						--self:ShowText(spellName.." - PvP Match Found");
-						matchFound = true;
-					end
-				else
-					matchFound = true;
-				end
-				if (matchFound) then
 					self.AoeAuraAdded[spellId] = spellName;
 					if (not self.AoeAuraTexture[spellName]) then
 						self.AoeAuraTexture[spellId] = select(3, GetSpellInfo(spellId));
 					end
 					self.DoCheck.Aoe = true;
-				end
 			end
 		end
 	end

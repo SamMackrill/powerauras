@@ -2257,43 +2257,6 @@ function cPowaStance:CheckIfShouldShow(giveReason)
 	return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonNoStance, nStance, self.stance);
 end
 
--- Concrete Classes
-PowaAuras.AuraClasses = {
-	[PowaAuras.BuffTypes.Buff]=cPowaBuff,
-	[PowaAuras.BuffTypes.Debuff]=cPowaDebuff,
-	[PowaAuras.BuffTypes.TypeDebuff]=cPowaTypeDebuff,
-	[PowaAuras.BuffTypes.AoE]=cPowaAoE,
-	[PowaAuras.BuffTypes.Enchant]=cPowaEnchant,
-	[PowaAuras.BuffTypes.Combo]=cPowaCombo,
-	[PowaAuras.BuffTypes.ActionReady]=cPowaActionReady,
-	[PowaAuras.BuffTypes.Health]=cPowaHealth,
-	[PowaAuras.BuffTypes.Mana]=cPowaMana,
-	[PowaAuras.BuffTypes.EnergyRagePower]=cPowaEnergyRagePower,
-	[PowaAuras.BuffTypes.Aggro]=cPowaAggro,
-	[PowaAuras.BuffTypes.PvP]=cPowaPvP,
-	[PowaAuras.BuffTypes.SpellAlert]=cPowaSpellAlert,
-	[PowaAuras.BuffTypes.Stance]=cPowaStance,
-	[PowaAuras.BuffTypes.OwnSpell]=cPowaOwnSpell,
-	[PowaAuras.BuffTypes.StealableSpell]=cPowaStealableSpell,
-	[PowaAuras.BuffTypes.PurgeableSpell]=cPowaPurgeableSpell,
-}
-
--- Instance concrete class based on type
-function PowaAuras:AuraFactory(auraType, id, base)
-	local class = self.AuraClasses[auraType];
-	if (class) then
-		--self:Message("AuraFactory "..tostring(auraType).." id="..tostring(id).." class="..tostring(class));
-		if (base == nil) then
-			base = {};
-		end
-		base.bufftype = auraType;
-		base.Debug = nil;
-		return class(id, base);
-	end
-	self:Message("AuraFactory unknown "..tostring(auraType).." id="..tostring(id)); --OK
-	return nil;
-end
-
 
 cPowaGTFO = PowaClass(cPowaAura, {ValueName = "GTFO Alert"});
 cPowaGTFO.OptionText={typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.GTFO]};
@@ -2334,5 +2297,44 @@ function cPowaGTFO:CheckIfShouldShow(giveReason)
 	return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonGTFOAlerts);
 end
 
-PowaAuras.AuraClasses[PowaAuras.BuffTypes.GTFO] = cPowaGTFO;
+
+-- Concrete Classes
+PowaAuras.AuraClasses = {
+	[PowaAuras.BuffTypes.Buff]=cPowaBuff,
+	[PowaAuras.BuffTypes.Debuff]=cPowaDebuff,
+	[PowaAuras.BuffTypes.TypeDebuff]=cPowaTypeDebuff,
+	[PowaAuras.BuffTypes.AoE]=cPowaAoE,
+	[PowaAuras.BuffTypes.Enchant]=cPowaEnchant,
+	[PowaAuras.BuffTypes.Combo]=cPowaCombo,
+	[PowaAuras.BuffTypes.ActionReady]=cPowaActionReady,
+	[PowaAuras.BuffTypes.Health]=cPowaHealth,
+	[PowaAuras.BuffTypes.Mana]=cPowaMana,
+	[PowaAuras.BuffTypes.EnergyRagePower]=cPowaEnergyRagePower,
+	[PowaAuras.BuffTypes.Aggro]=cPowaAggro,
+	[PowaAuras.BuffTypes.PvP]=cPowaPvP,
+	[PowaAuras.BuffTypes.SpellAlert]=cPowaSpellAlert,
+	[PowaAuras.BuffTypes.Stance]=cPowaStance,
+	[PowaAuras.BuffTypes.OwnSpell]=cPowaOwnSpell,
+	[PowaAuras.BuffTypes.StealableSpell]=cPowaStealableSpell,
+	[PowaAuras.BuffTypes.PurgeableSpell]=cPowaPurgeableSpell,
+	[PowaAuras.BuffTypes.GTFO]=cPowaGTFO,
+}
+
+-- Instance concrete class based on type
+function PowaAuras:AuraFactory(auraType, id, base)
+	local class = self.AuraClasses[auraType];
+	if (class) then
+		--self:Message("AuraFactory "..tostring(auraType).." id="..tostring(id).." class="..tostring(class));
+		if (base == nil) then
+			base = {};
+		end
+		base.bufftype = auraType;
+		base.Debug = nil;
+		return class(id, base);
+	end
+	self:Message("AuraFactory unknown "..tostring(auraType).." id="..tostring(id)); --OK
+	return nil;
+end
+
+
 

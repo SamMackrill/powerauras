@@ -145,7 +145,7 @@ PowaMisc =
 		DefaultStacksTexture = "Original",
 		TimerRoundUp = true,
 		AnimationFps = 30,
-		UseGTFO = true,
+		UseGTFO = nil,
 	};
 
 PowaAuras.PowaMiscDefault = PowaAuras:CopyTable(PowaMisc);

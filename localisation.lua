@@ -377,9 +377,6 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideTimerRounding = "When checked will round the timer up",
 	nomTimerRounding = "Round Timer Up",
 
-	aideGTFOforAOE = "Use GTFO (Boss) spell matches for AoE detection",
-	nomGTFOforAOE = "Use GTFO for AoE",
-
 	nomIgnoreUseable = "Cooldown Only",
 	aideIgnoreUseable = "Ignores if spell is usable (just uses cooldown)",
 

@@ -12,7 +12,6 @@
 ## SavedVariablesPerCharacter: PowaSet,PowaMisc,PowaTimer,PowaPlayerListe,PowaState
 
 PowerAurasBase.lua
-GTFO_Spells.lua
 localisation.lua
 localisation_frFR.lua
 localisation_deDE.lua

@@ -302,33 +302,7 @@
 					</OnClick>
 				</Scripts>
 			</CheckButton>		
-
-			<CheckButton name="PowaGTFOButton" inherits="PowaCheckTemplate">
-				<Size>
-					<AbsDimension x="25" y="25"/>
-				</Size>
-				<Anchors>
-			  <Anchor point="LEFT"
-					  relativeTo="PowaTimerRoundingButtonText"
-					  relativePoint="RIGHT">
-				<Offset>
-				  <AbsDimension x="10"
-								y="0" />
-				</Offset>
-			  </Anchor>
-			</Anchors>				
-				<Scripts>
-					<OnLoad>
-            self.tooltipText = PowaAuras.Text.aideGTFOforAOE;
-            getglobal("PowaGTFOButtonText"):SetText(PowaAuras.Text.nomGTFOforAOE);
-          </OnLoad>
-					<OnClick>
-						PowaAuras:GTFOChecked(self);
-					</OnClick>
-				</Scripts>
-			</CheckButton>		
-
-			  
+				  
 		</Frames>
     </Frame>
 

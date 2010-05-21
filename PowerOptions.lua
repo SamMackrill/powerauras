@@ -22,7 +22,6 @@ function PowaAuras:UpdateMainOption()
 	PowaEnableButton:SetChecked(PowaMisc.Disabled~=true);
 	PowaDebugButton:SetChecked(PowaMisc.debug==true);
 	PowaTimerRoundingButton:SetChecked(PowaMisc.TimerRoundUp==true);
-	PowaGTFOButton:SetChecked(PowaMisc.UseGTFO==true);
 
 	-- affiche les icones
 	for i = 1, 24 do
@@ -2411,14 +2410,6 @@ function PowaAuras:TimerRoundingChecked()
 	end
 end
 
-function PowaAuras:GTFOChecked(control)
-	if (control:GetChecked()) then
-		PowaMisc.UseGTFO = true;
-	else
-		PowaMisc.UseGTFO = false;
-	end
-end
-
 function PowaAuras.OptionsOK()
 	PowaMisc.OnUpdateLimit = (100 - PowaOptionsUpdateSlider2:GetValue()) / 200;
 	local newFps = PowaOptionsAnimationsSlider2:GetValue();
@@ -2494,7 +2485,6 @@ function PowaOptionsCpuFrame2_OnShow(hide)
 	--PowaAuras:ShowText("Setting Enabled button to: ", PowaMisc.Disabled~=true);
 	PowaEnableButton:SetChecked(PowaMisc.Disabled ~= true);
 	PowaDebugButton:SetChecked(PowaMisc.debug);
-	PowaGTFOButton:SetChecked(PowaMisc.UseGTFO);
 	PowaTimerRoundingButton:SetChecked(PowaMisc.TimerRoundUp);
 	UIDropDownMenu_SetSelectedValue(PowaDropDownDefaultTimerTexture, PowaMisc.DefaultTimerTexture);
 	UIDropDownMenu_SetSelectedValue(PowaDropDownDefaultStacksTexture, PowaMisc.DefaultStacksTexture);
