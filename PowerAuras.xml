@@ -2968,27 +2968,6 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   <OnClick>PowaAuras:TimerChecked(self, "cents");</OnClick>
                 </Scripts>
               </CheckButton>
-              <CheckButton name="PowaBuffTimerDualButton"
-                           inherits="PowaCheckTemplate">
-                <Size>
-                  <AbsDimension x="25"
-                                y="25" />
-                </Size>
-                <Anchors>
-                  <Anchor point="TOP"
-                          relativeTo="PowaBuffTimerCentsButton"
-                          relativePoint="BOTTOM">
-                    <Offset>
-                      <AbsDimension x="0"
-                                    y="4" />
-                    </Offset>
-                  </Anchor>
-                </Anchors>
-                <Scripts>
-                  <OnLoad>getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomDual);</OnLoad>
-                  <OnClick>PowaAuras:TimerChecked(self, "dual");</OnClick>
-                </Scripts>
-              </CheckButton>
 			  
               <CheckButton name="PowaBuffTimerLeadingZerosButton"
                            inherits="PowaCheckTemplate">
@@ -2998,7 +2977,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Size>
                 <Anchors>
                   <Anchor point="TOP"
-                          relativeTo="PowaBuffTimerDualButton"
+                          relativeTo="PowaBuffTimerCentsButton"
                           relativePoint="BOTTOM">
                     <Offset>
                       <AbsDimension x="0"

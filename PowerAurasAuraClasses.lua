@@ -133,8 +133,8 @@ cPowaAura = PowaClass(function(aura, id, base)
 
 	if (base) then
 		local tempForSettings = PowaAuras.AuraClasses[base.bufftype];
-		--PowaAuras:ShowText("base.Timer ", base.Timer, " isSecondary ", base.isSecondary, " TimerAllowed ", tempForSettings:TimerAllowed());
-		if (base.Timer and not aura.isSecondary and tempForSettings:TimerAllowed()) then
+		--PowaAuras:ShowText("base.Timer ", base.Timer, " isSecondary ", base.isSecondary);
+		if (base.Timer and not aura.isSecondary) then
 			aura.Timer = cPowaTimer(aura, base.Timer);
 		end				
 		
@@ -142,14 +142,6 @@ cPowaAura = PowaClass(function(aura, id, base)
 			aura.Stacks = cPowaStacks(aura, base.Stacks);
 		end				
 	end
-	
-	--if (not aura.Timer and not aura.isSecondary and base and (base.CanHaveTimerOnInverse or base.CanHaveTimer)) then
-	--	aura.Timer = cPowaTimer(aura);
-	--end
-	
-	--if (not aura.Stacks and not aura.isSecondary and base and base.CanHaveStacks) then
-	--	aura.Stacks = cPowaStacks(aura);
-	--end
 	
 end);
 
@@ -164,7 +156,7 @@ function cPowaAura:StacksShowing()
 	return self.Stacks.Showing;
 end
 
-function cPowaAura:TimerAllowed()
+function cPowaAura:FullTimerAllowed()
 	--PowaAuras:ShowText("TimerAllowed CanHaveTimer", self.CanHaveTimer, " inverse ", self.inverse, " CanHaveTimerOnInverse ", self.CanHaveTimerOnInverse);
 	return (self.CanHaveTimer and not self.inverse) or (self.CanHaveTimerOnInverse and self.inverse);
 end
@@ -174,17 +166,6 @@ function cPowaAura:StacksAllowed()
 end
 
 function cPowaAura:HideShowTabs()
-	if (self:TimerAllowed()) then 
-		PowaEditorTab3:Show();
-		if (not self.Timer) then
-			self.Timer = cPowaTimer(self);
-		end
-	else
-		PowaEditorTab3:Hide();
-		if (self.Timer) then
-			self.Timer.enabled = false;
-		end
-	end
 	if (self:StacksAllowed()) then 
 		PowaEditorTab5:Show();
 		if (not self.Stacks) then
@@ -2260,11 +2241,9 @@ end
 
 cPowaGTFO = PowaClass(cPowaAura, {ValueName = "GTFO Alert"});
 cPowaGTFO.OptionText={typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.GTFO]};
-
 cPowaGTFO.CheckBoxes={};
 cPowaGTFO.TooltipOptions = {r=1.0, g=0.4, b=0.2, showGTFO=true};
 cPowaGTFO.ShowOptions={["PowaDropDownGTFO"]=1};
-cPowaGTFO.OptionText={typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.GTFO]};
 
 function cPowaGTFO:AddEffect()
 	if (self.GTFO == 0) then
@@ -2297,6 +2276,20 @@ function cPowaGTFO:CheckIfShouldShow(giveReason)
 	return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonGTFOAlerts);
 end
 
+cPowaStatic= PowaClass(cPowaAura, {ValueName = "Static"});
+cPowaStatic.OptionText={typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.Static]};
+
+cPowaStatic.CheckBoxes={};
+cPowaStatic.TooltipOptions = {r=0.4, g=0.4, b=0.4};
+
+function cPowaStatic:AddEffect()
+	table.insert(PowaAuras.AurasByType.Static, self.id);	
+end
+
+function cPowaStatic:CheckIfShouldShow(giveReason)
+	return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonStatic);
+end
+
 
 -- Concrete Classes
 PowaAuras.AuraClasses = {
@@ -2318,6 +2311,7 @@ PowaAuras.AuraClasses = {
 	[PowaAuras.BuffTypes.StealableSpell]=cPowaStealableSpell,
 	[PowaAuras.BuffTypes.PurgeableSpell]=cPowaPurgeableSpell,
 	[PowaAuras.BuffTypes.GTFO]=cPowaGTFO,
+	[PowaAuras.BuffTypes.Static]=cPowaStatic,
 }
 
 -- Instance concrete class based on type

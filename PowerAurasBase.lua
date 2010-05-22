@@ -229,6 +229,7 @@ PowaAuras = {
 		OwnSpell=15,
 		StealableSpell=16,
 		PurgeableSpell=17,
+		Static=18,
 		GTFO=50
 	};
 
@@ -337,6 +338,8 @@ PowaAuras = {
 		PurgeableFocusSpells = {},
 
 		OwnSpells = {},
+		
+		Static = {},
 		
 		GTFOHigh = {},
 		GTFOLow = {},

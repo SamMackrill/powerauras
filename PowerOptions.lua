@@ -758,7 +758,13 @@ end
 
 function PowaAuras:UpdateTimerOptions()
 
-	local timer = self.Auras[self.CurrentAuraId].Timer;
+	local aura = self.Auras[self.CurrentAuraId];
+	
+	if (not aura.Timer) then
+		aura.Timer = cPowaTimer(self);
+	end
+	local timer = aura.Timer;
+	
 	if (timer) then
 		
 		getglobal("PowaShowTimerButton"):SetChecked(timer.enabled);
@@ -779,16 +785,28 @@ function PowaAuras:UpdateTimerOptions()
 		getglobal("PowaTimerCoordXSlider"):SetMinMaxValues(timer.x-100,timer.x+100);
 
 		getglobal("PowaBuffTimerCentsButton"):SetChecked(timer.cents);
-		getglobal("PowaBuffTimerDualButton"):SetChecked(timer.dual);
 		getglobal("PowaBuffTimerLeadingZerosButton"):SetChecked(timer.HideLeadingZeros);
-		getglobal("PowaBuffTimerUpdatePingButton"):SetChecked(timer.UpdatePing);
+		
 		getglobal("PowaBuffTimerTransparentButton"):SetChecked(timer.Transparent);
+		
+		if (aura:FullTimerAllowed()) then 
+			-- show full timer options
+			PowaBuffTimerUpdatePingButton:SetChecked(timer.UpdatePing);
+			self:EnableCheckBox("PowaBuffTimerUpdatePingButton");
+			PowaBuffTimerActivationTime:Enable();
+		else
+			-- Show cut-down timer options
+			PowaBuffTimerUpdatePingButton:SetChecked(false);
+			self:DisableCheckBox("PowaBuffTimerUpdatePingButton");
+			timer.ShowActivation = true;
+			PowaBuffTimerActivationTime:Disable();
+		end
 		getglobal("PowaBuffTimerActivationTime"):SetChecked(timer.ShowActivation);
+
 		
 		UIDropDownMenu_SetSelectedValue(PowaDropDownTimerTexture, timer.Texture);
 		
 		PowaTimerInvertAuraSlider:SetValue(timer.InvertAuraBelow);
-
 
 	end
 end

@@ -130,7 +130,6 @@ cPowaTimer = PowaClass(function(timer, aura, base)
 	timer.a = 1.0;
 	timer.h = 1.0;
 	timer.cents = true;
-	timer.dual = false;
 	timer.Transparent = false;
 	timer.HideLeadingZeros = false;
 	timer.UpdatePing = false;

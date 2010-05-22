@@ -86,6 +86,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		[PowaAuras.BuffTypes.OwnSpell] = "My Spell Cooldown", 
 		[PowaAuras.BuffTypes.StealableSpell] = "Stealable Spell",
 		[PowaAuras.BuffTypes.PurgeableSpell] = "Purgeable Spell",
+		[PowaAuras.BuffTypes.Static] = "Static Aura",
 		[PowaAuras.BuffTypes.GTFO] = "GTFO Alert",
 	},
 
@@ -507,6 +508,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	
 	nomReasonStance = "Current Stance $1, matches $2", -- $1=Current Stance, $2=Match Stance
 	nomReasonNoStance = "Current Stance $1, does not match $2", -- $1=Current Stance, $2=Match Stance
+	
+	nomReasonStatic = "Static Aura",
 
 	nomReasonGTFOAlerts = "GTFO alerts are never always on.",
 
