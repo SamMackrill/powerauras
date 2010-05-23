@@ -11,6 +11,8 @@ PowaAuras.Anim[7] = "Electric";
 PowaAuras.Anim[8] = "Shrinking";
 PowaAuras.Anim[9] = "Flame";
 PowaAuras.Anim[10] = "Orbit";
+PowaAuras.Anim[11] = "Spin Clockwise";
+PowaAuras.Anim[12] = "Spin Anti-Clockwise";
 
 PowaAuras.BeginAnimDisplay[0] = "[None]";
 PowaAuras.BeginAnimDisplay[1] = "Zoom In";

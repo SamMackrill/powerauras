@@ -1426,7 +1426,7 @@ function PowaAuras:SetupStaticPopups()
 		end,
 		EditBoxOnEnterPressed = function(self)
 			local parent = self:GetParent();
-			PowaAuras:CreateNewAuraFromImport(PowaAuras.ImportAuraId, parent.wideEditBox:GetText());
+			PowaAuras:CreateNewAuraSetFromImport(parent.wideEditBox:GetText());
 			parent:Hide();
 		end,
 		EditBoxOnEscapePressed = function(self)

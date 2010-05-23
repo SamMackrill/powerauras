@@ -227,8 +227,12 @@ function PowaAuras:MainListClick(owner)
 		self:EditorClose();
 	end
 
-	-- en cas d'edition de renommage :)
-	getglobal("PowaOptionsRenameEditBox"):SetText( getglobal("PowaOptionsList"..self.MainOptionPage):GetText() );
+	-- set text for rename
+	--local pageButton = "PowaOptionsList"..self.MainOptionPage;
+	--self:ShowText(pageButton, getglobal(pageButton));
+	local currentText = getglobal("PowaOptionsList"..self.MainOptionPage):GetText();
+	if (currentText==nil) then currentText = "" end;
+	getglobal("PowaOptionsRenameEditBox"):SetText( currentText );
 
 	self:UpdateMainOption();
 end
@@ -259,7 +263,9 @@ function PowaAuras:OptionRename()
 	getglobal("PowaOptionsRename"):Hide();
 	getglobal("PowaOptionsRenameEditBox"):Show();
 
-	getglobal("PowaOptionsRenameEditBox"):SetText( getglobal("PowaOptionsList"..self.MainOptionPage):GetText() );
+	local currentText = getglobal("PowaOptionsList"..self.MainOptionPage):GetText();
+	if (currentText==nil) then currentText = "" end;
+	getglobal("PowaOptionsRenameEditBox"):SetText( currentText );
 end
 
 function PowaAuras:OptionRenameEdited()
@@ -412,8 +418,8 @@ end
 
 function PowaAuras:ImportAura(aurastring, auraId, offset)
 
-	--self:Message("Import ", auraId);
-	--self:Message(aurastring);
+	self:Message("Import ", auraId);
+	self:Message(aurastring);
 
 	local aura = cPowaAura(auraId);
 
@@ -426,7 +432,6 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 	local hasStacksSettings = false;
 
 	for i, val in ipairs(temptbl) do
-		--self:Message(i, "  ", val);
 		local key, var = strsplit(":", val);
 		local varpref = string.sub(var,1,2);
 		var = string.sub(var,3);
@@ -439,30 +444,40 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 		else
 		    importAuraSettings[key] = self:ExtractImportValue(varpref, var);
 		end
+		if (i=="combat") then
+			self:Message(i, "  ", val, "  ", varpref, "  ", var, " : ", importAuraSettings[key]);
+		end
  	end
 	
 	for k, v in pairs(aura) do
 		local varType = type(v);
-		--self:Message(k, "  ", v, "  ", varType, "  ", importAuraSettings[k]);
 		if (k=="combat") then
-			if (importAuraSettings.combat==0) then
-				aura.combat = 0;
-			elseif (importAuraSettings.combat==1) then
-				aura.combat = true;
-			elseif (importAuraSettings.combat==2) then
-				aura.combat = false;
-			end
-		elseif (k=="isResting") then
-			if (importAuraSettings.ignoreResting) then
-				aura.isResting = true;
+			self:Message(k, "  ", v, "  ", varType, "  ", importAuraSettings[k]);
+			if (importAuraSettings[k]==0) then
+				aura[k] = 0;
+			elseif (importAuraSettings[k]==1) then
+				aura[k] = true;
+			elseif (importAuraSettings[k]==2) then
+				aura[k] = false;
 			else
-				aura.isResting = 0;
+				aura[k] = importAuraSettings[k];
+			end
+			self:Message("-- ",k, "  ", aura.combat);
+		elseif (k=="isResting") then
+			if (importAuraSettings.ignoreResting==true) then
+				aura[k] = true;
+			elseif (importAuraSettings.ignoreResting==true) then
+				aura[k] = 0;
+			else
+				aura[k] = importAuraSettings[k];
 			end
 		elseif (k=="inRaid") then
 			if (importAuraSettings.isinraid==true) then
-				aura.inRaid = true;
+				aura[k] = true;
+			elseif (importAuraSettings.isinraid==false) then
+				aura[k] = 0;
 			else
-				aura.inRaid = 0;
+				aura[k] = importAuraSettings[k];
 			end	
 		elseif (k=="multiids" and offset) then
 			local newMultiids = "";
@@ -510,7 +525,7 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 			aura.Stacks[k] = importStacksSettings["stacks."..k];
 		end
 	end
-	--self:Message("new Aura created from import");
+	self:Message("new Aura created from import");
 	--aura:Display();
 	return self:AuraFactory(aura.bufftype, auraId, aura);
 end
@@ -527,6 +542,10 @@ function PowaAuras:CreateNewAuraFromImport(auraId, importString, updateLink)
 end
 
 function PowaAuras:CreateNewAuraSetFromImport(importString)
+	if importString==nil or importString == "" then
+		return;
+	end
+
 	local min = ((self.MainOptionPage-1)*24) + 1;
 	local max = min + 23;
 
@@ -1705,7 +1724,7 @@ function PowaAuras.DropDownMenu_Initialize(owner)
 	end
 	
 	if (owner:GetName() == "PowaDropDownAnim1Button" or owner:GetName() == "PowaDropDownAnim1") then
-		for i = 1, 10 do
+		for i = 1, #(PowaAuras.Anim) do
 			info = {}; 
 			info.text = PowaAuras.Anim[i]; 
 			info.func = PowaAuras.DropDownMenu_OnClickAnim1;
@@ -1713,7 +1732,7 @@ function PowaAuras.DropDownMenu_Initialize(owner)
 		end
 		UIDropDownMenu_SetSelectedValue(PowaDropDownAnim1, PowaAuras.Anim[aura.anim1]);
 	elseif (owner:GetName() == "PowaDropDownAnim2Button" or owner:GetName() == "PowaDropDownAnim2") then
-		for i = 0, 10 do
+		for i = 0, #(PowaAuras.Anim) do
 			info = {}; 
 			info.text = PowaAuras.Anim[i]; 
 			info.func = PowaAuras.DropDownMenu_OnClickAnim2;

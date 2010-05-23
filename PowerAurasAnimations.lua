@@ -221,6 +221,10 @@ function PowaAuras:AddMainAnimation(aura, frame)
 			x = newx;
 			y = newy;
 		end
+	elseif (aura.anim1==PowaAuras.AnimationTypes.SpinClockwise) then
+		self:AddRotation(animationGroup, -360, math.max(duration * 2, 0.25), PowaMisc.AnimationFps, 1);
+	elseif (aura.anim1==PowaAuras.AnimationTypes.SpinAntiClockwise) then
+		self:AddRotation(animationGroup, 360, math.max(duration * 2, 0.25), PowaMisc.AnimationFps, 1);
 	end
 	
 	return animationGroup;

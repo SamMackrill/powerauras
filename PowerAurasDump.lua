@@ -71,7 +71,7 @@ function PowaAuras:Dump_Safe()
 	PowaState["NumShapeshiftForms"] =  numforms;
 	if (numforms>0) then
 		PowaState["ShapeshiftFormInfo"] = {};
-		for iForm=1, numforms do
+		for i=iForm, NUM_SHAPESHIFT_SLOTS do
 			local icon, name, active, castable = GetShapeshiftFormInfo(iForm);
 			PowaState["ShapeshiftFormInfo"][iForm] = {Icon=icon, Name=name, Active=active, Castable=castable};
 		end

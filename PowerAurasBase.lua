@@ -274,6 +274,8 @@ PowaAuras = {
 		Shrinking=8,
 		Flame=9,
 		Orbit=10,
+		SpinClockwise=11,
+		SpinAntiClockwise=12,		
 	};
 	
 		
