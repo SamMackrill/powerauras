@@ -418,8 +418,8 @@ end
 
 function PowaAuras:ImportAura(aurastring, auraId, offset)
 
-	self:Message("Import ", auraId);
-	self:Message(aurastring);
+	--self:Message("Import ", auraId);
+	--self:Message(aurastring);
 
 	local aura = cPowaAura(auraId);
 
@@ -435,24 +435,20 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 		local key, var = strsplit(":", val);
 		local varpref = string.sub(var,1,2);
 		var = string.sub(var,3);
-		if (string.sub(key,1,6)  == "timer.") then
+		if (string.sub(key,1,6) == "timer.") then
 			importTimerSettings[key] = self:ExtractImportValue(varpref, var);
 			hasTimerSettings = true;
-		elseif (string.sub(key,1,7)  == "stacks.") then
+		elseif (string.sub(key,1,7) == "stacks.") then
 			importStacksSettings[key] = self:ExtractImportValue(varpref, var);
 			hasStacksSettings = true;
 		else
 		    importAuraSettings[key] = self:ExtractImportValue(varpref, var);
-		end
-		if (i=="combat") then
-			self:Message(i, "  ", val, "  ", varpref, "  ", var, " : ", importAuraSettings[key]);
 		end
  	end
 	
 	for k, v in pairs(aura) do
 		local varType = type(v);
 		if (k=="combat") then
-			self:Message(k, "  ", v, "  ", varType, "  ", importAuraSettings[k]);
 			if (importAuraSettings[k]==0) then
 				aura[k] = 0;
 			elseif (importAuraSettings[k]==1) then
@@ -462,7 +458,6 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 			else
 				aura[k] = importAuraSettings[k];
 			end
-			self:Message("-- ",k, "  ", aura.combat);
 		elseif (k=="isResting") then
 			if (importAuraSettings.ignoreResting==true) then
 				aura[k] = true;
@@ -525,7 +520,7 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 			aura.Stacks[k] = importStacksSettings["stacks."..k];
 		end
 	end
-	self:Message("new Aura created from import");
+	--self:Message("new Aura created from import");
 	--aura:Display();
 	return self:AuraFactory(aura.bufftype, auraId, aura);
 end
@@ -557,12 +552,11 @@ function PowaAuras:CreateNewAuraSetFromImport(importString)
 
 	local auraId = min;
 	local offset;
+	local setName;
 	for k, v in string.gmatch(importString, "([^\n=@]+)=([^@]+)@") do
 		--self:ShowText("k=", k, " len=", string.len(v));
 		if (k=="Set") then
-			if (not string.find(v, PowaAuras.Text.ListePlayer)) then
-				PowaPlayerListe[self.MainOptionPage] = v;
-			end
+			setName = v;		
 		else
 			if (not offset) then
 				local _, _, oldAuraId = string.find(k, "(%d+)");
@@ -571,14 +565,32 @@ function PowaAuras:CreateNewAuraSetFromImport(importString)
 				--self:ShowText(" offset=", offset);
 			end
 			self.Auras[auraId] = self:ImportAura(v, auraId, offset);
+			if (auraId > 120) then
+				PowaGlobalSet[auraId] = self.Auras[auraId];
+			end				
 			auraId = auraId + 1;
 		end
     end
-	getglobal("PowaOptionsList"..self.MainOptionPage):SetText( PowaPlayerListe[self.MainOptionPage] );
-	if (self.MainOptionPage > 5) then
-		PowaGlobalListe[self.MainOptionPage-5] = getglobal("PowaOptionsRenameEditBox"):GetText();
-	else
-		PowaPlayerListe[self.MainOptionPage] = getglobal("PowaOptionsRenameEditBox"):GetText();
+	if (setName~=nil) then
+		local nameFound = false;
+		for i = 1, 5 do
+			if (PowaPlayerListe[i] == setName) then
+				nameFound = true;
+			end
+		end
+		for i = 1, 10 do
+			if (PowaGlobalListe[i] == setName) then
+				nameFound = true;
+			end
+		end
+		if (not nameFound) then
+			getglobal("PowaOptionsList"..self.MainOptionPage):SetText( setName );
+			if (self.MainOptionPage > 5) then
+				PowaGlobalListe[self.MainOptionPage-5] = setName;
+			else
+				PowaPlayerListe[self.MainOptionPage] = setName;
+			end
+		end
 	end
 
 	self:UpdateMainOption();

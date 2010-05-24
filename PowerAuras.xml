@@ -568,7 +568,8 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
             </Anchors>
             <Scripts>
               <OnLoad>
-              	self.aide = PowaAuras.Text.aideTexture; self:SetValueStep(1);
+              	self.aide = PowaAuras.Text.aideTexture;
+				self:SetValueStep(1);
               </OnLoad>
              <OnValueChanged>PowaAuras:BarAuraTextureSliderChanged();</OnValueChanged>
             </Scripts>

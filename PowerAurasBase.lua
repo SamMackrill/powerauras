@@ -2,7 +2,6 @@ PowaAuras = {
 	Version = GetAddOnMetadata("PowerAuras", "Version");
 	
 	CurrentAuraId = 1;
-	MaxAuras = 360;
 	NextCheck = 0.2; 
 	Tstep = 0.09765625;
 	NextDebugCheck = 0;
