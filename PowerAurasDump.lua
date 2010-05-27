@@ -71,7 +71,7 @@ function PowaAuras:Dump_Safe()
 	PowaState["NumShapeshiftForms"] =  numforms;
 	if (numforms>0) then
 		PowaState["ShapeshiftFormInfo"] = {};
-		for i=iForm, NUM_SHAPESHIFT_SLOTS do
+		for iForm=1, NUM_SHAPESHIFT_SLOTS do
 			local icon, name, active, castable = GetShapeshiftFormInfo(iForm);
 			PowaState["ShapeshiftFormInfo"][iForm] = {Icon=icon, Name=name, Active=active, Castable=castable};
 		end
@@ -157,21 +157,27 @@ function PowaAuras:Dump_Safe()
 		i = i + 1;
 	end
 	-- Debuff Spells
-	PowaState.SpellInfo = {}
+	PowaState.DebuffSpellInfo = {}
+	--self:DisplayText("Debuff Spells");	
 	for k in pairs(PowaAuras.DebuffTypeSpellIds) do
+		--self:DisplayText(k, " ", v);	
 		local name, rank, icon, cost, isFunnel, powerType, castTime, minRange, maxRange = GetSpellInfo(k);
-		if spellName then
-			PowaState.SpellInfo[k] = {Name=name, Rank=rank, Icon=icon, Cost=cost, IsFunnel=isFunnel, PowerType=powerType, CastTime=castTime, MinRange=minRange, MaxRange=maxRange};
+		if name then
+			PowaState.DebuffSpellInfo[k] = {Name=name, Rank=rank, Icon=icon, Cost=cost, IsFunnel=isFunnel, PowerType=powerType, CastTime=castTime, MinRange=minRange, MaxRange=maxRange};
 		end
 	end
 	-- SpellIds used in auras
-	for _, aura in pairs(PowaAuras.Auras) do
+	--self:DisplayText("Aura Spells");	
+	PowaState.SpellInfo = {}
+	for id, aura in pairs(PowaAuras.Auras) do
 		for pword in string.gmatch(aura.buffname, "[^/]+") do
-			local _, _,spellId = string.find(aura.buffname, "%[(%d+)%]")
+			local _, _,spellId = string.find(pword, "%[(%d+)%]")
 			if (spellId) then		
+				--self:DisplayText(id, " ", aura);	
+				--self:DisplayText(" ", pword, "  ", spellId);	
 				local name, rank, icon, cost, isFunnel, powerType, castTime, minRange, maxRange = GetSpellInfo(tonumber(spellId));
-				if spellName then
-					PowaState.SpellInfo[k] = {Name=name, Rank=rank, Icon=icon, Cost=cost, IsFunnel=isFunnel, PowerType=powerType, CastTime=castTime, MinRange=minRange, MaxRange=maxRange};
+				if name then
+					PowaState.SpellInfo[tonumber(spellId)] = {Name=name, Rank=rank, Icon=icon, Cost=cost, IsFunnel=isFunnel, PowerType=powerType, CastTime=castTime, MinRange=minRange, MaxRange=maxRange};
 				end
 			end
 		end

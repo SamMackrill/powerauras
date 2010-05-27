@@ -512,9 +512,11 @@ function PowaAuras:MemorizeActions(actionIndex)
 			--	self:ShowText("| "..text.." |");
 			--end	
 			if (text~=nil) then
-				for _, v in pairs(self.AurasByType.Actions) do
+				for k, v in pairs(self.AurasByType.Actions) do
 					local actionAura = self.Auras[v];
-					if (not actionAura.slot) then
+					if (actionAura==nil) then
+						self.AurasByType.Actions[k] = nil; -- aura deleted
+					elseif (not actionAura.slot) then
 						--self:ShowText("actionAura",v,actionAura.buffname, actionAura.ignoremaj);
 						if (self:MatchString(name, actionAura.buffname, actionAura.ignoremaj)
 						 or self:MatchString(text, actionAura.buffname, actionAura.ignoremaj)) then

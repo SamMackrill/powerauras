@@ -618,7 +618,13 @@ function PowaAuras:OptionExportEffect()
 end
 
 function PowaAuras:CreateAuraSetString()
-	local setString = "Set=" .. PowaPlayerListe[self.MainOptionPage].."@";
+	local setString = "Set=";
+	if (self.MainOptionPage > 5) then
+		setString = setString .. PowaGlobalListe[self.MainOptionPage-5];
+	else
+		setString = setString .. PowaPlayerListe[self.MainOptionPage];
+	end
+	setString = setString .. "@";
 	local min = ((self.MainOptionPage-1)*24) + 1;
 	local max = min + 23;
 

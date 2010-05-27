@@ -598,7 +598,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               </Layer>
             </Layers>
             <Scripts>
-              <OnLoad>self:SetMaxLetters(2)</OnLoad>
+              <OnLoad>self:SetMaxLetters(3)</OnLoad>
               <OnEnterPressed>self:ClearFocus(); PowaAuras:TextAuraTextureChanged();</OnEnterPressed>
             </Scripts>
           </EditBox>
