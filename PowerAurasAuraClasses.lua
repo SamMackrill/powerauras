@@ -27,6 +27,8 @@ cPowaAura = PowaClass(function(aura, id, base)
 	-- Sound Settings
 	aura.sound = 0;
 	aura.customsound = "";	
+	aura.soundend = 0;
+	aura.customsoundend = "";	
 	
 	-- Animation Settings
 	aura.begin = 0;
@@ -325,12 +327,14 @@ function cPowaAura:SetIcon(texturePath)
 	if (texturePath==nil or string.len(texturePath)==0 or not self:IconIsRequired()) then
 		return;
 	end
-	getglobal("PowaIconTexture"):SetTexture(texturePath);
-	self.icon = getglobal("PowaIconTexture"):GetTexture();
-	if (self.owntex and not self.IsSecondary) then
-		if (self:GetTexture() ~= aura.icon)
-			self:SetTexture(aura.icon);
+	if (texturePath ~= self.icon) then
+		if (self.owntex) then
+			local texture = self:GetTexture();
+			if (texture) then
+				texture:SetTexture(texturePath);
+			end
 		end
+		self.icon = texturePath;
 	end
 	self.IconRequired = nil;
 end
@@ -2100,9 +2104,9 @@ function cPowaSpellAlert:CheckUnit(unit)
 		--PowaAuras:UnitTestDebug(unit, " exists=", UnitExists(unit), " dead=", UnitIsDeadOrGhost(unit), " hostile=", UnitCanAttack(unit, "player"));
 		return false;
 	end
-	local spellname, _, _, spellicon, _, endtime, _, _, interrupt = UnitCastingInfo(unit);
+	local spellname, _, _, spellicon, _, endtime, _, _, notInterruptible  = UnitCastingInfo(unit);
 	if not spellname then
-		spellname, _, _, spellicon, _, endtime, _, interrupt = UnitChannelInfo(unit);
+		spellname, _, _, spellicon, _, endtime, _, notInterruptible  = UnitChannelInfo(unit);
 	end
 
 	if not spellname then -- not casting
@@ -2110,8 +2114,9 @@ function cPowaSpellAlert:CheckUnit(unit)
 		return false;
 	end
 	--PowaAuras:ShowText(unit, " is casting ", spellname);
+	--PowaAuras:ShowText(" mine= ", self.mine, " notInterruptible =", notInterruptible );
 	
-	if (self.mine and not interrupt) then
+	if (self.mine and notInterruptible) then
 		PowaAuras:ShowText(unit, " is casting ", spellname, " but can't interrupt it");
 		return false;
 	end
@@ -2246,7 +2251,7 @@ function cPowaGTFO:CheckIfShouldShow(giveReason)
 end
 
 -- Totem Aura--
-cPowaTotems = PowaClass(cPowaAura, {AuraType = "Totems", CanHaveInvertTime=true});
+cPowaTotems = PowaClass(cPowaAura, {AuraType = "Totems", CanHaveTimer=true});
 cPowaTotems.OptionText={buffNameTooltip=PowaAuras.Text.aideTotems, 
                             exactTooltip=PowaAuras.Text.aideExact, 
                             typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.Totems], 
@@ -2263,23 +2268,23 @@ function cPowaTotems:AddEffect()
 end
 
 function cPowaTotems:CheckIfShouldShow(giveReason)
-	PowaAuras:Message("Totem Aura CheckIfShouldShow");
+	--PowaAuras:Message("Totem Aura CheckIfShouldShow");
 	if (#PowaAuras.TotemSlots==0) then
 		PowaAuras.TotemSlots = {[1]=true,[2]=true,[3]=true,[4]=true};
 	end
 	for pword in string.gmatch(self.buffname, "[^/]+") do
-		PowaAuras:Message("  pword=",pword);
+		--PowaAuras:Message("  pword=",pword);
 		local pwordNumber = tonumber(pword);
 		if (pwordNumber) then
-			PowaAuras:Message("  SlotCheck=",pwordNumber);
+			--PowaAuras:Message("  SlotCheck=",pwordNumber);
 			if (PowaAuras.TotemSlots[pwordNumber]) then
-				PowaAuras:Message("  SlotCheck Requested=",pwordNumber);
+				--PowaAuras:Message("  SlotCheck Requested=",pwordNumber);
 				local haveTotem, totemName, startTime, duration = GetTotemInfo(pwordNumber);
-				PowaAuras:Message("  haveTotem=",haveTotem, " totemName=",totemName, " startTime=",startTime, " duration=",duration);
+				--PowaAuras:Message("  haveTotem=",haveTotem, " totemName=",totemName, " startTime=",startTime, " duration=",duration);
 				if (totemName~=nil and totemName~="") then
 
 					if (self:IconIsRequired()) then
-						PowaAuras:Message("  Incon Required");
+						--PowaAuras:Message("  Icon Required");
 						local _, _, spellIcon = GetSpellInfo(totemName);
 						self:SetIcon(spellIcon);
 					end

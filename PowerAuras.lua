@@ -893,7 +893,9 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 	end
 
 	if (self.ModTest == false) then
-		if (aura.sound > 0) then
+		if (aura.customsound ~= "") then
+			PlaySoundFile("Interface\\AddOns\\PowerAuras\\Sounds\\"..aura.customsound);
+		elseif (aura.sound > 0) then
 			if (PowaAuras.Sound[aura.sound]~=nil and string.len(PowaAuras.Sound[aura.sound])>0) then
 				if (string.find(PowaAuras.Sound[aura.sound], "%.")) then
 					PlaySoundFile("Interface\\AddOns\\PowerAuras\\Sounds\\"..PowaAuras.Sound[aura.sound]);
@@ -901,8 +903,6 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 					PlaySound(PowaAuras.Sound[aura.sound]);
 				end
 			end
-		elseif (aura.customsound ~= "") then
-			PlaySoundFile("Interface\\AddOns\\PowerAuras\\Sounds\\"..aura.customsound);
 		end	
 	end
 	
@@ -1219,6 +1219,22 @@ function PowaAuras:UpdateAura(aura, elapsed)
 		
 		if (aura.HideRequest) then
 
+		
+			if (self.ModTest == false) then
+				if (aura.customsoundend ~= "") then
+					PlaySoundFile("Interface\\AddOns\\PowerAuras\\Sounds\\"..aura.customsoundend);
+				elseif (aura.soundend > 0) then
+					if (PowaAuras.Sound[aura.soundend]~=nil and string.len(PowaAuras.Sound[aura.soundend])>0) then
+						if (string.find(PowaAuras.Sound[aura.soundend], "%.")) then
+							PlaySoundFile("Interface\\AddOns\\PowerAuras\\Sounds\\"..PowaAuras.Sound[aura.soundend]);
+						else
+							PlaySound(PowaAuras.Sound[aura.soundend]);
+						end
+					end
+				end	
+			end
+		
+		
 			if (aura.Stacks) then
 				aura.Stacks:Hide();
 			end

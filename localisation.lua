@@ -128,12 +128,21 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideEffectTooltip2 = "(Ctrl-click to give reason for activation)",
 
 	-- editor
+	nomSoundStarting = "Starting Sound:",
 	nomSound = "Sound to play",
 	nomSound2 = "More sounds to play",
 	aideSound = "Plays a sound at the beginning.",
 	aideSound2 = "Plays a sound at the beginning.",
 	nomCustomSound = "OR soundfile:",
 	aideCustomSound = "Enter a soundfile that is in the Sounds folder, BEFORE you started the game. mp3 and wav are supported. example: 'cookie.mp3' ;)",
+
+	nomSoundEnding = "Ending Sound:",
+	nomSoundEnd = "Sound to play",
+	nomSound2End = "More sounds to play",
+	aideSoundEnd = "Plays a sound at the end.",
+	aideSound2End = "Plays a sound at the end.",
+	nomCustomSoundEnd = "OR soundfile:",
+	aideCustomSoundEnd = "Enter a soundfile that is in the Sounds folder, BEFORE you started the game. mp3 and wav are supported. example: 'cookie.mp3' ;)",
 
 	nomTexture = "Texture",
 	aideTexture = "The texture to be shown. You can easily replace textures by changing the files Aura#.tga in the Addon's directory.",

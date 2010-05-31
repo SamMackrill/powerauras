@@ -284,7 +284,6 @@ function PowaAuras:TriageIcones(nPage)
 	  local min = ((nPage-1)*24) + 1;
 	  local max = min + 23;
 
-	  local a = min;
 
 	-- masque les effets de la page
 	for i = min, max do
@@ -295,17 +294,16 @@ function PowaAuras:TriageIcones(nPage)
 		self.SecondaryAuras[i] = nil;
 	end
 
+	local a = min;
 	for i = min, max do
 		if (self.Auras[i]) then
-			self.Auras[a] = self.Auras[i];
-			self.Auras[a].id = a;
-			if (self.Auras[a].Timer) then
-				self.Auras[a].Timer.id = a;
+			if (i~=a) then
+				self:ReindexAura(i, a);
 			end
 			if (i>a) then
 				self.Auras[i] = nil;
 			end
-			a = a+1;
+			a = a + 1;
 		end
 	end
 	-- gere les liens vers les effets globaux
@@ -314,6 +312,35 @@ function PowaAuras:TriageIcones(nPage)
 			PowaGlobalSet[i] = self.Auras[i]; 
 		else
 			PowaGlobalSet[i] = nil;
+		end
+	end
+end
+
+function PowaAuras:ReindexAura(oldId, newId)
+	self.Auras[newId] = self.Auras[oldId];
+	self.Auras[newId].id = newId;
+	if (self.Auras[newId].Timer) then
+		self.Auras[newId].Timer.id = newId;
+	end
+	if (self.Auras[newId].Stacks) then
+		self.Auras[newId].Stacks.id = newId;
+	end
+	for i = 1, 360 do
+		local aura = self.Auras[i];
+		if (aura) then 
+			if (aura.multiids and aura.multiids~="") then
+				local newMultiids = "";
+				local sep = "";
+				for multiId in string.gmatch(aura.multiids, "[^/]+") do
+					if (tonumber(multiId)==oldId) then
+						newMultiids = newMultiids .. sep .. tostring(newId);
+					else
+						newMultiids = newMultiids .. sep .. multiId;
+					end
+					sep = "/";
+				end
+				aura.multiids = newMultiids;
+			end
 		end
 	end
 end
@@ -332,11 +359,10 @@ function PowaAuras:DeleteAura(aura)
 	if (aura.id > 120) then
 		PowaGlobalSet[aura.id] = nil;
 	end
+
 end
 
 function PowaAuras:OptionDeleteEffect(auraId)
-	local min = ((self.MainOptionPage-1)*24) + 1;
-	local max = min + 23;
 
 	if (not IsControlKeyDown()) then return; end
 
@@ -352,7 +378,7 @@ function PowaAuras:OptionDeleteEffect(auraId)
 		getglobal("PowaBarConfigFrame"):Hide();
 	end
 
-	self:TriageIcones(self.MainOptionPage); -- trie les trous
+	self:TriageIcones(self.MainOptionPage);
 	self:UpdateMainOption();
 end
 
@@ -993,9 +1019,18 @@ function PowaAuras:InitPage()
 		getglobal("PowaDropDownSoundText"):SetText(self.Sound[0]);
 		getglobal("PowaDropDownSound2Text"):SetText(self.Sound[aura.sound]);
 	end
+	
+	if (aura.soundend<30) then
+		getglobal("PowaDropDownSoundEndText"):SetText(self.Sound[aura.soundend]);
+		getglobal("PowaDropDownSound2EndText"):SetText(self.Sound[30]);
+	else
+		getglobal("PowaDropDownSoundEndText"):SetText(self.Sound[0]);
+		getglobal("PowaDropDownSound2EndText"):SetText(self.Sound[aura.soundend]);
+	end
 	getglobal("PowaDropDownStanceText"):SetText(self.PowaStance[aura.stance]);
 	getglobal("PowaDropDownGTFOText"):SetText(self.PowaGTFO[aura.GTFO]);
 	getglobal("PowaBarCustomSound").aide = self.Text.aideCustomSound;
+	getglobal("PowaBarCustomSoundEnd").aide = self.Text.aideCustomSoundEnd;
 	getglobal("PowaBarBuffStacks").aide = self.Text.aideStacks;
 	-- ---------------
 	getglobal("PowaOwntexButton"):SetChecked(aura.owntex);
@@ -1102,6 +1137,8 @@ function PowaAuras:InitPage()
 	getglobal("PowaBarTooltipCheck"):SetText(aura.tooltipCheck);
 
 	getglobal("PowaBarCustomSound"):SetText(aura.customsound);
+	PowaAuras:CustomSoundTextChanged(true);	
+	
 	getglobal("PowaBarUnitn"):SetText(aura.unitn);
 	
 	getglobal("PowaBarBuffStacks"):SetText(aura:StacksText());	
@@ -1469,20 +1506,54 @@ function PowaAuras:AurasTextChanged()
 	self:RedisplayAura(self.CurrentAuraId);
 end
 
-function PowaAuras:CustomSoundTextChanged()
+function PowaAuras:CustomSoundTextChanged(force)
 	local oldCustomSound = getglobal("PowaBarCustomSound"):GetText();
-	local auraId = self.CurrentAuraId;
+	local aura = self.Auras[self.CurrentAuraId];
 
-	if (oldCustomSound ~= self.Auras[auraId].customsound) then -- custom sound changed
-		self.Auras[auraId].customsound = getglobal("PowaBarCustomSound"):GetText();
-		if not (self.Auras[auraId].customsound == "") then
-			local pathToSound = "Interface\\AddOns\\PowerAuras\\Sounds\\"..self.Auras[auraId].customsound;
+	if (oldCustomSound ~= aura.customsound or force) then -- custom sound changed
+		aura.customsound = oldCustomSound;
+		if (aura.customsound ~= "") then
+			aura.sound = 0;
+			PowaDropDownSoundText:SetText(self.Sound[0]);
+			PowaDropDownSound2Text:SetText(self.Sound[30]);
+			PowaDropDownSoundButton:Disable();
+			PowaDropDownSound2Button:Disable();
+			local pathToSound = "Interface\\AddOns\\PowerAuras\\Sounds\\"..aura.customsound;
 			--self:ShowText("Playing sound "..pathToSound);
 			local played = PlaySoundFile(pathToSound);
 			--self:ShowText("played = "..played);
 			if (not played) then
 				self:DisplayText("Failed to play sound "..pathToSound);
 			end
+		else
+			PowaDropDownSoundButton:Enable();
+			PowaDropDownSound2Button:Enable();
+		end
+	end	
+end
+
+function PowaAuras:CustomSoundEndTextChanged(force)
+	local oldCustomSound = getglobal("PowaBarCustomSoundEnd"):GetText();
+	local aura = self.Auras[self.CurrentAuraId];
+
+	if (oldCustomSound ~= aura.customsoundend or force) then -- custom sound changed
+		aura.customsoundend = oldCustomSound;
+		if (aura.customsoundend ~= "") then
+			aura.soundend = 0;
+			PowaDropDownSoundEndText:SetText(self.Sound[0]);
+			PowaDropDownSound2EndText:SetText(self.Sound[30]);
+			PowaDropDownSoundEndButton:Disable();
+			PowaDropDownSound2EndButton:Disable();
+			local pathToSound = "Interface\\AddOns\\PowerAuras\\Sounds\\"..aura.customsoundend;
+			--self:ShowText("Playing sound "..pathToSound);
+			local played = PlaySoundFile(pathToSound);
+			--self:ShowText("played = "..played);
+			if (not played) then
+				self:DisplayText("Failed to play sound "..pathToSound);
+			end
+		else
+			PowaDropDownSoundEndButton:Enable();
+			PowaDropDownSound2EndButton:Enable();
 		end
 	end	
 end
@@ -1807,11 +1878,41 @@ function PowaAuras.DropDownMenu_Initialize(owner)
 			end
 		end
 		if (aura.sound>=30) then
-			UIDropDownMenu_SetSelectedValue(PowaDropDownSound, PowaAuras.Sound[aura.sound]);	
+			UIDropDownMenu_SetSelectedValue(PowaDropDownSound2, PowaAuras.Sound[aura.sound]);	
 		else
-			UIDropDownMenu_SetSelectedValue(PowaDropDownSound, PowaAuras.Sound[30]);	
+			UIDropDownMenu_SetSelectedValue(PowaDropDownSound2, PowaAuras.Sound[30]);	
 		end
 		UIDropDownMenu_SetWidth(PowaDropDownSound2, 220, 1);
+	elseif (owner:GetName() == "PowaDropDownSoundEndButton" or owner:GetName() == "PowaDropDownSoundEnd") then
+		info = {func = PowaAuras.DropDownMenu_OnClickSoundEnd, owner = owner};
+		for i = 0, 29 do
+			if (PowaAuras.Sound[i]) then
+				info.text = PowaAuras.Sound[i]; 
+				info.value = i;
+				UIDropDownMenu_AddButton(info);
+			end
+		end
+		if (aura.soundend<30) then
+			UIDropDownMenu_SetSelectedValue(PowaDropDownSoundEnd, PowaAuras.Sound[aura.soundend]);	
+		else
+			UIDropDownMenu_SetSelectedValue(PowaDropDownSoundEnd, PowaAuras.Sound[0]);	
+		end
+		UIDropDownMenu_SetWidth(PowaDropDownSoundEnd, 220, 1);
+	elseif (owner:GetName() == "PowaDropDownSound2EndButton" or owner:GetName() == "PowaDropDownSound2End") then
+		info = {func = PowaAuras.DropDownMenu_OnClickSoundEnd, owner = owner};
+		for i = 30, #PowaAuras.Sound do
+			if (PowaAuras.Sound[i]) then
+				info.text = PowaAuras.Sound[i]; 
+				info.value = i;
+				UIDropDownMenu_AddButton(info);
+			end
+		end
+		if (aura.soundend>=30) then
+			UIDropDownMenu_SetSelectedValue(PowaDropDownSound2End, PowaAuras.Sound[aura.soundend]);	
+		else
+			UIDropDownMenu_SetSelectedValue(PowaDropDownSound2End, PowaAuras.Sound[30]);	
+		end
+		UIDropDownMenu_SetWidth(PowaDropDownSound2End, 220, 1);
 	elseif (owner:GetName() == "PowaDropDownAnimBeginButton" or owner:GetName() == "PowaDropDownAnimBegin") then
 		info = {func = PowaAuras.DropDownMenu_OnClickBegin, owner = owner}; 
 		for i = 0, #PowaAuras.BeginAnimDisplay do
@@ -1923,6 +2024,7 @@ function PowaAuras.DropDownMenu_OnClickSound()
 	UIDropDownMenu_SetSelectedValue(this.owner, this.value);
 
 	if (this.value==0 or this.value==30 or not PowaAuras.Sound[this.value]) then
+		PowaAuras.Auras[PowaAuras.CurrentAuraId].sound = 0;
 		return; 
 	end
 
@@ -1932,6 +2034,31 @@ function PowaAuras.DropDownMenu_OnClickSound()
 		PowaDropDownSound2Text:SetText(PowaAuras.Sound[30]);
 	else
 		PowaDropDownSoundText:SetText(PowaAuras.Sound[0]);
+	end
+
+	if (string.find(PowaAuras.Sound[this.value], "%.")) then
+		PlaySoundFile("Interface\\AddOns\\PowerAuras\\Sounds\\"..PowaAuras.Sound[this.value]);
+	else
+		PlaySound(PowaAuras.Sound[this.value]);
+	end
+end
+
+
+function PowaAuras.DropDownMenu_OnClickSoundEnd()
+	--PowaAuras:ShowText("DropDownMenu_OnClickSoundEnd n=", this.owner:GetName()," v=",this.value, " t=", PowaAuras.Sound[this.value]);
+	UIDropDownMenu_SetSelectedValue(this.owner, this.value);
+
+	if (this.value==0 or this.value==30 or not PowaAuras.Sound[this.value]) then
+		PowaAuras.Auras[PowaAuras.CurrentAuraId].soundend = 0;
+		return; 
+	end
+
+	PowaAuras.Auras[PowaAuras.CurrentAuraId].soundend = this.value;
+	
+	if (this.value<30) then
+		PowaDropDownSound2EndText:SetText(PowaAuras.Sound[30]);
+	else
+		PowaDropDownSoundEndText:SetText(PowaAuras.Sound[0]);
 	end
 
 	if (string.find(PowaAuras.Sound[this.value], "%.")) then

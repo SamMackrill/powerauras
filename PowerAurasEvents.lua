@@ -333,7 +333,7 @@ end
 function PowaAuras:PLAYER_TOTEM_UPDATE(...)
 	local slot = ...;
 	if (self.ModTest == false) then
-		self:ShowText("PLAYER_TOTEM_UPDATE slot=", slot);
+		--self:ShowText("PLAYER_TOTEM_UPDATE slot=", slot);
 		self.TotemSlots[slot] = true;
 		self.DoCheck.Totems = true;
 	end
