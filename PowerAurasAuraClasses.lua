@@ -145,7 +145,6 @@ cPowaAura = PowaClass(function(aura, id, base)
 	
 end);
 
-
 function cPowaAura:TimerShowing()
 	if (not self.Timer) then return false; end
 	return self.Timer.Showing;
@@ -316,6 +315,24 @@ end
 
 function cPowaAura:ShowTimerDurationSlider()
 	return false;
+end
+
+function cPowaAura:IconIsRequired()
+	return (self.owntex == true or self.icon == "" or self.IconRequired);
+end
+
+function cPowaAura:SetIcon(texturePath)
+	if (texturePath==nil or string.len(texturePath)==0 or not self:IconIsRequired()) then
+		return;
+	end
+	getglobal("PowaIconTexture"):SetTexture(texturePath);
+	self.icon = getglobal("PowaIconTexture"):GetTexture();
+	if (self.owntex and not self.IsSecondary) then
+		if (self:GetTexture() ~= aura.icon)
+			self:SetTexture(aura.icon);
+		end
+	end
+	self.IconRequired = nil;
 end
 
 function cPowaAura:CheckState(giveReason)
@@ -1005,19 +1022,8 @@ function cPowaBuffBase:CompareAura(target, z, auraName, auraTexture, textToCheck
 			--PowaAuras:UnitTestDebug("Tooltip no match found!");
 			return false;
 		end
-		local tempicon;
-		if (self.owntex == true) then
-			getglobal("PowaIconTexture"):SetTexture(auraTexture);
-			tempicon = getglobal("PowaIconTexture"):GetTexture();
-			if (self.icon ~= tempicon) then
-				self.icon = tempicon;
-			end
-		end
-		if (self.icon == "") then
-			getglobal("PowaIconTexture"):SetTexture(auraTexture);
-			self.icon = getglobal("PowaIconTexture"):GetTexture();
-		end
-		 return true;	
+		self:SetIcon(auraTexture);
+		return true;	
 	end
 	return false;
 end
@@ -1298,11 +1304,8 @@ function cPowaTypeDebuff:IsPresent(target, z)
 	or self:MatchText(typeDebuffCatName, self.buffname) then
 		if (self.Stacks) then
 			self.Stacks:SetStackCount(count);
-		end			
-		if (self.icon == "") then
-			getglobal("PowaIconTexture"):SetTexture(texture);
-			self.icon = getglobal("PowaIconTexture"):GetTexture();
 		end
+		self:SetIcon(texture);
 		if (self.Timer) then
 			self.Timer:SetDurationInfo(expirationTime);
 			self:CheckTimerInvert();
@@ -1528,10 +1531,7 @@ function cPowaAoE:CheckIfShouldShow(giveReason)
 		--PowaAuras:ShowText("checking AoE "..spell.." ("..spellId..")");
 		if self:MatchSpell(spell, PowaAuras.AoeAuraTexture[spellId], self.buffname) then
 			--PowaAuras:ShowText("Found! Showing=", self.Showing, " Active=", self.Active);
-			if (self.icon == "") then
-				PowaIconTexture:SetTexture("Interface\\icons\\Spell_fire_meteorstorm");
-				self.icon = PowaIconTexture:GetTexture();
-			end
+			self:SetIcon("Interface\\icons\\Spell_fire_meteorstorm");
 			if (self.duration>0) then
 				self.TimeToHide = GetTime() + self.duration;
 			end
@@ -1589,10 +1589,9 @@ end
 function cPowaEnchant:SetForEnchant(loc, slot, charges, index)
 	--PowaAuras:Debug(loc,":found ",self.buffname," in the tooltip!");
 	if (self:CheckStacks(charges)) then
-		if (self.icon == "") then
-			getglobal("PowaIconTexture"):SetTexture( GetInventoryItemTexture("player", slot) );
-			self.icon = getglobal("PowaIconTexture"):GetTexture();
-		end 
+		if (self:IconIsRequired()) then
+			self:SetIcon(GetInventoryItemTexture("player", slot));
+		end
 		if (self.Stacks) then
 			self.Stacks:SetStackCount(count);
 		end			
@@ -1685,10 +1684,7 @@ function cPowaCombo:CheckIfShouldShow(giveReason)
 	local nCombo = tostring(GetComboPoints("player"));
 	--PowaAuras:UnitTestDebug("nCombo=", nCombo, " self.buffname=", self.buffname);
 	if self:MatchText(nCombo, self.buffname) then
-		if (self.icon == "") then
-			getglobal("PowaIconTexture"):SetTexture("Interface\\icons\\inv_sword_48");
-			self.icon = getglobal("PowaIconTexture"):GetTexture();
-		end
+		self:SetIcon("Interface\\icons\\inv_sword_48");
 		if (self.Stacks) then
 			self.Stacks:SetStackCount(nCombo);
 		end			
@@ -1822,14 +1818,11 @@ function cPowaOwnSpell:CheckIfShouldShow(giveReason)
 	--PowaAuras:ShowText("Spell=", self.buffname);
 	for pword in string.gmatch(self.buffname, "[^/]+") do
 		local spellName, spellIcon = self:GetSpellNameFromMatch(pword);
-		if (self.icon == "") then
+		if (self:IconIsRequired()) then
 			if (not spellIcon) then
 				_, _, spellIcon = GetSpellInfo(spellName);
 			end
-			if (spellIcon) then
-				getglobal("PowaIconTexture"):SetTexture(spellIcon);
-				self.icon = getglobal("PowaIconTexture"):GetTexture();
-			end
+			self:SetIcon(spellIcon);
 		end
 		local cdstart, cdduration, enabled = GetSpellCooldown(spellName);
 		--PowaAuras:UnitTestDebug("cdstart= ",cdstart," duration= ",cdduration," enabled= ",enabled);
@@ -1946,10 +1939,7 @@ function cPowaAuraStats:CheckUnit(unit)
 		thresholdvalidate = (curpercenthp < self.threshold)
 	end	
 	if (thresholdvalidate) then
-		if (self.icon == "") then
-			getglobal("PowaIconTexture"):SetTexture("Interface\\icons\\Spell_fire_meteorstorm");
-			self.icon = getglobal("PowaIconTexture"):GetTexture();
-		end
+		self:SetIcon("Interface\\icons\\Spell_fire_meteorstorm");
 		return true;
 	end
 	return false;
@@ -2029,10 +2019,7 @@ function cPowaAggro:CheckUnit(unit)
 	return (UnitThreatSituation(unit) or -1)> 0;
 end	
 function cPowaAggro:CheckIfShouldShow(giveReason)
-	if (self.icon == "") then
-		getglobal("PowaIconTexture"):SetTexture("Interface\\icons\\Ability_Warrior_EndlessRage");
-		self.icon = getglobal("PowaIconTexture"):GetTexture();
-	end
+	self:SetIcon("Interface\\icons\\Ability_Warrior_EndlessRage");
 	--PowaAuras:Debug("Check Aggro status");
 	return self:CheckAllUnits(giveReason);
 end
@@ -2108,27 +2095,11 @@ function cPowaSpellAlert:AddEffect()
 	end
 end
 
-function cPowaSpellAlert:CreateSpellFrame(endtime, spellicon)
-	local tempicon;
-	if (self.owntex == true) then
-		getglobal("PowaIconTexture"):SetTexture(spellicon);
-		tempicon = getglobal("PowaIconTexture"):GetTexture();
-		if (self.icon ~= tempicon) then
-			self.icon = tempicon;
-		end
-	end
-	if (self.icon == "") then
-	  getglobal("PowaIconTexture"):SetTexture(spellicon);
-	  self.icon = getglobal("PowaIconTexture"):GetTexture();
-	end
-end
-
 function cPowaSpellAlert:CheckUnit(unit)
 	if not UnitExists(unit) or UnitIsDead(unit) or (unit~="player" and not UnitCanAttack(unit, "player")) then
 		--PowaAuras:UnitTestDebug(unit, " exists=", UnitExists(unit), " dead=", UnitIsDeadOrGhost(unit), " hostile=", UnitCanAttack(unit, "player"));
 		return false;
 	end
-	local spellname, _, _, spellicon, _, endtime 
 	local spellname, _, _, spellicon, _, endtime, _, _, interrupt = UnitCastingInfo(unit);
 	if not spellname then
 		spellname, _, _, spellicon, _, endtime, _, interrupt = UnitChannelInfo(unit);
@@ -2141,6 +2112,7 @@ function cPowaSpellAlert:CheckUnit(unit)
 	--PowaAuras:ShowText(unit, " is casting ", spellname);
 	
 	if (self.mine and not interrupt) then
+		PowaAuras:ShowText(unit, " is casting ", spellname, " but can't interrupt it");
 		return false;
 	end
 		
@@ -2152,7 +2124,7 @@ function cPowaSpellAlert:CheckUnit(unit)
 				return false;
 			end
 		end
-		self:CreateSpellFrame(endtime, spellicon);
+		self:SetIcon(spellicon);
 		return true;
 	end
 	
@@ -2226,10 +2198,8 @@ function cPowaStance:CheckIfShouldShow(giveReason)
 	--PowaAuras:UnitTestDebug("nStance = "..tostring(nStance).." / self.stance = "..tostring(self.stance));
 	--PowaAuras:ShowText("nStance = "..tostring(nStance).." / self.stance = "..tostring(self.stance));
 	if (nStance == self.stance)then
-		if (self.icon == "" and nStance>0) then
-			local icon = GetShapeshiftFormInfo(nStance);
-			getglobal("PowaIconTexture"):SetTexture(icon);
-			self.icon = getglobal("PowaIconTexture"):GetTexture();
+		if (nStance>0 and self:IconIsRequired()) then
+			self:SetIcon(GetShapeshiftFormInfo(nStance));
 		end
 		if (not giveReason) then return true; end
 		return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonStance, nStance, self.stance);
@@ -2257,16 +2227,15 @@ function cPowaGTFO:AddEffect()
 end
 
 function cPowaGTFO:CheckIfShouldShow(giveReason)
-	if (self.icon == "") then
-		if (self.GTFO == 1) then
-		    getglobal("PowaIconTexture"):SetTexture("Interface\\icons\\spell_fire_bluefire");
-		elseif (self.GTFO == 2) then
-		    getglobal("PowaIconTexture"):SetTexture("Interface\\icons\\ability_suffocate");
-		else
-		    getglobal("PowaIconTexture"):SetTexture("Interface\\icons\\spell_fire_fire");
-		end
-		self.icon = getglobal("PowaIconTexture"):GetTexture();
+
+	if (self.GTFO == 1) then
+		self:SetIcon("Interface\\icons\\spell_fire_bluefire");
+	elseif (self.GTFO == 2) then
+		self:SetIcon("Interface\\icons\\ability_suffocate");
+	else
+		self:SetIcon("Interface\\icons\\spell_fire_fire");
 	end
+
 	--PowaAuras:Debug("GTFO alert");
 	if (GTFO) then
 	    if (GTFO.ShowAlert) then
@@ -2276,6 +2245,83 @@ function cPowaGTFO:CheckIfShouldShow(giveReason)
 	return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonGTFOAlerts);
 end
 
+-- Totem Aura--
+cPowaTotems = PowaClass(cPowaAura, {AuraType = "Totems", CanHaveInvertTime=true});
+cPowaTotems.OptionText={buffNameTooltip=PowaAuras.Text.aideTotems, 
+                            exactTooltip=PowaAuras.Text.aideExact, 
+                            typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.Totems], 
+							};
+cPowaTotems.CheckBoxes={["PowaInverseButton"]=1,
+						["PowaIngoreCaseButton"]=1,
+						["PowaOwntexButton"]=1,
+						};
+
+cPowaTotems.TooltipOptions = {r=1.0, g=1.0, b=0.4, showBuffName=true};
+
+function cPowaTotems:AddEffect()
+	table.insert(PowaAuras.AurasByType.Totems, self.id);	
+end
+
+function cPowaTotems:CheckIfShouldShow(giveReason)
+	PowaAuras:Message("Totem Aura CheckIfShouldShow");
+	if (#PowaAuras.TotemSlots==0) then
+		PowaAuras.TotemSlots = {[1]=true,[2]=true,[3]=true,[4]=true};
+	end
+	for pword in string.gmatch(self.buffname, "[^/]+") do
+		PowaAuras:Message("  pword=",pword);
+		local pwordNumber = tonumber(pword);
+		if (pwordNumber) then
+			PowaAuras:Message("  SlotCheck=",pwordNumber);
+			if (PowaAuras.TotemSlots[pwordNumber]) then
+				PowaAuras:Message("  SlotCheck Requested=",pwordNumber);
+				local haveTotem, totemName, startTime, duration = GetTotemInfo(pwordNumber);
+				PowaAuras:Message("  haveTotem=",haveTotem, " totemName=",totemName, " startTime=",startTime, " duration=",duration);
+				if (totemName~=nil and totemName~="") then
+
+					if (self:IconIsRequired()) then
+						PowaAuras:Message("  Incon Required");
+						local _, _, spellIcon = GetSpellInfo(totemName);
+						self:SetIcon(spellIcon);
+					end
+					if (self.Timer) then
+						self.Timer:SetDurationInfo(startTime + duration);
+						self:CheckTimerInvert();
+						if (self.ForceTimeInvert) then
+							if (not giveReason) then return false; end
+							return false, getglobal("BINDING_NAME_MULTICASTACTIONBUTTON"..pwordNumber).." found (slot "..pwordNumber..") - "..totemName;
+						end
+					end
+					if (not giveReason) then return true; end
+					return true, getglobal("BINDING_NAME_MULTICASTACTIONBUTTON"..pwordNumber).." found (slot "..pwordNumber..") - "..totemName;		
+				end
+			end
+		else
+			for slot in pairs (PowaAuras.TotemSlots) do
+				local haveTotem, totemName, startTime, duration = GetTotemInfo(slot);
+				if (self:MatchText(totemName, pword)) then
+					if (self:IconIsRequired()) then
+						local _, _, spellIcon = GetSpellInfo(totemName);
+						self:SetIcon(spellIcon);
+					end
+					if (self.Timer) then
+						self.Timer:SetDurationInfo(startTime + duration);
+						self:CheckTimerInvert();
+						if (self.ForceTimeInvert) then
+							if (not giveReason) then return false; end
+							return false, totemName.." found";
+						end
+					end
+					if (not giveReason) then return true; end
+					return true, totemName.." found";				
+				end				
+			end
+		end
+	end
+	if (not giveReason) then return false; end
+	return true, "Totem not found";				
+end
+
+-- Static Aura--
 cPowaStatic= PowaClass(cPowaAura, {ValueName = "Static"});
 cPowaStatic.OptionText={typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.Static]};
 
@@ -2311,6 +2357,7 @@ PowaAuras.AuraClasses = {
 	[PowaAuras.BuffTypes.StealableSpell]=cPowaStealableSpell,
 	[PowaAuras.BuffTypes.PurgeableSpell]=cPowaPurgeableSpell,
 	[PowaAuras.BuffTypes.GTFO]=cPowaGTFO,
+	[PowaAuras.BuffTypes.Totems]=cPowaTotems,
 	[PowaAuras.BuffTypes.Static]=cPowaStatic,
 }
 

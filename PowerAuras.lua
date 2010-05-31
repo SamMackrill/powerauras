@@ -737,6 +737,7 @@ function PowaAuras:NewCheckBuffs()
 	end
 	
 	self.ChangedUnits.Buffs = {};
+	self.TotemSlots = {};
 
 end
 
@@ -893,10 +894,12 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 
 	if (self.ModTest == false) then
 		if (aura.sound > 0) then
-			if (string.find(PowaAuras.Sound[aura.sound], "%.")) then
-				PlaySoundFile("Interface\\AddOns\\PowerAuras\\Sounds\\"..PowaAuras.Sound[aura.sound]);
-			else
-				PlaySound(PowaAuras.Sound[aura.sound]);
+			if (PowaAuras.Sound[aura.sound]~=nil and string.len(PowaAuras.Sound[aura.sound])>0) then
+				if (string.find(PowaAuras.Sound[aura.sound], "%.")) then
+					PlaySoundFile("Interface\\AddOns\\PowerAuras\\Sounds\\"..PowaAuras.Sound[aura.sound]);
+				else
+					PlaySound(PowaAuras.Sound[aura.sound]);
+				end
 			end
 		elseif (aura.customsound ~= "") then
 			PlaySoundFile("Interface\\AddOns\\PowerAuras\\Sounds\\"..aura.customsound);
@@ -906,7 +909,11 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 	local frame, texture = aura:CreateFrames();
 
 	if (aura.owntex == true) then
-		texture:SetTexture(aura.icon);
+		if (aura.icon=="") then
+			texture:SetTexture("Interface\\Icons\\Inv_Misc_QuestionMark");
+		else
+			texture:SetTexture(aura.icon);
+		end
 	elseif (aura.wowtex == true) then
 		texture:SetTexture(self.WowTextures[aura.texture]);
 	elseif (aura.customtex == true) then
@@ -1468,5 +1475,6 @@ function PowaAuras:SetupStaticPopups()
 		exclusive = 1,
 		whileDead = 1,
 		hideOnEscape = 1
-	};	
+	};
+
 end

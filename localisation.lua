@@ -89,6 +89,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		[PowaAuras.BuffTypes.StealableSpell] = "Stealable Spell",
 		[PowaAuras.BuffTypes.PurgeableSpell] = "Purgeable Spell",
 		[PowaAuras.BuffTypes.Static] = "Static Aura",
+		[PowaAuras.BuffTypes.Totems] = "Totems",
 		[PowaAuras.BuffTypes.GTFO] = "GTFO Alert",
 	},
 
@@ -164,6 +165,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 
 	aideStealableSpells = "Enter here the Stealable Spell Name that will trigger the Aura (use * for any stealable spell).", 
 	aidePurgeableSpells = "Enter here the Purgeable Spell Name that will trigger the Aura (use * for any purgeable spell).", 
+
+	aideTotems = "Enter here the Totem Name that will trigger the Aura or a number 1=Fire, 2=Earth, 3=Water, 4=Air (use * for any totem).", 
 
 	aideUnitn = "Enter here the name of the unit, which must activate/deactivate the effect. You can enter only names, if they are in your raid or group.",
 	aideUnitn2 = "Only for raid/group.",

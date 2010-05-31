@@ -356,8 +356,11 @@ function PowaAuras:OptionDeleteEffect(auraId)
 	self:UpdateMainOption();
 end
 
-function PowaAuras:GetNextFreeSlot()
-	local min = ((self.MainOptionPage-1)*24) + 1;
+function PowaAuras:GetNextFreeSlot(page)
+	if (page==nil) then
+		page = self.MainOptionPage;
+	end
+	local min = ((page-1)*24) + 1;
 	local max = min + 23;
 
 	for i = min, max do
@@ -698,38 +701,37 @@ function PowaAuras:OptionMoveEffect(isMove)
 end
 
 function PowaAuras:BeginMoveEffect(Pfrom, ToPage)
-  local min = ((ToPage-1)*24) + 1;
-  local max = min + 23;
-	-- trouve un endroit dispo dans la page choisie
-	for i = min, max do
-		if (self.Auras[i] == nil or self.Auras[i].buffname == "" or self.Auras[i].buffname == " ") then -- on a trouve une place dispo
-			self:DoCopyEffect(Pfrom, i, true); -- copie et efface effet actuel
-			self:TriageIcones(self.CurrentAuraPage); -- trie les pages pour eviter les trous
-			self.CurrentAuraId = ((self.MainOptionPage-1)*24)+1; -- nouvelle aura en cours sera le premier effet de cette page
-			-- gere les visus
-			self:DisableMoveMode();
-			-- met a jour la page
-			self:UpdateMainOption();
-			return;
-		end
+
+	local i = self:GetNextFreeSlot(ToPage);
+	if (not i) then
+		self:Message("All aura slots filled"); --OK
+		return;
 	end
+
+	self:DoCopyEffect(Pfrom, i, true); -- copie et efface effet actuel
+	self:TriageIcones(self.CurrentAuraPage); -- trie les pages pour eviter les trous
+	self.CurrentAuraId = ((self.MainOptionPage-1)*24)+1; -- nouvelle aura en cours sera le premier effet de cette page
+	-- gere les visus
+	self:DisableMoveMode();
+	-- met a jour la page
+	self:UpdateMainOption();
+
 end
 
 function PowaAuras:BeginCopyEffect(Pfrom, ToPage)
-  local min = ((ToPage-1)*24) + 1;
-  local max = min + 23;
-	-- trouve un endroit dispo dans la page choisie
-	for i = min, max do
-		if (self.Auras[i] == nil or self.Auras[i].buffname == "" or self.Auras[i].buffname == " ") then -- on a trouve une place dispo
-			self:DoCopyEffect(Pfrom, i, false); -- copie et efface effet actuel
-			self.CurrentAuraId = i; -- nouvelle aura en cours sera l'effet cree
-			-- gere les visus
-			self:DisableMoveMode();
-			-- met a jour la page
-			self:UpdateMainOption();
-			return;
-		end
+ 	local i = self:GetNextFreeSlot(ToPage);
+	if (not i) then
+		self:Message("All aura slots filled"); --OK
+		return;
 	end
+
+	self:DoCopyEffect(Pfrom, i, false); -- copie et efface effet actuel
+	self.CurrentAuraId = i; -- nouvelle aura en cours sera l'effet cree
+	-- gere les visus
+	self:DisableMoveMode();
+	-- met a jour la page
+	self:UpdateMainOption();
+
 end
 
 function PowaAuras:DoCopyEffect(idFrom, idTo, isMove)
@@ -743,7 +745,7 @@ function PowaAuras:DoCopyEffect(idFrom, idTo, isMove)
 		self.Auras[idTo].Stacks = cPowaStacks(self.Auras[idTo], self.Auras[idFrom].Stacks);
 	end
 
-	if (idTo > 120) then -- on entre dans la zone des effets globaux
+	if (idTo > 120) then
 		PowaGlobalSet[idTo] = self.Auras[idTo];
 	end
 
@@ -1103,12 +1105,6 @@ function PowaAuras:InitPage()
 	getglobal("PowaBarUnitn"):SetText(aura.unitn);
 	
 	getglobal("PowaBarBuffStacks"):SetText(aura:StacksText());	
-	
-	if (aura.icon == "") then
-		getglobal("PowaIconTexture"):SetTexture("Interface\\Icons\\Inv_Misc_QuestionMark");
-	else
-		getglobal("PowaIconTexture"):SetTexture(aura.icon);
-	end
     
 	if (aura.optunitn == true) then
 		self:EnableTextfield("PowaBarUnitn");
@@ -1116,8 +1112,16 @@ function PowaAuras:InitPage()
 		self:DisableTextfield("PowaBarUnitn");
 	end
 
+	
+	if (aura.icon==nil or aura.icon == "") then
+		getglobal("PowaIconTexture"):SetTexture("Interface\\Icons\\Inv_Misc_QuestionMark");
+	else
+		getglobal("PowaIconTexture"):SetTexture(aura.icon);
+	end
+
 	if (aura.owntex) then
-		CheckTexture = getglobal("AuraTexture"):SetTexture(aura.icon);
+		--self:ShowText("owntex tex=", aura.icon);	
+		CheckTexture = getglobal("AuraTexture"):SetTexture(getglobal("PowaIconTexture"):GetTexture());
 		getglobal("PowaBarAuraTextureSlider"):Hide();
 		getglobal("PowaBarCustomTexName"):Hide();
 		getglobal("PowaBarAurasText"):Hide();
@@ -1167,6 +1171,8 @@ function PowaAuras:InitPage()
 		getglobal("PowaBarAuraTextureSliderHigh"):SetText(self.maxtextures);
 		CheckTexture = getglobal("AuraTexture"):SetTexture("Interface\\Addons\\PowerAuras\\Auras\\Aura"..aura.texture..".tga");
 	end
+
+	--self:ShowText("CheckTexture=", CheckTexture);	
 	if (CheckTexture ~= 1) then
 		getglobal("AuraTexture"):SetTexture("Interface\\CharacterFrame\\TempPortrait.tga");
 	end
@@ -1557,13 +1563,14 @@ function PowaAuras:OwntexChecked()
 		getglobal("PowaWowTextureButton"):SetChecked(false);
 		getglobal("PowaCustomTextureButton"):SetChecked(false);
 		getglobal("PowaTextAuraButton"):SetChecked(false);
-		getglobal("PowaBarAuraTextureSlider"):Show();
+		getglobal("PowaBarAuraTextureSlider"):Hide();
 		getglobal("PowaBarCustomTexName"):Hide();
 		getglobal("PowaBarAurasText"):Hide();
 		getglobal("PowaFontsButton"):Hide();
 	else
 		self.Auras[auraId].owntex = false;
 	end	
+	PowaAuras:InitPage();
 	self:RedisplayAura(self.CurrentAuraId);
 end
 
