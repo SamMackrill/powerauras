@@ -476,6 +476,16 @@ function PowaAuras:UNIT_COMBO_POINTS(...)
 	end
 end
 
+function PowaAuras:UNIT_PET(...)
+	local unit = ...;
+	if (unit ~= "player") then return; end
+	if (self.ModTest == false) then
+		--self:ShowText("UNIT_PET");
+		self.DoCheck.Pet = true;
+	end
+end
+
+
 function PowaAuras:VehicleCheck(unit, entered)
 	if unit ~= "player" then return; end
 	if (self.ModTest == false) then

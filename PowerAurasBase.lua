@@ -131,6 +131,7 @@ PowaAuras = {
 		"UNIT_MAXHEALTH",
 		"UNIT_MAXMANA",
 		"UNIT_MAXRUNIC_POWER",
+		"UNIT_PET",
 		"UNIT_RAGE",
 		"UNIT_RUNIC_POWER",
 		"UNIT_SPELLCAST_CHANNEL_START",
@@ -186,6 +187,8 @@ PowaAuras = {
 
 		Combo = false,
 		Aoe = false,
+		
+		Pet = false,
 
 		Stance = false,
 		Actions = false,
@@ -235,6 +238,7 @@ PowaAuras = {
 		PurgeableSpell=17,
 		Static=18,
 		Totems=19,
+		Pet=20,
 		GTFO=50
 	};
 
@@ -349,6 +353,8 @@ PowaAuras = {
 		Static = {},
 		
 		Totems = {},
+		
+		Pet = {},
 		
 		GTFOHigh = {},
 		GTFOLow = {},

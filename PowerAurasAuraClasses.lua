@@ -2326,6 +2326,27 @@ function cPowaTotems:CheckIfShouldShow(giveReason)
 	return true, "Totem not found";				
 end
 
+-- Pet Aura--
+cPowaPet= PowaClass(cPowaAura, {ValueName = "Pet"});
+cPowaPet.OptionText={typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.Pet]};
+
+cPowaPet.CheckBoxes={};
+cPowaPet.TooltipOptions = {r=0.4, g=1.0, b=0.4};
+
+function cPowaPet:AddEffect()
+	table.insert(PowaAuras.AurasByType.Pet, self.id);	
+end
+
+function cPowaPet:CheckIfShouldShow(giveReason)
+	self:SetIcon("Interface\\icons\\Ability_hunter_pet_bear");
+	if(UnitExists("pet")) then 
+		if (not giveReason) then return true; end
+		return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonPetExists);
+	end;
+	if (not giveReason) then return false; end
+	return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonPetMissing);
+end
+
 -- Static Aura--
 cPowaStatic= PowaClass(cPowaAura, {ValueName = "Static"});
 cPowaStatic.OptionText={typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.Static]};
@@ -2363,6 +2384,7 @@ PowaAuras.AuraClasses = {
 	[PowaAuras.BuffTypes.PurgeableSpell]=cPowaPurgeableSpell,
 	[PowaAuras.BuffTypes.GTFO]=cPowaGTFO,
 	[PowaAuras.BuffTypes.Totems]=cPowaTotems,
+	[PowaAuras.BuffTypes.Pet]=cPowaPet,
 	[PowaAuras.BuffTypes.Static]=cPowaStatic,
 }
 
