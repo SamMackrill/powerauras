@@ -42,6 +42,11 @@ function PowaAuras:VARIABLES_LOADED(...)
 		texi = texi + 1;
 	end
 	self.maxtextures = texi - 1;
+
+	if (self.maxtextures<100) then
+		self:DisplayText(self.Colors.Purple.."<Power Auras Classic>|r "..self.Colors.Gold..self.Version.."|r - "..self.Text.welcome);
+		self:DisplayText(self.Colors.Red.."WARNING only "..self.maxtextures.." textures found! Try a /reload to fix this");
+	end
 	
 	PowaBarAuraTextureSlider:SetMinMaxValues(1, self.maxtextures);
 	PowaBarAuraTextureSliderHigh:SetText(self.maxtextures);
@@ -268,7 +273,7 @@ function PowaAuras:UNIT_SPELLCAST_SUCCEEDED(...)
 		local unit, spell = ...;
 		--self:ShowText("UNIT_SPELLCAST_SUCCEEDED ",unit, " ", spell);
 		--- druid shapeshift special case
-		if (unit and unit == "player") then
+		if (unit == "player") then
 			if ( (spell == GetSpellInfo(768)) or (spell == GetSpellInfo(5487)) or (spell == GetSpellInfo(9634)) ) then
 				self.DoCheck.Mana = true;
 				self.DoCheck.RageEnergy = true;
@@ -323,7 +328,39 @@ function PowaAuras:UNIT_SPELLCAST_CHANNEL_STOP(...)
 	local unit = ...;
 	PowaAuras:SpellcastEvent(unit);
 end
-		
+
+
+function PowaAuras:PLAYER_TOTEM_UPDATE(...)
+	local slot = ...;
+	if (self.ModTest == false) then
+		--self:ShowText("PLAYER_TOTEM_UPDATE slot=", slot);
+		if (self.playerclass=="SHAMAN") then
+			self.TotemSlots[slot] = true;
+			self.DoCheck.Totems = true;
+		elseif if (self.playerclass=="DEATHKNIGHT") then
+			-- raise Dead
+			-- local haveTotem, name, startTime, duration, icon = GetTotemInfo(slot)
+			--
+			-- self.DoCheckPet = true;
+		end
+	end
+end
+
+function PowaAuras:RUNE_POWER_UPDATE(...)
+	if (self.ModTest == false) then
+		--self:ShowText("PLAYER_TOTEM_UPDATE slot=", slot);
+		self.DoCheck.Runes = true;
+	end
+end
+
+function PowaAuras:RUNE_TYPE_UPDATE(...)
+	local runeId = ...;
+	if (self.ModTest == false) then
+		--self:ShowText("PLAYER_TOTEM_UPDATE slot=", slot);
+		self.DoCheck.Runes = true;
+	end
+end
+	
 function PowaAuras:PLAYER_FOCUS_CHANGED(...)	  
 	if (self.ModTest == false) then
 		self.DoCheck.FocusBuffs = true;

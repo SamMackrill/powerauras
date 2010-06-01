@@ -737,6 +737,7 @@ function PowaAuras:NewCheckBuffs()
 	end
 	
 	self.ChangedUnits.Buffs = {};
+	self.TotemSlots = {};
 
 end
 
@@ -892,21 +893,27 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 	end
 
 	if (self.ModTest == false) then
-		if (aura.sound > 0) then
-			if (string.find(PowaAuras.Sound[aura.sound], "%.")) then
-				PlaySoundFile("Interface\\AddOns\\PowerAuras\\Sounds\\"..PowaAuras.Sound[aura.sound]);
-			else
-				PlaySound(PowaAuras.Sound[aura.sound]);
-			end
-		elseif (aura.customsound ~= "") then
+		if (aura.customsound ~= "") then
 			PlaySoundFile("Interface\\AddOns\\PowerAuras\\Sounds\\"..aura.customsound);
+		elseif (aura.sound > 0) then
+			if (PowaAuras.Sound[aura.sound]~=nil and string.len(PowaAuras.Sound[aura.sound])>0) then
+				if (string.find(PowaAuras.Sound[aura.sound], "%.")) then
+					PlaySoundFile("Interface\\AddOns\\PowerAuras\\Sounds\\"..PowaAuras.Sound[aura.sound]);
+				else
+					PlaySound(PowaAuras.Sound[aura.sound]);
+				end
+			end
 		end	
 	end
 	
 	local frame, texture = aura:CreateFrames();
 
 	if (aura.owntex == true) then
-		texture:SetTexture(aura.icon);
+		if (aura.icon=="") then
+			texture:SetTexture("Interface\\Icons\\Inv_Misc_QuestionMark");
+		else
+			texture:SetTexture(aura.icon);
+		end
 	elseif (aura.wowtex == true) then
 		texture:SetTexture(self.WowTextures[aura.texture]);
 	elseif (aura.customtex == true) then
@@ -1212,6 +1219,22 @@ function PowaAuras:UpdateAura(aura, elapsed)
 		
 		if (aura.HideRequest) then
 
+		
+			if (self.ModTest == false) then
+				if (aura.customsoundend ~= "") then
+					PlaySoundFile("Interface\\AddOns\\PowerAuras\\Sounds\\"..aura.customsoundend);
+				elseif (aura.soundend > 0) then
+					if (PowaAuras.Sound[aura.soundend]~=nil and string.len(PowaAuras.Sound[aura.soundend])>0) then
+						if (string.find(PowaAuras.Sound[aura.soundend], "%.")) then
+							PlaySoundFile("Interface\\AddOns\\PowerAuras\\Sounds\\"..PowaAuras.Sound[aura.soundend]);
+						else
+							PlaySound(PowaAuras.Sound[aura.soundend]);
+						end
+					end
+				end	
+			end
+		
+		
 			if (aura.Stacks) then
 				aura.Stacks:Hide();
 			end
@@ -1468,5 +1491,6 @@ function PowaAuras:SetupStaticPopups()
 		exclusive = 1,
 		whileDead = 1,
 		hideOnEscape = 1
-	};	
+	};
+
 end
