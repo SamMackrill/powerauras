@@ -334,11 +334,33 @@ function PowaAuras:PLAYER_TOTEM_UPDATE(...)
 	local slot = ...;
 	if (self.ModTest == false) then
 		--self:ShowText("PLAYER_TOTEM_UPDATE slot=", slot);
-		self.TotemSlots[slot] = true;
-		self.DoCheck.Totems = true;
+		if (self.playerclass=="SHAMAN") then
+			self.TotemSlots[slot] = true;
+			self.DoCheck.Totems = true;
+		elseif if (self.playerclass=="DEATHKNIGHT") then
+			-- raise Dead
+			-- local haveTotem, name, startTime, duration, icon = GetTotemInfo(slot)
+			--
+			-- self.DoCheckPet = true;
+		end
 	end
 end
-		
+
+function PowaAuras:RUNE_POWER_UPDATE(...)
+	if (self.ModTest == false) then
+		--self:ShowText("PLAYER_TOTEM_UPDATE slot=", slot);
+		self.DoCheck.Runes = true;
+	end
+end
+
+function PowaAuras:RUNE_TYPE_UPDATE(...)
+	local runeId = ...;
+	if (self.ModTest == false) then
+		--self:ShowText("PLAYER_TOTEM_UPDATE slot=", slot);
+		self.DoCheck.Runes = true;
+	end
+end
+	
 function PowaAuras:PLAYER_FOCUS_CHANGED(...)	  
 	if (self.ModTest == false) then
 		self.DoCheck.FocusBuffs = true;
