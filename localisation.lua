@@ -533,6 +533,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomReasonPetExists= "Player has Pet",
 	nomReasonPetMissing = "Player Pet Missing",
 
+	nomReasonStatic = "Static Aura",
+
 	nomReasonGTFOAlerts = "GTFO alerts are never always on.",
 
 	ReasonStat = {

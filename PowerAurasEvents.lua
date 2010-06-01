@@ -97,6 +97,8 @@ function PowaAuras:Setup()
 	
 	self:GetStances();
 	
+	self:InitialiseAllAuras();
+	
 	self:MemorizeActions();
 	
 	self.DoCheck.All = true;
@@ -153,7 +155,14 @@ end
 function PowaAuras:ACTIVE_TALENT_GROUP_CHANGED(...)
 	self.ActiveTalentGroup = GetActiveTalentGroup();
 	if (self.ModTest == false) then
-		--self:ShowText("ACTIVE_TALENT_GROUP_CHANGED ");
+		--self:ShowText("ACTIVE_TALENT_GROUP_CHANGED");
+		self.PendingRescan = GetTime() + 1;
+	end
+end
+
+function PowaAuras:PLAYER_TALENT_UPDATE(...)
+	if (self.ModTest == false) then
+		self:ShowText("PLAYER_TALENT_UPDATE");
 		self.PendingRescan = GetTime() + 1;
 	end
 end
@@ -330,22 +339,6 @@ function PowaAuras:UNIT_SPELLCAST_CHANNEL_STOP(...)
 end
 
 
-function PowaAuras:PLAYER_TOTEM_UPDATE(...)
-	local slot = ...;
-	if (self.ModTest == false) then
-		--self:ShowText("PLAYER_TOTEM_UPDATE slot=", slot);
-		if (self.playerclass=="SHAMAN") then
-			self.TotemSlots[slot] = true;
-			self.DoCheck.Totems = true;
-		elseif if (self.playerclass=="DEATHKNIGHT") then
-			-- raise Dead
-			-- local haveTotem, name, startTime, duration, icon = GetTotemInfo(slot)
-			--
-			-- self.DoCheckPet = true;
-		end
-	end
-end
-
 function PowaAuras:RUNE_POWER_UPDATE(...)
 	if (self.ModTest == false) then
 		--self:ShowText("PLAYER_TOTEM_UPDATE slot=", slot);
@@ -507,6 +500,19 @@ function PowaAuras:UNIT_PET(...)
 	end
 end
 
+function PowaAuras:PLAYER_TOTEM_UPDATE(...)
+	local slot = ...;
+	if (self.ModTest == false) then
+		self:ShowText("PLAYER_TOTEM_UPDATE slot=", slot, " class=", self.playerclass);
+		if (self.playerclass=="SHAMAN") then
+			self.TotemSlots[slot] = true;
+			self.DoCheck.Totems = true;
+		elseif (self.playerclass=="DEATHKNIGHT" and not self.MasterOfGhouls) then
+			self:ShowText("Ghoul (temp version)");
+			self.DoCheck.Pet = true;
+		end
+	end
+end
 
 function PowaAuras:VehicleCheck(unit, entered)
 	if unit ~= "player" then return; end

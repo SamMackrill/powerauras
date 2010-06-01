@@ -111,6 +111,7 @@ PowaAuras = {
 		"PLAYER_FOCUS_CHANGED",
 		"PLAYER_REGEN_DISABLED",
 		"PLAYER_REGEN_ENABLED",
+		"PLAYER_TALENT_UPDATE",
 		"PLAYER_TARGET_CHANGED",
 		"PLAYER_TOTEM_UPDATE",
 		"PLAYER_UNGHOST",
@@ -242,6 +243,7 @@ PowaAuras = {
 		Static=18,
 		Totems=19,
 		Pet=20,
+		Runes=21,
 		GTFO=50
 	};
 
@@ -358,6 +360,8 @@ PowaAuras = {
 		Totems = {},
 		
 		Pet = {},
+		
+		Runes = {},
 		
 		GTFOHigh = {},
 		GTFOLow = {},

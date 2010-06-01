@@ -145,7 +145,15 @@ cPowaAura = PowaClass(function(aura, id, base)
 		end				
 	end
 	
+	aura:Init();
+	
 end);
+
+function cPowaAura:Init()
+end
+
+function cPowaAura:CustomEvents()
+end
 
 function cPowaAura:TimerShowing()
 	if (not self.Timer) then return false; end
@@ -320,6 +328,7 @@ function cPowaAura:ShowTimerDurationSlider()
 end
 
 function cPowaAura:IconIsRequired()
+	--PowaAuras:Message("  owntex=",self.owntex, " .icon=",self.icon, " IconRequired=",self.IconRequired);
 	return (self.owntex == true or self.icon == "" or self.IconRequired);
 end
 
@@ -2323,15 +2332,27 @@ function cPowaTotems:CheckIfShouldShow(giveReason)
 		end
 	end
 	if (not giveReason) then return false; end
-	return true, "Totem not found";				
+	return false, "Totem not found";				
 end
 
 -- Pet Aura--
-cPowaPet= PowaClass(cPowaAura, {ValueName = "Pet"});
+cPowaPet= PowaClass(cPowaAura, {ValueName = "Pet", });
 cPowaPet.OptionText={typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.Pet]};
 cPowaPet.CheckBoxes={["PowaInverseButton"]=1,
 						};
 cPowaPet.TooltipOptions = {r=0.4, g=1.0, b=0.4};
+
+function cPowaPet:Init()
+	if (PowaAuras.playerclass == "DEATHKNIGHT") then
+		local name, iconPath, _, _, currentRank = GetTalentInfo(3, 20); -- Master of Ghouls
+		PowaAuras:Message(name, "? currentRank=",currentRank);
+		PowaAuras.MasterOfGhouls = (currentRank>0);
+		if (not PowaAuras.MasterOfGhouls) then
+			self.CanHaveTimer=true;
+			self.CanHaveTimerOnInvert=true
+		end
+	end
+end
 
 function cPowaPet:AddEffect()
 	table.insert(PowaAuras.AurasByType.Pet, self.id);	
@@ -2347,14 +2368,149 @@ function cPowaPet:CheckIfShouldShow(giveReason)
 	else
 		self:SetIcon("Interface\\icons\\Ability_hunter_pet_bear");
 	end
-	
-	if(UnitExists("pet")) then 
+
+	if(UnitExists("pet")) then
 		if (not giveReason) then return true; end
 		return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonPetExists);
-	end;
+	end	
+	
+	if (PowaAuras.playerclass=="DEATHKNIGHT" and not self.MasterOfGhouls) then
+		local haveTotem, name, startTime, duration, icon = GetTotemInfo(1);
+		PowaAuras:Message("  haveTotem=",haveTotem, " totemName=",totemName, " startTime=",startTime, " duration=",duration);
+		if (startTime>0) then
+			if (self.Timer) then
+				self.Timer:SetDurationInfo(startTime + duration);
+				self:CheckTimerInvert();
+				if (self.ForceTimeInvert) then
+					if (not giveReason) then return false; end
+					return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonPetExists);
+				end
+			end
+			if (not giveReason) then return true; end
+			return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonPetExists);	
+		end
+	
+		if (self.Timer) then
+			local startTime, duration, enabled = GetSpellCooldown(46584);
+			if (not enabled) then
+				if (not giveReason) then return false; end
+				local name = GetSpellInfo(46584);
+				return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonSpellNotEnabled, name);
+			end
+			
+			self.Timer:SetDurationInfo(startTime + duration);
+			self:CheckTimerInvert();
+			if (self.ForceTimeInvert) then
+				if (not giveReason) then return false; end
+				return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonPetExists);
+			end
+		end
+
+	end
+	
 	if (not giveReason) then return false; end
 	return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonPetMissing);
 end
+
+
+-- Runes Aura--
+cPowaRunes = PowaClass(cPowaAura, {AuraType = "Runes", CanHaveTimerOnInvert=true});
+cPowaRunes.OptionText={buffNameTooltip=PowaAuras.Text.aideRunes, 
+                            typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.Runes], 
+							};
+cPowaRunes.CheckBoxes={["PowaInverseButton"]=1,
+						["PowaIngoreCaseButton"]=1,
+						["PowaOwntexButton"]=1,
+						};
+
+cPowaRunes.TooltipOptions = {r=1.0, g=0.4, b=1.0, showBuffName=true};
+
+function cPowaRunes:AddEffect()
+	table.insert(PowaAuras.AurasByType.Runes, self.id);	
+end
+
+function cPowaRunes:CheckIfShouldShow(giveReason)
+	--PowaAuras:Message("Rune Aura CheckIfShouldShow");
+
+	self:SetIcon("Interface\\icons\\spell_arcane_arcane01");
+	
+	local runes = {[1]=0, [2]=0, [3]=0, [4]=0};
+	local runeEnd = {[1]={}, [2]={}, [3]={}};
+	for slot = 1, 6 do
+		local startTime, duration, runeReady = GetRuneCooldown(slot);
+		local runeType = GetRuneType(slot);
+		if (runeReady) then
+			runes[runeType] = runes[runeType] + 1;
+			if (runeType==4) then
+				runes[1] = runes[1] + 1;
+				runes[2] = runes[2] + 1;
+				runes[3] = runes[3] + 1;
+			end
+		elseif (runeType~=4 and self.Timer) then
+			local endTime = startTime + duration;
+			table.insert(runeEnd[runeType], endTime);
+		end
+	end
+	
+	if (self.Timer) then
+		for runeType = 1, 3 do
+			table.sort(runeEnd[runeType]);
+		end
+	end
+	
+	local minTimeToActivate;
+
+	for pword in string.gmatch(string.upper(self.buffname), "[^/]+") do
+	--PowaAuras:Message("  pword=",pword);
+	
+		local runesCount = {};
+
+		_, runesCount[1] = string.gsub(pword, "B", "B");
+		_, runesCount[2] = string.gsub(pword, "U", "U");
+		_, runesCount[3] = string.gsub(pword, "F", "F");
+		_, runesCount[4] = string.gsub(pword, "D", "D");
+		
+		if (runes[1]>=runesCount[1]
+		and runes[2]>=runesCount[2]
+		and runes[3]>=runesCount[3]
+		and runes[4]>=runesCount[4]) then
+			if (not giveReason) then return true; end
+			return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonRunesReady); 			
+		end
+		
+		if (self.Timer) then		
+			local maxTime = 0;
+			for runeType = 1, 3 do
+				local index = runesCount[runeType];
+				local endCount = #runeEnd[runeType];
+				PowaAuras:Message("  runeType=",runeType, " index=",index, " endCount=",endCount);
+				if (index>0 and endCount>0) then
+					if (index>endCount) then
+						index = endCount;
+					end
+					local endTime = runeEnd[runeType][index];
+					PowaAuras:Message("    runeType=",runeType, " index=",index, " endTime=",endTime);
+					if (endTime>maxTime) then
+						maxTime = endTime;
+					end
+				end
+			end
+		
+			if (minTimeToActivate==nil or maxTime<minTimeToActivate) then
+				minTimeToActivate = maxTime;
+			end
+		end
+		
+	end
+
+	if (self.Timer and minTimeToActivate~=nil and minTimeToActivate>0) then
+		self.Timer:SetDurationInfo(minTimeToActivate);
+	end
+
+	if (not giveReason) then return false; end
+	return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonRunesNotReady); 			
+end
+
 
 -- Static Aura--
 cPowaStatic= PowaClass(cPowaAura, {ValueName = "Static"});
@@ -2394,6 +2550,7 @@ PowaAuras.AuraClasses = {
 	[PowaAuras.BuffTypes.GTFO]=cPowaGTFO,
 	[PowaAuras.BuffTypes.Totems]=cPowaTotems,
 	[PowaAuras.BuffTypes.Pet]=cPowaPet,
+	[PowaAuras.BuffTypes.Runes]=cPowaRunes,
 	[PowaAuras.BuffTypes.Static]=cPowaStatic,
 }
 

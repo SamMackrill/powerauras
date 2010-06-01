@@ -471,6 +471,11 @@ function PowaAuras:CreateEffectLists()
 
 end
 
+function PowaAuras:InitialiseAllAuras()
+	for _, aura in pairs(self.Auras) do
+		aura:Init();
+	end 
+end
 --- ----------------------------------------------------------------------------------------------- Memorize les actions
 function PowaAuras:MemorizeActions(actionIndex)
 	local imin, imax;
@@ -640,7 +645,8 @@ function PowaAuras:OnUpdate(elapsed)
 			end	
 		end
 
-		if (self.PendingRescan and GetTime() >= self.PendingRescan) then
+		if (self.PendingRescan and GetTime() >= self.PendingRescan) then	
+			self:InitialiseAllAuras();
 			self:MemorizeActions();
 			self.DoCheck.All = true;
 			self.PendingRescan = nil;
