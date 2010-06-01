@@ -116,6 +116,8 @@ PowaAuras = {
 		"PLAYER_UNGHOST",
 		"PLAYER_UPDATE_RESTING",
 		"RAID_ROSTER_UPDATE",
+		"RUNE_POWER_UPDATE",
+		"RUNE_TYPE_UPDATE",
 		"SPELL_UPDATE_COOLDOWN",
 		"UNIT_AURA",
 		"UNIT_AURASTATE",
@@ -213,6 +215,7 @@ PowaAuras = {
 		OwnSpells = false,
 		
 		Totems = false,
+		Runes = false,
 		
 		GTFO = false,
 	};
