@@ -92,6 +92,8 @@ PowaAuras = {
 	AoeAuraAdded = {};
 	AoeAuraFaded = {};
 	AoeAuraTexture = {};
+	
+	TotemSlots = {};
 
 	playerclass = "unknown",
 	
@@ -110,9 +112,12 @@ PowaAuras = {
 		"PLAYER_REGEN_DISABLED",
 		"PLAYER_REGEN_ENABLED",
 		"PLAYER_TARGET_CHANGED",
+		"PLAYER_TOTEM_UPDATE",
 		"PLAYER_UNGHOST",
 		"PLAYER_UPDATE_RESTING",
 		"RAID_ROSTER_UPDATE",
+		"RUNE_POWER_UPDATE",
+		"RUNE_TYPE_UPDATE",
 		"SPELL_UPDATE_COOLDOWN",
 		"UNIT_AURA",
 		"UNIT_AURASTATE",
@@ -206,6 +211,9 @@ PowaAuras = {
 		
 		OwnSpells = false,
 		
+		Totems = false,
+		Runes = false,
+		
 		GTFO = false,
 	};
 
@@ -229,6 +237,7 @@ PowaAuras = {
 		StealableSpell=16,
 		PurgeableSpell=17,
 		Static=18,
+		Totems=19,
 		GTFO=50
 	};
 
@@ -342,6 +351,8 @@ PowaAuras = {
 		
 		Static = {},
 		
+		Totems = {},
+		
 		GTFOHigh = {},
 		GTFOLow = {},
 		GTFOFail = {},
@@ -398,10 +409,10 @@ PowaAuras = {
 		[23] = "sonar.mp3",
 		[24] = "splash.mp3",
 		[25] = "wilhelm.mp3",
-		--[26] = "removed.mp3",
-		--[27] = "removed.mp3",
-		--[28] = "removed.mp3",
-		--[29] = "removed.mp3",
+		[26] = "huh_1.wav",
+		[27] = "huh_1.wav",
+		[28] = "huh_1.wav",
+		[29] = "huh_1.wav",
 		--[30] = "NONE",
 		[31] = "bear_polar.wav",
 		[32] = "bigkiss.wav",

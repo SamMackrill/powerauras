@@ -2574,7 +2574,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                  hidden="true">
             <Size>
               <AbsDimension x="350"
-                            y="150" />
+                            y="340" />
             </Size>
             <Anchors>
               <Anchor point="TOP"
@@ -2606,6 +2606,38 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               <OnLoad>self:SetBackdropBorderColor(0.0, 0.0, 0.0); self:SetBackdropColor(0.1, 0.1, 0.1);</OnLoad>
             </Scripts>
             <Frames>
+			
+               <Frame name="PowaStartSound">
+                <Size>
+                  <AbsDimension x="220" y="20"/>
+                </Size>
+                <Anchors>
+                  <Anchor point="TOPLEFT"
+                          relativeTo="PowaBarConfigFrameEditor5"
+                          relativePoint="TOPLEFT">
+                    <Offset>
+                      <AbsDimension x="10"
+                                    y="-10" />
+                    </Offset>
+                  </Anchor>
+                </Anchors>
+				<Layers>
+					<Layer>
+
+						<FontString name="$parentText"
+									inherits="GameFontHighlight"
+									justifyV = "TOP"
+									justifyH = "LEFT"
+									text="Starting Sound:">
+						  <FontHeight>
+							<AbsValue val="22" />
+						  </FontHeight>
+						</FontString>
+						
+					</Layer>
+               </Layers>
+			  </Frame>
+			  
               <Frame name="PowaDropDownSound"
                      inherits="UIDropDownMenuTemplate"
                      id="11">
@@ -2618,7 +2650,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                           relativePoint="TOPLEFT">
                     <Offset>
                       <AbsDimension x="5"
-                                    y="-15" />
+                                    y="-45" />
                     </Offset>
                   </Anchor>
                 </Anchors>
@@ -2641,6 +2673,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 <Scripts>
                   <OnLoad>
                   	getglobal("PowaDropDownSoundLabel"):SetText(PowaAuras.Text.nomSound); 
+                  	getglobal("PowaStartSoundText"):SetText(PowaAuras.Text.nomSoundStarting); 
                   	UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);
                   </OnLoad>
                   <OnShow>UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);</OnShow>
@@ -2691,6 +2724,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   <OnLeave>GameTooltip:Hide();</OnLeave>
                 </Scripts>
               </Frame>
+			  
               <EditBox name="PowaBarCustomSound"
                        autoFocus="false"
                        inherits="InputBoxTemplate">
@@ -2744,6 +2778,181 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   </Layer>
                 </Layers>
               </EditBox>
+			  
+			
+               <Frame name="PowaEndSound">
+                <Size>
+                  <AbsDimension x="220" y="20"/>
+                </Size>
+                <Anchors>
+                  <Anchor point="TOPLEFT"
+                          relativeTo="PowaBarCustomSound"
+                          relativePoint="TOPLEFT">
+                    <Offset>
+                      <AbsDimension x="-15"
+                                    y="-30" />
+                    </Offset>
+                  </Anchor>
+                </Anchors>
+				<Layers>
+					<Layer>
+
+						<FontString name="$parentText"
+									inherits="GameFontHighlight"
+									justifyV = "TOP"
+									justifyH = "LEFT"
+									text="Ending Sound:">
+						  <FontHeight>
+							<AbsValue val="22" />
+						  </FontHeight>
+						</FontString>
+						
+					</Layer>
+               </Layers>
+			  </Frame>			  
+
+              <Frame name="PowaDropDownSoundEnd"
+                     inherits="UIDropDownMenuTemplate"
+                     id="11">
+                <Size>
+                  <AbsDimension x="220" />
+                </Size>
+                <Anchors>
+                  <Anchor point="TOPLEFT"
+                          relativeTo="PowaEndSound"
+                          relativePoint="TOPLEFT">
+                    <Offset>
+                      <AbsDimension x="-5"
+                                    y="-35" />
+                    </Offset>
+                  </Anchor>
+                </Anchors>
+                <Layers>
+                  <Layer level="BACKGROUND">
+                    <FontString name="$parentLabel"
+                                inherits="GameFontNormalSmall">
+                      <Anchors>
+                        <Anchor point="BOTTOMLEFT"
+                                relativePoint="TOPLEFT">
+                          <Offset>
+                            <AbsDimension x="15"
+                                          y="0" />
+                          </Offset>
+                        </Anchor>
+                      </Anchors>
+                    </FontString>
+                  </Layer>
+                </Layers>
+                <Scripts>
+                  <OnLoad>
+                  	getglobal("PowaDropDownSoundEndLabel"):SetText(PowaAuras.Text.nomSoundEnd); 
+                 	getglobal("PowaEndSoundText"):SetText(PowaAuras.Text.nomSoundEnding); 
+                  	UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);
+                  </OnLoad>
+                  <OnShow>UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);</OnShow>
+                  <OnEnter>GameTooltip:SetOwner(self, "ANCHOR_RIGHT"); GameTooltip:SetText(PowaAuras.Text.aideSoundEnd, nil, nil, nil, nil, 1);</OnEnter>
+                  <OnLeave>GameTooltip:Hide();</OnLeave>
+                </Scripts>
+              </Frame>
+             <Frame name="PowaDropDownSound2End"
+                     inherits="UIDropDownMenuTemplate"
+                     id="11">
+                <Size>
+                  <AbsDimension x="220" />
+                </Size>
+                <Anchors>
+                  <Anchor point="TOPLEFT"
+                          relativeTo="PowaDropDownSoundEnd"
+                          relativePoint="BOTTOMLEFT">
+                    <Offset>
+                      <AbsDimension x="0"
+                                    y="-10" />
+                    </Offset>
+                  </Anchor>
+                </Anchors>
+
+                <Layers>
+                  <Layer level="BACKGROUND">
+                    <FontString name="$parentLabel"
+                                inherits="GameFontNormalSmall">
+                      <Anchors>
+                        <Anchor point="BOTTOMLEFT"
+                                relativePoint="TOPLEFT">
+                          <Offset>
+                            <AbsDimension x="15"
+                                          y="0" />
+                          </Offset>
+                        </Anchor>
+                      </Anchors>
+                    </FontString>
+                  </Layer>
+                </Layers>
+                <Scripts>
+                  <OnLoad>
+                  	getglobal("PowaDropDownSound2EndLabel"):SetText(PowaAuras.Text.nomSound2End); 
+                  	UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);
+                  </OnLoad>
+                  <OnShow>UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);</OnShow>
+                  <OnEnter>GameTooltip:SetOwner(self, "ANCHOR_RIGHT"); GameTooltip:SetText(PowaAuras.Text.aideSound2End, nil, nil, nil, nil, 1);</OnEnter>
+                  <OnLeave>GameTooltip:Hide();</OnLeave>
+                </Scripts>
+              </Frame>
+			  
+              <EditBox name="PowaBarCustomSoundEnd"
+                       autoFocus="false"
+                       inherits="InputBoxTemplate">
+                <Size>
+                  <AbsDimension x="150"
+                                y="16" />
+                </Size>
+                <Anchors>
+                  <Anchor point="TOPLEFT"
+                          relativeTo="PowaDropDownSound2End"
+                          relativePoint="BOTTOMLEFT">
+                    <Offset>
+                      <AbsDimension x="20"
+                                    y="-15" />
+                    </Offset>
+                  </Anchor>
+                </Anchors>
+                <Layers>
+                  <Layer level="OVERLAY">
+                    <FontString inherits="ChatFontNormal"
+                                bytes="200" />
+                  </Layer>
+                </Layers>
+                <Scripts>
+                  <OnLoad>getglobal("PowaBarCustomSoundEndText"):SetText(PowaAuras.Text.nomCustomSoundEnd); self:SetMaxLetters(200) self.aide = PowaAuras.Text.aideCustomSoundEnd;</OnLoad>
+                  <OnEnterPressed>self:ClearFocus()</OnEnterPressed>
+                  <OnTextChanged>PowaAuras:CustomSoundEndTextChanged()</OnTextChanged>
+                  <OnEnter>GameTooltip:SetOwner(self, "ANCHOR_RIGHT"); GameTooltip:SetText(self.aide, nil, nil, nil, nil, 1);</OnEnter>
+                  <OnLeave>GameTooltip:Hide();</OnLeave>
+                </Scripts>
+                <Layers>
+                  <Layer level="OVERLAY">
+                    <FontString name="PowaBarCustomSoundEndText"
+                                inherits="GameFontNormalSmall"
+                                justifyH="LEFT">
+                      <Size>
+                        <AbsDimension x="220"
+                                      y="20" />
+                      </Size>
+                      <Anchors>
+                        <Anchor point="BOTTOMLEFT"
+                                relativeTo="PowaBarCustomSoundEnd"
+                                relativePoint="TOPLEFT">
+                          <Offset>
+                            <AbsDimension x="0"
+                                          y="0" />
+                          </Offset>
+                        </Anchor>
+                      </Anchors>
+                    </FontString>
+                  </Layer>
+                </Layers>
+              </EditBox>
+			  
+			  
             </Frames>
           </Frame>
 		  <!-- Fourth Configuration Tab Panel (Timer)-->
@@ -3587,7 +3796,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
   			 enableKeyboard="true">
   	<Size>
   		<AbsDimension x="250"
-  									y="225" />
+  					  y="225" />
   	</Size>
   	<Anchors>
       <Anchor point="TOPLEFT"
