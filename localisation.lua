@@ -90,6 +90,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		[PowaAuras.BuffTypes.PurgeableSpell] = "Purgeable Spell",
 		[PowaAuras.BuffTypes.Static] = "Static Aura",
 		[PowaAuras.BuffTypes.Totems] = "Totems",
+		[PowaAuras.BuffTypes.Runes] = "Runes",
 		[PowaAuras.BuffTypes.GTFO] = "GTFO Alert",
 	},
 
@@ -176,6 +177,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aidePurgeableSpells = "Enter here the Purgeable Spell Name that will trigger the Aura (use * for any purgeable spell).", 
 
 	aideTotems = "Enter here the Totem Name that will trigger the Aura or a number 1=Fire, 2=Earth, 3=Water, 4=Air (use * for any totem).", 
+
+	aideRunes = "Enter here the Runes that will trigger the Aura B=Blood, F=frost, U=Unholy, D=Death (Death runes will also count as the other types) ex: 'BF' 'BFU' 'DDD'", 
 
 	aideUnitn = "Enter here the name of the unit, which must activate/deactivate the effect. You can enter only names, if they are in your raid or group.",
 	aideUnitn2 = "Only for raid/group.",
@@ -522,6 +525,9 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	
 	nomReasonStance = "Current Stance $1, matches $2", -- $1=Current Stance, $2=Match Stance
 	nomReasonNoStance = "Current Stance $1, does not match $2", -- $1=Current Stance, $2=Match Stance
+	
+	nomReasonRunesNotReady = "Runes not Ready",
+	nomReasonRunesReady = "Runes Ready",
 	
 	nomReasonStatic = "Static Aura",
 
