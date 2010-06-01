@@ -2955,6 +2955,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
 			  
             </Frames>
           </Frame>
+		  
 		  <!-- Fourth Configuration Tab Panel (Timer)-->
            <Frame name="PowaBarConfigFrameEditor4"
                  hidden="true">

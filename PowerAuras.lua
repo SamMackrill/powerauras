@@ -575,7 +575,7 @@ function PowaAuras:OnUpdate(elapsed)
 	self.DebugCycle = false;
 	if (self.NextDebugCheck>0 and self.DebugTimer > self.NextDebugCheck) then
 		self.DebugTimer = 0;
-		PowaAuras:Message("========DebugCycle========");
+		PowaAuras:Message("========DebugCycle========"); --OK
 		self.DebugCycle = true;
 	end
 
@@ -659,10 +659,12 @@ function PowaAuras:OnUpdate(elapsed)
 				--self:ShowText("Pending check for ", id, " cd=", cd, " time=", GetTime());
 				if (GetTime() >= cd) then
 					self.Pending[id] = nil;
-					self.Auras[id].CooldownOver = true;
-					--self:ShowText("Pending TestThisEffect for ", id);
-					self:TestThisEffect(id);
-					self.Auras[id].CooldownOver = nil;
+					if (self.Auras[id]) then
+						self.Auras[id].CooldownOver = true;
+						--self:ShowText("Pending TestThisEffect for ", id);
+						self:TestThisEffect(id);
+						self.Auras[id].CooldownOver = nil;
+					end
 				end
 			else
 				self.Pending[id] = nil;

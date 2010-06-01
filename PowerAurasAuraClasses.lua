@@ -166,7 +166,7 @@ function cPowaAura:StacksShowing()
 end
 
 function cPowaAura:FullTimerAllowed()
-	--PowaAuras:ShowText("TimerAllowed CanHaveTimer", self.CanHaveTimer, " inverse ", self.inverse, " CanHaveTimerOnInverse ", self.CanHaveTimerOnInverse);
+	PowaAuras:ShowText("TimerAllowed CanHaveTimer", self.CanHaveTimer, " inverse ", self.inverse, " CanHaveTimerOnInverse ", self.CanHaveTimerOnInverse);
 	return (self.CanHaveTimer and not self.inverse) or (self.CanHaveTimerOnInverse and self.inverse);
 end
 
@@ -647,9 +647,9 @@ function cPowaAura:MatchSpell(spellName, spellTexture, textToFind)
 		return true;
 	end
 	if (self.Debug) then
-		PowaAuras:Message("  MatchSpell spellName   =",spellName);
-		--PowaAuras:Message("             spellTexture=",spellTexture);
-		PowaAuras:Message("             textToFind  =",textToFind);
+		PowaAuras:Message("  MatchSpell spellName   =",spellName); --OK
+		--PowaAuras:Message("             spellTexture=",spellTexture); --OK
+		PowaAuras:Message("             textToFind  =",textToFind); --OK
 	end
 	for pword in string.gmatch(textToFind, "[^/]+") do
 		pword = self:Trim(pword);
@@ -675,14 +675,14 @@ function cPowaAura:MatchSpell(spellName, spellTexture, textToFind)
 					end
 					if (self.exact) then
 						if (self.Debug) then
-							PowaAuras:Message("exact=", (textToSearch == pword));
+							PowaAuras:Message("exact=", (textToSearch == pword)); --OK
 						end
 						if (textToSearch == pword) then
 							return true;
 						end
 					else
 						if (self.Debug) then
-							PowaAuras:Message("find=", string.find(textToSearch, pword, 1, true));
+							PowaAuras:Message("find=", string.find(textToSearch, pword, 1, true)); --OK
 						end
 						if (string.find(textToSearch, pword, 1, true)) then
 							return true;
@@ -704,18 +704,18 @@ function cPowaAura:MatchText(textToSearch, textToFind)
 		return true;
 	end
 	if (self.Debug) then
-		PowaAuras:Message("MatchText textToSearch=",textToSearch," textToFind=",textToFind);
+		PowaAuras:Message("MatchText textToSearch=",textToSearch," textToFind=",textToFind); --OK
 	end
 	if (self.ignoremaj) then
 		textToFind = string.upper(textToFind);
 		textToSearch = string.upper(textToSearch);
 	end
 	if (self.Debug) then
-		PowaAuras:Message("MatchText textToSearch=",textToSearch," textToFind=",textToFind, " ignoremaj=", self.ignoremaj, " exact=", self.exact);
+		PowaAuras:Message("MatchText textToSearch=",textToSearch," textToFind=",textToFind, " ignoremaj=", self.ignoremaj, " exact=", self.exact); --OK
 	end
 	for pword in string.gmatch(textToFind, "[^/]+") do	
 		if (self.Debug) then
-			PowaAuras:Message("pword=", pword," find=",string.find(textToSearch, pword, 1, true));
+			PowaAuras:Message("pword=", pword," find=",string.find(textToSearch, pword, 1, true)); --OK
 		end
 		if (self.exact and textToSearch == textToFind) then
 			return true;
@@ -1756,16 +1756,16 @@ function cPowaActionReady:CheckIfShouldShow(giveReason)
 	
 	-- Ignore if this is just Global Cooldown
 	if (self.Debug) then
-		PowaAuras:Message("CooldownOver= ",self.CooldownOver," cdduration= ",cdduration," InGCD= ",PowaAuras.InGCD);
+		PowaAuras:Message("CooldownOver= ",self.CooldownOver," cdduration= ",cdduration," InGCD= ",PowaAuras.InGCD); --OK
 	end
 	local globalCD = not self.CooldownOver and (cdduration > 0.2 and cdduration < 1.7) and PowaAuras.InGCD==true;
 	if (self.Debug) then
-		PowaAuras:Message("globalCD=",globalCD);
+		PowaAuras:Message("globalCD=",globalCD); --OK
 	end
 	
 	if (globalCD) then
 		if (self.Debug) then
-			PowaAuras:Message("GCD no change");
+			PowaAuras:Message("GCD no change"); --OK
 		end
 		PowaAuras.Pending[self.id] = cdstart + cdduration;
 		if (not giveReason) then return -1; end
@@ -1774,7 +1774,7 @@ function cPowaActionReady:CheckIfShouldShow(giveReason)
 	
 	if (cdstart == 0 or self.CooldownOver) then
 		if (self.Debug) then
-			PowaAuras:Message("SHOW!!");
+			PowaAuras:Message("SHOW!!"); --OK
 		end
 		if (not giveReason) then return true; end
 		return true, PowaAuras.Text.nomReasonActionReady;
@@ -1782,7 +1782,7 @@ function cPowaActionReady:CheckIfShouldShow(giveReason)
 
 	PowaAuras.Pending[self.id] = cdstart + cdduration;
 	if (self.Debug) then
-		PowaAuras:Message("Set Spell Pending= ",PowaAuras.Pending[self.id]);
+		PowaAuras:Message("Set Spell Pending= ",PowaAuras.Pending[self.id]); --OK
 	end
 
 	local reason = PowaAuras.Text.nomReasonActionNotReady;
@@ -2345,12 +2345,14 @@ cPowaPet.TooltipOptions = {r=0.4, g=1.0, b=0.4};
 function cPowaPet:Init()
 	if (PowaAuras.playerclass == "DEATHKNIGHT") then
 		local name, iconPath, _, _, currentRank = GetTalentInfo(3, 20); -- Master of Ghouls
-		PowaAuras:Message(name, "? currentRank=",currentRank);
+		--PowaAuras:Message(name, "? currentRank=",currentRank);
 		PowaAuras.MasterOfGhouls = (currentRank>0);
+		self.CanHaveTimerOnInverse=true;
 		if (not PowaAuras.MasterOfGhouls) then
 			self.CanHaveTimer=true;
-			self.CanHaveTimerOnInvert=true
 		end
+	elseif (PowaAuras.playerclass == "MAGE") then
+		self.CanHaveTimerOnInverse=true;
 	end
 end
 
@@ -2370,27 +2372,32 @@ function cPowaPet:CheckIfShouldShow(giveReason)
 	end
 
 	if(UnitExists("pet")) then
+		if (PowaAuras.playerclass == "MAGE") then
+			--Get time left for Water Elemental?
+		end
 		if (not giveReason) then return true; end
 		return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonPetExists);
 	end	
 	
-	if (PowaAuras.playerclass=="DEATHKNIGHT" and not self.MasterOfGhouls) then
-		local haveTotem, name, startTime, duration, icon = GetTotemInfo(1);
-		PowaAuras:Message("  haveTotem=",haveTotem, " totemName=",totemName, " startTime=",startTime, " duration=",duration);
-		if (startTime>0) then
-			if (self.Timer) then
-				self.Timer:SetDurationInfo(startTime + duration);
-				self:CheckTimerInvert();
-				if (self.ForceTimeInvert) then
-					if (not giveReason) then return false; end
-					return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonPetExists);
+	if (PowaAuras.playerclass=="DEATHKNIGHT" ) then
+		if (not PowaAuras.MasterOfGhouls) then
+			local haveTotem, name, startTime, duration, icon = GetTotemInfo(1);
+			--PowaAuras:Message("  haveTotem=",haveTotem, " totemName=",totemName, " startTime=",startTime, " duration=",duration);
+			if (startTime>0) then
+				if (self.Timer) then
+					self.Timer:SetDurationInfo(startTime + duration);
+					self:CheckTimerInvert();
+					if (self.ForceTimeInvert) then
+						if (not giveReason) then return false; end
+						return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonPetExists);
+					end
 				end
+				if (not giveReason) then return true; end
+				return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonPetExists);	
 			end
-			if (not giveReason) then return true; end
-			return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonPetExists);	
 		end
 	
-		if (self.Timer) then
+		if (self.Timer and self.inverse) then
 			local startTime, duration, enabled = GetSpellCooldown(46584);
 			if (not enabled) then
 				if (not giveReason) then return false; end
@@ -2405,7 +2412,22 @@ function cPowaPet:CheckIfShouldShow(giveReason)
 				return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonPetExists);
 			end
 		end
-
+	elseif (PowaAuras.playerclass == "MAGE") then
+		if (self.Timer and self.inverse) then
+			local startTime, duration, enabled = GetSpellCooldown(31687);
+			if (not enabled) then
+				if (not giveReason) then return false; end
+				local name = GetSpellInfo(31687);
+				return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonSpellNotEnabled, name);
+			end
+			
+			self.Timer:SetDurationInfo(startTime + duration);
+			self:CheckTimerInvert();
+			if (self.ForceTimeInvert) then
+				if (not giveReason) then return false; end
+				return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonPetExists);
+			end
+		end
 	end
 	
 	if (not giveReason) then return false; end
@@ -2414,7 +2436,7 @@ end
 
 
 -- Runes Aura--
-cPowaRunes = PowaClass(cPowaAura, {AuraType = "Runes", CanHaveTimerOnInvert=true});
+cPowaRunes = PowaClass(cPowaAura, {AuraType = "Runes", CanHaveTimerOnInverse=true});
 cPowaRunes.OptionText={buffNameTooltip=PowaAuras.Text.aideRunes, 
                             typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.Runes], 
 							};
@@ -2483,13 +2505,13 @@ function cPowaRunes:CheckIfShouldShow(giveReason)
 			for runeType = 1, 3 do
 				local index = runesCount[runeType];
 				local endCount = #runeEnd[runeType];
-				PowaAuras:Message("  runeType=",runeType, " index=",index, " endCount=",endCount);
+				--PowaAuras:Message("  runeType=",runeType, " index=",index, " endCount=",endCount);
 				if (index>0 and endCount>0) then
 					if (index>endCount) then
 						index = endCount;
 					end
 					local endTime = runeEnd[runeType][index];
-					PowaAuras:Message("    runeType=",runeType, " index=",index, " endTime=",endTime);
+					--PowaAuras:Message("    runeType=",runeType, " index=",index, " endTime=",endTime);
 					if (endTime>maxTime) then
 						maxTime = endTime;
 					end
