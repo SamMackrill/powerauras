@@ -162,7 +162,7 @@ end
 
 function PowaAuras:PLAYER_TALENT_UPDATE(...)
 	if (self.ModTest == false) then
-		self:ShowText("PLAYER_TALENT_UPDATE");
+		--self:ShowText("PLAYER_TALENT_UPDATE");
 		self.PendingRescan = GetTime() + 1;
 	end
 end
@@ -495,7 +495,7 @@ function PowaAuras:UNIT_PET(...)
 	local unit = ...;
 	if (unit ~= "player") then return; end
 	if (self.ModTest == false) then
-		self:ShowText("UNIT_PET");
+		--self:ShowText("UNIT_PET");
 		self.DoCheck.Pet = true;
 	end
 end
@@ -503,12 +503,12 @@ end
 function PowaAuras:PLAYER_TOTEM_UPDATE(...)
 	local slot = ...;
 	if (self.ModTest == false) then
-		self:ShowText("PLAYER_TOTEM_UPDATE slot=", slot, " class=", self.playerclass);
+		--self:ShowText("PLAYER_TOTEM_UPDATE slot=", slot, " class=", self.playerclass);
 		if (self.playerclass=="SHAMAN") then
 			self.TotemSlots[slot] = true;
 			self.DoCheck.Totems = true;
 		elseif (self.playerclass=="DEATHKNIGHT" and not self.MasterOfGhouls) then
-			self:ShowText("Ghoul (temp version)");
+			--self:ShowText("Ghoul (temp version)");
 			self.DoCheck.Pet = true;
 		end
 	end
