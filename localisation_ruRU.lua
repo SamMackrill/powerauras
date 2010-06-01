@@ -36,7 +36,7 @@ PowaAuras.EndAnimDisplay[4] = "Поворот";
 PowaAuras.EndAnimDisplay[5] = "Spin In"; --- untranslated
 
 PowaAuras.Sound[0] = NONE;
-PowaAuras.Sound[30] = "Нету";
+PowaAuras.Sound[30] = NONE;
 
 PowaAuras:MergeTables(PowaAuras.Text, 
 {
