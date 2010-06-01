@@ -2329,8 +2329,8 @@ end
 -- Pet Aura--
 cPowaPet= PowaClass(cPowaAura, {ValueName = "Pet"});
 cPowaPet.OptionText={typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.Pet]};
-
-cPowaPet.CheckBoxes={};
+cPowaPet.CheckBoxes={["PowaInverseButton"]=1,
+						};
 cPowaPet.TooltipOptions = {r=0.4, g=1.0, b=0.4};
 
 function cPowaPet:AddEffect()
@@ -2338,7 +2338,16 @@ function cPowaPet:AddEffect()
 end
 
 function cPowaPet:CheckIfShouldShow(giveReason)
-	self:SetIcon("Interface\\icons\\Ability_hunter_pet_bear");
+	if (PowaAuras.playerclass == "WARLOCK") then
+		self:SetIcon("Interface\\icons\\Spell_shadow_summonimp");
+	elseif (PowaAuras.playerclass == "MAGE") then
+		self:SetIcon("Interface\\icons\\Spell_frost_summonwaterelemental_2");
+	elseif (PowaAuras.playerclass == "DEATHKNIGHT") then
+		self:SetIcon("Interface\\icons\\Spell_shadow_animatedead");
+	else
+		self:SetIcon("Interface\\icons\\Ability_hunter_pet_bear");
+	end
+	
 	if(UnitExists("pet")) then 
 		if (not giveReason) then return true; end
 		return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonPetExists);
