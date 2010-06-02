@@ -166,7 +166,7 @@ function cPowaAura:StacksShowing()
 end
 
 function cPowaAura:FullTimerAllowed()
-	PowaAuras:ShowText("TimerAllowed CanHaveTimer", self.CanHaveTimer, " inverse ", self.inverse, " CanHaveTimerOnInverse ", self.CanHaveTimerOnInverse);
+	--PowaAuras:ShowText("TimerAllowed CanHaveTimer", self.CanHaveTimer, " inverse ", self.inverse, " CanHaveTimerOnInverse ", self.CanHaveTimerOnInverse);
 	return (self.CanHaveTimer and not self.inverse) or (self.CanHaveTimerOnInverse and self.inverse);
 end
 
@@ -2442,7 +2442,6 @@ cPowaRunes.OptionText={buffNameTooltip=PowaAuras.Text.aideRunes,
 							};
 cPowaRunes.CheckBoxes={["PowaInverseButton"]=1,
 						["PowaIngoreCaseButton"]=1,
-						["PowaOwntexButton"]=1,
 						};
 
 cPowaRunes.TooltipOptions = {r=1.0, g=0.4, b=1.0, showBuffName=true};
@@ -2500,7 +2499,7 @@ function cPowaRunes:CheckIfShouldShow(giveReason)
 			return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonRunesReady); 			
 		end
 		
-		if (self.Timer) then		
+		if (self.Timer and self.inverse) then		
 			local maxTime = 0;
 			for runeType = 1, 3 do
 				local index = runesCount[runeType];
