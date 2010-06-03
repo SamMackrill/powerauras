@@ -900,6 +900,8 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 		aura:Hide();
 	end
 
+	aura.EndSoundPlayed = nil;
+	
 	if (self.ModTest == false) then
 		if (aura.customsound ~= "") then
 			PlaySoundFile("Interface\\AddOns\\PowerAuras\\Sounds\\"..aura.customsound);
@@ -1069,7 +1071,11 @@ function PowaAuras:ShowSecondaryAuraForFirstTime(aura)
 	secondaryAura.isSecondary = true;
 	secondaryAura.alpha = aura.alpha * 0.5;
 	secondaryAura.anim1 = aura.anim2;
-	secondaryAura.speed = aura.speed - 0.1; --- legerement plus lent
+	if (aura.speed > 0.5) then
+		secondaryAura.speed = aura.speed - 0.1; --- legerement plus lent
+	else
+		secondaryAura.speed = aura.speed / 2; --- legerement plus lent
+	end
 
 	local auraId = aura.id;
 	local frame = self.Frames[auraId];
@@ -1228,18 +1234,26 @@ function PowaAuras:UpdateAura(aura, elapsed)
 		if (aura.HideRequest) then
 
 		
-			if (self.ModTest == false) then
+			if (self.ModTest == false and not aura.EndSoundPlayed) then
+				
 				if (aura.customsoundend ~= "") then
+					if (aura.Debug) then
+						self:Message("Playing Custom end sound ", aura.customsoundend);
+					end
 					PlaySoundFile("Interface\\AddOns\\PowerAuras\\Sounds\\"..aura.customsoundend);
 				elseif (aura.soundend > 0) then
 					if (PowaAuras.Sound[aura.soundend]~=nil and string.len(PowaAuras.Sound[aura.soundend])>0) then
+						if (aura.Debug) then
+							self:Message("Playing end sound ", PowaAuras.Sound[aura.soundend]);
+						end
 						if (string.find(PowaAuras.Sound[aura.soundend], "%.")) then
 							PlaySoundFile("Interface\\AddOns\\PowerAuras\\Sounds\\"..PowaAuras.Sound[aura.soundend]);
 						else
 							PlaySound(PowaAuras.Sound[aura.soundend]);
 						end
 					end
-				end	
+				end
+				aura.EndSoundPlayed = true;
 			end
 		
 		

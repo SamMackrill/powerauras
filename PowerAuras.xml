@@ -2505,9 +2505,9 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Anchors>
                 <Scripts>
                   <OnLoad>
-                  	self:SetMinMaxValues(0.50,2.00); self:SetValue(1.0); self:SetValueStep(0.05); 
+                  	self:SetMinMaxValues(0.05,2.00); self:SetValue(1.0); self:SetValueStep(0.05); 
                   	getglobal("PowaBarAuraAnimSpeedSliderText"):SetText(PowaAuras.Text.nomSpeed.." : 100%");
-                  	getglobal("PowaBarAuraAnimSpeedSliderLow"):SetText("50"); 
+                  	getglobal("PowaBarAuraAnimSpeedSliderLow"):SetText("5"); 
                   	getglobal("PowaBarAuraAnimSpeedSliderHigh"):SetText("200");
                   </OnLoad>
                   <OnValueChanged>PowaAuras:BarAuraAnimSpeedSliderChanged(self);</OnValueChanged>
