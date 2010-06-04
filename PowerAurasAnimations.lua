@@ -1,5 +1,8 @@
-function PowaAuras:CalculateDuration(speed)
-	return 1.25 - speed / 2;
+function PowaAuras:CalculateDurations(speed)
+	-- speed ranges       from  0.05  to 2
+	-- First  duration is then  1.225 to 0.25
+	-- Second duration is then 30     to 0.25
+	return 1.25 - speed / 2, 1.526 / math.max(speed,0.05) - 0.513;
 end
 
 function PowaAuras:AddBeginAnimation(aura, frame)
@@ -35,7 +38,7 @@ function PowaAuras:AddBeginAnimation(aura, frame)
 		end
 	end);
 	
-	local duration = self:CalculateDuration(aura.speed);
+	local duration, duration2 = self:CalculateDurations(aura.speed);
 	
 	--PowaAuras:ShowText("AddBeginAnimation duration=", duration, " speed=", aura.speed);
 	if (aura.begin~=PowaAuras.AnimationBeginTypes.Bounce) then
@@ -222,11 +225,11 @@ function PowaAuras:AddMainAnimation(aura, frame)
 			y = newy;
 		end
 	elseif (aura.anim1==PowaAuras.AnimationTypes.SpinClockwise) then
-		self:AddRotation(animationGroup, -360, math.max(30.65 - 15.2 * aura.speed, 0.25), PowaMisc.AnimationFps, 1);
+		self:AddRotation(animationGroup, -360, math.max(duration2, 0.25), PowaMisc.AnimationFps, 1);
 	elseif (aura.anim1==PowaAuras.AnimationTypes.SpinAntiClockwise) then
-		self:AddRotation(animationGroup, 360, math.max(30.65 - 15.2 * aura.speed, 0.25), PowaMisc.AnimationFps, 1);
+		self:AddRotation(animationGroup,  360, math.max(duration2, 0.25), PowaMisc.AnimationFps, 1);
 	end
-	
+
 	return animationGroup;
 end
 
