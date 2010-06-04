@@ -9,6 +9,7 @@ cPowaStacks = PowaClass(function(stacker, aura, base)
 	stacker.HideLeadingZeros = false;
 	stacker.UpdatePing = false;
 	stacker.Texture = "Default";
+	stacker.Relative = false;
 	--PowaAuras:ShowText("cPowaTimer");
 	if (base) then
 		for k, v in pairs (stacker) do
@@ -136,6 +137,7 @@ cPowaTimer = PowaClass(function(timer, aura, base)
 	timer.ShowActivation = false;
 	timer.InvertAuraBelow = 0;
 	timer.Texture = "Default";
+	timer.Relative = false;
 	--PowaAuras:ShowText("cPowaTimer");
 	if (base) then
 		for k, v in pairs (timer) do
