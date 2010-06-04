@@ -21,6 +21,7 @@ cPowaAura = PowaClass(function(aura, id, base)
 	aura.aurastext = "";
 	aura.aurastextfont = 1;
 	aura.icon = "";
+	aura.strata = "LOW";
 
 	aura.timerduration = 0;
 	
@@ -214,10 +215,10 @@ function cPowaAura:CreateFrames()
 		--PowaAuras:UnitTestInfo("New Frames", self.id);
 		--PowaAuras:UnitTestDebug("Creating frame for aura ", self.id);
 		--- Frame --- 
-		frame = CreateFrame("Frame","Frame"..self.id, UIParent);
+		frame = CreateFrame("Frame", nil, UIParent);
 		self:SetFrame(frame);
 		
-		frame:SetFrameStrata("LOW");
+		frame:SetFrameStrata(self.strata);
 		frame:Hide();  
 		
 		frame.baseL = 256;

@@ -2295,7 +2295,11 @@ function PowaAuras:UpdateOptionsTimer(auraId)
 	frame1:SetAlpha(math.min(timerOpts.a,0.99));
 	frame1:SetWidth(20 * timerOpts.h);
 	frame1:SetHeight(20 * timerOpts.h);
-	frame1:SetPoint("Center", timerOpts.x, timerOpts.y);
+	if (timerOpts.Relative) then
+		frame:SetPoint("LEFT", self.Frames[auraId], "RIGHT", timerOpts.x + 10, timerOpts.y);
+	else
+		frame1:SetPoint("Center", timerOpts.x, timerOpts.y);
+	end
 
     local frame2 = self.TimerFrame[auraId][2];
 	frame2:SetAlpha(timerOpts.a * 0.75);
@@ -2316,6 +2320,11 @@ function PowaAuras:UpdateOptionsStacks(auraId)
 	frame:SetWidth(20 * stackOpts.h);
 	frame:SetHeight(20 * stackOpts.h);
 	frame:SetPoint("Center", stackOpts.x, stackOpts.y);
+	if (stackOpts.Relative) then
+		frame:SetPoint("LEFT", self.Frames[auraId], "TOPRIGHT", stackOpts.x + 10, stackOpts.y);
+	else
+		frame1:SetPoint("Center", timerOpts.x, timerOpts.y);
+	end
 end
 
 function PowaAuras:ShowTimerChecked(control)

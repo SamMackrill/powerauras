@@ -395,22 +395,22 @@ end
 --- ------------------------------------------------------------------------------------
 
 function PowaAuras:CreateTimerFrame(auraId, index, updatePing)
-	local frame = CreateFrame("Frame", "TimerFrame"..auraId.."_"..index);
-	self.TimerFrame[auraId][index] = frame;
+	local frame = CreateFrame("Frame", nil, UIParent);
+	self.TimerFrame[aura.Id][index] = frame;
+	local aura = self.Auras[auraId];
 	
-	frame:SetFrameStrata("LOW");
+	frame:SetFrameStrata(aura.strata);
 	frame:Hide(); 
-	frame.TimerValue = 0;
-	
+
 	frame.texture = frame:CreateTexture(nil,"BACKGROUND");
 	frame.texture:SetBlendMode("ADD");
 	frame.texture:SetAllPoints(frame);
-	frame.texture:SetTexture(self.Auras[auraId].Timer:GetTexture());
+	frame.texture:SetTexture(aura.Timer:GetTexture());
 	if (updatePing) then
 		--self:ShowText("Creating Ping animation ", auraId, " ", index);
 		frame.PingAnimationGroup = frame:CreateAnimationGroup("Ping");
 		self:AddJumpScaleAndReturn(frame.PingAnimationGroup, 1.1, 1.1, 0.3, PowaMisc.AnimationFps, 1)
-		self:AddBrightenAndReturn(frame.PingAnimationGroup, 1.2, self.Auras[auraId].alpha, 0.3, PowaMisc.AnimationFps, 1);
+		self:AddBrightenAndReturn(frame.PingAnimationGroup, 1.2, aura.alpha, 0.3, PowaMisc.AnimationFps, 1);
 	end
 	
 end
@@ -429,21 +429,22 @@ end
 function PowaAuras:CreateStacksFrameIfMissing(auraId, updatePing)
 	if (not self.StacksFrames[auraId]) then
 		--self:Message("Creating missing StacksFrame for aura "..tostring(auraId));		
-		local frame = CreateFrame("Frame", "StacksFrame"..auraId);
+		local frame = CreateFrame("Frame", nil, UIParent);
 		self.StacksFrames[auraId] = frame;
+		local aura = self.Auras[auraId];
 		
-		frame:SetFrameStrata("LOW");
+		frame:SetFrameStrata(aura.strata);
 		frame:Hide(); 
 		
-		frame.texture = frame:CreateTexture(nil,"BACKGROUND");
+		frame.texture = frame:CreateTexture(nil, "BACKGROUND");
 		frame.texture:SetBlendMode("ADD");
 		frame.texture:SetAllPoints(frame);
-		frame.texture:SetTexture(self.Auras[auraId].Stacks:GetTexture());
+		frame.texture:SetTexture(aura.Stacks:GetTexture());
 		if (updatePing) then
 			--self:ShowText("Creating Ping animation ", auraId, " ", index);
 			frame.PingAnimationGroup = frame:CreateAnimationGroup("Ping");
 			self:AddJumpScaleAndReturn(frame.PingAnimationGroup, 1.1, 1.1, 0.3, PowaMisc.AnimationFps, 1)
-			self:AddBrightenAndReturn(frame.PingAnimationGroup, 1.2, self.Auras[auraId].alpha, 0.3, PowaMisc.AnimationFps, 1);
+			self:AddBrightenAndReturn(frame.PingAnimationGroup, 1.2, aura.alpha, 0.3, PowaMisc.AnimationFps, 1);
 		end
 	end
 	self:UpdateOptionsStacks(auraId);
@@ -947,7 +948,7 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 			texture:SetShadowColor(0.0, 0.0, 0.0, 0.8);
 			texture:SetShadowOffset(2,-2);
 		end
-		frame:SetFrameStrata("LOW");
+		frame:SetFrameStrata(aura.strata);
 	else
 		if (aura.textaura ~= true) then
 			texture:SetBlendMode("DISABLE");
@@ -1109,7 +1110,7 @@ function PowaAuras:ShowSecondaryAuraForFirstTime(aura)
 		if (aura.textaura ~= true) then
 			secondaryTexture:SetBlendMode("ADD");
 		end
-		secondaryFrame:SetFrameStrata("LOW");
+		secondaryFrame:SetFrameStrata(aura.strata);
 	else
 		if (aura.textaura ~= true) then
 			secondaryTexture:SetBlendMode("DISABLE");
