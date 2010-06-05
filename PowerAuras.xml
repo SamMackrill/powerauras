@@ -849,7 +849,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
             </Anchors>
             <Scripts>
               <OnLoad>
-              	self:SetMinMaxValues(0.1,1.0); self:SetValue(1.0); self:SetValueStep(0.05); 
+              	self:SetMinMaxValues(0.1,1.0); self:SetValue(1.0); self:SetValueStep(0.01); 
               	getglobal("PowaBarAuraAlphaSliderText"):SetText(PowaAuras.Text.nomAlpha.." : 1.0");
               	getglobal("PowaBarAuraAlphaSliderLow"):SetText("10"); 
               	getglobal("PowaBarAuraAlphaSliderHigh"):SetText("100");
@@ -875,7 +875,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
             </Anchors>
             <Scripts>
               <OnLoad>
-              	self.aide = PowaAuras.Text.aideDeform; self:SetMinMaxValues(0.5,1.5); self:SetValue(1); self:SetValueStep(0.05); 
+              	self.aide = PowaAuras.Text.aideDeform; self:SetMinMaxValues(0.5,1.5); self:SetValue(1); self:SetValueStep(0.01); 
               	getglobal("PowaBarAuraDeformSliderText"):SetText(PowaAuras.Text.nomDeform.." : 1"); 
               	getglobal("PowaBarAuraDeformSliderLow"):SetText(PowaAuras.Text.hauteur); 
               	getglobal("PowaBarAuraDeformSliderHigh"):SetText(PowaAuras.Text.largeur);
@@ -2505,7 +2505,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Anchors>
                 <Scripts>
                   <OnLoad>
-                  	self:SetMinMaxValues(0.05,2.00); self:SetValue(1.0); self:SetValueStep(0.05); 
+                  	self:SetMinMaxValues(0.05,2.00); self:SetValue(1.0); self:SetValueStep(0.01); 
                   	getglobal("PowaBarAuraAnimSpeedSliderText"):SetText(PowaAuras.Text.nomSpeed.." : 100%");
                   	getglobal("PowaBarAuraAnimSpeedSliderLow"):SetText("5"); 
                   	getglobal("PowaBarAuraAnimSpeedSliderHigh"):SetText("200");
@@ -3098,7 +3098,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Anchors>
                 <Scripts>
                   <OnLoad>
-                  	self:SetMinMaxValues(0.5,2.0); self:SetValue(1.0); self:SetValueStep(0.05); 
+                  	self:SetMinMaxValues(0.5,2.0); self:SetValue(1.0); self:SetValueStep(0.01); 
                   	getglobal("PowaTimerSizeSliderText"):SetText(PowaAuras.Text.nomTaille.." : 1.0");
                   	getglobal("PowaTimerSizeSliderLow"):SetText("0.5"); 
                   	getglobal("PowaTimerSizeSliderHigh"):SetText("2.0");
@@ -3124,7 +3124,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Anchors>
                 <Scripts>
                   <OnLoad>
-                  	self:SetMinMaxValues(0.1,1.0); self:SetValue(1.0); self:SetValueStep(0.05); 
+                  	self:SetMinMaxValues(0.1,1.0); self:SetValue(1.0); self:SetValueStep(0.01); 
                   	getglobal("PowaTimerAlphaSliderText"):SetText(PowaAuras.Text.nomAlpha.." : 1.0");
                   	getglobal("PowaTimerAlphaSliderLow"):SetText("0.1"); 
                   	getglobal("PowaTimerAlphaSliderHigh"):SetText("1.0");
@@ -3139,12 +3139,12 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                                 y="16" />
                 </Size>
                 <Anchors>
-                  <Anchor point="TOP"
+                  <Anchor point="TOPRIGHT"
                           relativeTo="PowaTimerAlphaSlider"
-                          relativePoint="BOTTOM">
+                          relativePoint="BOTTOMRIGHT">
                     <Offset>
                       <AbsDimension x="0"
-                                    y="-20" />
+                                    y="-15" />
                     </Offset>
                   </Anchor>
                 </Anchors>
@@ -3267,6 +3267,29 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   <OnClick>PowaAuras:TimerChecked(self, "ShowActivation");</OnClick>
                 </Scripts>
               </CheckButton>			  
+			  
+              <CheckButton name="PowaBuffTimerRelative"
+                           inherits="PowaCheckTemplate">
+                <Size>
+                  <AbsDimension x="25"
+                                y="25" />
+                </Size>
+                <Anchors>
+                 <Anchor point="TOP"
+                          relativeTo="PowaBuffTimerActivationTime"
+                          relativePoint="BOTTOM">
+                    <Offset>
+                      <AbsDimension x="0"
+                                    y="4" />
+                    </Offset>
+                  </Anchor>
+                </Anchors>
+                <Scripts>
+                  <OnLoad>getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomRelative);</OnLoad>
+                  <OnClick>PowaAuras:TimerChecked(self, "Relative");</OnClick>
+                </Scripts>
+              </CheckButton>	
+			  
              <Frame name="PowaDropDownTimerTexture"
                      inherits="UIDropDownMenuTemplate">
                 <Size>
@@ -3486,7 +3509,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Anchors>
                 <Scripts>
                   <OnLoad>
-                  	self:SetMinMaxValues(0.5,2.0); self:SetValue(1.0); self:SetValueStep(0.05); 
+                  	self:SetMinMaxValues(0.5,2.0); self:SetValue(1.0); self:SetValueStep(0.01); 
                   	getglobal("PowaStacksSizeSliderText"):SetText(PowaAuras.Text.nomTaille.." : 1.0");
                   	getglobal("PowaStacksSizeSliderLow"):SetText("0.5"); 
                   	getglobal("PowaStacksSizeSliderHigh"):SetText("2.0");
@@ -3512,7 +3535,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Anchors>
                 <Scripts>
                   <OnLoad>
-                  	self:SetMinMaxValues(0.1,1.0); self:SetValue(1.0); self:SetValueStep(0.05); 
+                  	self:SetMinMaxValues(0.1,1.0); self:SetValue(1.0); self:SetValueStep(0.01); 
                   	getglobal("PowaStacksAlphaSliderText"):SetText(PowaAuras.Text.nomAlpha.." : 1.0");
                   	getglobal("PowaStacksAlphaSliderLow"):SetText("0.1"); 
                   	getglobal("PowaStacksAlphaSliderHigh"):SetText("1.0");
