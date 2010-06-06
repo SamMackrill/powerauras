@@ -149,8 +149,21 @@ PowaAuras = {
 		"UNIT_THREAT_SITUATION_UPDATE",
 		"UPDATE_SHAPESHIFT_FORM",
 		"UPDATE_SHAPESHIFT_FORMS",
-		"ZONE_CHANGED_NEW_AREA";
+		"ZONE_CHANGED_NEW_AREA",
 	};
+
+	RelativeToParent = 
+	{
+		TOPLEFT     = "BOTTOMRIGHT", 
+		TOP         = "BOTTOM", 
+		TOPRIGHT    = "BOTTOMLEFT", 
+		RIGHT       = "LEFT", 
+		BOTTOMRIGHT = "TOPLEFT", 
+		BOTTOM      = "TOP", 
+		BOTTOMLEFT  = "TOPRIGHT", 
+		LEFT        = "RIGHT", 
+		CENTER      = "CENTER",
+	},
 	
 	ChangedUnits =
 	{

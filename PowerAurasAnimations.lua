@@ -142,9 +142,9 @@ function PowaAuras:AddMainAnimation(aura, frame)
 		self:Play();
 	end);
 	
-	local duration = self:CalculateDuration(aura.speed);
+	local duration = self:CalculateDurations(aura.speed);
 	if (aura.isSecondary) then
-		duration = self:CalculateDuration(PowaAuras.Auras[aura.id].speed);
+		duration = self:CalculateDurations(PowaAuras.Auras[aura.id].speed);
 	end
 	if (aura.anim1==PowaAuras.AnimationTypes.Flashing) then
 		local deltaAlpha = math.min(aura.alpha * 0.5,0.99);
@@ -387,7 +387,7 @@ function PowaAuras:AddEndAnimation(aura, frame)
 		end
 	end);
 	
-	local duration = self:CalculateDuration(aura.speed);
+	local duration = self:CalculateDurations(aura.speed);
 	--PowaAuras:ShowText("AddEndAnimation duration=", duration, " speed=", aura.speed);
 	if (aura.finish==PowaAuras.AnimationEndTypes.Fade) then
 		self:AddFade(animationGroup, duration / 2, PowaMisc.AnimationFps, 1);

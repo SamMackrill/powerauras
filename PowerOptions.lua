@@ -867,8 +867,11 @@ function PowaAuras:UpdateTimerOptions()
 			PowaBuffTimerActivationTime:Disable();
 		end
 		getglobal("PowaBuffTimerActivationTime"):SetChecked(timer.ShowActivation);
-
+		getglobal("PowaBuffTimerUseOwnColorButton"):SetChecked(timer.UseOwnColor);
 		
+		PowaTimerColorNormalTexture:SetVertexColor(timer.r,timer.g,timer.b);
+
+		UIDropDownMenu_SetSelectedValue(PowaBuffTimerRelative, timer.Relative);		
 		UIDropDownMenu_SetSelectedValue(PowaDropDownTimerTexture, timer.Texture);
 		
 		PowaTimerInvertAuraSlider:SetValue(timer.InvertAuraBelow);
@@ -900,7 +903,12 @@ function PowaAuras:UpdateStacksOptions()
 
 		getglobal("PowaBuffStacksTransparentButton"):SetChecked(stacks.Transparent);
 		getglobal("PowaBuffStacksUpdatePingButton"):SetChecked(stacks.UpdatePing);
-		
+
+		getglobal("PowaBuffStacksUseOwnColorButton"):SetChecked(stacks.UseOwnColor);
+
+		PowaStacksColorNormalTexture:SetVertexColor(stacks.r,stacks.g,stacks.b);
+			
+		UIDropDownMenu_SetSelectedValue(PowaBuffStacksRelative, stacks.Relative);		
 		UIDropDownMenu_SetSelectedValue(PowaDropDownStacksTexture, stacks.Texture);
 
 	end
@@ -1214,8 +1222,9 @@ function PowaAuras:InitPage()
 		getglobal("AuraTexture"):SetTexture("Interface\\CharacterFrame\\TempPortrait.tga");
 	end
 
-	getglobal("PowaColorNormalTexture"):SetVertexColor(aura.r,aura.g,aura.b);
 	getglobal("AuraTexture"):SetVertexColor(aura.r,aura.g,aura.b);
+
+	getglobal("PowaColorNormalTexture"):SetVertexColor(aura.r,aura.g,aura.b);
 
 	-- affiche la symetrie
 	if (aura.symetrie == 1) then 
@@ -1940,6 +1949,25 @@ function PowaAuras.DropDownMenu_Initialize(owner)
 		end
 		
 		UIDropDownMenu_SetSelectedValue(PowaDropDownBuffType, aura.bufftype);
+	elseif (aura.Timer and owner:GetName() == "PowaBuffTimerRelativeButton" or owner:GetName() == "PowaBuffTimerRelative") then
+		info = {func = PowaAuras.DropDownMenu_OnClickTimerRelative, owner = owner};
+		for _,v in pairs({"NONE", "TOPLEFT", "TOP", "TOPRIGHT", "RIGHT", "BOTTOMRIGHT", "BOTTOM", "BOTTOMLEFT", "LEFT", "TOPLEFT", "CENTER"}) do
+			info.text = PowaAuras.Text.Relative[v];
+			info.value = v;
+			UIDropDownMenu_AddButton(info);
+		end
+		
+		UIDropDownMenu_SetSelectedValue(PowaBuffTimerRelative, aura.Timer.Relative);
+	elseif (aura.Stacks and owner:GetName() == "PowaBuffStacksRelativeButton" or owner:GetName() == "PowaBuffStacksRelative") then
+
+		info = {func = PowaAuras.DropDownMenu_OnClickStacksRelative, owner = owner};
+		for _,v in pairs({"NONE", "TOPLEFT", "TOP", "TOPRIGHT", "RIGHT", "BOTTOMRIGHT", "BOTTOM", "BOTTOMLEFT", "LEFT", "TOPLEFT", "CENTER"}) do
+			info.text = PowaAuras.Text.Relative[v];
+			info.value = v;
+			UIDropDownMenu_AddButton(info);
+		end
+		
+		UIDropDownMenu_SetSelectedValue(PowaBuffStacksRelative, aura.Stacks.Relative);
 	end
 end
 
@@ -2137,22 +2165,25 @@ end
 
 function PowaAuras:SetAuraColor(r, g, b)
 	--self:Message("SetColor r=", r, " g=",g, " b=", b);
-	local swatch = getglobal("PowaColorNormalTexture"); -- juste le visuel
-	local frame = getglobal("PowaColor_SwatchBg");      -- enregistre la couleur
+
+	local swatch = getglobal(ColorPickerFrame.Button:GetName().."NormalTexture"); -- juste le visuel
 	swatch:SetVertexColor(r,g,b);
+	local frame = getglobal(ColorPickerFrame.Button:GetName().."_SwatchBg");  -- Set the calling button colour
 	frame.r = r;
 	frame.g = g;
 	frame.b = b;
 
-	self.Auras[self.CurrentAuraId].r = r;
-	self.Auras[self.CurrentAuraId].g = g;
-	self.Auras[self.CurrentAuraId].b = b;
+	ColorPickerFrame.Source.r = r;
+	ColorPickerFrame.Source.g = g;
+	ColorPickerFrame.Source.b = b;
 
-	getglobal("AuraTexture"):SetVertexColor(r,g,b);
+	if (ColorPickerFrame.setTexture) then
+		getglobal("AuraTexture"):SetVertexColor(r,g,b);
+	end
 	self:RedisplayAura(self.CurrentAuraId);
 end
 
-function PowaAuras:OpenColorPicker()
+function PowaAuras:OpenColorPicker(control, source, setTexture)
 	CloseMenus();
 	if ColorPickerFrame:IsVisible() then
 		PowaAuras.CancelColor();
@@ -2160,6 +2191,9 @@ function PowaAuras:OpenColorPicker()
 	else
 		button = getglobal("PowaColor_SwatchBg");
 
+		ColorPickerFrame.Source = source;
+		ColorPickerFrame.Button = control;
+		ColorPickerFrame.setTexture = setTexture;
 		ColorPickerFrame.func = self.SetColor -- button.swatchFunc;
 		ColorPickerFrame:SetColorRGB(button.r, button.g, button.b);
 		ColorPickerFrame.previousValues = {r = button.r, g = button.g, b = button.b, opacity = button.opacity};
@@ -2295,10 +2329,10 @@ function PowaAuras:UpdateOptionsTimer(auraId)
 	frame1:SetAlpha(math.min(timerOpts.a,0.99));
 	frame1:SetWidth(20 * timerOpts.h);
 	frame1:SetHeight(20 * timerOpts.h);
-	if (timerOpts.Relative) then
-		frame:SetPoint("LEFT", self.Frames[auraId], "RIGHT", timerOpts.x + 10, timerOpts.y);
+	if (timerOpts.Relative and timerOpts.Relative~="NONE") then
+		frame1:SetPoint(self.RelativeToParent[timerOpts.Relative], self.Frames[auraId], timerOpts.Relative, timerOpts.x, timerOpts.y);
 	else
-		frame1:SetPoint("Center", timerOpts.x, timerOpts.y);
+		frame1:SetPoint("CENTER", timerOpts.x, timerOpts.y);
 	end
 
     local frame2 = self.TimerFrame[auraId][2];
@@ -2320,10 +2354,10 @@ function PowaAuras:UpdateOptionsStacks(auraId)
 	frame:SetWidth(20 * stackOpts.h);
 	frame:SetHeight(20 * stackOpts.h);
 	frame:SetPoint("Center", stackOpts.x, stackOpts.y);
-	if (stackOpts.Relative) then
-		frame:SetPoint("LEFT", self.Frames[auraId], "TOPRIGHT", stackOpts.x + 10, stackOpts.y);
+	if (stackOpts.Relative and stackOpts.Relative~="NONE") then
+		frame:SetPoint(self.RelativeToParent[stackOpts.Relative], self.Frames[auraId], stackOpts.Relative, stackOpts.x, stackOpts.y);
 	else
-		frame1:SetPoint("Center", timerOpts.x, timerOpts.y);
+		frame:SetPoint("CENTER", stackOpts.x, stackOpts.y);
 	end
 end
 
@@ -2409,6 +2443,16 @@ function PowaAuras:TimerDurationSliderChanged()
 	--self:CreateTimerFrameIfMissing(self.CurrentAuraId);
 end
 
+function PowaAuras.DropDownMenu_OnClickTimerRelative()
+	UIDropDownMenu_SetSelectedValue(this.owner, this.value);
+
+	local timer = PowaAuras.Auras[PowaAuras.CurrentAuraId].Timer;
+	timer.x = 0;
+	timer.y = 0;
+	timer.Relative = this.value;
+	timer:Delete();
+end
+
 function PowaAuras:TimerChecked(control, setting)
 	if (self.Initialising) then return; end
 	if (control:GetChecked()) then
@@ -2492,6 +2536,15 @@ function PowaAuras:StacksCoordXSliderChanged()
 	self.Auras[self.CurrentAuraId].Stacks.x = SliderValue;
 end
 
+function PowaAuras.DropDownMenu_OnClickStacksRelative()
+	UIDropDownMenu_SetSelectedValue(this.owner, this.value);
+
+	local stacks = PowaAuras.Auras[PowaAuras.CurrentAuraId].Stacks;
+	stacks.x = 0;
+	stacks.y = 0;
+	stacks.Relative = this.value;
+	stacks:Delete();	
+end
 
 function PowaAuras:StacksChecked(control, setting)
 	if (self.Initialising) then return; end
