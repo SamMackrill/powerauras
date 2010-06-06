@@ -396,7 +396,7 @@ end
 
 function PowaAuras:CreateTimerFrame(auraId, index, updatePing)
 	local frame = CreateFrame("Frame", nil, UIParent);
-	self.TimerFrame[aura.Id][index] = frame;
+	self.TimerFrame[auraId][index] = frame;
 	local aura = self.Auras[auraId];
 	
 	frame:SetFrameStrata(aura.strata);

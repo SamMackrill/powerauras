@@ -9,7 +9,11 @@ cPowaStacks = PowaClass(function(stacker, aura, base)
 	stacker.HideLeadingZeros = false;
 	stacker.UpdatePing = false;
 	stacker.Texture = "Default";
-	stacker.Relative = false;
+	stacker.Relative = "NONE";
+	stacker.UseOwnColor = false;
+	stacker.r = 1.0;
+	stacker.g = 1.0;
+	stacker.b = 1.0;
 	--PowaAuras:ShowText("cPowaTimer");
 	if (base) then
 		for k, v in pairs (stacker) do
@@ -45,15 +49,19 @@ function cPowaStacks:ShowValue(aura, newvalue)
 	else
 		frame.texture:SetBlendMode("DISABLE");
 	end
-	local auraTexture = PowaAuras.Textures[self.id];
-	if (auraTexture) then
-		if auraTexture:GetObjectType() == "Texture" then
-			frame.texture:SetVertexColor(auraTexture:GetVertexColor());
-		elseif auraTexture:GetObjectType() == "FontString" then
-			frame.texture:SetVertexColor(auraTexture:GetTextColor());
-		end
+	if (self.UseOwnColor) then
+		frame.texture:SetVertexColor(self.r,self.g,self.b);
 	else
-		frame.texture:SetVertexColor(aura.r,aura.g,aura.b);
+		local auraTexture = PowaAuras.Textures[self.id];
+		if (auraTexture) then
+			if auraTexture:GetObjectType() == "Texture" then
+				frame.texture:SetVertexColor(auraTexture:GetVertexColor());
+			elseif auraTexture:GetObjectType() == "FontString" then
+				frame.texture:SetVertexColor(auraTexture:GetTextColor());
+			end
+		else
+			frame.texture:SetVertexColor(aura.r,aura.g,aura.b);
+		end
 	end
 
 	--PowaAuras:ShowText("newvalue=", newvalue);
@@ -137,7 +145,11 @@ cPowaTimer = PowaClass(function(timer, aura, base)
 	timer.ShowActivation = false;
 	timer.InvertAuraBelow = 0;
 	timer.Texture = "Default";
-	timer.Relative = false;
+	timer.Relative = "NONE";
+	timer.UseOwnColor = false;
+	timer.r = 1.0;
+	timer.g = 1.0;
+	timer.b = 1.0;
 	--PowaAuras:ShowText("cPowaTimer");
 	if (base) then
 		for k, v in pairs (timer) do
@@ -326,15 +338,19 @@ function cPowaTimer:ShowValue(aura, frameIndex, displayValue)
 	else
 		timerFrame.texture:SetBlendMode("DISABLE");
 	end
-	local auraTexture = PowaAuras.Textures[self.id];
-	if (auraTexture) then
-		if auraTexture:GetObjectType() == "Texture" then
-			timerFrame.texture:SetVertexColor(auraTexture:GetVertexColor());
-		elseif auraTexture:GetObjectType() == "FontString" then
-			timerFrame.texture:SetVertexColor(auraTexture:GetTextColor());
-		end
+	if (self.UseOwnColor) then
+		timerFrame.texture:SetVertexColor(self.r,self.g,self.b);
 	else
-		timerFrame.texture:SetVertexColor(aura.r,aura.g,aura.b);
+		local auraTexture = PowaAuras.Textures[self.id];
+		if (auraTexture) then
+			if auraTexture:GetObjectType() == "Texture" then
+				timerFrame.texture:SetVertexColor(auraTexture:GetVertexColor());
+			elseif auraTexture:GetObjectType() == "FontString" then
+				timerFrame.texture:SetVertexColor(auraTexture:GetTextColor());
+			end
+		else
+			timerFrame.texture:SetVertexColor(aura.r,aura.g,aura.b);
+		end
 	end
 	
 	local deci, uni = self:ExtractDigits(displayValue);

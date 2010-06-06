@@ -709,6 +709,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               <OnClick>PowaAuras:TextAuraChecked();</OnClick>
             </Scripts>
           </CheckButton>
+		  
           <CheckButton name="PowaCustomTextureButton"
                        inherits="PowaCheckTemplate">
             <Size>
@@ -733,6 +734,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               <OnClick>PowaAuras:CustomTexturesChecked();</OnClick>
             </Scripts>
           </CheckButton>
+		  
           <CheckButton name="PowaWowTextureButton"
                        inherits="PowaCheckTemplate">
             <Size>
@@ -757,6 +759,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               <OnClick>PowaAuras:WowTexturesChecked();</OnClick>
             </Scripts>
           </CheckButton>
+		  
           <CheckButton name="PowaRandomColorButton"
                        inherits="PowaCheckTemplate">
             <Size>
@@ -781,6 +784,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               <OnClick>PowaAuras:RandomColorChecked();</OnClick>
             </Scripts>
           </CheckButton>
+		  
           <CheckButton name="PowaTexModeButton"
                        inherits="PowaCheckTemplate">
             <Size>
@@ -805,6 +809,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               <OnClick>PowaAuras:TexModeChecked();</OnClick>
             </Scripts>
           </CheckButton>
+		  
           <Slider name="PowaBarAuraSymSlider"
                   inherits="PowaBarSliderTemplate">
             <Size>
@@ -831,6 +836,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               <OnValueChanged>PowaAuras:BarAuraSymSliderChanged();</OnValueChanged>
             </Scripts>
           </Slider>
+		  
           <Slider name="PowaBarAuraAlphaSlider"
                   inherits="PowaBarSliderTemplate">
             <Size>
@@ -857,6 +863,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               <OnValueChanged>PowaAuras:BarAuraAlphaSliderChanged();</OnValueChanged>
             </Scripts>
           </Slider>
+		  
           <Slider name="PowaBarAuraDeformSlider"
                   inherits="PowaBarSliderTemplate">
             <Size>
@@ -883,6 +890,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               <OnValueChanged>PowaAuras:BarAuraDeformSliderChanged();</OnValueChanged>
             </Scripts>
           </Slider>
+		  
           <Slider name="PowaBarAuraSizeSlider"
                   inherits="PowaBarSliderTemplate">
             <Size>
@@ -909,6 +917,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               <OnValueChanged>PowaAuras:BarAuraSizeSliderChanged();</OnValueChanged>
             </Scripts>
           </Slider>
+		  
           <Slider name="PowaBarAuraCoordXSlider"
                   inherits="PowaBarSliderTemplate">
             <Size>
@@ -940,6 +949,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               </OnMouseUp>
             </Scripts>
           </Slider>
+		  
           <EditBox name="PowaBarAuraCoordXEdit"
                    autoFocus="false"
                    inherits="InputBoxTemplate">
@@ -1027,6 +1037,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               <OnEnterPressed>self:ClearFocus() PowaAuras:TextCoordYChanged();</OnEnterPressed>
             </Scripts>
           </EditBox>
+		  
           <Button name="PowaColor">
             <Size>
               <AbsDimension x="16"
@@ -1065,7 +1076,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
             </Layers>
             <Scripts>
               <OnLoad>getglobal(self:GetName().."_SwatchBg").r = 1.0; getglobal(self:GetName().."_SwatchBg").g = 1.0; getglobal(self:GetName().."_SwatchBg").b = 1.0;</OnLoad>
-              <OnClick>PowaAuras:OpenColorPicker();</OnClick>
+              <OnClick>PowaAuras:OpenColorPicker(self, PowaAuras.Auras[PowaAuras.CurrentAuraId]);</OnClick>
               <OnEnter>
               	getglobal(self:GetName().."_SwatchBg"):SetVertexColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b); 
               	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
@@ -3018,6 +3029,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   <OnClick>PowaAuras:ShowTimerChecked(self);</OnClick>
                 </Scripts>
               </CheckButton>
+			  
               <Slider name="PowaTimerCoordXSlider"
                       inherits="PowaBarSliderTemplate">
                 <Size>
@@ -3049,6 +3061,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   </OnMouseUp>
                 </Scripts>
               </Slider>
+			  
               <Slider name="PowaTimerCoordSlider"
                       inherits="PowaBarSliderTemplate">
                 <Size>
@@ -3080,6 +3093,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   </OnMouseUp>
                 </Scripts>
               </Slider>
+			  
               <Slider name="PowaTimerSizeSlider"
                       inherits="PowaBarSliderTemplate">
                 <Size>
@@ -3106,6 +3120,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   <OnValueChanged>PowaAuras:TimerSizeSliderChanged();</OnValueChanged>
                 </Scripts>
               </Slider>
+			  
               <Slider name="PowaTimerAlphaSlider"
                       inherits="PowaBarSliderTemplate">
                 <Size>
@@ -3132,10 +3147,11 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   <OnValueChanged>PowaAuras:TimerAlphaSliderChanged();</OnValueChanged>
                 </Scripts>
               </Slider>
+			  
               <Slider name="PowaTimerDurationSlider"
                       inherits="PowaBarSliderTemplate">
                 <Size>
-                  <AbsDimension x="130"
+                  <AbsDimension x="160"
                                 y="16" />
                 </Size>
                 <Anchors>
@@ -3158,11 +3174,12 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   <OnValueChanged>PowaAuras:TimerDurationSliderChanged();</OnValueChanged>
                 </Scripts>
               </Slider>
+			  
               <CheckButton name="PowaBuffTimerCentsButton"
                            inherits="PowaCheckTemplate">
                 <Size>
                   <AbsDimension x="25"
-                                y="25" />
+                                y="35" />
                 </Size>
                 <Anchors>
                   <Anchor point="TOPLEFT"
@@ -3267,16 +3284,16 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   <OnClick>PowaAuras:TimerChecked(self, "ShowActivation");</OnClick>
                 </Scripts>
               </CheckButton>			  
-			  
-              <CheckButton name="PowaBuffTimerRelative"
+
+			  <CheckButton name="PowaBuffTimerUseOwnColorButton"
                            inherits="PowaCheckTemplate">
                 <Size>
                   <AbsDimension x="25"
                                 y="25" />
                 </Size>
                 <Anchors>
-                 <Anchor point="TOP"
-                          relativeTo="PowaBuffTimerActivationTime"
+                  <Anchor point="TOP"
+                          relativeTo="PowaBuffTimerTransparentButton"
                           relativePoint="BOTTOM">
                     <Offset>
                       <AbsDimension x="0"
@@ -3285,11 +3302,62 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   </Anchor>
                 </Anchors>
                 <Scripts>
-                  <OnLoad>getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomRelative);</OnLoad>
-                  <OnClick>PowaAuras:TimerChecked(self, "Relative");</OnClick>
+                  <OnLoad>getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomUseOwnColor);</OnLoad>
+                  <OnClick>PowaAuras:TimerChecked(self, "UseOwnColor");</OnClick>
                 </Scripts>
-              </CheckButton>	
+              </CheckButton>
+
 			  
+			  <Button name="PowaTimerColor">
+				<Size>
+				  <AbsDimension x="16"
+								y="16" />
+				</Size>
+				<Anchors>
+				  <Anchor point="LEFT"
+						  relativeTo="PowaBuffTimerUseOwnColorButtonText"
+						  relativePoint="RIGHT">
+					<Offset>
+					  <AbsDimension x="10"
+									y="0" />
+					</Offset>
+				  </Anchor>
+				</Anchors>
+				<Layers>
+				  <Layer level="BACKGROUND">
+					<Texture name="$parent_SwatchBg">
+					  <Size>
+						<AbsDimension x="14"
+									  y="14" />
+					  </Size>
+					  <Anchors>
+						<Anchor point="CENTER">
+						  <Offset>
+							<AbsDimension x="0"
+										  y="0" />
+						  </Offset>
+						</Anchor>
+					  </Anchors>
+					  <Color r="1.0"
+							 g="1.0"
+							 b="1.0" />
+					</Texture>
+				  </Layer>
+				</Layers>
+				<Scripts>
+				  <OnLoad>getglobal(self:GetName().."_SwatchBg").r = 1.0; getglobal(self:GetName().."_SwatchBg").g = 1.0; getglobal(self:GetName().."_SwatchBg").b = 1.0;</OnLoad>
+				  <OnClick>PowaAuras:OpenColorPicker(self, PowaAuras.Auras[PowaAuras.CurrentAuraId].Timer);</OnClick>
+				  <OnEnter>
+					getglobal(self:GetName().."_SwatchBg"):SetVertexColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b); 
+					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+					GameTooltip:SetText(PowaAuras.Text.aideTimerColor, nil, nil, nil, nil, 1);
+				  </OnEnter>
+				  <OnLeave>getglobal(self:GetName().."_SwatchBg"):SetVertexColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b); GameTooltip:Hide();</OnLeave>
+				</Scripts>
+				<NormalTexture name="$parentNormalTexture"
+							   file="Interface\ChatFrame\ChatFrameColorSwatch" />
+			  </Button>
+		  
              <Frame name="PowaDropDownTimerTexture"
                      inherits="UIDropDownMenuTemplate">
                 <Size>
@@ -3297,7 +3365,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Size>
                 <Anchors>
                   <Anchor point="TOPLEFT"
-                          relativeTo="PowaBuffTimerTransparentButton"
+                          relativeTo="PowaBuffTimerUseOwnColorButton"
                           relativePoint="BOTTOMLEFT">
                     <Offset>
                       <AbsDimension x="0"
@@ -3323,7 +3391,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Layers>
                 <Scripts>
                   <OnLoad>
-                  	PowaDropDownTimerTextureLabel:SetText(PowaAuras.Text.nomTimerTexture); 
+                  	getglobal(self:GetName().."Label"):SetText(PowaAuras.Text.nomTimerTexture); 
                   </OnLoad>
                   <OnShow>
                    	UIDropDownMenu_Initialize(self, PowaAuras.DropDownTimerMenu_Initialize);
@@ -3332,6 +3400,51 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   <OnLeave>GameTooltip:Hide();</OnLeave>
                 </Scripts>
               </Frame>
+
+			  
+             <Frame name="PowaBuffTimerRelative"
+                     inherits="UIDropDownMenuTemplate">
+                <Size>
+                  <AbsDimension x="160" />
+                </Size>
+               <Anchors>
+                 <Anchor point="LEFT"
+                          relativeTo="PowaDropDownTimerTexture"
+                          relativePoint="RIGHT">
+                    <Offset>
+                      <AbsDimension x="20"
+                                    y="0" />
+                    </Offset>
+                  </Anchor>
+                </Anchors>
+
+                <Layers>
+                  <Layer level="BACKGROUND">
+                    <FontString name="$parentLabel"
+                                inherits="GameFontNormalSmall">
+                      <Anchors>
+                        <Anchor point="BOTTOMLEFT"
+                                relativePoint="TOPLEFT">
+                          <Offset>
+                            <AbsDimension x="21"
+                                          y="5" />
+                          </Offset>
+                        </Anchor>
+                      </Anchors>
+                    </FontString>
+                  </Layer>
+                </Layers>
+                <Scripts>
+                  <OnLoad>
+                  	getglobal(self:GetName().."Label"):SetText(PowaAuras.Text.nomRelative); 
+                  </OnLoad>
+                  <OnShow>
+                   	UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);
+                  </OnShow>
+                  <OnEnter>GameTooltip:SetOwner(self, "ANCHOR_RIGHT");</OnEnter>
+                  <OnLeave>GameTooltip:Hide();</OnLeave>
+                </Scripts>
+              </Frame>			  
 			  
 	         <Slider name="PowaTimerInvertAuraSlider"
                       inherits="PowaBarSliderTemplate">
@@ -3355,9 +3468,9 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
 					self:SetMinMaxValues(0,300);
 					self:SetValue(0);
 					self:SetValueStep(0.25);
-                  	getglobal("PowaTimerInvertAuraSliderText"):SetText(PowaAuras.Text.nomTimerInvertAura.." : 0"); 
-                  	getglobal("PowaTimerInvertAuraSliderLow"):SetText("0");
-                  	getglobal("PowaTimerInvertAuraSliderHigh"):SetText("300");
+                  	getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomTimerInvertAura.." : 0"); 
+                  	getglobal(self:GetName().."Low"):SetText("0");
+                  	getglobal(self:GetName().."High"):SetText("300");
                   </OnLoad>
                   <OnValueChanged>PowaAuras:PowaTimerInvertAuraSliderChanged(self);</OnValueChanged>
                 </Scripts>
@@ -3517,6 +3630,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   <OnValueChanged>PowaAuras:StacksSizeSliderChanged();</OnValueChanged>
                 </Scripts>
               </Slider>
+			  
               <Slider name="PowaStacksAlphaSlider"
                       inherits="PowaBarSliderTemplate">
                 <Size>
@@ -3587,7 +3701,79 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   <OnClick>PowaAuras:StacksChecked(self, "UpdatePing");</OnClick>
                 </Scripts>
               </CheckButton>
-				  
+
+			  <CheckButton name="PowaBuffStacksUseOwnColorButton"
+                           inherits="PowaCheckTemplate">
+                <Size>
+                  <AbsDimension x="25"
+                                y="25" />
+                </Size>
+                <Anchors>
+                  <Anchor point="TOP"
+                          relativeTo="PowaBuffStacksTransparentButton"
+                          relativePoint="BOTTOM">
+                    <Offset>
+                      <AbsDimension x="0"
+                                    y="4" />
+                    </Offset>
+                  </Anchor>
+                </Anchors>
+                <Scripts>
+                  <OnLoad>getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomUseOwnColor);</OnLoad>
+                  <OnClick>PowaAuras:StacksChecked(self, "UseOwnColor");</OnClick>
+                </Scripts>
+              </CheckButton>
+	  
+			  <Button name="PowaStacksColor">
+				<Size>
+				  <AbsDimension x="16"
+								y="16" />
+				</Size>
+				<Anchors>
+				  <Anchor point="LEFT"
+						  relativeTo="PowaBuffStacksUseOwnColorButtonText"
+						  relativePoint="RIGHT">
+					<Offset>
+					  <AbsDimension x="10"
+									y="0" />
+					</Offset>
+				  </Anchor>
+				</Anchors>
+				<Layers>
+				  <Layer level="BACKGROUND">
+					<Texture name="$parent_SwatchBg">
+					  <Size>
+						<AbsDimension x="14"
+									  y="14" />
+					  </Size>
+					  <Anchors>
+						<Anchor point="CENTER">
+						  <Offset>
+							<AbsDimension x="0"
+										  y="0" />
+						  </Offset>
+						</Anchor>
+					  </Anchors>
+					  <Color r="1.0"
+							 g="1.0"
+							 b="1.0" />
+					</Texture>
+				  </Layer>
+				</Layers>
+				<Scripts>
+				  <OnLoad>getglobal(self:GetName().."_SwatchBg").r = 1.0; getglobal(self:GetName().."_SwatchBg").g = 1.0; getglobal(self:GetName().."_SwatchBg").b = 1.0;</OnLoad>
+				  <OnClick>PowaAuras:OpenColorPicker(self, PowaAuras.Auras[PowaAuras.CurrentAuraId].Stacks);</OnClick>
+				  <OnEnter>
+					getglobal(self:GetName().."_SwatchBg"):SetVertexColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b); 
+					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+					GameTooltip:SetText(PowaAuras.Text.aideStacksColor, nil, nil, nil, nil, 1);
+				  </OnEnter>
+				  <OnLeave>getglobal(self:GetName().."_SwatchBg"):SetVertexColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b); GameTooltip:Hide();</OnLeave>
+				</Scripts>
+				<NormalTexture name="$parentNormalTexture"
+							   file="Interface\ChatFrame\ChatFrameColorSwatch" />
+			  </Button>
+			  
              <Frame name="PowaDropDownStacksTexture"
                      inherits="UIDropDownMenuTemplate">
                 <Size>
@@ -3595,7 +3781,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Size>
                 <Anchors>
                   <Anchor point="TOPLEFT"
-                          relativeTo="PowaBuffStacksTransparentButton"
+                          relativeTo="PowaBuffStacksUseOwnColorButton"
                           relativePoint="BOTTOMLEFT">
                     <Offset>
                       <AbsDimension x="0"
@@ -3630,6 +3816,50 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   <OnLeave>GameTooltip:Hide();</OnLeave>
                 </Scripts>
               </Frame>				  
+
+             <Frame name="PowaBuffStacksRelative"
+                     inherits="UIDropDownMenuTemplate">
+                <Size>
+                  <AbsDimension x="160" />
+                </Size>
+               <Anchors>
+                 <Anchor point="LEFT"
+                          relativeTo="PowaDropDownStacksTexture"
+                          relativePoint="RIGHT">
+                    <Offset>
+                      <AbsDimension x="20"
+                                    y="0" />
+                    </Offset>
+                  </Anchor>
+                </Anchors>
+
+                <Layers>
+                  <Layer level="BACKGROUND">
+                    <FontString name="$parentLabel"
+                                inherits="GameFontNormalSmall">
+                      <Anchors>
+                        <Anchor point="BOTTOMLEFT"
+                                relativePoint="TOPLEFT">
+                          <Offset>
+                            <AbsDimension x="21"
+                                          y="5" />
+                          </Offset>
+                        </Anchor>
+                      </Anchors>
+                    </FontString>
+                  </Layer>
+                </Layers>
+                <Scripts>
+                  <OnLoad>
+                  	getglobal(self:GetName().."Label"):SetText(PowaAuras.Text.nomRelative); 
+                  </OnLoad>
+                  <OnShow>
+                   	UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);
+                  </OnShow>
+                  <OnEnter>GameTooltip:SetOwner(self, "ANCHOR_RIGHT");</OnEnter>
+                  <OnLeave>GameTooltip:Hide();</OnLeave>
+                </Scripts>
+              </Frame>			
 			  
             </Frames>
           </Frame>		  
