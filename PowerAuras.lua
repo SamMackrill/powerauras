@@ -416,6 +416,11 @@ function PowaAuras:CreateTimerFrame(auraId, index, updatePing)
 end
 
 function PowaAuras:CreateTimerFrameIfMissing(auraId, updatePing)
+	local aura = self.Auras[auraId];
+	if (not self.Frames[auraId] and aura.Timer:IsRelative()) then
+		aura.Timer.Showing = false;
+		return;
+	end
 	if (not self.TimerFrame[auraId]) then
 		--self:Message("Creating missing TimerFrames for aura "..tostring(auraId));		
 		self.TimerFrame[auraId] = {};
@@ -427,11 +432,15 @@ function PowaAuras:CreateTimerFrameIfMissing(auraId, updatePing)
 end
 
 function PowaAuras:CreateStacksFrameIfMissing(auraId, updatePing)
+	local aura = self.Auras[auraId];
+	if (not self.Frames[auraId] and aura.Stacks:IsRelative()) then
+		aura.Stacks.Showing = false;
+		return;
+	end
 	if (not self.StacksFrames[auraId]) then
 		--self:Message("Creating missing StacksFrame for aura "..tostring(auraId));		
 		local frame = CreateFrame("Frame", nil, UIParent);
 		self.StacksFrames[auraId] = frame;
-		local aura = self.Auras[auraId];
 		
 		frame:SetFrameStrata(aura.strata);
 		frame:Hide(); 
@@ -994,11 +1003,16 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 	if (aura.InvertTimeHides) then
 		aura.ForceTimeInvert = nil;
 	end
-	if (aura.Timer) then
+	if (aura.Timer and aura.Timer.enabled) then
+		PowaAuras:CreateTimerFrameIfMissing(aura.id, aura.Timer.UpdatePing);
 		if (aura.timerduration) then
 			aura.Timer.CustomDuration = aura.timerduration;
 		end
 		aura.Timer.Start = GetTime();
+	end
+	if (aura.Stacks and aura.Stacks.enabled) then
+		PowaAuras:CreateStacksFrameIfMissing(aura.id, aura.Stacks.UpdatePing);
+		aura.Stacks:ShowValue(aura, aura.Stacks.lastShownValue)
 	end
 
 	if (aura.UseOldAnimations) then

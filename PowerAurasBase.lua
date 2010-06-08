@@ -230,6 +230,8 @@ PowaAuras = {
 		
 		Totems = false,
 		Runes = false,
+		Items = false,
+		Slots = false,
 		
 		GTFO = false,
 	};
@@ -257,6 +259,8 @@ PowaAuras = {
 		Totems=19,
 		Pet=20,
 		Runes=21,
+		Items=22,
+		Slots=23,
 		GTFO=50
 	};
 
@@ -370,11 +374,11 @@ PowaAuras = {
 		
 		Static = {},
 		
-		Totems = {},
-		
-		Pet = {},
-		
+		Totems = {},		
+		Pet = {},	
 		Runes = {},
+		Slots = {},
+		Items = {},
 		
 		GTFOHigh = {},
 		GTFOLow = {},

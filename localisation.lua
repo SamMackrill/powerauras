@@ -92,6 +92,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		[PowaAuras.BuffTypes.Totems] = "Totems",
 		[PowaAuras.BuffTypes.Pet] = "Pet",
 		[PowaAuras.BuffTypes.Runes] = "Runes",
+		[PowaAuras.BuffTypes.Slots] = "Equipment Slots",
+		[PowaAuras.BuffTypes.Items] = "Named Items",
 		[PowaAuras.BuffTypes.GTFO] = "GTFO Alert",
 	},
 
@@ -107,6 +109,30 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		BOTTOMLEFT  = "Bottom-Left", 
 		LEFT        = "Left", 
 		CENTER      = "Center",
+	},
+	
+	Slots =
+	{
+		AMMO = "Ammo",
+		Back = "Back",
+		Chest = "Chest",
+		Feet = "Feet",
+		Finger0 = "Finger0",
+		Finger1 = "Finger1",
+		Hands = "Hands",
+		Head = "Head",
+		Legs = "Legs",
+		MainHand = "MainHand",
+		Neck = "Neck",
+		Ranged = "Ranged",
+		SecondaryHand = "SecondaryHand",
+		Shirt = "Shirt",
+		Shoulder = "Shoulder",
+		Tabard = "Tabard",
+		Trinket0 = "Trinket0",
+		Trinket1 = "Trinket1",
+		Waist = "Waist",
+		Wrist = "Wrist",	
 	},
 	
 	-- main
@@ -142,6 +168,11 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomGlobalEffects = "Global\neffects",
 	aideEffectTooltip = "(Shift-click to toggle effect ON or OFF)",
 	aideEffectTooltip2 = "(Ctrl-click to give reason for activation)",
+	
+	
+	aideItems = "Enter full name of Item or [xxx] for Id",
+	aideSlots = "Enter name of slot to track: Ammo, Back, Chest, Feet, Finger0, Finger1, Hands, Head, Legs, MainHand, Neck, Ranged, SecondaryHand, Shirt, Shoulder, Tabard, Trinket0, Trinket1, Waist, Wrist",
+
 
 	-- editor
 	nomSoundStarting = "Starting Sound:",
@@ -503,6 +534,21 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomReasonSpellNotEnabled = "Spell $1 not enabled ",
 	nomReasonSpellNotFound   = "Spell $1 not found",
 	nomReasonSpellOnCooldown = "Spell $1 on Cooldown",
+	
+	nomReasonItemUsable     = "Item $1 usable",
+	nomReasonItemNotUsable  = "Item $1 not usable",
+	nomReasonItemNotReady   = "Item $1 Not Ready, on cooldown, timer invert",
+	nomReasonItemNotEnabled = "Item $1 not enabled ",
+	nomReasonItemNotFound   = "Item $1 not found",
+	nomReasonItemOnCooldown = "Item $1 on Cooldown",	
+	
+	nomReasonSlotUsable     = "$1 Slot usable",
+	nomReasonSlotNotUsable  = "$1 Slot not usable",
+	nomReasonSlotNotReady   = "$1 Slot Not Ready, on cooldown, timer invert",
+	nomReasonSlotNotEnabled = "$1 Slot has no cooldown effect",
+	nomReasonSlotNotFound   = "$1 Slot not found",
+	nomReasonSlotOnCooldown = "$1 Slot on Cooldown",
+	nomReasonSlotNone       = "$1 Slot is empty",
 	
 	nomReasonStealablePresent = "$1 has Stealable spell $2", --$1=Target $2=SpellName (e.g. "Focus has Stealable spell Blessing of Wisdom")
 	nomReasonNoStealablePresent = "Nobody has Stealable spell $1", --$1=SpellName (e.g. "Nobody has Stealable spell Blessing of Wisdom")
