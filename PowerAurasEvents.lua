@@ -635,23 +635,27 @@ function PowaAuras:UPDATE_SHAPESHIFT_FORM(...)
 	end  
 end
 
-function PowaAuras:BAG_UPDATE_COOLDOWN(...)
-	if (self.ModTest == false) then
-		--self:ShowText("BAG_UPDATE_COOLDOWN");
-	end  
-end
-
 function PowaAuras:UNIT_INVENTORY_CHANGED(...)
 	if (self.ModTest == false) then
 		local unit = ...;
 		--self:ShowText("UNIT_INVENTORY_CHANGED ", unit);
 		if (unit=="player") then
+			self.DoCheck.Items = true;
+			self.DoCheck.Slots = true;
 			for _, auraId in pairs(self.AurasByType.Enchants) do
 				--self:ShowText("Pending set for Enchants ", auraId);
 				self.Pending[auraId] = GetTime() + 0.25; -- Allow time for client to update or timer will be wrong
 			end
 		end			
 	end  
+end
+
+function PowaAuras:BAG_UPDATE_COOLDOWN()
+	if (self.ModTest == false) then
+		--self:ShowText("BAG_UPDATE_COOLDOWN");
+		self.DoCheck.Items = true;
+		self.DoCheck.Slots = true;
+	end
 end
 
 function PowaAuras:UNIT_THREAT_SITUATION_UPDATE(...)

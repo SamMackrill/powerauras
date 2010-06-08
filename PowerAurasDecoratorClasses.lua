@@ -30,6 +30,11 @@ cPowaStacks = PowaClass(function(stacker, aura, base)
 	stacker.id = aura.id;
 end);
 
+
+function cPowaStacks:IsRelative()
+	return (self.Relative and self.Relative~="NONE");
+end
+
 function cPowaStacks:GetTexture()
 	local texture = PowaMisc.DefaultStacksTexture;
 	if (self.Texture ~= "Default") then
@@ -43,7 +48,13 @@ function cPowaStacks:GetTexture()
 end
 
 function cPowaStacks:ShowValue(aura, newvalue)
+	--PowaAuras:ShowText("Stacks Showvalue id=", self.id, " newvalue=", newvalue);
+
 	local frame = PowaAuras.StacksFrames[self.id];
+	if (frame==nil) then
+		return;
+	end
+	
 	if (aura.texmode == 1) then
 		frame.texture:SetBlendMode("ADD");
 	else
@@ -88,13 +99,16 @@ end
 
 function cPowaStacks:SetStackCount(count)
 	--PowaAuras:UnitTestInfo("SetStackCount ",self.id);
+	--PowaAuras:Message("SetStackCount ",self.id);
 	local aura = PowaAuras.Auras[self.id];
 	if (aura == nil) then
 		--PowaAuras:UnitTestInfo("Stacks aura missing");
+		--PowaAuras:Message("Stacks aura missing");
 		return;
 	end
 	if (self.enabled==false) then 
 		--PowaAuras:UnitTestInfo("Stacks disabled");
+		--PowaAuras:Message("Stacks disabled");
 		return;
 	end
 	if (not count or count==0) then
@@ -106,6 +120,7 @@ function cPowaStacks:SetStackCount(count)
 		return;
 	end
 	if (self.lastShownValue==count and self.Showing) then
+		--PowaAuras:Message("Stacks disabled");
 		return;
 	end
 	self.lastShownValue=count;
@@ -178,6 +193,11 @@ cPowaTimer = PowaClass(function(timer, aura, base)
 	--end
 end);
 
+
+function cPowaTimer:IsRelative()
+	return (self.Relative and self.Relative~="NONE");
+end
+
 function cPowaTimer:GetTexture()
 	local texture = PowaMisc.DefaultTimerTexture;
 	if (self.Texture ~= "Default") then
@@ -194,16 +214,21 @@ end
 --- ------------------------------------------------------------------------------------------------- TIMERS
 function cPowaTimer:Update(elapsed)
 	--PowaAuras:UnitTestInfo("Timer.Update ",self.id);
-	--PowaAuras:ShowText("Timer.Update ",self.id);
 	local aura = PowaAuras.Auras[self.id];
 	if (aura == nil) then
 		--PowaAuras:UnitTestInfo("Timer aura missing");
 		--PowaAuras:ShowText("Timer aura missing");
 		return;
 	end
+	if (aura.Debug) then
+		PowaAuras:Message("Timer.Update ",self.id);
+	end
 	if (self.enabled==false and self.InvertAuraBelow==0) then
 		--PowaAuras:UnitTestInfo("Timer disabled");
 		--PowaAuras:ShowText("Timer disabled");
+		if (aura.Debug) then
+			PowaAuras:Message("Timer disabled");
+		end
 		return;
 	end
 

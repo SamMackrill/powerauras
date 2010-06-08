@@ -2323,22 +2323,22 @@ function PowaAuras:UpdateOptionsTimer(auraId)
 
 	if (self.Initialising) then return; end
 	
-	local timerOpts = self.Auras[auraId].Timer;
+	local timer = self.Auras[auraId].Timer;
 	
     local frame1 = self.TimerFrame[auraId][1];	
-	frame1:SetAlpha(math.min(timerOpts.a,0.99));
-	frame1:SetWidth(20 * timerOpts.h);
-	frame1:SetHeight(20 * timerOpts.h);
-	if (timerOpts.Relative and timerOpts.Relative~="NONE") then
-		frame1:SetPoint(self.RelativeToParent[timerOpts.Relative], self.Frames[auraId], timerOpts.Relative, timerOpts.x, timerOpts.y);
+	frame1:SetAlpha(math.min(timer.a,0.99));
+	frame1:SetWidth(20 * timer.h);
+	frame1:SetHeight(20 * timer.h);
+	if (timer:IsRelative()) then
+		frame1:SetPoint(self.RelativeToParent[timer.Relative], self.Frames[auraId], timer.Relative, timer.x, timer.y);
 	else
-		frame1:SetPoint("CENTER", timerOpts.x, timerOpts.y);
+		frame1:SetPoint("CENTER", timer.x, timer.y);
 	end
 
     local frame2 = self.TimerFrame[auraId][2];
-	frame2:SetAlpha(timerOpts.a * 0.75);
-	frame2:SetWidth(14 * timerOpts.h);
-	frame2:SetHeight(14 * timerOpts.h);
+	frame2:SetAlpha(timer.a * 0.75);
+	frame2:SetWidth(14 * timer.h);
+	frame2:SetHeight(14 * timer.h);
 	frame2:SetPoint("LEFT", frame1, "RIGHT", 1, -1.5);
 
 end
@@ -2347,17 +2347,18 @@ end
 function PowaAuras:UpdateOptionsStacks(auraId)
 	if (self.Initialising) then return; end  
 	
-	local stackOpts = self.Auras[auraId].Stacks;
+	local stacks = self.Auras[auraId].Stacks;
 	
     local frame = self.StacksFrames[auraId];	
-	frame:SetAlpha(math.min(stackOpts.a, 0.99));
-	frame:SetWidth(20 * stackOpts.h);
-	frame:SetHeight(20 * stackOpts.h);
-	frame:SetPoint("Center", stackOpts.x, stackOpts.y);
-	if (stackOpts.Relative and stackOpts.Relative~="NONE") then
-		frame:SetPoint(self.RelativeToParent[stackOpts.Relative], self.Frames[auraId], stackOpts.Relative, stackOpts.x, stackOpts.y);
+	frame:SetAlpha(math.min(stacks.a, 0.99));
+	frame:SetWidth(20 * stacks.h);
+	frame:SetHeight(20 * stacks.h);
+	frame:SetPoint("Center", stacks.x, stacks.y);
+	if (stacks:IsRelative()) then
+		--PowaAuras:ShowText(self.Frames[auraId],": stacks.Relative=", stacks.Relative, " RelativeToParent=", self.RelativeToParent[stacks.Relative], " x=", stacks.x, " y=",stacks.y);
+		frame:SetPoint(self.RelativeToParent[stacks.Relative], self.Frames[auraId], stacks.Relative, stacks.x, stacks.y);
 	else
-		frame:SetPoint("CENTER", stackOpts.x, stackOpts.y);
+		frame:SetPoint("CENTER", stacks.x, stacks.y);
 	end
 end
 

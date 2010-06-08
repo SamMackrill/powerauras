@@ -2533,6 +2533,183 @@ function cPowaRunes:CheckIfShouldShow(giveReason)
 	return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonRunesNotReady); 			
 end
 
+-- Equipment Slots Aura--
+cPowaSlots = PowaClass(cPowaAura, {ValueName = "Slots",  CooldownAura=true, CanHaveTimerOnInverse=true});
+cPowaSlots.OptionText={buffNameTooltip=PowaAuras.Text.aideSlots, typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.Slots]};
+cPowaSlots.ShowOptions={["PowaBarTooltipCheck"]=1};
+cPowaSlots.CheckBoxes={["PowaInverseButton"]=1,["PowaOwntexButton"]=1,};
+cPowaSlots.TooltipOptions = {r=0.8, g=0.8, b=0.2};
+
+function cPowaSlots:AddEffect()
+	table.insert(PowaAuras.AurasByType.Slots, self.id);	
+end
+
+function cPowaSlots:CheckIfShouldShow(giveReason)
+	if (self.Debug) then
+		PowaAuras:Message("Slots Aura CheckIfShouldShow buffname=",self.buffname); --OK
+	end
+	for pword in string.gmatch(self.buffname, "[^/]+") do
+		pword = self:Trim(pword);
+		if (string.len(pword)>0) then
+			local slotId, emptyTexture = GetInventorySlotInfo(pword.."Slot");
+			--PowaAuras:Message("pword=",pword, " slotId= ",slotId);
+
+			if (slotId) then
+
+				local texture = GetInventoryItemTexture("player", slotId);
+				if (texture~=nil) then
+			
+					local cdstart, cdduration, enabled = GetInventoryItemCooldown("player", slotId);
+					--PowaAuras:UnitTestDebug("cdstart= ",cdstart," duration= ",cdduration," enabled= ",enabled);
+					if (self.Debug) then
+						PowaAuras:Message("cdstart= ",cdstart," duration= ",cdduration," enabled= ",enabled); --OK
+					end
+
+					if (enabled==1) then
+						self:SetIcon(texture);
+		
+						if (cdstart == 0) then
+							if (self.Debug) then
+								PowaAuras:Message("SHOW!!"); --OK
+							end
+							if (not giveReason) then return true; end
+							return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonSlotUsable, pword);
+						end
+			
+						if (self.Timer) then
+							self.Timer:SetDurationInfo(cdstart + cdduration);
+							self:CheckTimerInvert();
+							if (self.ForceTimeInvert) then
+								if (self.Debug) then
+									PowaAuras:Message("SHOW2!!"); --OK
+								end
+								if (not giveReason) then return true; end
+								return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonSlotNotReady, pword);
+							end
+							if (self.Debug) then
+								PowaAuras:Message("Set DurationInfo= ",self.Timer.DurationInfo); --OK
+							end
+						end
+						if (giveReason) then
+							reason = PowaAuras:InsertText(PowaAuras.Text.nomReasonSlotOnCooldown, pword);
+						end		
+			
+					else
+						if (giveReason) then
+							reason = PowaAuras:InsertText(PowaAuras.Text.nomReasonSlotNotEnabled, pword);
+						end
+					end
+				else
+					self:SetIcon(emptyTexture);
+					reason = PowaAuras:InsertText(PowaAuras.Text.nomReasonSlotNone, pword);
+				end
+			else
+				if (giveReason) then
+					reason = PowaAuras:InsertText(PowaAuras.Text.nomReasonSlotNotFound, pword);
+				end
+			end
+		end
+	end
+
+	if (self.Debug) then
+		PowaAuras:Message("HIDE!!"); --OK
+	end
+	if (not giveReason) then return false; end
+	return false, reason;
+end
+
+-- Named Items Aura--
+cPowaItems = PowaClass(cPowaAura, {ValueName = "Items", CanHaveStacks=true,  CooldownAura=true, CanHaveTimerOnInverse=true});
+cPowaItems.OptionText={buffNameTooltip=PowaAuras.Text.aideItems, typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.Items]};
+cPowaItems.ShowOptions={["PowaBarTooltipCheck"]=1, ["PowaBarBuffStacks"]=1};
+cPowaItems.CheckBoxes={["PowaInverseButton"]=1,["PowaOwntexButton"]=1,};
+cPowaItems.TooltipOptions = {r=0.8, g=0.8, b=0.0};
+			 
+function cPowaItems:AddEffect()
+	table.insert(PowaAuras.AurasByType.Items, self.id);	
+end
+
+function cPowaItems:CheckIfShouldShow(giveReason)
+	if (self.Debug) then
+		PowaAuras:Message("Items Aura CheckIfShouldShow buffname=",self.buffname); --OK
+	end
+	for pword in string.gmatch(self.buffname, "[^/]+") do
+		pword = self:Trim(pword);
+		if (string.len(pword)>0) then
+			local item;
+			local _, _,itemId = string.find(pword, "%[(%d+)%]")
+			if (itemId) then		
+				item = tonumber(itemId);
+			else
+				item = pword;
+			end
+			local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice = GetItemInfo(item);
+			if (itemName) then
+
+				if (self:IconIsRequired()) then
+					self:SetIcon(itemTexture);
+				end
+			
+				local cdstart, cdduration, enabled  = GetItemCooldown(item);
+				--PowaAuras:UnitTestDebug("cdstart= ",cdstart," duration= ",cdduration," enabled= ",enabled);
+				if (self.Debug) then
+					PowaAuras:Message("cdstart= ",cdstart," duration= ",cdduration," enabled= ",enabled); --OK
+				end
+
+				if (enabled) then
+
+					if (self.Stacks) then
+						self.Stacks:SetStackCount(GetItemCount(item));
+					end
+			
+					if (cdstart == 0) then
+						if (self.Debug) then
+							PowaAuras:Message("SHOW!!"); --OK
+						end
+						if (not giveReason) then return true; end
+						return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonItemUsable, itemName);
+					end
+		
+					PowaAuras.Pending[self.id] = cdstart + cdduration;
+					if (self.Timer) then
+						self.Timer:SetDurationInfo(cdstart + cdduration);
+						self:CheckTimerInvert();
+						if (self.ForceTimeInvert) then
+							if (self.Debug) then
+								PowaAuras:Message("SHOW2!!"); --OK
+							end
+							if (not giveReason) then return true; end
+							return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonItemNotReady, itemName);
+						end
+						if (self.Debug) then
+							PowaAuras:Message("Set DurationInfo= ",self.Timer.DurationInfo); --OK
+						end
+					end
+					if (giveReason) then
+						reason = PowaAuras:InsertText(PowaAuras.Text.nomReasonItemOnCooldown, itemName);
+					end		
+		
+				else
+					if (giveReason) then
+						reason = PowaAuras:InsertText(PowaAuras.Text.nomReasonItemDisabled, itemName);
+					end
+				end
+			else
+				if (giveReason) then
+					reason = PowaAuras:InsertText(PowaAuras.Text.nomReasonItemNotFound, pword);
+				end
+			end
+		end
+	end
+
+	if (self.Debug) then
+		PowaAuras:Message("HIDE!!"); --OK
+	end
+	if (not giveReason) then return false; end
+	return false, reason;
+	
+	
+end
 
 -- Static Aura--
 cPowaStatic= PowaClass(cPowaAura, {ValueName = "Static"});
@@ -2573,6 +2750,8 @@ PowaAuras.AuraClasses = {
 	[PowaAuras.BuffTypes.Totems]=cPowaTotems,
 	[PowaAuras.BuffTypes.Pet]=cPowaPet,
 	[PowaAuras.BuffTypes.Runes]=cPowaRunes,
+	[PowaAuras.BuffTypes.Slots]=cPowaSlots,
+	[PowaAuras.BuffTypes.Items]=cPowaItems,
 	[PowaAuras.BuffTypes.Static]=cPowaStatic,
 }
 
