@@ -658,6 +658,13 @@ function PowaAuras:BAG_UPDATE_COOLDOWN()
 	end
 end
 
+function PowaAuras:MINIMAP_UPDATE_TRACKING()
+	if (self.ModTest == false) then
+		--self:ShowText("MINIMAP_UPDATE_TRACKING");
+		self.DoCheck.Tracking = true;
+	end
+end
+
 function PowaAuras:UNIT_THREAT_SITUATION_UPDATE(...)
 	local unit = ...;
 	if (self.ModTest == false) then

@@ -1941,12 +1941,7 @@ function PowaAuras.DropDownMenu_Initialize(owner)
 	elseif (owner:GetName() == "PowaDropDownBuffTypeButton" or owner:GetName() == "PowaDropDownBuffType") then
 		--PowaAuras:Message("DropDownMenu_Initialize for buff type");
 
-		info = {func = PowaAuras.DropDownMenu_OnClickBuffType, owner = owner};
-		for _,v in pairs(PowaAuras.BuffTypes) do
-			info.text = PowaAuras.Text.AuraType[v];
-			info.value = v;
-			UIDropDownMenu_AddButton(info);
-		end
+		PowaAuras:FillDropdownSorted(PowaAuras.Text.AuraType, {func = PowaAuras.DropDownMenu_OnClickBuffType, owner = owner});
 		
 		UIDropDownMenu_SetSelectedValue(PowaDropDownBuffType, aura.bufftype);
 	elseif (aura.Timer and owner:GetName() == "PowaBuffTimerRelativeButton" or owner:GetName() == "PowaBuffTimerRelative") then
@@ -1968,6 +1963,19 @@ function PowaAuras.DropDownMenu_Initialize(owner)
 		end
 		
 		UIDropDownMenu_SetSelectedValue(PowaBuffStacksRelative, aura.Stacks.Relative);
+	end
+end
+
+function PowaAuras:FillDropdownSorted(t, info)
+	local names = PowaAuras:CopyTable(t);
+	local values = PowaAuras:ReverseTable(names);
+	table.sort(names);
+	--for k,v in ipairs(names) do PowaAuras:Message(k, " ", v, " ", auraReverse[v]) end
+
+	for _,name in pairs(names) do
+		info.text = name;
+		info.value = values[name];
+		UIDropDownMenu_AddButton(info);
 	end
 end
 

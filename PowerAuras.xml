@@ -127,6 +127,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
 			</Size>
 		</ThumbTexture>
 	</Slider>
+	
   <Slider name="PowaBarSliderTemplate"
           inherits="OptionsSmallSliderTemplate"
           virtual="true">
@@ -140,6 +141,48 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
       <OnLeave>GameTooltip:Hide();</OnLeave>
     </Scripts>
   </Slider>
+  
+    <Slider name="PowaBarSliderTemplateWithButtons"
+          inherits="PowaBarSliderTemplate"
+          virtual="true">
+		<Frames>
+			<Button name="$parentPlus" text="+" inherits="OptionsButtonTemplate">
+			<Size>
+			  <AbsDimension x="17" y="18" />
+			</Size>
+			<Anchors>
+			  <Anchor point="RIGHT" relativePoint="LEFT">
+				<Offset>
+				  <AbsDimension x="0" y="0" />
+				</Offset>
+			  </Anchor>
+			</Anchors>
+			<Scripts>
+				<OnClick>
+				self:GetParent():SetValue(self:GetParent():GetValue() + self:GetParent():GetValueStep());
+				</OnClick>
+			</Scripts>
+		  </Button>
+		  <Button name="$parentMinus" text="-" inherits="OptionsButtonTemplate">
+			<Size>
+			  <AbsDimension x="17" y="18" />
+			</Size>
+			<Anchors>
+			  <Anchor point="RIGHT" relativePoint="LEFT" relativeTo="$parentPlus">
+				<Offset>
+				  <AbsDimension x="0" y="0" />
+				</Offset>
+			  </Anchor>
+			</Anchors>
+			<Scripts>
+				<OnClick>
+				self:GetParent():SetValue(self:GetParent():GetValue() - self:GetParent():GetValueStep());
+				</OnClick>
+			</Scripts>
+		  </Button>
+
+		</Frames>
+	</Slider>
   
   <CheckButton name="PowaCheckTemplate"
                inherits="OptionsSmallCheckButtonTemplate"
@@ -551,18 +594,18 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
         </Layers>
         <Frames>
           <Slider name="PowaBarAuraTextureSlider"
-                  inherits="PowaBarSliderTemplate">
+                  inherits="PowaBarSliderTemplateWithButtons">
             <Size>
-              <AbsDimension x="250"
+              <AbsDimension x="210"
                             y="16" />
             </Size>
             <Anchors>
               <Anchor point="LEFT"
                       relativeTo="AuraTexture"
-                      relativePoint="TOPRIGHT">
+                      relativePoint="BOTTOMRIGHT">
                 <Offset>
-                  <AbsDimension x="-40"
-                                y="-104" />
+                  <AbsDimension x="0"
+                                y="0" />
                 </Offset>
               </Anchor>
             </Anchors>
@@ -685,44 +728,73 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               <OnEnterPressed>PowaAuras:CustomTextChanged() self:ClearFocus()</OnEnterPressed>
             </Scripts>
           </EditBox>
-          <CheckButton name="PowaTextAuraButton"
+
+
+		  
+          <CheckButton name="PowaTexModeButton"
                        inherits="PowaCheckTemplate">
             <Size>
               <AbsDimension x="25"
                             y="25" />
             </Size>
             <Anchors>
-              <Anchor point="BOTTOMLEFT"
-                      relativeTo="PowaBarAuraTextureSlider"
-                      relativePoint="TOPLEFT">
+              <Anchor point="LEFT"
+                      relativeTo="AuraTexture"
+                      relativePoint="TOPRIGHT">
                 <Offset>
-                  <AbsDimension x="100"
-                                y="8" />
+                  <AbsDimension x="40"
+                                y="-8" />
                 </Offset>
               </Anchor>
             </Anchors>
             <Scripts>
               <OnLoad>
-              	self.tooltipText = PowaAuras.Text.aideTextAura; 
-              	getglobal("PowaTextAuraButtonText"):SetText(PowaAuras.Text.nomTextAura);
+              	self.tooltipText = PowaAuras.Text.aideTexMode; 
+              	getglobal("PowaTexModeButtonText"):SetText(PowaAuras.Text.nomTexMode);
               </OnLoad>
-              <OnClick>PowaAuras:TextAuraChecked();</OnClick>
+              <OnClick>PowaAuras:TexModeChecked();</OnClick>
             </Scripts>
           </CheckButton>
-		  
-          <CheckButton name="PowaCustomTextureButton"
+
+
+          <CheckButton name="PowaWowTextureButton"
                        inherits="PowaCheckTemplate">
             <Size>
               <AbsDimension x="25"
                             y="25" />
             </Size>
             <Anchors>
-              <Anchor point="BOTTOMLEFT"
-                      relativeTo="PowaTextAuraButton"
-                      relativePoint="TOPLEFT">
+              <Anchor point="TOPLEFT"
+                      relativeTo="PowaTexModeButton"
+                      relativePoint="BOTTOMLEFT">
                 <Offset>
                   <AbsDimension x="0"
-                                y="-2" />
+                                y="4" />
+                </Offset>
+              </Anchor>
+            </Anchors>
+            <Scripts>
+              <OnLoad>
+              	self.tooltipText = PowaAuras.Text.aideWowTextures; 
+              	getglobal("PowaWowTextureButtonText"):SetText(PowaAuras.Text.nomWowTextures);
+              </OnLoad>
+              <OnClick>PowaAuras:WowTexturesChecked();</OnClick>
+            </Scripts>
+          </CheckButton>
+		  
+           <CheckButton name="PowaCustomTextureButton"
+                       inherits="PowaCheckTemplate">
+            <Size>
+              <AbsDimension x="25"
+                            y="25" />
+            </Size>
+            <Anchors>
+              <Anchor point="TOPLEFT"
+                      relativeTo="PowaWowTextureButton"
+                      relativePoint="BOTTOMLEFT">
+                <Offset>
+                  <AbsDimension x="0"
+                                y="4" />
                 </Offset>
               </Anchor>
             </Anchors>
@@ -735,30 +807,32 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
             </Scripts>
           </CheckButton>
 		  
-          <CheckButton name="PowaWowTextureButton"
+		  <CheckButton name="PowaTextAuraButton"
                        inherits="PowaCheckTemplate">
             <Size>
               <AbsDimension x="25"
                             y="25" />
             </Size>
             <Anchors>
-              <Anchor point="BOTTOMLEFT"
+              <Anchor point="TOPLEFT"
                       relativeTo="PowaCustomTextureButton"
-                      relativePoint="TOPLEFT">
+                      relativePoint="BOTTOMLEFT">
                 <Offset>
                   <AbsDimension x="0"
-                                y="-2" />
+                                y="4" />
                 </Offset>
               </Anchor>
+
             </Anchors>
             <Scripts>
               <OnLoad>
-              	self.tooltipText = PowaAuras.Text.aideWowTextures; 
-              	getglobal("PowaWowTextureButtonText"):SetText(PowaAuras.Text.nomWowTextures);
+              	self.tooltipText = PowaAuras.Text.aideTextAura; 
+              	getglobal("PowaTextAuraButtonText"):SetText(PowaAuras.Text.nomTextAura);
               </OnLoad>
-              <OnClick>PowaAuras:WowTexturesChecked();</OnClick>
+              <OnClick>PowaAuras:TextAuraChecked();</OnClick>
             </Scripts>
           </CheckButton>
+		  
 		  
           <CheckButton name="PowaRandomColorButton"
                        inherits="PowaCheckTemplate">
@@ -784,31 +858,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               <OnClick>PowaAuras:RandomColorChecked();</OnClick>
             </Scripts>
           </CheckButton>
-		  
-          <CheckButton name="PowaTexModeButton"
-                       inherits="PowaCheckTemplate">
-            <Size>
-              <AbsDimension x="25"
-                            y="25" />
-            </Size>
-            <Anchors>
-              <Anchor point="BOTTOMLEFT"
-                      relativeTo="PowaWowTextureButton"
-                      relativePoint="TOPLEFT">
-                <Offset>
-                  <AbsDimension x="0"
-                                y="-2" />
-                </Offset>
-              </Anchor>
-            </Anchors>
-            <Scripts>
-              <OnLoad>
-              	self.tooltipText = PowaAuras.Text.aideTexMode; 
-              	getglobal("PowaTexModeButtonText"):SetText(PowaAuras.Text.nomTexMode);
-              </OnLoad>
-              <OnClick>PowaAuras:TexModeChecked();</OnClick>
-            </Scripts>
-          </CheckButton>
+
 		  
           <Slider name="PowaBarAuraSymSlider"
                   inherits="PowaBarSliderTemplate">
@@ -844,11 +894,11 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                             y="16" />
             </Size>
             <Anchors>
-              <Anchor point="TOP"
+              <Anchor point="TOPRIGHT"
                       relativeTo="PowaBarAuraTextureSlider"
-                      relativePoint="BOTTOM">
+                      relativePoint="BOTTOMRIGHT">
                 <Offset>
-                  <AbsDimension x="20"
+                  <AbsDimension x="0"
                                 y="-17" />
                 </Offset>
               </Anchor>

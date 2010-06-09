@@ -105,6 +105,7 @@ PowaAuras = {
 		"ACTIVE_TALENT_GROUP_CHANGED",
 		"BAG_UPDATE_COOLDOWN",
 		"COMBAT_LOG_EVENT_UNFILTERED",
+		"MINIMAP_UPDATE_TRACKING",
 		"PARTY_MEMBERS_CHANGED",
 		"PLAYER_ALIVE",
 		"PLAYER_DEAD",
@@ -232,6 +233,7 @@ PowaAuras = {
 		Runes = false,
 		Items = false,
 		Slots = false,
+		Tracking = false,
 		
 		GTFO = false,
 	};
@@ -261,6 +263,7 @@ PowaAuras = {
 		Runes=21,
 		Items=22,
 		Slots=23,
+		Tracking=23,
 		GTFO=50
 	};
 
@@ -379,6 +382,7 @@ PowaAuras = {
 		Runes = {},
 		Slots = {},
 		Items = {},
+		Tracking = {},
 		
 		GTFOHigh = {},
 		GTFOLow = {},
