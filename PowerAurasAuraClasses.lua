@@ -2711,6 +2711,40 @@ function cPowaItems:CheckIfShouldShow(giveReason)
 	
 end
 
+
+-- Tracking Aura--
+cPowaTracking= PowaClass(cPowaAura, {ValueName = "Tracking", });
+cPowaTracking.OptionText={buffNameTooltip=PowaAuras.Text.aideTracking, typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.Tracking], exactTooltip=PowaAuras.Text.aideExact,};
+cPowaTracking.CheckBoxes={["PowaInverseButton"]=1,
+						  ["PowaIngoreCaseButton"]=1,
+						  ["PowaOwntexButton"]=1,
+						 };
+cPowaTracking.TooltipOptions = {r=0.4, g=1.0, b=0.4};
+
+function cPowaTracking:AddEffect()
+	table.insert(PowaAuras.AurasByType.Tracking, self.id);	
+end
+
+function cPowaTracking:CheckIfShouldShow(giveReason)
+	local count = GetNumTrackingTypes();
+	local name, texture, active, category;
+	for i=1,count do 
+		name, texture, active, category = GetTrackingInfo(i);
+		--PowaAuras:Message("name= ",name," texture= ",texture," active= ",active," category= ",category);
+		if (active) then break; end
+	end
+	if (active) then
+		if self:MatchText(name, self.buffname) then
+			self:SetIcon(texture);	
+			if (not giveReason) then return true; end
+			return true, PowaAuras:InsertText(PowaAuras.Text.nomTrackingSet, name);
+		end
+	end
+	
+	if (not giveReason) then return false; end
+	return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonTrackingMissing, self.buffname);
+end
+
 -- Static Aura--
 cPowaStatic= PowaClass(cPowaAura, {ValueName = "Static"});
 cPowaStatic.OptionText={typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.Static]};
@@ -2752,6 +2786,7 @@ PowaAuras.AuraClasses = {
 	[PowaAuras.BuffTypes.Runes]=cPowaRunes,
 	[PowaAuras.BuffTypes.Slots]=cPowaSlots,
 	[PowaAuras.BuffTypes.Items]=cPowaItems,
+	[PowaAuras.BuffTypes.Tracking]=cPowaTracking,
 	[PowaAuras.BuffTypes.Static]=cPowaStatic,
 }
 

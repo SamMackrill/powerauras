@@ -94,6 +94,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		[PowaAuras.BuffTypes.Runes] = "Runes",
 		[PowaAuras.BuffTypes.Slots] = "Equipment Slots",
 		[PowaAuras.BuffTypes.Items] = "Named Items",
+		[PowaAuras.BuffTypes.Tracking] = "Tracking",
 		[PowaAuras.BuffTypes.GTFO] = "GTFO Alert",
 	},
 
@@ -172,6 +173,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	
 	aideItems = "Enter full name of Item or [xxx] for Id",
 	aideSlots = "Enter name of slot to track: Ammo, Back, Chest, Feet, Finger0, Finger1, Hands, Head, Legs, MainHand, Neck, Ranged, SecondaryHand, Shirt, Shoulder, Tabard, Trinket0, Trinket1, Waist, Wrist",
+	aideTracking = "Enter name of Tracking type e.g. fish",
 
 
 	-- editor
@@ -596,6 +598,9 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	
 	nomReasonPetExists= "Player has Pet",
 	nomReasonPetMissing = "Player Pet Missing",
+	
+	nomReasonTrackingMissing = "Tracking not set to $1",
+	nomTrackingSet = "Tracking set to $1",
 
 	nomReasonStatic = "Static Aura",
 
