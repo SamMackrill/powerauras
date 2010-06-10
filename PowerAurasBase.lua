@@ -263,7 +263,7 @@ PowaAuras = {
 		Runes=21,
 		Items=22,
 		Slots=23,
-		Tracking=23,
+		Tracking=24,
 		GTFO=50
 	};
 

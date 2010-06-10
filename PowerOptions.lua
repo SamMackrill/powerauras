@@ -1991,18 +1991,13 @@ function PowaAuras.DropDownMenu_OnClickBuffType()
 		PowaGlobalSet[PowaAuras.CurrentAuraId] = aura;
 	end				
 
+	if (aura.bufftype == PowaAuras.BuffTypes.Slots) then
+		if (not PowaEquipmentSlotsFrame:IsVisible()) then PowaEquipmentSlotsFrame:Show(); end
+	else
+		if (PowaEquipmentSlotsFrame:IsVisible()) then PowaEquipmentSlotsFrame:Hide(); end
+	end
 
-	if (aura.bufftype == PowaAuras.BuffTypes.TypeDebuff
-	 or aura.bufftype == PowaAuras.BuffTypes.AoE
-	 or aura.bufftype == PowaAuras.BuffTypes.Enchant
-	 or aura.bufftype == PowaAuras.BuffTypes.Combo
-	 or aura.bufftype == PowaAuras.BuffTypes.Health
-	 or aura.bufftype == PowaAuras.BuffTypes.Mana
-	 or aura.bufftype == PowaAuras.BuffTypes.EnergyRagePower
-	 or aura.bufftype == PowaAuras.BuffTypes.Aggro
-	 or aura.bufftype == PowaAuras.BuffTypes.PvP
-	 or aura.bufftype == PowaAuras.BuffTypes.Stance
-	 or aura.bufftype == PowaAuras.BuffTypes.GTFO) then
+	if (aura.CheckBoxes.PowaOwntexButton~=1) then
 		aura.owntex = false;
 	end
 
@@ -2934,4 +2929,80 @@ function PowaAuras:RedisplayAura(auraId) ---Re-show aura after options changed
 	if (showing) then
 		self:DisplayAura(aura.id);
 	end
+end
+
+function PowaAuras:EquipmentSlotsShow()
+
+	for _, child in ipairs({ PowaEquipmentSlotsFrame:GetChildren() }) do
+		--self:Message(child:GetName(), " ", child:GetObjectType());
+		if (child:IsObjectType("Button")) then
+			local slotName = string.gsub(child:GetName(), "Powa", "");
+			if (string.match(slotName, "Slot")) then
+				local slotId, emptyTexture = GetInventorySlotInfo(slotName);
+				getglobal(child:GetName().."IconTexture"):SetTexture(emptyTexture);
+				child.SlotId = slotId;
+				child.Set = false;
+				child.EmptyTexture = emptyTexture;
+			end
+		end
+	end
+	
+	local aura = self.Auras[self.CurrentAuraId];
+	if (not aura) then
+		return;
+	end
+
+	for pword in string.gmatch(aura.buffname, "[^/]+") do
+		pword = aura:Trim(pword);
+		if (string.len(pword)>0) then
+			local slotId = GetInventorySlotInfo(pword.."Slot");
+			--PowaAuras:Message("pword=",pword, " slotId= ",slotId);
+
+			if (slotId) then
+				local texture = GetInventoryItemTexture("player", slotId);
+				if (texture~=nil) then
+					getglobal("Powa"..pword.."SlotIconTexture"):SetTexture(texture);
+					getglobal("Powa"..pword.."Slot").Set = true;
+				end
+			end
+		end
+	end
+			
+end
+
+function PowaAuras:EquipmentSlotsHide()
+end
+
+function PowaAuras:EquipmentSlot_OnClick(slotButton)
+	if (not slotButton.SlotId) then return; end
+	local aura = self.Auras[self.CurrentAuraId];
+	if (not aura) then
+		return;
+	end
+	if (slotButton.Set) then
+		getglobal(slotButton:GetName().."IconTexture"):SetTexture(slotButton.EmptyTexture);
+		slotButton.Set = false;
+	else
+		local texture = GetInventoryItemTexture("player", slotButton.SlotId);
+		if (texture~=nil) then
+			getglobal(slotButton:GetName().."IconTexture"):SetTexture(texture);
+			slotButton.Set = true;
+		end
+	end
+	aura.buffname = "";
+	local sep = "";
+	for _, child in ipairs({ PowaEquipmentSlotsFrame:GetChildren() }) do
+		--self:Message(child:GetName(), " ", child:GetObjectType());
+		if (child:IsObjectType("Button")) then
+			local slotName = string.gsub(child:GetName(), "Powa", "");
+			if (string.match(slotName, "Slot")) then
+				if (child.Set) then
+					aura.buffname = aura.buffname..sep..string.gsub(slotName, "Slot", "");
+					sep = "/";
+				end
+			end
+		end
+	end
+	--self:Message("aura.buffname=", aura.buffname);
+
 end

@@ -2535,7 +2535,7 @@ end
 
 -- Equipment Slots Aura--
 cPowaSlots = PowaClass(cPowaAura, {ValueName = "Slots",  CooldownAura=true, CanHaveTimerOnInverse=true});
-cPowaSlots.OptionText={buffNameTooltip=PowaAuras.Text.aideSlots, typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.Slots]};
+cPowaSlots.OptionText={typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.Slots]};
 cPowaSlots.ShowOptions={["PowaBarTooltipCheck"]=1};
 cPowaSlots.CheckBoxes={["PowaInverseButton"]=1,["PowaOwntexButton"]=1,};
 cPowaSlots.TooltipOptions = {r=0.8, g=0.8, b=0.2};
