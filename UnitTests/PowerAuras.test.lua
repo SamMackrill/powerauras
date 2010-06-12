@@ -7,7 +7,6 @@ require("WoWmock")
 require("PowerAurasUIMock")
 --Addon code
 require("PowerAurasBase")
-require("GTFO_Spells")
 require("localisation")
 require("localisation_frFR")
 require("localisation_deDE")
@@ -76,7 +75,6 @@ TestPA = {Debug = false;} --aura
 		end
 		dofile("GlobalStrings/"..PowaState.Locale..".lua");
 		dofile("../PowerAurasBase.lua");
-		dofile("../GTFO_Spells.lua");
 		dofile("../localisation.lua");
 		dofile("../localisation_frFR.lua")
 		dofile("../localisation_deDE.lua")
@@ -149,8 +147,8 @@ TestPA = {Debug = false;} --aura
 	--dofile("PowerAuras.test.TimerClass.lua");
 	--dofile("PowerAuras.test.AuraClass.lua");
 	--dofile("PowerAuras.test.Locales.lua");
-	--dofile("PowerAuras.test.ShouldShow.lua");
-	dofile("PowerAuras.test.ActionReady.lua");
+	dofile("PowerAuras.test.ShouldShow.lua");
+	--dofile("PowerAuras.test.ActionReady.lua");
 	--dofile("PowerAuras.test.DisplayAndAnimate.lua");
 
 LuaUnit.result.verbosity = 0;

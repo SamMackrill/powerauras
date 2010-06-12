@@ -25,7 +25,7 @@
 		self.Output = "";
 		PowaAuras:OnUpdate(0.1);
 
-		expected = "OnUpdate 0.1 #ChecksTimer 0.1 0.2 #Pending #DoCheck update #NewCheckBuffs #TestThisEffect 1 #ShouldShow 1 #CheckIfShouldShow  HELPFUL  aura #Aura updates #Base Update  0.03 #";
+		expected = "OnUpdate 0.1 #ChecksTimer 0.1 0.2 #Pending #DoCheck update #NewCheckBuffs #TestThisEffect 1 #ShouldShow 1 #CheckIfShouldShow  HELPFUL  aura #Check Cascade auras #Aura updates #";
 		assertEquals(self.Output, expected , "OnUpdate detailed trace");
 		
 		local frame = PowaAuras.Frames[aura.id];
@@ -77,26 +77,26 @@
 		self.Output = "";
 		PowaAuras:OnUpdate(0.1);
 
-		expected = "OnUpdate 0.1 #ChecksTimer 0.1 0.2 #Pending #DoCheck update #NewCheckBuffs #TestThisEffect 1 #ShouldShow 1 #CheckIfShouldShow  HELPFUL  aura #Aura updates #cPowaAnimationFlashing Update  0.03 #";
+		expected = "OnUpdate 0.1 #ChecksTimer 0.1 0.2 #Pending #DoCheck update #NewCheckBuffs #TestThisEffect 1 #ShouldShow 1 #CheckIfShouldShow  HELPFUL  aura #Check Cascade auras #Aura updates #";
 		assertEquals(self.Output, expected , "OnUpdate detailed trace");
 		
 		local frame = PowaAuras.Frames[aura.id];
 		assertEquals(frame:GetWidth()  , 256 , "frame.width");
 		assertEquals(frame:GetHeight() , 256 , "frame.height");
-		assertEquals(frame:GetAlpha()  , 0.735 ,"frame.alpha");
+		assertEquals(frame:GetAlpha()  , 0.75 ,"frame.alpha");
 		assertEquals(frame.x, 0 , "frame.x");
 		assertEquals(frame.x, 0 , "frame.x");
 		assertEquals(frame.Anchor, "CENTER" , "frame.Anchor");
 
 		self.Output = "";
 		PowaAuras:OnUpdate(0.1);
-		expected = "OnUpdate 0.1 #ChecksTimer 0.2 0.2 #Pending #DoCheck update #Aura updates #cPowaAnimationFlashing Update  0.03 #";
+		expected = "OnUpdate 0.1 #ChecksTimer 0.2 0.2 #Pending #DoCheck update #Check Cascade auras #Aura updates #";
 		assertEquals(self.Output, expected , "OnUpdate detailed trace");
 
 		local frame = PowaAuras.Frames[aura.id];
 		assertEquals(frame:GetWidth()  , 256 , "frame.width");
 		assertEquals(frame:GetHeight() , 256 , "frame.height");
-		assertEquals(frame:GetAlpha()  , 0.72 ,"frame.alpha");
+		assertEquals(frame:GetAlpha()  , 0.75 ,"frame.alpha");
 		assertEquals(frame.x, 0 , "frame.x");
 		assertEquals(frame.x, 0 , "frame.x");
 		assertEquals(frame.Anchor, "CENTER" , "frame.Anchor");
@@ -132,26 +132,26 @@
 		self.Output = "";
 		PowaAuras:OnUpdate(0.1);
 
-		expected = "OnUpdate 0.1 #ChecksTimer 0.1 0.2 #Pending #DoCheck update #NewCheckBuffs #TestThisEffect 1 #ShouldShow 1 #CheckIfShouldShow  HELPFUL  aura #Aura updates #cPowaAnimationGrowing Update  0.03 #";
+		expected = "OnUpdate 0.1 #ChecksTimer 0.1 0.2 #Pending #DoCheck update #NewCheckBuffs #TestThisEffect 1 #ShouldShow 1 #CheckIfShouldShow  HELPFUL  aura #Check Cascade auras #Aura updates #";
 		assertEquals(self.Output, expected , "OnUpdate detailed trace");
 		
 		local frame = PowaAuras.Frames[aura.id];
-		assertEquals(frame:GetWidth()  , 256.75 , "frame.width");
-		assertEquals(frame:GetHeight() , 256.75 , "frame.height");
-		assertEquals(frame:GetAlpha()  , 0.7 ,"frame.alpha");
+		assertEquals(frame:GetWidth()  , 256 , "frame.width");
+		assertEquals(frame:GetHeight() , 256 , "frame.height");
+		assertEquals(frame:GetAlpha()  , 0.75 ,"frame.alpha");
 		assertEquals(frame.x, 0 , "frame.x");
 		assertEquals(frame.x, 0 , "frame.x");
 		assertEquals(frame.Anchor, "CENTER" , "frame.Anchor");
 
 		self.Output = "";
 		PowaAuras:OnUpdate(0.1);
-		expected = "OnUpdate 0.1 #ChecksTimer 0.2 0.2 #Pending #DoCheck update #Aura updates #cPowaAnimationGrowing Update  0.03 #";
+		expected = "OnUpdate 0.1 #ChecksTimer 0.2 0.2 #Pending #DoCheck update #Check Cascade auras #Aura updates #";
 		assertEquals(self.Output, expected , "OnUpdate detailed trace");
-
+--[[
 		local frame = PowaAuras.Frames[aura.id];
-		assertEquals(frame:GetWidth()  , 257.5 , "frame.width");
-		assertEquals(frame:GetHeight() , 257.5 , "frame.height");
-		assertEquals(frame:GetAlpha()  , 0.65 ,"frame.alpha");
+		assertEquals(frame:GetWidth()  , 256 , "frame.width");
+		assertEquals(frame:GetHeight() , 256 , "frame.height");
+		assertEquals(frame:GetAlpha()  , 0.75 ,"frame.alpha");
 		assertEquals(frame.x, 0 , "frame.x");
 		assertEquals(frame.x, 0 , "frame.x");
 		assertEquals(frame.Anchor, "CENTER" , "frame.Anchor");
@@ -161,7 +161,7 @@
 		PowaAuras:OnUpdate(0.2);
 		self.Output = "";
 		PowaAuras:OnUpdate(0.2);
-		expected = "OnUpdate 0.2 #ChecksTimer 0.2 0.2 #Pending #DoCheck update #Aura updates #cPowaAnimationGrowing Update  0.03 #";
+		expected = "OnUpdate 0.2 #ChecksTimer 0.2 0.2 #Pending #DoCheck update #Check Cascade auras #Aura updates #";
 		assertEquals(self.Output, expected , "OnUpdate detailed trace");
 
 		local frame = PowaAuras.Frames[aura.id];
@@ -200,6 +200,6 @@
 		assertEquals(frame.x, 0 , "frame.x");
 		assertEquals(frame.x, 0 , "frame.x");
 		assertEquals(frame.Anchor, "CENTER" , "frame.Anchor");
-
+]]
 		self:TearDown()
 	end	

@@ -232,20 +232,20 @@ function PowaAuras:LoadAuras()
 	for k, v in pairs(PowaGlobalSet) do
 		--self:UnitTestDebug("PowaGlobalSet",k,v.buffname);
 		if (k~=0 and v.is_a == nil or not v:is_a(cPowaAura)) then
-			----self:UnitTestDebug(k,v.buffname);
+			self:UnitTestDebug(k,v.buffname);
 			self.Auras[k] = self:AuraFactory(v.bufftype, k, v);
 		end
 	end
 
 	for k, v in pairs(PowaSet) do
-		----self:UnitTestDebug("PowaSet",k,v.buffname, self.Auras[k]);
+		--self:UnitTestDebug("PowaSet",k,v.buffname, self.Auras[k]);
 		if (k>0 and k <121 and not self.Auras[k]) then
-			----self:UnitTestDebug("is_a=",v.is_a);
+			--self:UnitTestDebug("is_a=",v.is_a);
 			if (v.is_a == nil or not v:is_a(cPowaAura)) then
 				--self:ShowText("load aura ", k, " isResting=", v.isResting);
 				self.Auras[k] = self:AuraFactory(v.bufftype, k, v);
 				--self:ShowText("loaded isResting=", self.Auras[k].isResting);
-				----self:UnitTestDebug("Out=",self.Auras[k].buffname);
+				--self:UnitTestDebug("Out=",self.Auras[k].buffname);
 			end
 		end
 	end
@@ -307,7 +307,7 @@ function PowaAuras:LoadAuras()
 				
 			-- Update old combo style 1235 => 1/2/3/5
 			elseif (aura.bufftype==self.BuffTypes.Combo) then
-				--self:UnitTestDebug("Combo upgrade check ", aura.buffname, " for ", aura.id);
+				self:UnitTestDebug("Combo upgrade check ", aura.buffname, " for ", aura.id);
 				if (string.len(aura.buffname)>1 and string.find(aura.buffname, "/", 1, true)==nil) then
 					local newBuffName=string.sub(aura.buffname, 1, 1);
 					for i=2, string.len(aura.buffname) do
@@ -1207,7 +1207,7 @@ end
 function PowaAuras:UpdateAura(aura, elapsed)
 	--self:ShowText("UpdateAura ", aura.id, " ", elapsed);
 	if (aura == nil) then
-		----self:UnitTestInfo("UpdateAura: Don't show, aura missing");
+		--self:UnitTestInfo("UpdateAura: Don't show, aura missing");
 		--self:ShowText("UpdateAura: Don't show, aura missing");
 		return false;
 	end
@@ -1239,7 +1239,7 @@ function PowaAuras:UpdateAura(aura, elapsed)
 		
 		if (not aura.HideRequest and not aura.isSecondary and not self.ModTest and aura.TimeToHide) then
 			if (GetTime() >= aura.TimeToHide) then --- If duration has expired then hide this aura
-				----self:UnitTestInfo("UpdateAura: Hide, duration expired");
+				--self:UnitTestInfo("UpdateAura: Hide, duration expired");
 				--self:ShowText("UpdateAura: Hide, duration expired");
 				self:SetAuraHideRequest(aura);
 				aura.TimeToHide = nil;

@@ -232,6 +232,29 @@ function PowaAuras:Dump_Safe()
 		local Name, IconTexture, Body = GetMacroInfo(Id);
 		PowaState.Macros[Id] = {Name=Name, Texture=IconTexture, Body=self:Escape(Body)};
 	end
+	
+	-- Totems
+	PowaState.Totem = {};
+	for slot = 1, 4 do
+		local haveTotem, name, startTime, duration, icon = GetTotemInfo(1);
+		PowaState.Totem[slot] = {HaveTotem=haveTotem, Name=name, StartTime=startTime, Duration=duration, Icon=icon};
+	end
+			
+    -- Inventory Slots
+	PowaState.InventorySlot = {};
+	for k, v in pairs (PowaAuras.Text.Slots) do
+		local slotId, emptyTexture = GetInventorySlotInfo(k.."Slot");
+		PowaState.InventorySlot[k.."Slot"] = {SlotId=slotId, EmptyTexture=emptyTexture};
+	end
+
+	-- Tracking
+	PowaState.NumTrackingTypes = GetNumTrackingTypes();
+	PowaState.Tracking = {};
+	for i = 1, PowaState.NumTrackingTypes do 
+		local name, texture, active, category = GetTrackingInfo(i);
+		PowaState.Tracking[i] = { Name= name, Texture=texture, Active=active, Category=category};
+	end
+	
 	--Groups
 	PowaState["RaidLeader"] = IsRaidLeader();
 	PowaState["PartyLeader"] = IsPartyLeader();

@@ -1,4 +1,5 @@
-﻿	function TestPA:test_ClassShouldShow()
+﻿--[[
+	function TestPA:test_ClassShouldShow()
 		self:SetUp();
 		local BuffTypeNames = PowaAuras:ReverseTable(PowaAuras.BuffTypes);
 		for bufftype,paClass in pairs(PowaAuras.AuraClasses) do
@@ -8,12 +9,15 @@
 			local result, reason = aura:ShouldShow(true);
 			if (bufftype==PowaAuras.BuffTypes.Combo) then
 				assertEquals(result, nil, BuffTypeNames[bufftype] .. "(" ..bufftype..")");
+			elseif (bufftype==PowaAuras.BuffTypes.Static) then
+				assertEquals(result, true, BuffTypeNames[bufftype] .. "(" ..bufftype..")");
 			else
 				assertEquals(result, false, BuffTypeNames[bufftype] .. "(" ..bufftype..")");
 			end
 		end
 		self:TearDown();
 	end
+
 	
 	function TestPA:test_SoloPaladinInitialAuras_ShouldShow()
 		self:SetUp();
@@ -89,19 +93,19 @@
 		self:SetUp();
 		self:SetupFor("DruidGerman");
 		
-		self:EffectTest(1, false, "Not in combat");
-		self:EffectTest(2, false, "target doesn't have debuff Wirbelsturm");
-		self:EffectTest(3, false, "target doesn't have debuff Wucherwurzeln");
-		self:EffectTest(4, false, "target doesn't have debuff Demoralisierendes Gebrüll");
+		self:EffectTest(1, false, "nicht im Kampf");
+		self:EffectTest(2, false, "target hat nicht debuff Wirbelsturm");
+		self:EffectTest(3, false, "target hat nicht debuff Wucherwurzeln");
+		self:EffectTest(4, false, "target hat nicht debuff Demoralisierendes Gebrüll");
 		--TestPA.Debug = true;
-		self:EffectTest(5, true,  "target has debuff Feenfeuer");
-		self:EffectTest(6, false, "player doesn't have buff ???");
-		self:EffectTest(7, false, "Not in combat");
-		self:EffectTest(8, false, "player doesn't have buff Berserker");
-		self:EffectTest(9, false, "Not in combat");
-		self:EffectTest(10, false, "player doesn't have buff Wildes Brüllen");
-		self:EffectTest(11, false, "player doesn't have buff Freizaubern");
-		self:EffectTest(12, false, "player doesn't have buff Wilde Verteidigung");
+		self:EffectTest(5, true,  "target hat debuff Feenfeuer");
+		self:EffectTest(6, false, "player hat nicht buff ???");
+		self:EffectTest(7, false, "nicht im Kampf");
+		self:EffectTest(8, false, "player hat nicht buff Berserker");
+		self:EffectTest(9, false, "nicht im Kampf");
+		self:EffectTest(10, false, "player hat nicht buff Wildes Brüllen");
+		self:EffectTest(11, false, "player hat nicht buff Freizaubern");
+		self:EffectTest(12, false, "player hat nicht buff Wilde Verteidigung");
 		
 		self:TearDown();
 	end
@@ -240,7 +244,7 @@
 		local result, reason = aura:ShouldShow(true);			
 		--TestPA.Debug = false;		
 		assertEquals(result, true, aura.buffname);
-		assertEquals(reason, "All in party has buff Greater Blessing of Kings", "Reason "..aura.buffname);
+		assertEquals(reason, "All in party have buff Greater Blessing of Kings", "Reason "..aura.buffname);
 
 		self:TearDown()
 	end
@@ -285,7 +289,7 @@
 		local result, reason = aura:ShouldShow(true);			
 		--TestPA.Debug = false;		
 		assertEquals(result, true, aura.buffname);
-		assertEquals(reason, "All in raid has buff Leader of the Pack", "Reason "..aura.buffname);
+		assertEquals(reason, "All in raid have buff Leader of the Pack", "Reason "..aura.buffname);
 
 		self:TearDown()
 	end
@@ -345,7 +349,7 @@
 		local result, reason = aura:ShouldShow(true);			
 		--TestPA.Debug = false;		
 		assertEquals(result, true, aura.buffname);
-		assertEquals(reason, "All in raid has buff Leader of the Pack", "Reason "..aura.buffname);
+		assertEquals(reason, "All in raid have buff Leader of the Pack", "Reason "..aura.buffname);
 
 		self:TearDown()
 	end
@@ -406,7 +410,7 @@
 		local result, reason = aura:ShouldShow(true);			
 		--TestPA.Debug = false;		
 		assertEquals(result, true, aura.buffname);
-		assertEquals(reason, "All in party has buff Greater Blessing of Kings", "Reason "..aura.buffname);
+		assertEquals(reason, "All in party have buff Greater Blessing of Kings", "Reason "..aura.buffname);
 
 		self:TearDown()
 	end
@@ -786,7 +790,7 @@
 
 		self:TearDown()
 	end
-	
+
 	function TestPA:test_Aura_Stance_Self()
 		self:SetUp();
 		self:SetupFor("SoloPaladin");
@@ -797,16 +801,17 @@
 		local result, reason = aura:ShouldShow(true);			
 		--TestPA.Debug = false;		
 		assertEquals(result, true, aura.bufftype);
-		assertEquals(reason, "Stances match", "Reason "..aura.bufftype);
+		assertEquals(reason, "Current Stance 7, matches 7", "Reason "..aura.bufftype);
 
 		self:TearDown()
 	end
-	
+
 	function TestPA:test_Aura_SpellAlert_Casting()
 		self:SetUp();
 		self:SetupFor("SpellAlert");
 		
 		local aura = PowaAuras:AuraFactory(PowaAuras.BuffTypes.SpellAlert, 1, {buffname="Shadow Bolt"});
+		aura.target = true;
 		PowaAuras.Auras[aura.id] = aura;
 		--TestPA.Debug = true;
 		local result, reason = aura:ShouldShow(true);			
@@ -816,7 +821,7 @@
 
 		self:TearDown()
 	end
-	
+
 	function TestPA:test_Aura_SpellAlert_NoTarget()
 		self:SetUp();
 		self:SetupFor("SoloPaladin");
@@ -1024,4 +1029,34 @@
 
 		self:TearDown()
 	end	
+]]
+	function TestPA:test_Aura_TypeDebuff_BossPlain()
+		self:SetUp();
+		self:SetupFor("DebuffOnBoss");
+		
+		local aura = PowaAuras:AuraFactory(PowaAuras.BuffTypes.TypeDebuff, 1, {buffname="Magic/Poison/Disease"});
+		PowaAuras.Auras[aura.id] = aura;
+		--TestPA.Debug = true;
+		local result, reason = aura:ShouldShow(true);			
+		--TestPA.Debug = false;		
+		assertEquals(result, false, aura.bufftype);
+		assertEquals(reason, "player doesn't have debuff type Magic/Poison/Disease", "Reason "..aura.bufftype);
 
+		self:TearDown()
+	end	
+	
+	function TestPA:test_Aura_TypeDebuff_Boss()
+		self:SetUp();
+		self:SetupFor("DebuffOnBoss");
+		
+		local aura = PowaAuras:AuraFactory(PowaAuras.BuffTypes.TypeDebuff, 120, PowaSet[120]);
+
+		PowaAuras.Auras[aura.id] = aura;
+		TestPA.Debug = true;
+		local result, reason = aura:ShouldShow(true);			
+		TestPA.Debug = false;		
+		assertEquals(result, false, aura.bufftype);
+		assertEquals(reason, "No one in party has debuff type Magic/Disease/Poison", "Reason "..aura.bufftype);
+
+		self:TearDown()
+	end	

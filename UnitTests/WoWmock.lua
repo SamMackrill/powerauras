@@ -233,6 +233,37 @@ function GetRuneType(id)
 	return PowaState["RuneType"][id];
 end
 
+function GetTotemInfo(slot)
+	if (not PowaState["Totem"] or not PowaState.Totem[slot]) then
+		return nil;
+	end
+	return PowaState.Totem[slot].HaveTotem, PowaState.Totem[slot].Name, PowaState.Totem[slot].StartTime, PowaState.Totem[slot].Duration, PowaState.Totem[slot].Icon;
+end
+
+function GetInventorySlotInfo(slot)
+	if (not PowaState["InventorySlot"] or not PowaState.InventorySlot[slot]) then
+		return nil;
+	end
+	return PowaState.InventorySlot[slot].Id, PowaState.InventorySlot[slot].EmptyTexture;
+end
+
+
+function GetNumTrackingTypes()
+	return PowaState.NumTrackingTypes or 0;
+end
+
+
+function GetTrackingInfo(i)
+	if (not PowaState["Tracking"] or not PowaState.Tracking[i]) then
+		return nil;
+	end
+	return PowaState.Tracking[i].Name, PowaState.Tracking[i].Texture, PowaState.Tracking[i].Active, PowaState.Tracking[i].Category;
+end
+
+function GetItemInfo(item)
+	--local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice = GetItemInfo(item);
+end
+
 function UnitExists(unit)
 	local Player = WoWMock:GetUnit(unit);
 	return (Player~=nil);
@@ -307,6 +338,11 @@ function UnitThreatSituation(unit)
 	if (Player~=nil) then
 		return Player.ThreatSituation;
 	end
+	return nil;
+end
+
+function GetActionInfo(index)
+--local type, id, subType, spellID = GetActionInfo(i);
 	return nil;
 end
 
@@ -465,10 +501,10 @@ function GetNumShapeshiftForms()
 end
 
 function GetShapeshiftFormInfo(arg1)
-	if (not PowaState["ShapeshiftFormInfo"]) then
+	if (not PowaState["ShapeshiftFormInfo"] or not PowaState["ShapeshiftFormInfo"][arg1]) then
 		return nil;
 	end
-	return PowaState["ShapeshiftFormInfo"][arg1];
+	return PowaState["ShapeshiftFormInfo"][arg1].Icon, PowaState["ShapeshiftFormInfo"][arg1].Name, PowaState["ShapeshiftFormInfo"][arg1].Active, PowaState["ShapeshiftFormInfo"][arg1].Castable;
 end
 
 function UnitAura(unit, index, auraType)
@@ -578,6 +614,10 @@ end
 
 function IsMounted()
 	return PowaState["IsMounted"];
+end
+
+function IsInInstance()
+	return PowaState["IsInInstance"];
 end
 
 function IsFlying()
@@ -767,6 +807,9 @@ end
 function cWoWMockAnimationGroup:CreateAnimation(animationType, name)
 	return cWoWMockAnimation(animationType, name);
 end	
+function cWoWMockAnimationGroup:Play()
+end
+
 function CreateAnimationGroup(name, inheritsFrom)
 	return cWoWMockAnimationGroup(name, inheritsFrom);
 end
@@ -780,6 +823,23 @@ end);
 function cWoWMockAnimation:SetScript(event, script)
 	self.scripts[event] = script;
 end	
+function cWoWMockAnimation:SetOrder(order)
+	self.order = order;
+end	
+function cWoWMockAnimation:SetDuration(duration)
+	self.duration = duration;
+end	
+function cWoWMockAnimation:SetMaxFramerate(fps)
+	self.fps = fps;
+end
+function cWoWMockAnimation:SetScale(xscaleTo, yscaleTo)
+	self.xscaleTo = xscaleTo;
+	self.yscaleTo = yscaleTo;
+end
+function cWoWMockAnimation:SetChange(change)
+	self.change = change;
+end
+
 
 --Textures
 cWoWMockTexture = MockClass(function(texture, textureName, layer, inheritsFrom)
@@ -794,6 +854,7 @@ function cWoWMockTexture:SetAllPoints(frame)
 end
 function cWoWMockTexture:SetTexture(texture)
 	self.Texture = texture;
+	return 1;
 end	
 function cWoWMockTexture:GetTexture()
 	return self.Texture;
