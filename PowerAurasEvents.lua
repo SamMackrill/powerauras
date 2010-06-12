@@ -38,7 +38,8 @@ function PowaAuras:VARIABLES_LOADED(...)
 	end
 	
 	local texi = 1;
-	while ( AuraTexture:SetTexture("Interface\\Addons\\PowerAuras\\Auras\\Aura"..texi..".tga") == 1 ) do 
+	while ( AuraTexture:SetTexture("Interface\\Addons\\PowerAuras\\Auras\\Aura"..texi..".tga") == 1 ) do
+		if (TestPA~=nil and texi>145) then break; end
 		texi = texi + 1;
 	end
 	self.maxtextures = texi - 1;

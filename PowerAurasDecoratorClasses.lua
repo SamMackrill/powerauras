@@ -220,15 +220,10 @@ function cPowaTimer:Update(elapsed)
 		--PowaAuras:ShowText("Timer aura missing");
 		return;
 	end
-	if (aura.Debug) then
-		PowaAuras:Message("Timer.Update ",self.id);
-	end
+
 	if (self.enabled==false and self.InvertAuraBelow==0) then
 		--PowaAuras:UnitTestInfo("Timer disabled");
 		--PowaAuras:ShowText("Timer disabled");
-		if (aura.Debug) then
-			PowaAuras:Message("Timer disabled");
-		end
 		return;
 	end
 
