@@ -89,13 +89,57 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		[PowaAuras.BuffTypes.StealableSpell] = "Крадущее заклинание", 
 		[PowaAuras.BuffTypes.PurgeableSpell] = "Очищающее заклинание", 
 		[PowaAuras.BuffTypes.Static] = "Статик аура",
+		[PowaAuras.BuffTypes.Totems] = "Totems",
+		[PowaAuras.BuffTypes.Pet] = "Pet",
+		[PowaAuras.BuffTypes.Runes] = "Runes",
+		[PowaAuras.BuffTypes.Slots] = "Equipment Slots",
+		[PowaAuras.BuffTypes.Items] = "Named Items",
+		[PowaAuras.BuffTypes.Tracking] = "Tracking",
 		[PowaAuras.BuffTypes.GTFO] = "Предупреждение GTFO",
 	},
+
+	Relative = 
+	{
+		NONE        = "Free", 
+		TOPLEFT     = "Top-Left", 
+		TOP         = "Top", 
+		TOPRIGHT    = "Top-Right", 
+		RIGHT       = "Right", 
+		BOTTOMRIGHT = "BottomRight", 
+		BOTTOM      = "Bottom", 
+		BOTTOMLEFT  = "Bottom-Left", 
+		LEFT        = "Left", 
+		CENTER      = "Center",
+	},
 	
-	-- main
+	Slots =
+	{
+		Ammo = "Ammo",
+		Back = "Back",
+		Chest = "Chest",
+		Feet = "Feet",
+		Finger0 = "Finger1",
+		Finger1 = "Finger2",
+		Hands = "Hands",
+		Head = "Head",
+		Legs = "Legs",
+		MainHand = "MainHand",
+		Neck = "Neck",
+		Ranged = "Ranged",
+		SecondaryHand = "OffHand",
+		Shirt = "Shirt",
+		Shoulder = "Shoulder",
+		Tabard = "Tabard",
+		Trinket0 = "Trinket1",
+		Trinket1 = "Trinket2",
+		Waist = "Waist",
+		Wrist = "Wrist",	
+	},
+
+	-- Main
 	nomEnable = "Активировать Power Auras",
 	aideEnable = "Включить все эффекты Power Auras",
-	
+
 	nomDebug = "Активировать сообщения отладки",
 	aideDebug = "Включить сообщения отладки",
 	ListePlayer = "Страница",
@@ -126,14 +170,28 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideEffectTooltip = "([Shift-клик] - вкл/выкл эффект)",
 	aideEffectTooltip2 = "([Ctrl--клик] - задать причину для активации)",
 
+
+	aideItems = "Enter full name of Item or [xxx] for Id",
+	aideSlots = "Enter name of slot to track: Ammo, Back, Chest, Feet, Finger0, Finger1, Hands, Head, Legs, MainHand, Neck, Ranged, SecondaryHand, Shirt, Shoulder, Tabard, Trinket0, Trinket1, Waist, Wrist",
+	aideTracking = "Enter name of Tracking type e.g. fish",
+
+
 	-- editor
+	nomSoundStarting = "Starting Sound:",
 	nomSound = "Проигрываемый звук",
 	nomSound2 = "Еще звуки",
 	aideSound = "Проиграть звук при начале.",
 	aideSound2 = "Проиграть звук при начале.",
 	nomCustomSound = "или звуковой файл:",
 	aideCustomSound = "Введите название звукового файла, который поместили в папку Sounds, ПРЕЖДЕ чем запустили игру. Поддерживаются mp3 и WAV. Например: 'cookie.mp3' ;)",
-	
+
+	nomSoundEnding = "Ending Sound:",
+	nomSoundEnd = "Sound to play",
+	nomSound2End = "More sounds to play",
+	aideSoundEnd = "Plays a sound at the end.",
+	aideSound2End = "Plays a sound at the end.",
+	nomCustomSoundEnd = "OR soundfile:",
+	aideCustomSoundEnd = "Enter a soundfile that is in the Sounds folder, BEFORE you started the game. mp3 and wav are supported. example: 'cookie.mp3' ;)",	
 	nomTexture = "Текстура",
 	aideTexture = "Выбор отображаемой текстуры. Вы можете легко заменить текстуры путем изменения файлов Aura#.tga в директории модификации.",
 
@@ -146,6 +204,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideDeform = "Вытягивание текстуры по ширине или по высоте.",
 
 	aideColor = "Кликните тут, чтобы изменить цвет текстуры.",
+	aideTimerColor = "Click here to change the color of the timer.",
+	aideStacksColor = "Click here to change the color of the stacks.",
 	aideFont = "Нажмите сюда, чтобы выбрать шрифт. Нажмите OK, чтобы применить выбранное.",
 	aideMultiID = "Здесь введите идентификаторы (ID) других аур для объединения проверки. Несколько ID должны разделяться с помощью '/'. ID аура можно найти в виде [#], в первой строке подсказки ауры. А лучше на http://ru.wowhead.com", 
 	aideTooltipCheck = "Также проверять подсказки на содержание данного текста",
@@ -164,6 +224,10 @@ PowaAuras:MergeTables(PowaAuras.Text,
 
 	aideStealableSpells = "Здесь введите название крадущего заклинания, которое вызовет оповещение (используйте * для любого крадущего заклинания).", 
 	aidePurgeableSpells = "Здесь введите название очищающего заклинания, которое вызовет оповещение (используйте * для любого очищающего заклинания).", 
+
+	aideTotems = "Enter here the Totem Name that will trigger the Aura or a number 1=Fire, 2=Earth, 3=Water, 4=Air (use * for any totem).", 
+
+	aideRunes = "Enter here the Runes that will trigger the Aura B=Blood, F=frost, U=Unholy, D=Death (Death runes will also count as the other types) ex: 'BF' 'BFU' 'DDD'", 
 
 	aideUnitn = "Здесь введите название существа/игрока, который должен активировать/дезактивировать эффект. Можно ввести только имена, если они находятся в вашей группе или рейде.",
 	aideUnitn2 = "Только в группе/рейде.",    
@@ -254,7 +318,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 
 	nomAuraDebug= "Отладка",
 	aideAuraDebug = "Отлажывать данную ауру",
-	
+
 	nomDuration = "Длина анимации:",
 	aideDuration = "После истечения этого времени, данный эффект исчезнет (0 - дезактивировать)",
 
@@ -263,7 +327,9 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomHideLeadingZeros = "Убрать нули",
 	nomTransparent = "Прозрачные текстуры",
 	nomActivationTime = "Показать время после активации",
+	nomUseOwnColor = "Use own color:",
 	nomUpdatePing = "Animate on refresh", --- untranslated
+	nomRelative = "Relative to Main Aura",
 	nomClose = "Закрыть",
 	nomEffectEditor = "Редактор эффектов",
 	nomAdvOptions = "Опции",
@@ -470,6 +536,21 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomReasonSpellNotFound   = "Заклинание $1 не найдено",
 	nomReasonSpellOnCooldown = "Заклинание $1 на восстановлении",
 	
+	nomReasonItemUsable     = "Item $1 usable",
+	nomReasonItemNotUsable  = "Item $1 not usable",
+	nomReasonItemNotReady   = "Item $1 Not Ready, on cooldown, timer invert",
+	nomReasonItemNotEnabled = "Item $1 not enabled ",
+	nomReasonItemNotFound   = "Item $1 not found",
+	nomReasonItemOnCooldown = "Item $1 on Cooldown",	
+	
+	nomReasonSlotUsable     = "$1 Slot usable",
+	nomReasonSlotNotUsable  = "$1 Slot not usable",
+	nomReasonSlotNotReady   = "$1 Slot Not Ready, on cooldown, timer invert",
+	nomReasonSlotNotEnabled = "$1 Slot has no cooldown effect",
+	nomReasonSlotNotFound   = "$1 Slot not found",
+	nomReasonSlotOnCooldown = "$1 Slot on Cooldown",
+	nomReasonSlotNone       = "$1 Slot is empty",
+	
 	nomReasonStealablePresent = "$1 имеет похищающее заклинание $2", --$1=Target $2=SpellName (e.g. "Focus has Stealable spell Blessing of Wisdom")
 	nomReasonNoStealablePresent = "Никто не имеет похищающее заклинание $1", --$1=SpellName (e.g. "Nobody has Stealable spell Blessing of Wisdom")
 	nomReasonRaidTargetStealablePresent = "Raid$1Target имеет похищающее заклинание $2", --$1=RaidId $2=SpellName (e.g. "Raid21Target has Stealable spell Blessing of Wisdom")
@@ -511,6 +592,15 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomReasonStance = "Текущая стойка $1, совпадает с $2", -- $1=Current Stance, $2=Match Stance
 	nomReasonNoStance = "Текущая стойка $1, не совпадает с $2", -- $1=Current Stance, $2=Match Stance
 	
+	nomReasonRunesNotReady = "Runes not Ready",
+	nomReasonRunesReady = "Runes Ready",
+	
+	nomReasonPetExists= "Player has Pet",
+	nomReasonPetMissing = "Player Pet Missing",
+	
+	nomReasonTrackingMissing = "Tracking not set to $1",
+	nomTrackingSet = "Tracking set to $1",
+
 	nomReasonStatic = "Статик аура",
 
 	nomReasonGTFOAlerts = "GTFO alerts are never always on.",

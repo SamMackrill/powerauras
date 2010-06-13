@@ -135,8 +135,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		Waist = "Waist",
 		Wrist = "Wrist",	
 	},
-	
-	-- main
+
+	-- Main
 	nomEnable = "Activate Power Auras",
 	aideEnable = "Enable all Power Auras effects",
 
@@ -169,8 +169,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomGlobalEffects = "Global\neffects",
 	aideEffectTooltip = "(Shift-click to toggle effect ON or OFF)",
 	aideEffectTooltip2 = "(Ctrl-click to give reason for activation)",
-	
-	
+
+
 	aideItems = "Enter full name of Item or [xxx] for Id",
 	aideSlots = "Enter name of slot to track: Ammo, Back, Chest, Feet, Finger0, Finger1, Hands, Head, Legs, MainHand, Neck, Ranged, SecondaryHand, Shirt, Shoulder, Tabard, Trinket0, Trinket1, Waist, Wrist",
 	aideTracking = "Enter name of Tracking type e.g. fish",
@@ -192,7 +192,6 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideSound2End = "Plays a sound at the end.",
 	nomCustomSoundEnd = "OR soundfile:",
 	aideCustomSoundEnd = "Enter a soundfile that is in the Sounds folder, BEFORE you started the game. mp3 and wav are supported. example: 'cookie.mp3' ;)",
-
 	nomTexture = "Texture",
 	aideTexture = "The texture to be shown. You can easily replace textures by changing the files Aura#.tga in the Addon's directory.",
 
@@ -319,7 +318,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 
 	nomAuraDebug= "Debug",
 	aideAuraDebug = "Debug this Aura",
-	
+
 	nomDuration = "Anim. duration",
 	aideDuration = "After this time, this effect will disapear (0 to deactivate)",
 
@@ -527,7 +526,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomReasonInBgInstance = "In Battleground Instance",		
 	nomReasonNotInArenaInstance = "Not in Arena Instance",
 	nomReasonInArenaInstance = "In Arena Instance",
-	
+
 	nomReasonInverted        = "$1 (inverted)", -- $1 is the reason, but the inverted flag is set so the logic is reversed
 	
 	nomReasonSpellUsable     = "Spell $1 usable",
