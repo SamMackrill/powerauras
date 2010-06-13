@@ -11,6 +11,8 @@ PowaAuras.Anim[7] = "전기장";
 PowaAuras.Anim[8] = "꽁무니";
 PowaAuras.Anim[9] = "화염";
 PowaAuras.Anim[10] = "궤도";
+PowaAuras.Anim[11] = "Spin Clockwise";
+PowaAuras.Anim[12] = "Spin Anti-Clockwise";
 
 PowaAuras.BeginAnimDisplay[0] = "[없음]";
 PowaAuras.BeginAnimDisplay[1] = "확대";
@@ -33,7 +35,8 @@ PowaAuras.EndAnimDisplay[3] = "불투명도만";
 PowaAuras.EndAnimDisplay[4] = "Spin"; --- untranslated
 PowaAuras.EndAnimDisplay[5] = "Spin In"; --- untranslated
 
-PowaAuras.Sound[0] = "없음";
+PowaAuras.Sound[0] = NONE;
+PowaAuras.Sound[30] = NONE;
 
 PowaAuras:MergeTables(PowaAuras.Text, 
 {
@@ -85,8 +88,53 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		[PowaAuras.BuffTypes.OwnSpell] = "나의 주문", 
 		[PowaAuras.BuffTypes.StealableSpell] = "훔치기 가능한 주문", 
 		[PowaAuras.BuffTypes.PurgeableSpell] = "제거가능한 주문",
+		[PowaAuras.BuffTypes.Static] = "Static Aura",
+		[PowaAuras.BuffTypes.Totems] = "Totems",
+		[PowaAuras.BuffTypes.Pet] = "Pet",
+		[PowaAuras.BuffTypes.Runes] = "Runes",
+		[PowaAuras.BuffTypes.Slots] = "Equipment Slots",
+		[PowaAuras.BuffTypes.Items] = "Named Items",
+		[PowaAuras.BuffTypes.Tracking] = "Tracking",
+		[PowaAuras.BuffTypes.GTFO] = "GTFO Alert",
 	},
 
+	Relative = 
+	{
+		NONE        = "Free", 
+		TOPLEFT     = "Top-Left", 
+		TOP         = "Top", 
+		TOPRIGHT    = "Top-Right", 
+		RIGHT       = "Right", 
+		BOTTOMRIGHT = "BottomRight", 
+		BOTTOM      = "Bottom", 
+		BOTTOMLEFT  = "Bottom-Left", 
+		LEFT        = "Left", 
+		CENTER      = "Center",
+	},
+	
+	Slots =
+	{
+		Ammo = "Ammo",
+		Back = "Back",
+		Chest = "Chest",
+		Feet = "Feet",
+		Finger0 = "Finger1",
+		Finger1 = "Finger2",
+		Hands = "Hands",
+		Head = "Head",
+		Legs = "Legs",
+		MainHand = "MainHand",
+		Neck = "Neck",
+		Ranged = "Ranged",
+		SecondaryHand = "OffHand",
+		Shirt = "Shirt",
+		Shoulder = "Shoulder",
+		Tabard = "Tabard",
+		Trinket0 = "Trinket1",
+		Trinket1 = "Trinket2",
+		Waist = "Waist",
+		Wrist = "Wrist",	
+	},
 	-- main
 	nomEnable = "Power Auras 활성화",
 	aideEnable = "모든 Power Auras 효과를 활성화합니다.",

@@ -1046,6 +1046,10 @@ function cPowaBuffBase:CheckAllAuraSlots(target, giveReason)
 	PowaAuras:UnitTestDebug("-------------");
 	PowaAuras:UnitTestDebug("CheckAllAuraSlots for ", target);
 	--PowaAuras.BuffUnitCount = PowaAuras.BuffUnitCount + 1;
+	if (self.Debug) then
+		PowaAuras:ShowText("CheckAllAuraSlots for ", target);
+	end
+
 	local present, reason;
 	local startFrom = 0;
 	if (self.CurrentSlot and self.CurrentMatch) then
@@ -1103,11 +1107,18 @@ end
 
 function cPowaBuffBase:CheckSingleUnit(group, unit, giveReason)
 	if (not unit) then return; end
+	if (self.Debug) then
+		PowaAuras:ShowText("CheckSingleUnit ", unit);
+	end
 	local present = self:CheckAllAuraSlots(unit, false);
 	if (present) then
 		if (self.groupany == true) then
 			PowaAuras:UnitTestDebug("CheckGroup("..group..") Present!");
 			self.CurrentUnit = unit;
+			if (self.Debug) then
+				PowaAuras:ShowText("CurrentUnit=", self.CurrentUnit);
+				self.Debug = false;
+			end
 			if (not giveReason) then return true; end
 			return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonOneInGroupHasBuff, unit, self.auraType, self.buffname);
 		end
@@ -1118,8 +1129,10 @@ function cPowaBuffBase:CheckSingleUnit(group, unit, giveReason)
 end
 
 function cPowaBuffBase:CheckGroup(group, count, giveReason)
-	local show, reason;
-	show, reason = self:CheckSingleUnit(group, self.CurrentUnit, giveReason);
+	if (self.Debug) then
+		PowaAuras:ShowText("CheckGroup ", group, " ", count, " ", self.CurrentUnit);
+	end
+	local show, reason = self:CheckSingleUnit(group, self.CurrentUnit, giveReason);
 	if (show ~= nil) then
 		if (self.Debug) then
 			PowaAuras:ShowText("buff for existing unit (", self.CurrentUnit, ") found");
@@ -1130,7 +1143,10 @@ function cPowaBuffBase:CheckGroup(group, count, giveReason)
 	if (not PowaAuras:TableEmpty(PowaAuras.ChangedUnits.Buffs)) then
 		--PowaAuras.BuffUnitSetCount = PowaAuras.BuffUnitSetCount + 1;
 		for unit in pairs(PowaAuras.ChangedUnits.Buffs) do
-			if (unit~=self.CurrentUnit) then
+			if (self.Debug) then
+				PowaAuras:ShowText("Detected buff change in unit ", unit);
+			end
+			if (unit~=self.CurrentUnit and string.find(unit, group)) then
 				--PowaAuras:ShowText("Checking buff for changed unit (", unit, ")");
 				show, reason = self:CheckSingleUnit(group, unit, giveReason);
 				if (show ~= nil) then
@@ -1161,20 +1177,29 @@ function cPowaBuffBase:CheckIfShouldShow(giveReason)
 	--PowaAuras:UnitTestInfo("CheckIfShouldShow ",self.buffAuraType," aura");
 	PowaAuras:Debug("Check " .. self.buffAuraType .. " aura");
 	if (self.Debug) then
-		PowaAuras:ShowText("Check " .. self.buffAuraType .. " aura");
+		PowaAuras:ShowText("Check " .. self.buffAuraType .. " aura ", self.Id);
 	end
 	--- targets
 	if (self.target or self.targetfriend) then
+		if (self.Debug) then
+			PowaAuras:ShowText("TARGET ",self.target,"  ",self.targetfriend);
+		end
 		PowaAuras:UnitTestDebug("on target or friendlytarget");
 		return self:CheckAllAuraSlots("target", giveReason);
 	end	
 	--- focus buff    
 	if self.focus then
+		if (self.Debug) then
+			PowaAuras:ShowText("FOCUS ",self.focus);
+		end
 		PowaAuras:UnitTestDebug("on focus");
 		return self:CheckAllAuraSlots("focus", giveReason);
 	end		
 	--- unit buff    
 	if self.optunitn then
+		if (self.Debug) then
+			PowaAuras:ShowText("NAMEDUNIT ",self.unitn);
+		end
 		PowaAuras:UnitTestDebug("on unit "..self.unitn);
 		return self:CheckAllAuraSlots(self.unitn, giveReason);
 	end		
@@ -1182,16 +1207,25 @@ function cPowaBuffBase:CheckIfShouldShow(giveReason)
 	local numrm = GetNumRaidMembers();
 	--- raid buff
 	if self.raid then
+		if (self.Debug) then
+			PowaAuras:ShowText("RAID ", self.raid);
+		end
 		PowaAuras:UnitTestDebug("on raid size=", numrm);
 		return self:CheckGroup("raid", numrm, giveReason);
 	end			
 	--- partybuff    
 	if self.party then
+		if (self.Debug) then
+			PowaAuras:ShowText("PARTY ", self.party);
+		end
 		PowaAuras:UnitTestDebug("on party size=", numpm);
 		return self:CheckGroup("party", numpm, giveReason);
 	end
 	
 	if (self.groupOrSelf) then --- Group or Self Buff
+		if (self.Debug) then
+			PowaAuras:ShowText("GROUPORSELF ", numrm, " ", numpm);
+		end
 		PowaAuras:UnitTestDebug("on Group or Self");
 		if (numrm>0) then
 			PowaAuras:UnitTestDebug("GoS on raidunit");
