@@ -2671,7 +2671,9 @@ end
 
 -- Named Items Aura--
 cPowaItems = PowaClass(cPowaAura, {ValueName = "Items", CanHaveStacks=true,  CooldownAura=true, CanHaveTimerOnInverse=true});
-cPowaItems.OptionText={buffNameTooltip=PowaAuras.Text.aideItems, typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.Items]};
+cPowaItems.OptionText={buffNameTooltip=PowaAuras.Text.aideItems, typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.Items],
+					   mineText=PowaAuras.Text.nomIgnoreItemUseable, mineTooltip=PowaAuras.Text.aideIgnoreItemUseable,
+					  };
 cPowaItems.ShowOptions={["PowaBarTooltipCheck"]=1, ["PowaBarBuffStacks"]=1};
 cPowaItems.CheckBoxes={["PowaInverseButton"]=1,["PowaOwntexButton"]=1,};
 cPowaItems.TooltipOptions = {r=0.8, g=0.8, b=0.0};
@@ -2699,6 +2701,17 @@ function cPowaItems:CheckIfShouldShow(giveReason)
 
 				if (self:IconIsRequired()) then
 					self:SetIcon(itemTexture);
+				end
+				
+				if (self.mine) then
+					if (itemEquipLoc) then
+						if (not giveReason) then return true; end
+						return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonItemEquipped, itemName);
+					end
+					if (giveReason) then
+						reason = PowaAuras:InsertText(PowaAuras.Text.nomReasonItemNotEquipped, pword);
+					end
+					return false;
 				end
 			
 				local cdstart, cdduration, enabled  = GetItemCooldown(item);
