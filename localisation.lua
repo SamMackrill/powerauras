@@ -449,6 +449,9 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomIgnoreUseable = "Cooldown Only",
 	aideIgnoreUseable = "Ignores if spell is usable (just uses cooldown)",
 
+	nomIgnoreItemUseable = "Equipped Only",
+	aideIgnoreItemUseable = "Ignores if spell is usable (just if equipped)",
+
 	-- Diagnostic reason text, these have substitutions (using $1, $2 etc) to allow for different sententance constructions
 	nomReasonShouldShow = "Should show because $1",
 	nomReasonWontShow   = "Won't show because $1",
@@ -541,7 +544,10 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomReasonItemNotReady   = "Item $1 Not Ready, on cooldown, timer invert",
 	nomReasonItemNotEnabled = "Item $1 not enabled ",
 	nomReasonItemNotFound   = "Item $1 not found",
-	nomReasonItemOnCooldown = "Item $1 on Cooldown",	
+	nomReasonItemOnCooldown = "Item $1 on Cooldown",
+	
+	nomReasonItemEquipped    = "Item $1 equipped",
+	nomReasonItemNotEquipped    = "Item $1 not equipped",
 	
 	nomReasonSlotUsable     = "$1 Slot usable",
 	nomReasonSlotNotUsable  = "$1 Slot not usable",
