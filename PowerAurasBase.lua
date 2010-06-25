@@ -170,6 +170,34 @@ PowaAuras = {
 	{
 		Buffs = {},
 	};
+
+	Roles =
+	{
+		MELEE_TANK = 1,
+		RANGED_HEAL = 2,
+		MELEE_DAMAGE = 3,
+		RANGED_DAMAGE = 4,
+	};
+	
+	InspectedRoles = {};
+	FixRoles = {};
+	
+	Spells =
+	{
+		ACTIVATE_FIRST_TALENT  = GetSpellInfo(63645),
+		ACTIVATE_SECOND_TALENT = GetSpellInfo(63644),
+		BUFF_BLOOD_PRESENCE    = GetSpellInfo(48266),
+		BUFF_FROST_PRESENCE    = GetSpellInfo(48263),
+		BUFF_UNHOLY_PRESENCE   = GetSpellInfo(48265),
+	};
+	
+	TalentChangeSpells = {
+		[PowaAuras.Spells.ACTIVATE_FIRST_TALENT]  = true,
+		[PowaAuras.Spells.ACTIVATE_SECOND_TALENT] = true,
+		[PowaAuras.Spells.BUFF_FROST_PRESENCE]    = true,
+		[PowaAuras.Spells.BUFF_BLOOD_PRESENCE]    = true,
+		[PowaAuras.Spells.BUFF_UNHOLY_PRESENCE]   = true,
+	};
 	
 	DoCheck =
 	{

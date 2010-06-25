@@ -281,6 +281,11 @@ end
 function PowaAuras:UNIT_SPELLCAST_SUCCEEDED(...)	  
 	if (self.ModTest == false) then
 		local unit, spell = ...;
+		
+		if (PowaAuras.TalentChangeSpells[spell]) then
+			self:ResetTalentScan(unit);
+			self.DoCheck.All = true;
+		end
 		--self:ShowText("UNIT_SPELLCAST_SUCCEEDED ",unit, " ", spell);
 		--- druid shapeshift special case
 		if (unit == "player") then
