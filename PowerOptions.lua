@@ -2585,10 +2585,10 @@ function PowaAuras:ShowAurasOnUnit(display, auraType)
 	if (UnitExists("target")) then
 		unit = "target";
 	end
-	--PowaAuras:Message(display.." on "..unit);
+	PowaAuras:Message(display.." on "..unit);
 	local Name, _, _, Applications, Type, Duration, Expires, Source, Stealable, shouldConsolidate, spellId = UnitAura(unit, index, auraType);
 	while (Name~=nil) do
-		--PowaAuras:Message(index..": "..Name.." (SpellID="..spellId..")");
+		PowaAuras:Message(index..": "..Name.." (SpellID="..spellId..")");
 		index = index + 1;
 		Name, _, _, Applications, Type, Duration, Expires, Source, Stealable, shouldConsolidate, spellId = UnitAura(unit, index, auraType);
 	end
