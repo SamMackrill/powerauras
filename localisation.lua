@@ -227,7 +227,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 
 	aideTotems = "Enter here the Totem Name that will trigger the Aura or a number 1=Fire, 2=Earth, 3=Water, 4=Air (use * for any totem).", 
 
-	aideRunes = "Enter here the Runes that will trigger the Aura B=Blood, F=frost, U=Unholy, D=Death (Death runes will also count as the other types) ex: 'BF' 'BFU' 'DDD'", 
+	aideRunes = "Enter here the Runes that will trigger the Aura B/b=Blood, F/f=frost, U/u=Unholy, D/d=Death (Death runes will count as the other types if you use uppercase or the ignorecase flag is set) ex: 'BF' 'BfU' 'DDD'", 
 
 	aideUnitn = "Enter here the name of the unit, which must activate/deactivate the effect. You can enter only names, if they are in your raid or group.",
 	aideUnitn2 = "Only for raid/group.",
