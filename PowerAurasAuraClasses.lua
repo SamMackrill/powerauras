@@ -2493,7 +2493,7 @@ cPowaRunes.OptionText={buffNameTooltip=PowaAuras.Text.aideRunes,
                             typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.Runes], 
 							};
 cPowaRunes.CheckBoxes={["PowaInverseButton"]=1,
-						["PowaIngoreCaseButton"]=1,
+					   ["PowaIngoreCaseButton"]=1,
 						};
 
 cPowaRunes.TooltipOptions = {r=1.0, g=0.4, b=1.0, showBuffName=true};
@@ -2506,20 +2506,22 @@ function cPowaRunes:CheckIfShouldShow(giveReason)
 	--PowaAuras:Message("Rune Aura CheckIfShouldShow");
 
 	self:SetIcon("Interface\\icons\\spell_arcane_arcane01");
-	
+	local DEATHRUNE= 4;
 	local runes = {[1]=0, [2]=0, [3]=0, [4]=0};
+	local runesPlusDeath = {[1]=0, [2]=0, [3]=0, [4]=0};
 	local runeEnd = {[1]={}, [2]={}, [3]={}};
 	for slot = 1, 6 do
 		local startTime, duration, runeReady = GetRuneCooldown(slot);
 		local runeType = GetRuneType(slot);
 		if (runeReady) then
 			runes[runeType] = runes[runeType] + 1;
-			if (runeType==4) then
-				runes[1] = runes[1] + 1;
-				runes[2] = runes[2] + 1;
-				runes[3] = runes[3] + 1;
+			runesPlusDeath[runeType] = runesPlusDeath[runeType] + 1;
+			if (runeType==DEATHRUNE) then
+				runesPlusDeath[1] = runes[1] + 1;
+				runesPlusDeath[2] = runes[2] + 1;
+				runesPlusDeath[3] = runes[3] + 1;
 			end
-		elseif (runeType~=4 and self.Timer) then
+		elseif (runeType~=DEATHRUNE and self.Timer) then
 			local endTime = startTime + duration;
 			table.insert(runeEnd[runeType], endTime);
 		end
@@ -2532,25 +2534,46 @@ function cPowaRunes:CheckIfShouldShow(giveReason)
 	end
 	
 	local minTimeToActivate;
+	
+	local match = self.buffname;
+	if (self.ignoremaj) then
+		match = string.upper(match);
+	end
 
-	for pword in string.gmatch(string.upper(self.buffname), "[^/]+") do
+	for pword in string.gmatch(match, "[^/]+") do
 	--PowaAuras:Message("  pword=",pword);
 	
-		local runesCount = {};
-
+		local runesCountPlusDeath = {};
 		_, runesCount[1] = string.gsub(pword, "B", "B");
 		_, runesCount[2] = string.gsub(pword, "U", "U");
 		_, runesCount[3] = string.gsub(pword, "F", "F");
-		_, runesCount[4] = string.gsub(pword, "D", "D");
+		_, runesCount[4] = string.gsub(string.upper(pword), "D", "D");
 		
-		if (runes[1]>=runesCount[1]
-		and runes[2]>=runesCount[2]
-		and runes[3]>=runesCount[3]
-		and runes[4]>=runesCount[4]) then
-			if (not giveReason) then return true; end
-			return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonRunesReady); 			
+		local plusDeathMatches =(runesPlusDeath[1]>=runesCount[1]
+							 and runesPlusDeath[2]>=runesCount[2]
+							 and runesPlusDeath[3]>=runesCount[3]
+							 and runesPlusDeath[4]>=runesCount[4]); 
+		
+		if (plusDeathMatches) then
+			if (self.ignoremaj) then
+				if (not giveReason) then return true; end
+				return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonRunesReady); 			
+			else
+				local runesCountIgnoreDeath = {};
+				_, runesCountIgnoreDeath[1] = string.gsub(pword, "b", "b");
+				_, runesCountIgnoreDeath[2] = string.gsub(pword, "u", "u");
+				_, runesCountIgnoreDeath[3] = string.gsub(pword, "f", "f");
+				local minusDeathMatches =(runes[1]>=runesCountIgnoreDeath[1]
+									  and runes[2]>=runesCountIgnoreDeath[2]
+									  and runes[3]>=runesCountIgnoreDeath[3]); 
+				if (minusDeathMatches) then
+					if (not giveReason) then return true; end
+					return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonRunesReady); 			
+				end
+			end
 		end
 		
+			
 		if (self.Timer and self.inverse) then		
 			local maxTime = 0;
 			for runeType = 1, 3 do
