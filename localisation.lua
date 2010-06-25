@@ -172,7 +172,6 @@ PowaAuras:MergeTables(PowaAuras.Text,
 
 
 	aideItems = "Enter full name of Item or [xxx] for Id",
-	aideSlots = "Enter name of slot to track: Ammo, Back, Chest, Feet, Finger0, Finger1, Hands, Head, Legs, MainHand, Neck, Ranged, SecondaryHand, Shirt, Shoulder, Tabard, Trinket0, Trinket1, Waist, Wrist",
 	aideTracking = "Enter name of Tracking type e.g. fish",
 
 
