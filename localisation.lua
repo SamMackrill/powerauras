@@ -69,6 +69,14 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		[PowaAuras.DebuffCatType.PvE] = "PvE",
 	},
 	
+	Role =
+	{
+		[PowaAuras.Roles.MELEE_TANK]    = "Tank",
+		[PowaAuras.Roles.RANGED_HEAL]   = "Healer",
+		[PowaAuras.Roles.MELEE_DAMAGE]  = "Melee DPS",
+		[PowaAuras.Roles.RANGED_DAMAGE] = "Ranged DPS",
+	},
+	
 	AuraType =
 	{
 		[PowaAuras.BuffTypes.Buff] = "Buff",

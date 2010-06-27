@@ -85,6 +85,7 @@ function PowaAuras:Setup()
 	end
 	
 	self.PvPFlagSet = UnitIsPVP("player");
+	self:DetermineRole("player")
 
 	self.WeAreInRaid = (GetNumRaidMembers() > 0);
 	self.WeAreInParty = (GetNumPartyMembers() > 0);
@@ -181,7 +182,13 @@ function PowaAuras:PARTY_MEMBERS_CHANGED(...)
 		self.DoCheck.PartyHealth = true;
 		self.DoCheck.PartyMana = true;
 	end
-	self.WeAreInParty = (GetNumPartyMembers() > 0);
+	local partyCount = GetNumPartyMembers();
+	self.WeAreInParty = (partyCount > 0);
+	for i = 1, partyCount do
+		local unit = "party"..i;
+		local role = self:DetermineRole(unit);
+		self:Message(UnitName(unit).." is "..self.Text.Role[role])
+	end
 end
 		
 function PowaAuras:RAID_ROSTER_UPDATE(...)
@@ -191,7 +198,13 @@ function PowaAuras:RAID_ROSTER_UPDATE(...)
 		self.DoCheck.RaidHealth = true;
 		self.DoCheck.RaidMana = true;	
 	end
-	self.WeAreInRaid = (GetNumRaidMembers() > 0);
+	local raidCount = GetNumRaidMembers();
+	self.WeAreInRaid = (raidCount > 0);
+	for i = 1, raidCount do
+		local unit = "raid"..i;
+		local role = self:DetermineRole(unit);
+		self:Message(UnitName(unit).." is "..self.Text.Role[role])
+	end
 end
 				
 function PowaAuras:UNIT_HEALTH(...)
