@@ -189,16 +189,12 @@ PowaAuras = {
 		BUFF_BLOOD_PRESENCE    = GetSpellInfo(48266),
 		BUFF_FROST_PRESENCE    = GetSpellInfo(48263),
 		BUFF_UNHOLY_PRESENCE   = GetSpellInfo(48265),
+		MOONKIN_FORM   		   = GetSpellInfo(24858),
+		TREE_OF_LIFE   		   = GetSpellInfo(65139),
+		SHADOWFORM    		   = GetSpellInfo(15473), 
 	};
 	
-	TalentChangeSpells = {
-		[PowaAuras.Spells.ACTIVATE_FIRST_TALENT]  = true,
-		[PowaAuras.Spells.ACTIVATE_SECOND_TALENT] = true,
-		[PowaAuras.Spells.BUFF_FROST_PRESENCE]    = true,
-		[PowaAuras.Spells.BUFF_BLOOD_PRESENCE]    = true,
-		[PowaAuras.Spells.BUFF_UNHOLY_PRESENCE]   = true,
-	};
-	
+
 	DoCheck =
 	{
 		Buffs = false,
@@ -650,6 +646,14 @@ PowaAuras = {
 
 };
 
+PowaAuras.TalentChangeSpells = {
+	[PowaAuras.Spells.ACTIVATE_FIRST_TALENT]  = true,
+	[PowaAuras.Spells.ACTIVATE_SECOND_TALENT] = true,
+	[PowaAuras.Spells.BUFF_FROST_PRESENCE]    = true,
+	[PowaAuras.Spells.BUFF_BLOOD_PRESENCE]    = true,
+	[PowaAuras.Spells.BUFF_UNHOLY_PRESENCE]   = true,
+};
+	
 PowaAuras.DebuffTypeSpellIds={
 	-- Death Knight
 	[47481] = PowaAuras.DebuffCatType.Stun,		-- Gnaw (Ghoul)
