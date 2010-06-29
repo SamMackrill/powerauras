@@ -5,12 +5,16 @@ PowaAuras = {
 	NextCheck = 0.2; 
 	Tstep = 0.09765625;
 	NextDebugCheck = 0;
+	InspectTimeOut = 12;
+	InspectDelay = 2;
 	
 	-- Internal counters
 	DebugTimer = 0;
 	ChecksTimer = 0; 
 	ThrottleTimer = 0;
-	TimerUpdateThrottleTimer = 0;
+	TimerUpdateThrottleTimer = 0;	
+	NextInspectTimeOut = 0;
+
 	
 	--[[
 	-- Profiling
@@ -46,6 +50,9 @@ PowaAuras = {
 	PvPFlagSet = false;
 	Instance = "none";
 
+	GroupUnits = {};
+	GroupNames = {};
+	
 	Pending = {}; --- Workaround for 'silent' cooldown end (no event fired)
 	Cascade = {}; -- Dependant auras that need checking
 
@@ -105,6 +112,7 @@ PowaAuras = {
 		"ACTIVE_TALENT_GROUP_CHANGED",
 		"BAG_UPDATE_COOLDOWN",
 		"COMBAT_LOG_EVENT_UNFILTERED",
+		"INSPECT_TALENT_READY",
 		"MINIMAP_UPDATE_TRACKING",
 		"PARTY_MEMBERS_CHANGED",
 		"PLAYER_ALIVE",

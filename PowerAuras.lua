@@ -707,6 +707,21 @@ function PowaAuras:OnUpdate(elapsed)
 		timerElapsed = self.TimerUpdateThrottleTimer;
 		self.TimerUpdateThrottleTimer = 0;
 	end
+	
+	-- Refresh Inspect, check timeout
+	if (self.NextInspectUnit ~= nil) then
+		if (GetTime() > self.NextInspectTimeOut) then
+			self:Message("Inspection timeout for ", self.NextInspectUnit);
+			self:SetRoleUndefined(self.NextInspectUnit);
+			self.NextInspectUnit = nil;
+		end
+	elseif (not self.InspectsDone and self.InspectAgain~=nil and not UnitOnTaxi("player")) then
+		if (self.InspectAgain>GetTime()) then
+			self:TryInspectNext();
+			self.InspectAgain = GetTime() + self.InspectDelay;
+		end
+	end
+
 
 	-- Update each aura (timers and stacks)
 	--self:UnitTestInfo("Aura updates");

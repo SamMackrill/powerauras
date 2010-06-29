@@ -8,20 +8,22 @@ function PowaAuras:ResetTalentScan(unit)
 	end
 	local unitName = UnitName(unit);
 	if (unitName == nil) then return; end
+	self:Message("Resetting inspect for ",unitName);
 	self.InspectedRoles[unitName] = nil;
 	self.FixRoles[unitName] = nil;
 end
 
---[[
+
 function PowaAuras:TrimInspected()
 	for unitName, _ in pairs(self.InspectedRoles) do
-		if (VUHDO_RAID_NAMES[unitName] == nil) then
+		if (self.GroupNames[unitName] == nil) then
 			self.InspectedRoles[unitName] = nil;
 			self.FixRoles[unitName] = nil;
 		end
 	end
+	self.InspectsDone = nil;
+	self.InspectAgain = GetTime() + self.InspectDelay;
 end
-
 
 
 -- If timeout after talent tree server request
@@ -33,32 +35,27 @@ end
 
 
 --
-local tInfo;
-local tClass;
 function PowaAuras:ShouldBeInspected(unit)
-	if ("focus" == unit) then
+	if ("focus" == unit or self.GroupUnits[unit]==nil) then
 		return false;
 	end
 
-	tInfo = VUHDO_RAID[unit];
-	if (tInfo.isPet or not tInfo.connected) then
+	local class = self.GroupUnits[unit].Class;
+	if (class=="ROGUE") or (class=="HUNTER") or (class=="MAGE") or (class=="WARLOCK") or (class=="DEATHKNIGHT") then
 		return false;
 	end
 
-	tClass = tInfo.classId;
-	if (self.Roles.ROGUES == tClass
-		or self.Roles.HUNTERS == tClass
-		or self.Roles.MAGES == tClass
-		or self.Roles.WARLOCKS == tClass
-		or self.Roles.DEATH_KNIGHT == tClass) then
+	if (self.InspectedRoles[self.GroupUnits[unit].Name] ~= nil) then
 		return false;
 	end
 
-	if (self.InspectedRoles[unitName] ~= nil) then
+	if (not UnitIsConnected(unit)) then
+		self.InspectSkipped = true;
 		return false;
 	end
-
+	
 	if (not CheckInteractDistance(unit, 1)) then
+		self.InspectSkipped = true;
 		return false;
 	end
 
@@ -66,115 +63,117 @@ function PowaAuras:ShouldBeInspected(unit)
 end
 
 
-
 --
-local tUnit;
 function PowaAuras:TryInspectNext()
-	for tUnit, _ in pairs(VUHDO_RAID) do
-		if (VUHDO_shouldBeInspected(tUnit)) then
-			VUHDO_NEXT_INSPECT_TIME_OUT = GetTime() + VUHDO_INSPECT_TIMEOUT;
-			VUHDO_NEXT_INSPECT_UNIT = tUnit;
-			if ("player" == tUnit) then
-				VUHDO_inspectLockRole();
+	self.InspectSkipped = false;
+	for unit, unitInfo in pairs(self.GroupUnits) do
+		if (self:ShouldBeInspected(unit)) then
+			if (UnitIsPlayer(unit)) then
+				self.NextInspectUnit = "player";
+				self:InspectRole();
 			else
-				NotifyInspect(tUnit);
+				self.NextInspectTimeOut = GetTime() + self.InspectTimeOut;
+				self.NextInspectUnit = unit;
+				NotifyInspect(unit);
+				self:Message("Inspect requested for ",unitInfo.Name);
 			end
-
 			return;
 		end
 	end
+	self.NextInspectUnit = nil;
+	self.InspectsDone = not self.InspectSkipped;
 end
 
 
+function PowaAuras:InspectRole()
 
---
-local tIcon1, tIcon2, tIcon3;
-local tActiveTree;
-local tIsInspect;
-local tInfo;
-function PowaAuras:InspectLockRole()
-	tInfo = VUHDO_RAID[VUHDO_NEXT_INSPECT_UNIT];
+	if (self.NextInspectUnit == nil) then
+		return;
+	end
+	
+	self:Message("InspectRole: ",self.NextInspectUnit);
 
-	if (tInfo == nil) then
-		VUHDO_NEXT_INSPECT_UNIT = nil;
+	local isInspect = (unit ~= "player");
+
+	if (isInspect) then
+		ClearInspectPlayer();
+	end
+	local unitInfo = self.GroupUnits[self.NextInspectUnit];
+	local unit = self.NextInspectUnit;
+	self.NextInspectUnit = nil;
+
+	if (unitInfo == nil) then
+		self:Message(" Not Found!");
 		return;
 	end
 
-	tIsInspect = "player" ~= tInfo.unit;
 
-	tActiveTree = GetActiveTalentGroup(tIsInspect);
-	_, tIcon1, tPoints1, _ = GetTalentTabInfo(1, tIsInspect, false, tActiveTree);
-	_, tIcon2, tPoints2, _ = GetTalentTabInfo(2, tIsInspect, false, tActiveTree);
-	_, tIcon3, tPoints3, _ = GetTalentTabInfo(3, tIsInspect, false, tActiveTree);
+	local activeTree = GetActiveTalentGroup(isInspect);
+	local _, _, points1 = GetTalentTabInfo(1, isInspect, false, activeTree);
+	local _, _, points2 = GetTalentTabInfo(2, isInspect, false, activeTree);
+	local _, _, points3 = GetTalentTabInfo(3, isInspect, false, activeTree);
+	
+	local role;
 
-	if (self.Roles.PRIESTS == tInfo.classId) then
+	if (unitInfo.Class=="PRIEST") then
 		-- 1 = Disc, 2 = Holy, 3 = Shadow
-		if (tPoints1 > tPoints3
-		or tPoints2 > tPoints3)	 then
-			self.InspectedRoles[unitName] = self.Roles.RANGED_HEAL;
+		if (points1 > points3 or points2 > points3)	 then
+			role = self.Roles.RANGED_HEAL;
 		else
-			self.InspectedRoles[unitName] = self.Roles.RANGED_DAMAGE;
+			role = self.Roles.RANGED_DAMAGE;
 		end
 
-	elseif (self.Roles.WARRIORS == tInfo.classId) then
+	elseif (unitInfo.Class=="WARRIOR") then
 		-- Waffen, Furor, Schutz
-		if (tPoints1 > tPoints3
-		or tPoints2 > tPoints3)	 then
-			self.InspectedRoles[unitName] = self.Roles.MELEE_DAMAGE;
+		if (points1 > points3
+		or points2 > points3)	 then
+			role = self.Roles.MELEE_DAMAGE;
 		else
-			self.InspectedRoles[unitName] = self.Roles.MELEE_TANK;
+			role = self.Roles.MELEE_TANK;
 		end
 
-	elseif (self.Roles.DRUIDS == tInfo.classId) then
+	elseif (unitInfo.Class=="DRUID") then
 		-- 1 = Gleichgewicht, 2 = Wilder Kampf, 3 = Wiederherstellung
-		if (tPoints1 > tPoints2 and tPoints1 > tPoints3) then
-			self.InspectedRoles[unitName] = self.Roles.RANGED_DAMAGE;
-		elseif(tPoints3 > tPoints2) then
-			self.InspectedRoles[unitName] = self.Roles.RANGED_HEAL;
+		if (points1 > points2 and points1 > points3) then
+			role = self.Roles.RANGED_DAMAGE;
+		elseif(points3 > points2) then
+			role = self.Roles.RANGED_HEAL;
 		else
 			-- "Natürliche Reaktion" geskillt => Wahrsch. Tank?
-			_, _, _, _, tRank, _, _, _ = GetTalentInfo(2, 16, tIsInspect, false, tActiveTree);
-			if (tRank > 0) then
-				self.InspectedRoles[unitName] = self.Roles.MELEE_TANK;
+			local _, _, _, _, rank = GetTalentInfo(2, 16, isInspect, false, activeTree);
+			if (rank > 0) then
+				role = self.Roles.MELEE_TANK;
 			else
-				self.InspectedRoles[unitName] = self.Roles.MELEE_DAMAGE;
+				role = self.Roles.MELEE_DAMAGE;
 			end
 		end
 
-	elseif (self.Roles.PALADINS == tInfo.classId) then
+	elseif (unitInfo.Class=="PALADIN") then
 		-- 1 = Heilig, 2 = Schutz, 3 = Vergeltung
-		if (tPoints1 > tPoints2 and tPoints1 > tPoints3) then
-			self.InspectedRoles[unitName] = self.Roles.RANGED_HEAL;
-		elseif (tPoints2 > tPoints3) then
-			self.InspectedRoles[unitName] = self.Roles.MELEE_TANK;
+		if (points1 > points2 and points1 > points3) then
+			role = self.Roles.RANGED_HEAL;
+		elseif (points2 > points3) then
+			role = self.Roles.MELEE_TANK;
 		else
-			self.InspectedRoles[unitName] = self.Roles.MELEE_DAMAGE;
+			role = self.Roles.MELEE_DAMAGE;
 		end
 
-	elseif (self.Roles.SHAMANS == tInfo.classId) then
+	elseif (unitInfo.Class=="SHAMAN") then
 	  -- 1 = Elementar, 2 = Verstärker, 3 = Wiederherstellung
-		if (tPoints1 > tPoints2 and tPoints1 > tPoints3) then
-			self.InspectedRoles[unitName] = self.Roles.RANGED_DAMAGE;
-		elseif (tPoints2 > tPoints3) then
-			self.InspectedRoles[unitName] = self.Roles.MELEE_DAMAGE;
+		if (points1 > points2 and points1 > points3) then
+			role = self.Roles.RANGED_DAMAGE;
+		elseif (points2 > points3) then
+			role = self.Roles.MELEE_DAMAGE;
 		else
-			self.InspectedRoles[unitName] = self.Roles.RANGED_HEAL;
+			role = self.Roles.RANGED_HEAL;
 		end
 	end
+	self:Message(unitInfo.Name," insp as ", self.Text.Role[role]);
+	self.InspectedRoles[unitInfo.Name] = role;
 
-	ClearInspectPlayer();
-	VUHDO_NEXT_INSPECT_UNIT = nil;
-	if (sIsRolesConfigured) then
-		VUHDO_normalRaidReload();
-	else
-		VUHDO_refreshRaidMembers();
-	end
 end
 
 
-
---
-]]
 
 function PowaAuras:DetermineRole(unit)
 	local _, class = UnitClass(unit);

@@ -184,11 +184,8 @@ function PowaAuras:PARTY_MEMBERS_CHANGED(...)
 	end
 	local partyCount = GetNumPartyMembers();
 	self.WeAreInParty = (partyCount > 0);
-	for i = 1, partyCount do
-		local unit = "party"..i;
-		local role = self:DetermineRole(unit);
-		self:Message(UnitName(unit).." is "..self.Text.Role[role])
-	end
+	if (GetNumRaidMembers()>0) then return; end
+	self:FillGroup("party", partyCount);
 end
 		
 function PowaAuras:RAID_ROSTER_UPDATE(...)
@@ -200,13 +197,30 @@ function PowaAuras:RAID_ROSTER_UPDATE(...)
 	end
 	local raidCount = GetNumRaidMembers();
 	self.WeAreInRaid = (raidCount > 0);
-	for i = 1, raidCount do
-		local unit = "raid"..i;
-		local role = self:DetermineRole(unit);
-		self:Message(UnitName(unit).." is "..self.Text.Role[role])
-	end
+	self:FillGroup("raid", raidCount);
 end
-				
+
+function PowaAuras:FillGroup(group, count)
+	self.GroupUnits = {};
+	self.GroupNames = {};
+	for i = 1, count do
+		local unit = group..i;
+		local role = self:DetermineRole(unit);
+		if (group=="raid" and UnitIsPlayer(unit)) then
+			unit = "player";
+		end
+		self.GroupUnits[unit] = {Name = UnitName(unit), Class = select(2, UnitClass(unit))};
+		self.GroupNames[self.GroupUnits[unit].Name] = true;
+		self:Message(self.GroupUnits[unit].Name," guess is ",self.Text.Role[role]);
+	end
+	PowaAuras:TrimInspected();
+end
+
+function PowaAuras:INSPECT_TALENT_READY()
+	self:Message("INSPECT_TALENT_READY");
+	self:InspectRole();
+end
+	
 function PowaAuras:UNIT_HEALTH(...)
 	local unit = ...;
 	self:SetCheckResource("Health", unit);

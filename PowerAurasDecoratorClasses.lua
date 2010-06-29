@@ -49,9 +49,12 @@ end
 
 function cPowaStacks:ShowValue(aura, newvalue)
 	--PowaAuras:ShowText("Stacks Showvalue id=", self.id, " newvalue=", newvalue);
-
+	if (PowaAuras.ModTest) then
+		newvalue = random(1,8);
+	end
+	
 	local frame = PowaAuras.StacksFrames[self.id];
-	if (frame==nil) then
+	if (frame==nil or newvalue==nil) then
 		return;
 	end
 	
