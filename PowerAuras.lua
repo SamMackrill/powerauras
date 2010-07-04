@@ -714,12 +714,14 @@ function PowaAuras:OnUpdate(elapsed)
 			self:Message("Inspection timeout for ", self.NextInspectUnit);
 			self:SetRoleUndefined(self.NextInspectUnit);
 			self.NextInspectUnit = nil;
-		end
-	elseif (not self.InspectsDone and self.InspectAgain~=nil and not UnitOnTaxi("player")) then
-		if (self.InspectAgain>GetTime()) then
-			self:TryInspectNext();
 			self.InspectAgain = GetTime() + self.InspectDelay;
 		end
+	elseif (not self.InspectsDone
+			and self.InspectAgain~=nil 
+			and not UnitOnTaxi("player")
+			and GetTime()>self.InspectAgain) then
+		self:TryInspectNext();
+		self.InspectAgain = GetTime() + self.InspectDelay;
 	end
 
 

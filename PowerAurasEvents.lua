@@ -205,13 +205,13 @@ function PowaAuras:FillGroup(group, count)
 	self.GroupNames = {};
 	for i = 1, count do
 		local unit = group..i;
-		local role = self:DetermineRole(unit);
-		if (group=="raid" and UnitIsPlayer(unit)) then
+		local role, roleType = self:DetermineRole(unit);
+		if (group=="raid" and UnitIsUnit(unit, "player")) then
 			unit = "player";
 		end
 		self.GroupUnits[unit] = {Name = UnitName(unit), Class = select(2, UnitClass(unit))};
 		self.GroupNames[self.GroupUnits[unit].Name] = true;
-		self:Message(self.GroupUnits[unit].Name," guess is ",self.Text.Role[role]);
+		self:Message(self.GroupUnits[unit].Name," - ",self.Text.Role[role], " (", roleType, ")");
 	end
 	PowaAuras:TrimInspected();
 end

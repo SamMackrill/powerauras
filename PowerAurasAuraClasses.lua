@@ -361,6 +361,16 @@ function cPowaAura:CheckState(giveReason)
 		end
 	end
 	
+	-- It's not dead it's restin'
+	--PowaAuras:ShowText(self.Id, " self.isResting=", self.isResting, "  IsResting()=", IsResting(), " PowaAuras.WeAreInCombat=", PowaAuras.WeAreInCombat);
+	if ((self.isResting==false and IsResting()==1 and not PowaAuras.WeAreInCombat) or (self.isResting==true and (IsResting()~=1))) then	
+		if (not giveReason) then return false; end
+		if (self.isResting == true) then
+			return false, PowaAuras.Text.nomReasonNotResting;
+		end
+		return false, PowaAuras.Text.nomReasonResting;		
+	end		
+	
 	--- target checks
 	if (not self.targetfriend or self.AuraType~="SpellAlert") then
 		if (self.target or self.targetfriend) then
@@ -481,40 +491,31 @@ function cPowaAura:CheckState(giveReason)
 	-- Instance checks
 	--PowaAuras:ShowText("Instance ", PowaAuras.Instance);
 	--PowaAuras:ShowText("  Instance5Man ", self.Instance5Man);
-	local show, reason;
+	local show, reason, now;
 	
-	show, reason = self:ShouldShowForInstanceType("5Man", giveReason);
-	if (not show) then return show, reason; end
+	show, now, reason = self:ShouldShowForInstanceType("5Man", giveReason);
+	if (now) then return show, reason; end
 	
-	show, reason = self:ShouldShowForInstanceType("5ManHeroic", giveReason);
-	if (not show) then return show, reason; end
+	show, now, reason = self:ShouldShowForInstanceType("5ManHeroic", giveReason);
+	if (now) then return show, reason; end
 	
-	show, reason = self:ShouldShowForInstanceType("10Man", giveReason);
-	if (not show) then return show, reason; end
+	show, now, reason = self:ShouldShowForInstanceType("10Man", giveReason);
+	if (now) then return show, reason; end
 	
-	show, reason = self:ShouldShowForInstanceType("10ManHeroic", giveReason);
-	if (not show) then return show, reason; end
+	show, now, reason = self:ShouldShowForInstanceType("10ManHeroic", giveReason);
+	if (now) then return show, reason; end
 	
-	show, reason = self:ShouldShowForInstanceType("25Man", giveReason);
-	if (not show) then return show, reason; end
+	show, now, reason = self:ShouldShowForInstanceType("25Man", giveReason);
+	if (now) then return show, reason; end
 	
-	show, reason = self:ShouldShowForInstanceType("25ManHeroic", giveReason);
-	if (not show) then return show, reason; end
+	show, now, reason = self:ShouldShowForInstanceType("25ManHeroic", giveReason);
+	if (now) then return show, reason; end
 	
-	show, reason = self:ShouldShowForInstanceType("Bg", giveReason);
-	if (not show) then return show, reason; end
+	show, now, reason = self:ShouldShowForInstanceType("Bg", giveReason);
+	if (now) then return show, reason; end
 	
-	show, reason = self:ShouldShowForInstanceType("Arena", giveReason);
-	if (not show) then return show, reason; end
-	
-	-- It's not dead it's restin'
-	if ((self.isResting==false and IsResting()==1 and not PowaAuras.WeAreInCombat) or (self.isResting==true and (IsResting()~=1))) then	
-		if (not giveReason) then return false; end
-		if (self.isResting == true) then
-			return false, PowaAuras.Text.nomReasonNotResting;
-		end
-		return false, PowaAuras.Text.nomReasonResting;		
-	end	
+	show, now, reason = self:ShouldShowForInstanceType("Arena", giveReason);
+	if (now) then return show, reason; end
 	
 	if (not giveReason) then return true; end
 	return true, PowaAuras.Text.nomReasonStateOK;
@@ -523,14 +524,21 @@ end
 function cPowaAura:ShouldShowForInstanceType(instanceType, giveReason)
 	local flag = "Instance"..instanceType;
 	--PowaAuras:ShowText(PowaAuras.Instance, "  ", instanceType, "  ", flag, "=", self[flag]);
-	if ((PowaAuras.Instance==instanceType and self[flag] == false) or (PowaAuras.Instance~=instanceType and self[flag] == true)) then
-		if (not giveReason) then return false; end
-		if (self[flag] == true) then
-			return false, PowaAuras.Text["nomReasonNotIn"..instanceType.."Instance"];
+	if (self.flag==0) then return; end
+	
+	if (self[flag] == true) then
+		if (PowaAuras.Instance~=instanceType) then
+			if (not giveReason) then return false, false; end
+			return false, false, PowaAuras.Text["nomReasonNotIn"..instanceType.."Instance"];
 		end
-		return false, PowaAuras.Text["nomReasonIn"..instanceType.."Instance"];		
+		return true, true;
 	end
-	return true;
+
+	if (PowaAuras.Instance==instanceType) then
+		if (not giveReason) then return false, true; end
+		return false, true, PowaAuras.Text["nomReasonIn"..instanceType.."Instance"];		
+	end
+	return true, false;
 end
 
 function cPowaAura:ShouldShow(giveReason, reverse)
@@ -2814,15 +2822,22 @@ end
 
 function cPowaTracking:CheckIfShouldShow(giveReason)
 	local count = GetNumTrackingTypes();
-	local name, texture, active, category;
-	for i=1,count do 
-		name, texture, active, category = GetTrackingInfo(i);
-		--PowaAuras:Message("name= ",name," texture= ",texture," active= ",active," category= ",category);
-		if (active) then break; end
+	local name, texture, active;
+	for i=1,count do
+		if (active) then
+			_, texture, _ = GetTrackingInfo(i);
+		else
+			name, texture, active = GetTrackingInfo(i);
+		end
+		--PowaAuras:Message("name= ",name," texture= ",texture," active= ",active);
+		if self:MatchText(name, self.buffname) then
+			self:SetIcon(texture);	
+			break; 
+		end
+		if (active and not self.inverse) then break; end
 	end
 	if (active) then
 		if self:MatchText(name, self.buffname) then
-			self:SetIcon(texture);	
 			if (not giveReason) then return true; end
 			return true, PowaAuras:InsertText(PowaAuras.Text.nomTrackingSet, name);
 		end
