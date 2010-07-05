@@ -211,13 +211,13 @@ function PowaAuras:FillGroup(group, count)
 		end
 		self.GroupUnits[unit] = {Name = UnitName(unit), Class = select(2, UnitClass(unit))};
 		self.GroupNames[self.GroupUnits[unit].Name] = true;
-		self:Message(self.GroupUnits[unit].Name," - ",self.Text.Role[role], " (", roleType, ")");
+		--self:Message(self.GroupUnits[unit].Name," - ",self.Text.Role[role], " (", roleType, ")");
 	end
 	PowaAuras:TrimInspected();
 end
 
 function PowaAuras:INSPECT_TALENT_READY()
-	self:Message("INSPECT_TALENT_READY");
+	--self:Message("INSPECT_TALENT_READY");
 	self:InspectRole();
 end
 	

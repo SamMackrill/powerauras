@@ -711,7 +711,7 @@ function PowaAuras:OnUpdate(elapsed)
 	-- Refresh Inspect, check timeout
 	if (self.NextInspectUnit ~= nil) then
 		if (GetTime() > self.NextInspectTimeOut) then
-			self:Message("Inspection timeout for ", self.NextInspectUnit);
+			--self:Message("Inspection timeout for ", self.NextInspectUnit);
 			self:SetRoleUndefined(self.NextInspectUnit);
 			self.NextInspectUnit = nil;
 			self.InspectAgain = GetTime() + self.InspectDelay;

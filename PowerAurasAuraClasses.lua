@@ -2551,7 +2551,7 @@ function cPowaRunes:CheckIfShouldShow(giveReason)
 	for pword in string.gmatch(match, "[^/]+") do
 	--PowaAuras:Message("  pword=",pword);
 	
-		local runesCountPlusDeath = {};
+		local runesCount = {};
 		_, runesCount[1] = string.gsub(pword, "B", "B");
 		_, runesCount[2] = string.gsub(pword, "U", "U");
 		_, runesCount[3] = string.gsub(pword, "F", "F");
