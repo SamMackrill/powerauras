@@ -179,14 +179,6 @@ PowaAuras = {
 		Buffs = {},
 	};
 
-	Roles =
-	{
-		MELEE_TANK = 1,
-		RANGED_HEAL = 2,
-		MELEE_DAMAGE = 3,
-		RANGED_DAMAGE = 4,
-	};
-	
 	InspectedRoles = {};
 	FixRoles = {};
 	
@@ -638,6 +630,10 @@ PowaAuras = {
 		"PowaFocusButton",
 		"PowaOptunitnButton",
 		"PowaGroupAnyButton",
+		"PowaRoleTankButton",
+		"PowaRoleHealerButton",
+		"PowaRoleMeleDpsButton",
+		"PowaRoleRangeDpsButton",
 	};
 	
 	OptionTernary = {};

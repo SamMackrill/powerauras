@@ -125,54 +125,54 @@ function PowaAuras:InspectUnit(unit)
 	if (unitInfo.Class=="PRIEST") then
 		-- 1 = Disc, 2 = Holy, 3 = Shadow
 		if (points1 > points3 or points2 > points3)	 then
-			role = self.Roles.RANGED_HEAL;
+			role = "RoleHealer";
 		else
-			role = self.Roles.RANGED_DAMAGE;
+			role = "RoleRangeDps";
 		end
 
 	elseif (unitInfo.Class=="WARRIOR") then
 		-- Waffen, Furor, Schutz
 		if (points1 > points3
 		or points2 > points3)	 then
-			role = self.Roles.MELEE_DAMAGE;
+			role = "RoleMeleDps";
 		else
-			role = self.Roles.MELEE_TANK;
+			role = "RoleTank";
 		end
 
 	elseif (unitInfo.Class=="DRUID") then
 		-- 1 = Gleichgewicht, 2 = Wilder Kampf, 3 = Wiederherstellung
 		if (points1 > points2 and points1 > points3) then
-			role = self.Roles.RANGED_DAMAGE;
+			role = "RoleRangeDps";
 		elseif(points3 > points2) then
-			role = self.Roles.RANGED_HEAL;
+			role = "RoleHealer";
 		else
 			-- "Natürliche Reaktion" geskillt => Wahrsch. Tank?
 			local _, _, _, _, rank = GetTalentInfo(2, 16, isInspect, false, activeTree);
 			if (rank > 0) then
-				role = self.Roles.MELEE_TANK;
+				role = "RoleTank";
 			else
-				role = self.Roles.MELEE_DAMAGE;
+				role = "RoleMeleDps";
 			end
 		end
 
 	elseif (unitInfo.Class=="PALADIN") then
 		-- 1 = Heilig, 2 = Schutz, 3 = Vergeltung
 		if (points1 > points2 and points1 > points3) then
-			role = self.Roles.RANGED_HEAL;
+			role = "RoleHealer";
 		elseif (points2 > points3) then
-			role = self.Roles.MELEE_TANK;
+			role = "RoleTank";
 		else
-			role = self.Roles.MELEE_DAMAGE;
+			role = "RoleMeleDps";
 		end
 
 	elseif (unitInfo.Class=="SHAMAN") then
 	  -- 1 = Elementar, 2 = Verstärker, 3 = Wiederherstellung
 		if (points1 > points2 and points1 > points3) then
-			role = self.Roles.RANGED_DAMAGE;
+			role = "RoleRangeDps";
 		elseif (points2 > points3) then
-			role = self.Roles.MELEE_DAMAGE;
+			role = "RoleMeleDps";
 		else
-			role = self.Roles.RANGED_HEAL;
+			role = "RoleHealer";
 		end
 	end
 	self.InspectedRoles[unitInfo.Name] = role;
@@ -182,16 +182,17 @@ end
 
 
 function PowaAuras:DetermineRole(unit)
+	if (unit==nil) then return; end
 	local _, class = UnitClass(unit);
 
 	if (class=="ROGUE") then
-		return self.Roles.MELEE_DAMAGE, "Preset";
+		return "RoleMeleDps", "Preset";
 	elseif (class=="HUNTER") then
-		return self.Roles.RANGED_DAMAGE, "Preset";
+		return "RoleRangeDps", "Preset";
 	elseif (class=="MAGE") then
-		return self.Roles.RANGED_DAMAGE, "Preset";
+		return "RoleRangeDps", "Preset";
 	elseif (class=="WARLOCK") then
-		return self.Roles.RANGED_DAMAGE, "Preset";
+		return "RoleRangeDps", "Preset";
 	end
 
 	local unitName = UnitName(unit);
@@ -206,66 +207,66 @@ function PowaAuras:DetermineRole(unit)
 	if (class=="DEATHKNIGHT") then
 		local _, _, buffExist = UnitBuff(unit, self.Spells.BUFF_FROST_PRESENCE);
 		if (buffExist) then
-			self.FixRoles[unitName] = self.Roles.MELEE_TANK;
+			self.FixRoles[unitName] = "RoleTank";
 		else
-			self.FixRoles[unitName] = self.Roles.MELEE_DAMAGE;
+			self.FixRoles[unitName] = "RoleMeleDps";
 		end
 		return self.FixRoles[unitName], "Guess";
 	elseif (class=="PRIEST") then
 		local _, _, buffExist = UnitBuff(unit, self.Spells.SHADOWFORM);
 		if (buffExist) then
-			self.FixRoles[unitName] = self.Roles.RANGED_DAMAGE;
-			return self.Roles.RANGED_DAMAGE, "Guess";
+			self.FixRoles[unitName] = "RoleRangeDps";
+			return "RoleRangeDps", "Guess";
 		end
-		return self.Roles.RANGED_HEAL, "Guess";
+		return "RoleHealer", "Guess";
 
 	elseif (class=="WARRIOR") then
 		local defense = select(2, UnitDefense(unit)) / UnitLevel(unit);
 
 		if (defense > 2) then
-			return self.Roles.MELEE_TANK, "Guess";
+			return "RoleTank", "Guess";
 		end
-		return self.Roles.MELEE_DAMAGE, "Guess";
+		return "RoleMeleDps", "Guess";
 
 	elseif (class=="DRUID") then
 		local _, powerType = UnitPowerType(unit);
 		if (powerType == "MANA") then
 			_, _, tBuffExist = UnitBuff(unit, self.Spells.MOONKIN_FORM);
 			if (tBuffExist) then
-				self.FixRoles[unitName] = self.Roles.RANGED_DAMAGE;
-				return self.Roles.RANGED_DAMAGE, "Guess";
+				self.FixRoles[unitName] = "RoleRangeDps";
+				return "RoleRangeDps", "Guess";
 			else
 				local _, _, tBuffExist = UnitBuff(unit, self.Spells.TREE_OF_LIFE);
 				if (tBuffExist) then
-					self.FixRoles[unitName] = self.Roles.RANGED_HEAL;
+					self.FixRoles[unitName] = "RoleHealer";
 				end
 
-				return self.Roles.RANGED_HEAL, "Guess";
+				return "RoleHealer", "Guess";
 			end
 		elseif (powerType == "RAGE") then
-			self.FixRoles[unitName] = self.Roles.MELEE_TANK;
-			return self.Roles.MELEE_TANK, "Guess";
+			self.FixRoles[unitName] = "RoleTank";
+			return "RoleTank", "Guess";
 		elseif (powerType == "ENERGY") then
-			self.FixRoles[unitName] = self.Roles.MELEE_DAMAGE;
-			return self.Roles.MELEE_DAMAGE, "Guess";
+			self.FixRoles[unitName] = "RoleMeleDps";
+			return "RoleMeleDps", "Guess";
 		end
 
 	elseif (class=="PALADIN") then
 		local defense = select(2, UnitDefense(unit)) / UnitLevel(unit);
 
 		if (defense > 2) then
-			return self.Roles.MELEE_TANK, "Guess";
+			return "RoleTank", "Guess";
 		end
 		if (UnitStat(unit, 4) > UnitStat(unit, 1)) then
-			return self.Roles.RANGED_HEAL, "Guess";
+			return "RoleHealer", "Guess";
 		end
-		return self.Roles.MELEE_DAMAGE, "Guess";
+		return "RoleMeleDps", "Guess";
 
 	elseif (class=="SHAMAN") then
 		if (UnitStat(unit, 2) > UnitStat(unit, 4)) then
-			return self.Roles.MELEE_DAMAGE, "Guess";
+			return "RoleMeleDps", "Guess";
 		end
-		return self.Roles.RANGED_HEAL, "Guess"; -- Can't tell, assume its a healer
+		return "RoleHealer", "Guess"; -- Can't tell, assume its a healer
 
 	end
 

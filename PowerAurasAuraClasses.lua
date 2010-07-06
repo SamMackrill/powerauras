@@ -96,6 +96,11 @@ cPowaAura = PowaClass(function(aura, id, base)
 	aura.InstanceBg = 0;
 	aura.InstanceArena = 0;
 	
+	aura.RoleTank     = 0;
+	aura.RoleHealer   = 0;
+	aura.RoleMeleDps  = 0;
+	aura.RoleRangeDps = 0;
+	
 	aura.spec1 = true;
 	aura.spec2 = true;
 	aura.gcd = false;
@@ -488,7 +493,16 @@ function cPowaAura:CheckState(giveReason)
 		return false, PowaAuras.Text.nomReasonInVehicle;		
 	end
 	
-	-- Instance checks
+	local show, reason = self: CheckInstanceType(giveReason);
+	if (not show) then
+		return show, reason;
+	end
+	
+	if (not giveReason) then return true; end
+	return true, PowaAuras.Text.nomReasonStateOK;
+end
+
+function cPowaAura:CheckInstanceType(giveReason)
 	--PowaAuras:ShowText("Instance ", PowaAuras.Instance);
 	--PowaAuras:ShowText("  Instance5Man ", self.Instance5Man);
 	local show, reason, now;
@@ -516,7 +530,7 @@ function cPowaAura:CheckState(giveReason)
 	
 	show, now, reason = self:ShouldShowForInstanceType("Arena", giveReason);
 	if (now) then return show, reason; end
-	
+		
 	if (not giveReason) then return true; end
 	return true, PowaAuras.Text.nomReasonStateOK;
 end
@@ -524,7 +538,7 @@ end
 function cPowaAura:ShouldShowForInstanceType(instanceType, giveReason)
 	local flag = "Instance"..instanceType;
 	--PowaAuras:ShowText(PowaAuras.Instance, "  ", instanceType, "  ", flag, "=", self[flag]);
-	if (self.flag==0) then return; end
+	if (self[flag]==0) then return; end
 	
 	if (self[flag] == true) then
 		if (PowaAuras.Instance~=instanceType) then
@@ -921,7 +935,59 @@ function cPowaAura:CheckTimerInvert()
 		self.InvertTest = nil;
 	end
 end
-				
+
+
+function cPowaAura:CheckRole(unit, giveReason)
+	
+	local unitName = UnitName(unit);
+	if (unitName==nil) then
+		if (not giveReason) then return true; end
+		return true, PowaAuras.Text.nomReasonUnknownName;
+	end
+	--PowaAuras:ShowText("CheckRole ", unit, " ", unitName);
+	local show, reason, now;
+
+	show, now, reason = self:ShouldShowForRole(unitName, "RoleTank", giveReason);
+	if (now) then return show, reason; end
+	
+	show, now, reason = self:ShouldShowForRole(unitName, "RoleHealer", giveReason);
+	if (now) then return show, reason; end
+	
+	show, now, reason = self:ShouldShowForRole(unitName, "RoleMeleDps", giveReason);
+	if (now) then return show, reason; end
+	
+	show, now, reason = self:ShouldShowForRole(unitName, "RoleRangeDps", giveReason);
+	if (now) then return show, reason; end
+
+	if (not giveReason) then return true; end
+	return true, PowaAuras.Text.nomReasonStateOK;
+end
+
+function cPowaAura:ShouldShowForRole(unitName, flag, giveReason)
+	--PowaAuras:ShowText(unitName, "  ", flag, "  ", flag, "=", self[flag]);
+	if (self.flag==0) then return; end
+	local role, source = PowaAuras:DetermineRole(unit);
+	if (role==nil) then
+		if (not giveReason) then return true, true; end
+		return true, true, PowaAuras.Text.nomReasonRoleUnknown;
+	end
+
+	if (self[flag] == true) then
+		if (role~=flag) then
+			if (not giveReason) then return false, false; end
+			return false, false, PowaAuras.Text.nomReasonNotRole[flag];
+		end
+		return true, true;
+	end
+
+	if (role==flag) then
+		if (not giveReason) then return false, true; end
+		return false, true, PowaAuras.Text.nomReasonRole[flag];	
+	end
+	return true, false;
+end
+
+	
 cPowaBuffBase = PowaClass(cPowaAura, {CanHaveTimer=true, CanHaveStacks=true, CanHaveInvertTime=true, InvertTimeHides=true});
 
 function cPowaBuffBase:AddEffect()
@@ -1050,6 +1116,7 @@ function cPowaBuffBase:CompareAura(target, z, auraName, auraTexture, textToCheck
 	return false;
 end
 
+
 function cPowaBuffBase:CheckAllAuraSlots(target, giveReason)
 	PowaAuras:UnitTestDebug("-------------");
 	PowaAuras:UnitTestDebug("CheckAllAuraSlots for ", target);
@@ -1059,6 +1126,14 @@ function cPowaBuffBase:CheckAllAuraSlots(target, giveReason)
 	end
 
 	local present, reason;
+	
+	if (PowaAuras.WeAreInRaid or PowaAuras.WeAreInParty) then
+		present, reason = self:CheckRole(target, giveReason);
+		if (not present) then
+			return present, reason;
+		end
+	end
+	
 	local startFrom = 0;
 	if (self.CurrentSlot and self.CurrentMatch) then
 		--PowaAuras:ShowText("buff for current slot (", self.CurrentSlot, ")");
@@ -1289,6 +1364,10 @@ cPowaBuffBase.CheckBoxes = {
 	["PowaInverseButton"]=1,
 	["PowaIngoreCaseButton"]=1,
 	["PowaOwntexButton"]=1,
+	["PowaRoleTankButton"]=1,
+	["PowaRoleHealerButton"]=1,
+	["PowaRoleMeleDpsButton"]=1,
+	["PowaRoleRangeDpsButton"]=1,
 };
 
 cPowaBuff = PowaClass(cPowaBuffBase, {buffAuraType="HELPFUL", auraType="buff"});

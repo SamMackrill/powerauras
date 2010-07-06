@@ -1081,6 +1081,11 @@ function PowaAuras:InitPage()
 	self:TernarySetState(getglobal("Powa25ManInstanceButton"), aura.Instance25Man);
 	self:TernarySetState(getglobal("Powa25ManHeroicInstanceButton"), aura.Instance25ManHeroic);
 
+	self:TernarySetState(getglobal("PowaRoleTankButton"), aura.RoleTank);
+	self:TernarySetState(getglobal("PowaRoleHealerButton"), aura.RoleHealer);
+	self:TernarySetState(getglobal("PowaRoleMeleDpsButton"), aura.RoleMeleDps);
+	self:TernarySetState(getglobal("PowaRoleRangeDpsButton"), aura.RoleRangeDps);
+
 	self:TernarySetState(getglobal("PowaBgInstanceButton"), aura.InstanceBg);
 	self:TernarySetState(getglobal("PowaArenaInstanceButton"), aura.InstanceArena);
 
