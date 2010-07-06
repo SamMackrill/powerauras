@@ -1705,7 +1705,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
 					</OnShow>
                 </Scripts>
 			  </CheckButton>	  
-		 
+		  
 			  <CheckButton name="PowaInCombatButton" inherits="PowaTernarySelectorTemplate">
                 <Anchors>
                   <Anchor point="TOPLEFT"
@@ -1764,7 +1764,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
 					</OnShow>
                 </Scripts>
 			  </CheckButton>	
-	  
+
 			  <CheckButton name="PowaIsInPartyButton" inherits="PowaTernarySelectorTemplate">
                 <Anchors>
                   <Anchor point="TOPLEFT"
@@ -1949,7 +1949,86 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
 					</OnShow>
                 </Scripts>
 			  </CheckButton>		  
-			  
+
+			 <CheckButton name="PowaRoleTankButton" inherits="PowaTernarySelectorTemplate">
+                <Anchors>
+                  <Anchor point="TOPLEFT"
+                          relativeTo="Powa5ManInstanceButton"
+                          relativePoint="TOPRIGHT">
+                    <Offset>
+                      <AbsDimension x="70"
+                                    y="0" />
+                    </Offset>
+                  </Anchor>
+                </Anchors>
+                <Scripts>
+					<OnShow>
+						self.Parameter = "RoleTank"; 
+						getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.Role[self.Parameter]);
+					</OnShow>
+				</Scripts>
+			  </CheckButton>	
+
+			 <CheckButton name="PowaRoleHealerButton" inherits="PowaTernarySelectorTemplate">
+               <Anchors>
+                  <Anchor point="TOPLEFT"
+                          relativeTo="PowaRoleTankButton"
+                          relativePoint="BOTTOMLEFT">
+                    <Offset>
+                      <AbsDimension x="0"
+                                    y="9" />
+                    </Offset>
+                  </Anchor>
+                </Anchors>
+
+                <Scripts>
+					<OnShow>
+						self.Parameter = "RoleHealer"; 
+						getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.Role[self.Parameter]);
+					</OnShow>
+				</Scripts>
+			  </CheckButton>	
+
+			 <CheckButton name="PowaRoleMeleDpsButton" inherits="PowaTernarySelectorTemplate">
+               <Anchors>
+                  <Anchor point="TOPLEFT"
+                          relativeTo="PowaRoleHealerButton"
+                          relativePoint="BOTTOMLEFT">
+                    <Offset>
+                      <AbsDimension x="0"
+                                    y="9" />
+                    </Offset>
+                  </Anchor>
+                </Anchors>
+
+                <Scripts>
+					<OnShow>
+						self.Parameter = "RoleMeleDps"; 
+						getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.Role[self.Parameter]);
+					</OnShow>
+				</Scripts>
+			  </CheckButton>	
+
+			 <CheckButton name="PowaRoleRangeDpsButton" inherits="PowaTernarySelectorTemplate">
+               <Anchors>
+                  <Anchor point="TOPLEFT"
+                          relativeTo="PowaRoleMeleDpsButton"
+                          relativePoint="BOTTOMLEFT">
+                    <Offset>
+                      <AbsDimension x="0"
+                                    y="9" />
+                    </Offset>
+                  </Anchor>
+                </Anchors>
+
+                <Scripts>
+					<OnShow>
+						self.Parameter = "RoleRangeDps"; 
+						getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.Role[self.Parameter]);
+					</OnShow>
+				</Scripts>
+			  </CheckButton>	
+		  			  
 			  <CheckButton name="PowaIsMountedButton" inherits="PowaTernarySelectorTemplate">
                 <Anchors>
                   <Anchor point="TOPLEFT"
