@@ -937,54 +937,57 @@ function cPowaAura:CheckTimerInvert()
 end
 
 
-function cPowaAura:CheckRole(unit, giveReason)
-	
-	local unitName = UnitName(unit);
-	if (unitName==nil) then
-		if (not giveReason) then return true; end
-		return true, PowaAuras.Text.nomReasonUnknownName;
-	end
-	--PowaAuras:ShowText("CheckRole ", unit, " ", unitName);
-	local show, reason, now;
-
-	show, now, reason = self:ShouldShowForRole(unitName, "RoleTank", giveReason);
-	if (now) then return show, reason; end
-	
-	show, now, reason = self:ShouldShowForRole(unitName, "RoleHealer", giveReason);
-	if (now) then return show, reason; end
-	
-	show, now, reason = self:ShouldShowForRole(unitName, "RoleMeleDps", giveReason);
-	if (now) then return show, reason; end
-	
-	show, now, reason = self:ShouldShowForRole(unitName, "RoleRangeDps", giveReason);
-	if (now) then return show, reason; end
-
-	if (not giveReason) then return true; end
-	return true, PowaAuras.Text.nomReasonStateOK;
+function cPowaAura:RoleCheckRequired()
+	return (self.RoleTank ~= 0 or self.RoleHealer ~= 0 or self.RoleMeleDps ~= 0 or self.RoleRangeDps ~= 0);
 end
 
-function cPowaAura:ShouldShowForRole(unitName, flag, giveReason)
-	--PowaAuras:ShowText(unitName, "  ", flag, "  ", flag, "=", self[flag]);
-	if (self.flag==0) then return; end
+function cPowaAura:CheckRole(unit, giveReason)
+	
 	local role, source = PowaAuras:DetermineRole(unit);
+	--PowaAuras:ShowText("CheckRole ", unit, " role=", role);
+	local show, reason;
+
+	show, reason = self:ShouldShowForRole(role, "RoleTank", giveReason);
+	--PowaAuras:ShowText("show=", show, " reason=",reason);
+	if (show) then return show, reason; end
+	
+	show, reason = self:ShouldShowForRole(role, "RoleHealer", giveReason);
+	--PowaAuras:ShowText("show=", show, " reason=",reason);
+	if (show) then return show, reason; end
+	
+	show, reason = self:ShouldShowForRole(role, "RoleMeleDps", giveReason);
+	--PowaAuras:ShowText("show=", show, " reason=",reason);
+	if (show) then return show, reason; end
+	
+	show, reason = self:ShouldShowForRole(role, "RoleRangeDps", giveReason);
+	--PowaAuras:ShowText("show=", show, " reason=",reason);
+	if (show) then return show, reason; end
+
+	if (not giveReason) then return false; end
+	return false, PowaAuras.Text.nomReasonRoleNoMatch;
+end
+
+function cPowaAura:ShouldShowForRole(role, flag, giveReason)
+	if (self[flag]==0) then return; end
+	--PowaAuras:ShowText("Flag ", flag, "=", self[flag]);
 	if (role==nil) then
-		if (not giveReason) then return true, true; end
-		return true, true, PowaAuras.Text.nomReasonRoleUnknown;
+		if (not giveReason) then return true; end
+		return true, PowaAuras.Text.nomReasonRoleUnknown;
 	end
 
 	if (self[flag] == true) then
 		if (role~=flag) then
-			if (not giveReason) then return false, false; end
-			return false, false, PowaAuras.Text.nomReasonNotRole[flag];
+			return false;
 		end
-		return true, true;
+		if (not giveReason) then return true; end
+		return true, PowaAuras.Text.nomReasonRole[flag];
 	end
 
 	if (role==flag) then
-		if (not giveReason) then return false, true; end
-		return false, true, PowaAuras.Text.nomReasonRole[flag];	
+		return false;
 	end
-	return true, false;
+	if (not giveReason) then return true; end
+	return true, PowaAuras.Text.nomReasonNotRole[flag];
 end
 
 	
@@ -1127,7 +1130,10 @@ function cPowaBuffBase:CheckAllAuraSlots(target, giveReason)
 
 	local present, reason;
 	
-	if (PowaAuras.WeAreInRaid or PowaAuras.WeAreInParty) then
+	if (self:RoleCheckRequired()) then
+		if (not PowaAuras.WeAreInRaid and not PowaAuras.WeAreInParty) then
+			return false, PowaAuras.Text.nomReasonNotInGroup;
+		end
 		present, reason = self:CheckRole(target, giveReason);
 		if (not present) then
 			return present, reason;
