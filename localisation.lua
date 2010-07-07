@@ -532,6 +532,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomReasonInRaid = "In Raid",
 	nomReasonNotInParty = "Not in Party",
 	nomReasonNotInRaid = "Not in Raid",
+	nomReasonNotInGroup = "Not in Party/Raid",
 	nomReasonNoFocus = "No focus",	
 	nomReasonNoCustomUnit = "Can't find custom unit not in party, raid or with pet unit=$1",
 	nomReasonPvPFlagNotSet = "PvP flag not set",
@@ -646,6 +647,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	
 	nomReasonUnknownName = "Unit name unknown",
 	nomReasonRoleUnknown = "Role unknown",
+	nomReasonRoleNoMatch = "No matching Role",
 
 	nomReasonGTFOAlerts = "GTFO alerts are never always on.",
 
