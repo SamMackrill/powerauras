@@ -1020,7 +1020,12 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 	if (aura.InvertTimeHides) then
 		aura.ForceTimeInvert = nil;
 	end
+	
+
 	if (aura.Timer and aura.Timer.enabled) then
+		if (aura.Debug) then
+			self:Message("Show Timer");
+		end
 		PowaAuras:CreateTimerFrameIfMissing(aura.id, aura.Timer.UpdatePing);
 		if (aura.timerduration) then
 			aura.Timer.CustomDuration = aura.timerduration;
@@ -1342,6 +1347,10 @@ end
 
 function PowaAuras:UpdateTimer(aura, timerElapsed, skipTimerUpdate)
 
+	if (aura.Debug) then
+		PowaAuras:UnitTestInfo("UpdateTimer ",self.id, " ", aura.Timer, " skip=",skipTimerUpdate);
+	end
+	
 	if (not aura.Timer or skipTimerUpdate) then
 		return;
 	end
@@ -1429,9 +1438,7 @@ function PowaAuras:SetupStaticPopups()
 			self.wideEditBox:SetFocus();
 		end,
 		OnHide = function(self)
-			if ( ChatFrameEditBox:IsShown() ) then
-				ChatFrameEditBox:SetFocus();
-			end
+			ChatEdit_FocusActiveWindow(); 	
 			self.wideEditBox:SetText("");
 			PowaAuras:DisplayAura(PowaAuras.CurrentAuraId);
 			PowaAuras:UpdateMainOption();
@@ -1455,7 +1462,7 @@ function PowaAuras:SetupStaticPopups()
 		button1 = OKAY,
 		button2 = EXIT,
 		hasEditBox = 1,
-		maxLetters = 2000,
+		maxLetters = self.ExportMaxSize,
 		hasWideEditBox = 1,
 		OnShow = function(self)
 			self.wideEditBox:SetText(PowaAuras.Auras[PowaAuras.CurrentAuraId]:CreateAuraString());
@@ -1463,9 +1470,7 @@ function PowaAuras:SetupStaticPopups()
 			self.wideEditBox:HighlightText();
 		end,
 		OnHide = function(self)
-			if ( ChatFrameEditBox:IsShown() ) then
-				ChatFrameEditBox:SetFocus();
-			end
+			ChatEdit_FocusActiveWindow(); 
 			self.wideEditBox:SetText("");
 		end,
 		EditBoxOnEnterPressed = function(self)
@@ -1486,7 +1491,7 @@ function PowaAuras:SetupStaticPopups()
 		button1 = ACCEPT,
 		button2 = CANCEL,
 		hasEditBox = 1,
-		maxLetters =40000,
+		maxLetters = self.ExportMaxSize * 24,
 		hasWideEditBox = 1,
 		OnAccept = function(self)
 			PowaAuras:CreateNewAuraSetFromImport(self.wideEditBox:GetText());
@@ -1496,9 +1501,7 @@ function PowaAuras:SetupStaticPopups()
 			self.wideEditBox:SetFocus();
 		end,
 		OnHide = function(self)
-			if ( ChatFrameEditBox:IsShown() ) then
-				ChatFrameEditBox:SetFocus();
-			end
+			ChatEdit_FocusActiveWindow(); 
 			self.wideEditBox:SetText("");
 			PowaAuras:DisplayAura(PowaAuras.CurrentAuraId);
 			PowaAuras:UpdateMainOption();
@@ -1530,9 +1533,7 @@ function PowaAuras:SetupStaticPopups()
 			self.wideEditBox:HighlightText();
 		end,
 		OnHide = function(self)
-			if ( ChatFrameEditBox:IsShown() ) then
-				ChatFrameEditBox:SetFocus();
-			end
+			ChatEdit_FocusActiveWindow(); 
 			self.wideEditBox:SetText("");
 		end,
 		EditBoxOnEnterPressed = function(self)

@@ -7,6 +7,7 @@ PowaAuras = {
 	NextDebugCheck = 0;
 	InspectTimeOut = 12;
 	InspectDelay = 2;
+	ExportMaxSize = 4000;
 	
 	-- Internal counters
 	DebugTimer = 0;

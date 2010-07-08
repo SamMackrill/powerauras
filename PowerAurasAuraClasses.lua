@@ -503,56 +503,73 @@ function cPowaAura:CheckState(giveReason)
 end
 
 function cPowaAura:CheckInstanceType(giveReason)
-	--PowaAuras:ShowText("Instance ", PowaAuras.Instance);
-	--PowaAuras:ShowText("  Instance5Man ", self.Instance5Man);
-	local show, reason, now;
+	if (self.Debug) then
+		PowaAuras:ShowText("Instance ", PowaAuras.Instance);
+	end
+	local show, reason, now, noShowReason;
 	
 	show, now, reason = self:ShouldShowForInstanceType("5Man", giveReason);
+	if (show==false) then showTotal = false; end
 	if (now) then return show, reason; end
 	
 	show, now, reason = self:ShouldShowForInstanceType("5ManHeroic", giveReason);
 	if (now) then return show, reason; end
+	if (show==false) then showTotal = false; end
 	
 	show, now, reason = self:ShouldShowForInstanceType("10Man", giveReason);
 	if (now) then return show, reason; end
+	if (show==false) then showTotal = false; end
 	
 	show, now, reason = self:ShouldShowForInstanceType("10ManHeroic", giveReason);
 	if (now) then return show, reason; end
+	if (show==false) then showTotal = false; end
 	
 	show, now, reason = self:ShouldShowForInstanceType("25Man", giveReason);
 	if (now) then return show, reason; end
+	if (show==false) then showTotal = false; end
 	
 	show, now, reason = self:ShouldShowForInstanceType("25ManHeroic", giveReason);
 	if (now) then return show, reason; end
+	if (show==false) then showTotal = false; end
 	
 	show, now, reason = self:ShouldShowForInstanceType("Bg", giveReason);
 	if (now) then return show, reason; end
+	if (show==false) then showTotal = false; end
 	
 	show, now, reason = self:ShouldShowForInstanceType("Arena", giveReason);
 	if (now) then return show, reason; end
-		
+	if (show==false) then showTotal = false; end
+	
+	if (showTotal==false) then
+		if (not giveReason) then return false; end
+		return false, PowaAuras.Text.nomNotInInstance;
+	end
+	
 	if (not giveReason) then return true; end
 	return true, PowaAuras.Text.nomReasonStateOK;
 end
 
 function cPowaAura:ShouldShowForInstanceType(instanceType, giveReason)
 	local flag = "Instance"..instanceType;
-	--PowaAuras:ShowText(PowaAuras.Instance, "  ", instanceType, "  ", flag, "=", self[flag]);
-	if (self[flag]==0) then return; end
+	if (self.Debug) then
+		PowaAuras:ShowText(PowaAuras.Instance, "  ", instanceType, "  ", flag, "=", self[flag]);
+	end	if (self[flag]==0) then return; end
 	
 	if (self[flag] == true) then
 		if (PowaAuras.Instance~=instanceType) then
 			if (not giveReason) then return false, false; end
 			return false, false, PowaAuras.Text["nomReasonNotIn"..instanceType.."Instance"];
 		end
-		return true, true;
+		if (not giveReason) then return true, true; end
+		return true, true, PowaAuras.Text["nomReasonIn"..instanceType.."Instance"];		
 	end
 
 	if (PowaAuras.Instance==instanceType) then
 		if (not giveReason) then return false, true; end
 		return false, true, PowaAuras.Text["nomReasonIn"..instanceType.."Instance"];		
 	end
-	return true, false;
+	if (not giveReason) then return true, false; end
+	return true, false, PowaAuras.Text["nomReasonNotIn"..instanceType.."Instance"];
 end
 
 function cPowaAura:ShouldShow(giveReason, reverse)
@@ -2581,7 +2598,7 @@ end
 
 
 -- Runes Aura--
-cPowaRunes = PowaClass(cPowaAura, {AuraType = "Runes", CanHaveTimerOnInverse=true});
+cPowaRunes = PowaClass(cPowaAura, {AuraType = "Runes", CanHaveTimerOnInverse=true, CooldownAura=true});
 cPowaRunes.OptionText={buffNameTooltip=PowaAuras.Text.aideRunes, 
                             typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.Runes], 
 							};
