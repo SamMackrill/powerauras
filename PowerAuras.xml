@@ -2377,11 +2377,11 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                                 y="25" />
                 </Size>
                 <Anchors>
-                  <Anchor point="LEFT"
-                          relativeTo="PowaGroupAnyButton"
-                          relativePoint="RIGHT">
+                  <Anchor point="BOTTOMRIGHT"
+                          relativeTo="PowaBarConfigFrameEditor2"
+                          relativePoint="BOTTOMRIGHT">
                     <Offset>
-                      <AbsDimension x="100"
+                      <AbsDimension x="-50"
                                     y="0" />
                     </Offset>
                   </Anchor>

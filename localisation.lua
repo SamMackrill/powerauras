@@ -643,6 +643,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomReasonTrackingMissing = "Tracking not set to $1",
 	nomTrackingSet = "Tracking set to $1",
 
+	nomNotInInstance = "Not in correct instance",
+
 	nomReasonStatic = "Static Aura",
 	
 	nomReasonUnknownName = "Unit name unknown",
