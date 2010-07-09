@@ -8,7 +8,7 @@ function PowaAuras:ResetTalentScan(unit)
 	end
 	local unitName = UnitName(unit);
 	if (unitName == nil) then return; end
-	self:Message("Resetting inspect for ",unitName);
+	--self:Message("Resetting inspect for ",unitName);
 	self.InspectedRoles[unitName] = nil;
 	self.FixRoles[unitName] = nil;
 end
@@ -44,8 +44,11 @@ function PowaAuras:ShouldBeInspected(unit)
 	if (class=="ROGUE") or (class=="HUNTER") or (class=="MAGE") or (class=="WARLOCK") or (class=="DEATHKNIGHT") then
 		return false;
 	end
+	
+	local name = self.GroupUnits[unit].Name;
+	--self:Message("ShouldBeInspected? ",unit, " - ", name);
 
-	if (self.InspectedRoles[self.GroupUnits[unit].Name] ~= nil) then
+	if (self.InspectedRoles[name] ~= nil) then
 		return false;
 	end
 
@@ -68,14 +71,14 @@ function PowaAuras:TryInspectNext()
 	self.InspectSkipped = false;
 	for unit, unitInfo in pairs(self.GroupUnits) do
 		if (self:ShouldBeInspected(unit)) then
-			if (UnitIsPlayer(unit)) then
+			if (UnitIsUnit(unit,"player")) then
 				self.NextInspectUnit = "player";
 				self:InspectRole();
 			else
 				self.NextInspectTimeOut = GetTime() + self.InspectTimeOut;
 				self.NextInspectUnit = unit;
 				NotifyInspect(unit);
-				self:Message("Inspect requested for ",unitInfo.Name);
+				--self:Message("Inspect requested for ",unitInfo.Name);
 			end
 			return;
 		end
@@ -90,23 +93,27 @@ function PowaAuras:InspectRole()
 	if (self.NextInspectUnit == nil) then
 		return;
 	end
-	
-	self:Message("InspectRole: ",self.NextInspectUnit);
+	local role = self:InspectUnit(self.NextInspectUnit);
+	--self:Message("Role=",self.Text.Role[role]);
+	return role;
+end
+
+function PowaAuras:InspectUnit(unit)
 
 	local isInspect = (unit ~= "player");
 
 	if (isInspect) then
 		ClearInspectPlayer();
 	end
-	local unitInfo = self.GroupUnits[self.NextInspectUnit];
-	local unit = self.NextInspectUnit;
 	self.NextInspectUnit = nil;
 
+	local unitInfo = self.GroupUnits[unit];
 	if (unitInfo == nil) then
-		self:Message(" Not Found!");
+		--self:Message(" Not Found!");
 		return;
 	end
 
+	--self:Message("InspectRole: ",unitInfo.Name, " (", unit,")");
 
 	local activeTree = GetActiveTalentGroup(isInspect);
 	local _, _, points1 = GetTalentTabInfo(1, isInspect, false, activeTree);
@@ -118,153 +125,149 @@ function PowaAuras:InspectRole()
 	if (unitInfo.Class=="PRIEST") then
 		-- 1 = Disc, 2 = Holy, 3 = Shadow
 		if (points1 > points3 or points2 > points3)	 then
-			role = self.Roles.RANGED_HEAL;
+			role = "RoleHealer";
 		else
-			role = self.Roles.RANGED_DAMAGE;
+			role = "RoleRangeDps";
 		end
 
 	elseif (unitInfo.Class=="WARRIOR") then
 		-- Waffen, Furor, Schutz
 		if (points1 > points3
 		or points2 > points3)	 then
-			role = self.Roles.MELEE_DAMAGE;
+			role = "RoleMeleDps";
 		else
-			role = self.Roles.MELEE_TANK;
+			role = "RoleTank";
 		end
 
 	elseif (unitInfo.Class=="DRUID") then
 		-- 1 = Gleichgewicht, 2 = Wilder Kampf, 3 = Wiederherstellung
 		if (points1 > points2 and points1 > points3) then
-			role = self.Roles.RANGED_DAMAGE;
+			role = "RoleRangeDps";
 		elseif(points3 > points2) then
-			role = self.Roles.RANGED_HEAL;
+			role = "RoleHealer";
 		else
 			-- "Natürliche Reaktion" geskillt => Wahrsch. Tank?
 			local _, _, _, _, rank = GetTalentInfo(2, 16, isInspect, false, activeTree);
 			if (rank > 0) then
-				role = self.Roles.MELEE_TANK;
+				role = "RoleTank";
 			else
-				role = self.Roles.MELEE_DAMAGE;
+				role = "RoleMeleDps";
 			end
 		end
 
 	elseif (unitInfo.Class=="PALADIN") then
 		-- 1 = Heilig, 2 = Schutz, 3 = Vergeltung
 		if (points1 > points2 and points1 > points3) then
-			role = self.Roles.RANGED_HEAL;
+			role = "RoleHealer";
 		elseif (points2 > points3) then
-			role = self.Roles.MELEE_TANK;
+			role = "RoleTank";
 		else
-			role = self.Roles.MELEE_DAMAGE;
+			role = "RoleMeleDps";
 		end
 
 	elseif (unitInfo.Class=="SHAMAN") then
 	  -- 1 = Elementar, 2 = Verstärker, 3 = Wiederherstellung
 		if (points1 > points2 and points1 > points3) then
-			role = self.Roles.RANGED_DAMAGE;
+			role = "RoleRangeDps";
 		elseif (points2 > points3) then
-			role = self.Roles.MELEE_DAMAGE;
+			role = "RoleMeleDps";
 		else
-			role = self.Roles.RANGED_HEAL;
+			role = "RoleHealer";
 		end
 	end
-	self:Message(unitInfo.Name," insp as ", self.Text.Role[role]);
 	self.InspectedRoles[unitInfo.Name] = role;
-
+	return role;
 end
 
 
 
 function PowaAuras:DetermineRole(unit)
+	if (unit==nil) then return; end
 	local _, class = UnitClass(unit);
 
 	if (class=="ROGUE") then
-		return self.Roles.MELEE_DAMAGE;
+		return "RoleMeleDps", "Preset";
 	elseif (class=="HUNTER") then
-		return self.Roles.RANGED_DAMAGE;
+		return "RoleRangeDps", "Preset";
 	elseif (class=="MAGE") then
-		return self.Roles.RANGED_DAMAGE;
+		return "RoleRangeDps", "Preset";
 	elseif (class=="WARLOCK") then
-		return self.Roles.RANGED_DAMAGE;
+		return "RoleRangeDps", "Preset";
 	end
 
 	local unitName = UnitName(unit);
 	if (self.InspectedRoles[unitName] ~= nil) then
-		return self.InspectedRoles[unitName];
+		return self.InspectedRoles[unitName], "Inspected";
 	end
 
 	if (self.FixRoles[unitName] ~= nil) then
-		return self.FixRoles[unitName];
+		return self.FixRoles[unitName], "Fixed";
 	end
 
 	if (class=="DEATHKNIGHT") then
 		local _, _, buffExist = UnitBuff(unit, self.Spells.BUFF_FROST_PRESENCE);
 		if (buffExist) then
-			self.FixRoles[unitName] = self.Roles.MELEE_TANK;
+			self.FixRoles[unitName] = "RoleTank";
 		else
-			self.FixRoles[unitName] = self.Roles.MELEE_DAMAGE;
+			self.FixRoles[unitName] = "RoleMeleDps";
 		end
-		return self.FixRoles[unitName];
+		return self.FixRoles[unitName], "Guess";
 	elseif (class=="PRIEST") then
 		local _, _, buffExist = UnitBuff(unit, self.Spells.SHADOWFORM);
 		if (buffExist) then
-			self.FixRoles[unitName] = self.Roles.RANGED_DAMAGE;
-			return self.Roles.RANGED_DAMAGE;
-		else
-			return self.Roles.RANGED_HEAL;
+			self.FixRoles[unitName] = "RoleRangeDps";
+			return "RoleRangeDps", "Guess";
 		end
+		return "RoleHealer", "Guess";
 
 	elseif (class=="WARRIOR") then
 		local defense = select(2, UnitDefense(unit)) / UnitLevel(unit);
 
 		if (defense > 2) then
-			return self.Roles.MELEE_TANK;
+			return "RoleTank", "Guess";
 		end
-		return self.Roles.MELEE_DAMAGE;
+		return "RoleMeleDps", "Guess";
 
 	elseif (class=="DRUID") then
 		local _, powerType = UnitPowerType(unit);
 		if (powerType == "MANA") then
 			_, _, tBuffExist = UnitBuff(unit, self.Spells.MOONKIN_FORM);
 			if (tBuffExist) then
-				self.FixRoles[unitName] = self.Roles.RANGED_DAMAGE;
-				return self.Roles.RANGED_DAMAGE;
+				self.FixRoles[unitName] = "RoleRangeDps";
+				return "RoleRangeDps", "Guess";
 			else
 				local _, _, tBuffExist = UnitBuff(unit, self.Spells.TREE_OF_LIFE);
 				if (tBuffExist) then
-					self.FixRoles[unitName] = self.Roles.RANGED_HEAL;
+					self.FixRoles[unitName] = "RoleHealer";
 				end
 
-				return self.Roles.RANGED_HEAL;
+				return "RoleHealer", "Guess";
 			end
 		elseif (powerType == "RAGE") then
-			self.FixRoles[unitName] = self.Roles.MELEE_TANK;
-			return self.Roles.MELEE_TANK;
+			self.FixRoles[unitName] = "RoleTank";
+			return "RoleTank", "Guess";
 		elseif (powerType == "ENERGY") then
-			self.FixRoles[unitName] = self.Roles.MELEE_DAMAGE;
-			return self.Roles.MELEE_DAMAGE;
+			self.FixRoles[unitName] = "RoleMeleDps";
+			return "RoleMeleDps", "Guess";
 		end
 
 	elseif (class=="PALADIN") then
 		local defense = select(2, UnitDefense(unit)) / UnitLevel(unit);
 
 		if (defense > 2) then
-			return self.Roles.MELEE_TANK;
-		else
-			if (UnitStat(unit, 4) > UnitStat(unit, 1)) then
-				return self.Roles.RANGED_HEAL;
-			else
-				return self.Roles.MELEE_DAMAGE;
-			end
+			return "RoleTank", "Guess";
 		end
-		return self.FixRoles[unitName];
+		if (UnitStat(unit, 4) > UnitStat(unit, 1)) then
+			return "RoleHealer", "Guess";
+		end
+		return "RoleMeleDps", "Guess";
 
 	elseif (class=="SHAMAN") then
 		if (UnitStat(unit, 2) > UnitStat(unit, 4)) then
-			return self.Roles.MELEE_DAMAGE;
-		else
-			return self.Roles.RANGED_HEAL; -- Can't tell, assume its a healer
+			return "RoleMeleDps", "Guess";
 		end
+		return "RoleHealer", "Guess"; -- Can't tell, assume its a healer
+
 	end
 
 	return nil;

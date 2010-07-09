@@ -181,6 +181,7 @@ cPowaTimer = PowaClass(function(timer, aura, base)
 		end
 	end
 	timer.Showing = false;
+	
 	--PowaAuras:Message("CTR Timer id=", aura.id);
 	--PowaAuras:Message("CooldownAura=", aura.CooldownAura);
 	--PowaAuras:Message("inverse=", aura.inverse);
@@ -223,14 +224,24 @@ function cPowaTimer:Update(elapsed)
 		--PowaAuras:ShowText("Timer aura missing");
 		return;
 	end
+	
+	--if (aura.Debug) then
+	--	PowaAuras:UnitTestInfo("Timer.Update ",self.id);
+	--end
 
 	if (self.enabled==false and self.InvertAuraBelow==0) then
 		--PowaAuras:UnitTestInfo("Timer disabled");
 		--PowaAuras:ShowText("Timer disabled");
+		--if (aura.Debug) then
+		--	PowaAuras:UnitTestInfo("Timer.Update ",self.id);
+		--end
 		return;
 	end
 
 	local newvalue = 0;
+	--if (aura.Debug) then
+	--	PowaAuras:UnitTestInfo("newvalue=",newvalue);
+	--end
 	--- Determine the value to display in the timer
 	if (PowaAuras.ModTest) then
 		newvalue = random(0,99) + (random(0, 99) / 100);
@@ -355,7 +366,10 @@ function cPowaTimer:ExtractDigits(displayValue)
 end
 
 function cPowaTimer:ShowValue(aura, frameIndex, displayValue)
+	if (PowaAuras.TimerFrame==nil) then return; end
+	if (PowaAuras.TimerFrame[self.id]==nil) then return; end
 	local timerFrame = PowaAuras.TimerFrame[self.id][frameIndex];
+	if (timerFrame==nil) then return; end
 	if (aura.texmode == 1) then
 		timerFrame.texture:SetBlendMode("ADD");
 	else
