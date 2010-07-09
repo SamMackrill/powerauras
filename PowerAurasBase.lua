@@ -7,6 +7,7 @@ PowaAuras = {
 	NextDebugCheck = 0;
 	InspectTimeOut = 12;
 	InspectDelay = 2;
+	ExportMaxSize = 4000;
 	
 	-- Internal counters
 	DebugTimer = 0;
@@ -179,14 +180,6 @@ PowaAuras = {
 		Buffs = {},
 	};
 
-	Roles =
-	{
-		MELEE_TANK = 1,
-		RANGED_HEAL = 2,
-		MELEE_DAMAGE = 3,
-		RANGED_DAMAGE = 4,
-	};
-	
 	InspectedRoles = {};
 	FixRoles = {};
 	
@@ -638,6 +631,10 @@ PowaAuras = {
 		"PowaFocusButton",
 		"PowaOptunitnButton",
 		"PowaGroupAnyButton",
+		"PowaRoleTankButton",
+		"PowaRoleHealerButton",
+		"PowaRoleMeleDpsButton",
+		"PowaRoleRangeDpsButton",
 	};
 	
 	OptionTernary = {};

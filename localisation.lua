@@ -71,10 +71,26 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	
 	Role =
 	{
-		[PowaAuras.Roles.MELEE_TANK]    = "Tank",
-		[PowaAuras.Roles.RANGED_HEAL]   = "Healer",
-		[PowaAuras.Roles.MELEE_DAMAGE]  = "Melee DPS",
-		[PowaAuras.Roles.RANGED_DAMAGE] = "Ranged DPS",
+		RoleTank     = "Tank",
+		RoleHealer   = "Healer",
+		RoleMeleDps  = "Melee DPS",
+		RoleRangeDps = "Ranged DPS",
+	},
+	
+	nomReasonRole =
+	{
+		RoleTank     = "Is a Tank",
+		RoleHealer   = "Is a Healer",
+		RoleMeleDps  = "Is a Melee DPS",
+		RoleRangeDps = "Is a Ranged DPS",
+	},
+
+	nomReasonNotRole =
+	{
+		RoleTank     = "Not a Tank",
+		RoleHealer   = "Not a Healer",
+		RoleMeleDps  = "Not a Melee DPS",
+		RoleRangeDps = "Not a Ranged DPS",
 	},
 	
 	AuraType =
@@ -407,6 +423,10 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		Instance25ManHeroic= "Only when in a 25-Man Heroic instance",
 		InstanceBg= "Only when in a Battleground",
 		InstanceArena= "Only when in an Arena instance",
+		RoleTank     = "Only when a Tank",
+		RoleHealer   = "Only when a Healer",
+		RoleMeleDps  = "Only when a Melee DPS",
+		RoleRangeDps = "Only when a Ranged DPS",
 	},
 	TernaryNo = {
 		combat = "Only When Not in Combat",
@@ -425,6 +445,10 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		Instance25ManHeroic= "Only when Not in a 25-Man Heroic instance",
 		InstanceBg= "Only when Not in a Battleground",
 		InstanceArena= "Only when Not in an Arena instance",
+		RoleTank     = "Only when Not a Tank",
+		RoleHealer   = "Only when Not a Healer",
+		RoleMeleDps  = "Only when Not a Melee DPS",
+		RoleRangeDps = "Only when Not a Ranged DPS",
 	},
 	TernaryAide = {
 		combat = "Effect modified by Combat status.",
@@ -443,6 +467,10 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		Instance25ManHeroic= "Effect modified by being in a 25-Man Heroic instance",
 		InstanceBg= "Effect modified by being in a Battleground",
 		InstanceArena= "Effect modified by being in an Arena instance",
+		RoleTank     = "Effect modified by being a Tank",
+		RoleHealer   = "Effect modified by being a Healer",
+		RoleMeleDps  = "Effect modified by being a Melee DPS",
+		RoleRangeDps = "Effect modified by being a Ranged DPS",
 	},
 
 	nomTimerInvertAura = "Invert Aura When Time Below",
@@ -504,6 +532,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomReasonInRaid = "In Raid",
 	nomReasonNotInParty = "Not in Party",
 	nomReasonNotInRaid = "Not in Raid",
+	nomReasonNotInGroup = "Not in Party/Raid",
 	nomReasonNoFocus = "No focus",	
 	nomReasonNoCustomUnit = "Can't find custom unit not in party, raid or with pet unit=$1",
 	nomReasonPvPFlagNotSet = "PvP flag not set",
@@ -614,7 +643,13 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomReasonTrackingMissing = "Tracking not set to $1",
 	nomTrackingSet = "Tracking set to $1",
 
+	nomNotInInstance = "Not in correct instance",
+
 	nomReasonStatic = "Static Aura",
+	
+	nomReasonUnknownName = "Unit name unknown",
+	nomReasonRoleUnknown = "Role unknown",
+	nomReasonRoleNoMatch = "No matching Role",
 
 	nomReasonGTFOAlerts = "GTFO alerts are never always on.",
 
