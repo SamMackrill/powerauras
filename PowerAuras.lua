@@ -773,6 +773,7 @@ function PowaAuras:NewCheckBuffs()
 	
 	self.ChangedUnits.Buffs = {};
 	self.TotemSlots = {};
+	self.SpellCast = {};
 
 end
 
@@ -956,7 +957,7 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 	elseif (aura.customtex == true) then
 		texture:SetTexture(self:CustomTexPath(aura.customname));
 	elseif (aura.textaura == true) then
-		texture:SetText(aura.aurastext);	  	
+		texture:SetText(aura:GetAuraText());	  	
 	else
 		texture:SetTexture("Interface\\Addons\\PowerAuras\\Auras\\Aura"..aura.texture..".tga");
 	end

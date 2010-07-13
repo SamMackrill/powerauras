@@ -672,10 +672,14 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               </Layer>
             </Layers>
             <Scripts>
-              <OnLoad>self:SetMaxLetters(100)</OnLoad>
-              <OnEnterPressed>PowaAuras:AurasTextChanged(); self:ClearFocus()</OnEnterPressed>
-              <OnEditFocusLost>PowaAuras:AurasTextChanged()</OnEditFocusLost>
-			  <OnEscapePressed>PowaAuras:AurasTextCancel(); self:ClearFocus()</OnEscapePressed>
+				<OnLoad>
+					self:SetMaxLetters(100);
+			  		self.tooltipText = PowaAuras.Text.aideCustomText;
+				</OnLoad>
+                <OnEnter>GameTooltip:SetOwner(self, "ANCHOR_RIGHT"); GameTooltip:SetText(self.tooltipText, nil, nil, nil, nil, 1);</OnEnter>				
+				<OnEnterPressed>PowaAuras:AurasTextChanged(); self:ClearFocus()</OnEnterPressed>
+				<OnEditFocusLost>PowaAuras:AurasTextChanged()</OnEditFocusLost>
+				<OnEscapePressed>PowaAuras:AurasTextCancel(); self:ClearFocus()</OnEscapePressed>
             </Scripts>
           </EditBox>
 		  
@@ -698,7 +702,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
 		          <OnClick>PowaAuras:OpenFontSelector(self);</OnClick>
 		          <OnEnter>
 		          	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-              	GameTooltip:SetText(PowaAuras.Text.aideFont, nil, nil, nil, nil, 1);
+					GameTooltip:SetText(PowaAuras.Text.aideFont, nil, nil, nil, nil, 1);
 		          </OnEnter>
 		          <OnLeave>GameTooltip:Hide();</OnLeave>
 		        </Scripts>          	
@@ -727,7 +731,9 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               </Layer>
             </Layers>
             <Scripts>
-              <OnLoad>self:SetMaxLetters(100)</OnLoad>
+              <OnLoad>
+				self:SetMaxLetters(100);
+			  </OnLoad>
               <OnEnterPressed>PowaAuras:CustomTextChanged() self:ClearFocus()</OnEnterPressed>
             </Scripts>
           </EditBox>
@@ -1216,7 +1222,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   </Anchor>
                 </Anchors>
                 <Scripts>
-                  <OnLoad>self:SetMaxLetters(200) self.aide = PowaAuras.Text.aideBuff;</OnLoad>
+                  <OnLoad>self:SetMaxLetters(200); self.aide = PowaAuras.Text.aideBuff;</OnLoad>
                   <OnEnterPressed>self:ClearFocus()</OnEnterPressed>
                   <OnTextChanged>PowaAuras:TextChanged()</OnTextChanged>
                   <OnEnter>GameTooltip:SetOwner(self, "ANCHOR_RIGHT"); GameTooltip:SetText(self.aide, nil, nil, nil, nil, 1);</OnEnter>
