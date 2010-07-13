@@ -207,7 +207,7 @@ end
 
 function GetSpellInfo(id)
 	if (not PowaState["SpellInfo"] or not PowaState["SpellInfo"][id]) then
-		return nil;
+		return "Spell"..id, 1, "icon", 1;
 	end
 	return PowaState["SpellInfo"][id].Name,
      	   PowaState["SpellInfo"][id].Rank, 

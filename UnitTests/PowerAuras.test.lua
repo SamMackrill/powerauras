@@ -21,6 +21,7 @@ require("PowerAurasAnimations")
 require("PowerAuras")
 require("PowerAurasEvents")
 require("PowerOptions")
+require("PowerAurasRole")
 
 function PowaAuras:UnitTestDebug(...)
 	if (TestPA.Debug) then
@@ -89,6 +90,7 @@ TestPA = {Debug = false;} --aura
 		dofile("../PowerAuras.lua");
 		dofile("../PowerAurasEvents.lua");
 		dofile("../PowerOptions.lua");
+		dofile("../PowerAurasRole.lua");
 		dofile("dumps/"..dump..".lua"); -- to restore the settings
 		
 		PowaAuras.UnitTestDebug =
