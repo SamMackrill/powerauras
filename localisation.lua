@@ -49,6 +49,9 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	mainHand = "main",
 	offHand = "off",
 	bothHands = "both",
+	
+	Unknown	 = "unknown",
+
 
 	DebuffType =
 	{
@@ -200,6 +203,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 
 
 	-- editor
+	aideCustomText = "Enter text to display (%t=target name, %f=focus name, %v=display value, %u=unit name, %s1=str, %s2=agl, %s3=sta, %s4=int, %s5=spi)",
+	
 	nomSoundStarting = "Starting Sound:",
 	nomSound = "Sound to play",
 	nomSound2 = "More sounds to play",
@@ -659,6 +664,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		RageEnergy = {MatchReason="$1 EnergyRagePower low", NoMatchReason="$1 EnergyRagePower not low enough"},
 		Aggro      = {MatchReason="$1 has aggro",           NoMatchReason="$1 does not have aggro"},
 		PvP        = {MatchReason="$1 PvP flag set",        NoMatchReason="$1 PvP flag not set"},
+		SpellAlert = {MatchReason="$1 casting ",        	NoMatchReason="$1 not casting"},
 	},
 
 });
