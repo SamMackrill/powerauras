@@ -192,9 +192,14 @@ PowaAuras = {
 		BUFF_UNHOLY_PRESENCE   = GetSpellInfo(48265),
 		MOONKIN_FORM   		   = GetSpellInfo(24858),
 		TREE_OF_LIFE   		   = GetSpellInfo(65139),
-		SHADOWFORM    		   = GetSpellInfo(15473), 
+		SHADOWFORM    		   = GetSpellInfo(15473),
+		DRUID_SHIFT_CAT 	   = GetSpellInfo(768),
+		DRUID_SHIFT_BEAR	   = GetSpellInfo(5487),
+		DRUID_SHIFT_DIREBEAR   = GetSpellInfo(9634),
+		DRUID_SHIFT_MOONKIN    = GetSpellInfo(24858),
 	};
 	
+	SpellCast = {};
 
 	DoCheck =
 	{
@@ -251,6 +256,8 @@ PowaAuras = {
 		TargetSpells = false,
 		FocusSpells = false,
 		PlayerSpells = false,
+		PartySpells = false,
+		RaidSpells = false,
 		
 		OwnSpells = false,
 		
@@ -389,6 +396,9 @@ PowaAuras = {
 		TargetSpells = {},
 		FocusSpells = {},
 		PlayerSpells = {},
+		PartySpells = {},
+		RaidSpells = {},
+		GroupOrSelfSpells = {};
 		
 		StealableSpells = {},
 		StealableTargetSpells = {},
