@@ -289,17 +289,29 @@ end
 function PowaAuras:SpellcastEvent(unit)
 	if (self.ModTest == false) then
 		--- spell alert handling
+		--self:ShowText("SpellcastEvent: ", unit);
 		if unit and not UnitIsDead(unit) then
 			if UnitIsUnit(unit, "player") then
 				self.DoCheck.PlayerSpells = true;
-			elseif (UnitCanAttack(unit, "player")) then
-				if UnitIsUnit(unit, "target") then
-					self.DoCheck.TargetSpells = true;
+				self.DoCheck.GroupOrSelfSpells = true;
+			end
+			if UnitIsUnit(unit, "focus") then
+				self.DoCheck.FocusSpells = true;
+			end
+			if UnitIsUnit(unit, "target") then
+				self.DoCheck.TargetSpells = true;
+			end
+			if (UnitCanAttack(unit, "player")) then
+				self.DoCheck.Spells = true; --- scan party/raid targets for casting
+			else
+				if (UnitInParty(unit)) then
+					self.DoCheck.PartySpells = true;
+					self.DoCheck.GroupOrSelfSpells = true;
 				end
-				if UnitIsUnit(unit, "focus") then
-					self.DoCheck.FocusSpells = true;
+				if (UnitInRaid(UnitInRaid(unit))) then
+					self.DoCheck.RaidSpells = true;
+					self.DoCheck.GroupOrSelfSpells = true;
 				end
-				self.DoCheck.Spells = true; --- party/raidscan for casting units in this case
 			end
 		end
 	end
@@ -308,15 +320,21 @@ end
 function PowaAuras:UNIT_SPELLCAST_SUCCEEDED(...)	  
 	if (self.ModTest == false) then
 		local unit, spell = ...;
-		
-		if (PowaAuras.TalentChangeSpells[spell]) then
+
+		self.SpellCast[unit] = spell;	
+		self:SpellcastEvent(unit);
+	
+		if (self.TalentChangeSpells[spell]) then
 			self:ResetTalentScan(unit);
 			self.DoCheck.All = true;
 		end
 		--self:ShowText("UNIT_SPELLCAST_SUCCEEDED ",unit, " ", spell);
 		--- druid shapeshift special case
 		if (unit == "player") then
-			if ( (spell == GetSpellInfo(768)) or (spell == GetSpellInfo(5487)) or (spell == GetSpellInfo(9634)) ) then
+			if ( (spell == self.Spells.DRUID_SHIFT_CAT)
+			  or (spell == self.Spells.DRUID_SHIFT_BEAR)
+			  or (spell == self.Spells.DRUID_SHIFT_DIREBEAR)
+			  or (spell == self.Spells.DRUID_SHIFT_MOONKIN) ) then
 				self.DoCheck.Mana = true;
 				self.DoCheck.RageEnergy = true;
 			end			
@@ -325,8 +343,6 @@ function PowaAuras:UNIT_SPELLCAST_SUCCEEDED(...)
 				self.DoCheck.OwnSpells = true;
 				self.Pending[auraId] = GetTime() + 0.5; -- Allow 0.5 sec for client to update or time may be wrong
 			end
-		else
-			PowaAuras:SpellcastEvent(unit);
 		end
 	end
 end
@@ -481,8 +497,6 @@ function PowaAuras:PLAYER_TARGET_CHANGED(...)
 		self.DoCheck.TargetRageEnergy = true;
 		self.ResetTargetTimers = true;
 		self.DoCheck.Actions = true;
-		self.DoCheck.TargetSpells = true;
-		self.DoCheck.Combo = true;
 		self.DoCheck.StealableTargetSpells = true;
 		self.DoCheck.PurgeableTargetSpells = true;
 	end
