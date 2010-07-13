@@ -507,6 +507,7 @@ function cPowaAura:CheckInstanceType(giveReason)
 		PowaAuras:ShowText("Instance ", PowaAuras.Instance);
 	end
 	local show, reason, now, noShowReason;
+	local showTotal = true;
 	
 	show, now, reason = self:ShouldShowForInstanceType("5Man", giveReason);
 	if (show==false) then showTotal = false; end
@@ -962,46 +963,52 @@ function cPowaAura:CheckRole(unit, giveReason)
 	
 	local role, source = PowaAuras:DetermineRole(unit);
 	--PowaAuras:ShowText("CheckRole ", unit, " role=", role);
-	local show, reason;
+	local show, reason, noShowReason;
 
 	show, reason = self:ShouldShowForRole(role, "RoleTank", giveReason);
-	--PowaAuras:ShowText("show=", show, " reason=",reason);
+	--if (show~=nil) then PowaAuras:ShowText("show=", show, " reason=",reason); end
 	if (show) then return show, reason; end
+	if (show~=nil and noShowReason==nil) then noShowReason = reason; end
 	
 	show, reason = self:ShouldShowForRole(role, "RoleHealer", giveReason);
-	--PowaAuras:ShowText("show=", show, " reason=",reason);
+	--if (show~=nil) then PowaAuras:ShowText("show=", show, " reason=",reason); end
 	if (show) then return show, reason; end
+	if (show~=nil and noShowReason==nil) then noShowReason = reason; end
 	
 	show, reason = self:ShouldShowForRole(role, "RoleMeleDps", giveReason);
-	--PowaAuras:ShowText("show=", show, " reason=",reason);
+	--if (show~=nil) then PowaAuras:ShowText("show=", show, " reason=",reason); end
 	if (show) then return show, reason; end
+	if (show~=nil and noShowReason==nil) then noShowReason = reason; end
 	
 	show, reason = self:ShouldShowForRole(role, "RoleRangeDps", giveReason);
-	--PowaAuras:ShowText("show=", show, " reason=",reason);
+	--if (show~=nil) then PowaAuras:ShowText("show=", show, " reason=",reason); end
 	if (show) then return show, reason; end
+	if (show~=nil and noShowReason==nil) then noShowReason = reason; end
 
 	if (not giveReason) then return false; end
-	return false, PowaAuras.Text.nomReasonRoleNoMatch;
+	return false, noShowReason;
 end
 
 function cPowaAura:ShouldShowForRole(role, flag, giveReason)
 	if (self[flag]==0) then return; end
 	--PowaAuras:ShowText("Flag ", flag, "=", self[flag]);
 	if (role==nil) then
-		if (not giveReason) then return true; end
-		return true, PowaAuras.Text.nomReasonRoleUnknown;
+		if (not giveReason) then return false; end
+		return false, PowaAuras.Text.nomReasonRoleUnknown;
 	end
 
 	if (self[flag] == true) then
 		if (role~=flag) then
-			return false;
+			if (not giveReason) then return false; end
+			return false, PowaAuras.Text.nomReasonNotRole[flag];
 		end
 		if (not giveReason) then return true; end
 		return true, PowaAuras.Text.nomReasonRole[flag];
 	end
 
 	if (role==flag) then
-		return false;
+		if (not giveReason) then return false; end
+		return false, PowaAuras.Text.nomReasonRole[flag];
 	end
 	if (not giveReason) then return true; end
 	return true, PowaAuras.Text.nomReasonNotRole[flag];
@@ -1142,7 +1149,7 @@ function cPowaBuffBase:CheckAllAuraSlots(target, giveReason)
 	PowaAuras:UnitTestDebug("CheckAllAuraSlots for ", target);
 	--PowaAuras.BuffUnitCount = PowaAuras.BuffUnitCount + 1;
 	if (self.Debug) then
-		PowaAuras:ShowText("CheckAllAuraSlots for ", target);
+		PowaAuras:ShowText("CheckAllAuraSlots for ", target, " reason=", giveReason);
 	end
 
 	local present, reason;
@@ -1216,7 +1223,7 @@ function cPowaBuffBase:CheckSingleUnit(group, unit, giveReason)
 	if (self.Debug) then
 		PowaAuras:ShowText("CheckSingleUnit ", unit);
 	end
-	local present = self:CheckAllAuraSlots(unit, false);
+	local present, reason = self:CheckAllAuraSlots(unit, giveReason);
 	if (present) then
 		if (self.groupany == true) then
 			PowaAuras:UnitTestDebug("CheckGroup("..group..") Present!");
