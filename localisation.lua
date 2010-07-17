@@ -203,7 +203,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 
 
 	-- editor
-	aideCustomText = "Enter text to display (%t=target name, %f=focus name, %v=display value, %u=unit name, %s1=str, %s2=agl, %s3=sta, %s4=int, %s5=spi)",
+	aideCustomText = "Enter text to display (%t=target name, %f=focus name, %v=display value, %u=unit name, %str=str, agl=agl, %sta=sta, %int=int, %sp1=spi, %sp=spell power, %ap=attack power, %df=defence)",
 	
 	nomSoundStarting = "Starting Sound:",
 	nomSound = "Sound to play",

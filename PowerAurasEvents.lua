@@ -321,7 +321,7 @@ function PowaAuras:UNIT_SPELLCAST_SUCCEEDED(...)
 	if (self.ModTest == false) then
 		local unit, spell = ...;
 
-		self.SpellCast[unit] = spell;	
+		self.ExtraUnitEvent[unit] = spell;	
 		self:SpellcastEvent(unit);
 	
 		if (self.TalentChangeSpells[spell]) then

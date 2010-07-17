@@ -321,13 +321,24 @@ function cPowaAura:GetAuraText()
 	text = self:SubstituteInText(text , "%%f", function() return UnitName("focus") end, PowaAuras.Text.Unknown);
 	text = self:SubstituteInText(text , "%%n", function() return UnitName("focus") end, PowaAuras.Text.Unknown);
 	text = self:SubstituteInText(text , "%%v", function() return self.DisplayValue end, PowaAuras.Text.Unknown);
-	text = self:SubstituteInText(text , "%%s1", function() return UnitStat("player", 1) end, PowaAuras.Text.Unknown);
-	text = self:SubstituteInText(text , "%%s2", function() return UnitStat("player", 2) end, PowaAuras.Text.Unknown);
-	text = self:SubstituteInText(text , "%%s3", function() return UnitStat("player", 3) end, PowaAuras.Text.Unknown);
-	text = self:SubstituteInText(text , "%%s4", function() return UnitStat("player", 4) end, PowaAuras.Text.Unknown);
-	text = self:SubstituteInText(text , "%%s5", function() return UnitStat("player", 5) end, PowaAuras.Text.Unknown);
+	text = self:SubstituteInText(text , "%%str", function() return UnitStat("player", 1) end, PowaAuras.Text.Unknown);
+	text = self:SubstituteInText(text , "%%agl", function() return UnitStat("player", 2) end, PowaAuras.Text.Unknown);
+	text = self:SubstituteInText(text , "%%sta", function() return UnitStat("player", 3) end, PowaAuras.Text.Unknown);
+	text = self:SubstituteInText(text , "%int", function() return UnitStat("player", 4) end, PowaAuras.Text.Unknown);
+	text = self:SubstituteInText(text , "%%spi", function() return UnitStat("player", 5) end, PowaAuras.Text.Unknown);
+	text = self:SubstituteInText(text , "%%sp", function() return self:SpellPower() end, PowaAuras.Text.Unknown);
+	text = self:SubstituteInText(text , "%%ap", function() return UnitAttackPower("player") end, PowaAuras.Text.Unknown);
+	text = self:SubstituteInText(text , "%%df", function() return UnitDefence("player") end, PowaAuras.Text.Unknown);
 	text = self:SubstituteInText(text , "%%u", function() if (self.DisplayUnit==nil) then return nil; end return UnitName(self.DisplayUnit) end, PowaAuras.Text.Unknown);
 	return text;
+end
+
+function cPowaAura:SpellPower()
+	local spellPower = 0;
+	for i = 1, 7 do
+		spellPower = spellPower + GetSpellBonusDamage(i);
+	end
+	return spellPower;
 end
 
 
@@ -519,7 +530,7 @@ function cPowaAura:CheckState(giveReason)
 		return false, PowaAuras.Text.nomReasonInVehicle;		
 	end
 	
-	local show, reason = self: CheckInstanceType(giveReason);
+	local show, reason = self:CheckInstanceType(giveReason);
 	if (not show) then
 		return show, reason;
 	end
@@ -536,8 +547,8 @@ function cPowaAura:CheckInstanceType(giveReason)
 	local showTotal = true;
 	
 	show, now, reason = self:ShouldShowForInstanceType("5Man", giveReason);
-	if (show==false) then showTotal = false; end
 	if (now) then return show, reason; end
+	if (show==false) then showTotal = false; end
 	
 	show, now, reason = self:ShouldShowForInstanceType("5ManHeroic", giveReason);
 	if (now) then return show, reason; end
@@ -580,7 +591,8 @@ function cPowaAura:ShouldShowForInstanceType(instanceType, giveReason)
 	local flag = "Instance"..instanceType;
 	if (self.Debug) then
 		PowaAuras:ShowText(PowaAuras.Instance, "  ", instanceType, "  ", flag, "=", self[flag]);
-	end	if (self[flag]==0) then return; end
+	end
+	if (self[flag]==0) then return; end
 	
 	if (self[flag] == true) then
 		if (PowaAuras.Instance~=instanceType) then
@@ -894,32 +906,9 @@ function cPowaAura:CheckAllUnits(giveReason)
 	local numpm = GetNumPartyMembers();
 	local numrm = GetNumRaidMembers();
 
-	if unit == "party" then
-		for pm = 1, numpm do
-			local groupUnit = "party"..pm..postfix;
-			if self:CheckUnit(groupUnit) then
-				if (not giveReason) then return true; end
-				return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, groupUnit);
-			end
-		end
-	elseif unit == "raid" then
-		for rm = 1, numrm do
-			local groupUnit = "raid"..rm..postfix;
-			if self:CheckUnit(groupUnit) then
-				if (not giveReason) then return true; end
-				return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, groupUnit);
-			end
-		end
-	elseif unit == "groupOrSelf" then
-		if (numrm>0) then
-			for rm = 1, numrm do
-				local groupUnit = "raid"..rm..postfix;
-				if self:CheckUnit(groupUnit) then
-					if (not giveReason) then return true; end
-					return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, groupUnit);
-				end
-			end
-		elseif (numpm>0) then
+	if (unit == "party" or unit == "raid" or unit == "groupOrSelf") then
+
+		if unit == "party" then
 			for pm = 1, numpm do
 				local groupUnit = "party"..pm..postfix;
 				if self:CheckUnit(groupUnit) then
@@ -927,15 +916,49 @@ function cPowaAura:CheckAllUnits(giveReason)
 					return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, groupUnit);
 				end
 			end
-			if self:CheckUnit("player"..postfix) then
-				if (not giveReason) then return true; end
-				return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, "player"..postfix);
+		elseif unit == "raid" then
+			for rm = 1, numrm do
+				local groupUnit = "raid"..rm..postfix;
+				if self:CheckUnit(groupUnit) then
+					if (not giveReason) then return true; end
+					return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, groupUnit);
+				end
 			end
-		else
-			if self:CheckUnit("player"..postfix) then
-				if (not giveReason) then return true; end
-				return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, "player"..postfix);
-			end		
+		elseif unit == "groupOrSelf" then
+			if (numrm>0) then
+				for rm = 1, numrm do
+					local groupUnit = "raid"..rm..postfix;
+					if self:CheckUnit(groupUnit) then
+						if (not giveReason) then return true; end
+						return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, groupUnit);
+					end
+				end
+			elseif (numpm>0) then
+				for pm = 1, numpm do
+					local groupUnit = "party"..pm..postfix;
+					if self:CheckUnit(groupUnit) then
+						if (not giveReason) then return true; end
+						return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, groupUnit);
+					end
+				end
+				if self:CheckUnit("player"..postfix) then
+					if (not giveReason) then return true; end
+					return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, "player"..postfix);
+				end
+			else
+				if self:CheckUnit("player"..postfix) then
+					if (not giveReason) then return true; end
+					return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, "player"..postfix);
+				end		
+			end
+		end
+		if (self.target) then -- Check any nearby hostiles that may not be targeted
+			for unit in pairs(PowaAuras.ExtraUnitEvent) do
+				if self:CheckUnit(unit) then
+					if (not giveReason) then return true; end
+					return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, unit);
+				end
+			end
 		end
 	else
 		if self:CheckUnit(unit..postfix) then
@@ -943,6 +966,8 @@ function cPowaAura:CheckAllUnits(giveReason)
 			return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, unit..postfix);
 		end
 	end
+
+
 	if (not giveReason) then return false; end
 	return false, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].NoMatchReason, unit..postfix);
 end
@@ -2367,8 +2392,8 @@ function cPowaSpellAlert:CheckUnit(unit)
 	end
 	
 	local spellname, spellicon, endtime, notInterruptible;
-	if (PowaAuras.SpellCast[unit]) then
-		spellname = PowaAuras.SpellCast[unit];
+	if (PowaAuras.ExtraUnitEvent[unit]) then
+		spellname = PowaAuras.ExtraUnitEvent[unit];
 		_, _, spellicon = GetSpellInfo(spellname);
 	else
 		spellname, _, _, spellicon, _, endtime, _, _, notInterruptible  = UnitCastingInfo(unit);
@@ -2409,7 +2434,7 @@ function cPowaSpellAlert:CheckUnit(unit)
 		self:SetIcon(spellicon);
 		self.DisplayValue = spellname;
 		self.DisplayUnit = unit;
-		if (PowaAuras.SpellCast[unit]) then
+		if (PowaAuras.ExtraUnitEvent[unit]) then
 			PowaAuras.Pending[self.id] = GetTime() + 1; -- Instant spells have no complete event
 		end
 		return true;
