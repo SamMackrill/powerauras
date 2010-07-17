@@ -199,7 +199,7 @@ PowaAuras = {
 		DRUID_SHIFT_MOONKIN    = GetSpellInfo(24858),
 	};
 	
-	SpellCast = {};
+	ExtraUnitEvent = {};
 
 	DoCheck =
 	{

@@ -524,6 +524,14 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 			end
 			aura.buffname = newBuffName
 		end
+	elseif (aura.bufftype==self.BuffTypes.SpellAlert) then
+		if (importAuraSettings.RoleTank==nil) then
+			if (aura.target) then
+				aura.groupOrSelf = true;
+			elseif (aura.targetfriend) then
+				aura.targetfriend = false;
+			end
+		end
 	end
 	
 	if (importAuraSettings.timer) then --backwards compatability
@@ -549,6 +557,22 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 			aura.Stacks[k] = importStacksSettings["stacks."..k];
 		end
 	end
+	
+	-- Rescale if required
+	if (importAuraSettings.RoleTank==nil) then
+		local rescaleRatio = UIParent:GetHeight() / 768;
+		if (aura.Timer) then
+			aura.Timer.x = aura.Timer.x * rescaleRatio;
+			aura.Timer.y = aura.Timer.y * rescaleRatio;
+			aura.Timer.h = aura.Timer.h * rescaleRatio;
+		end	
+		if (aura.Stacks) then
+			aura.Stacks.x = aura.Stacks.x * rescaleRatio;
+			aura.Stacks.y = aura.Stacks.y * rescaleRatio;
+			aura.Stacks.h = aura.Stacks.h * rescaleRatio;
+		end				
+	end	
+	
 	--self:Message("new Aura created from import");
 	--aura:Display();
 	return self:AuraFactory(aura.bufftype, auraId, aura);

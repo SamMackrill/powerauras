@@ -207,10 +207,10 @@ function PowaAuras:OnLoad(frame)
 
 	frame:RegisterEvent("VARIABLES_LOADED");
 	frame:RegisterEvent("PLAYER_ENTERING_WORLD");
-	
+
 	--- options init
 	SlashCmdList["POWA"] = PowaAuras_CommanLine;
-	SLASH_POWA1 = "/powa"	
+	SLASH_POWA1 = "/powa";
 end
 
 function PowaAuras:RegisterEvents(frame)
@@ -252,6 +252,34 @@ function PowaAuras:LoadAuras()
 
 	--self:Message("backwards combatiblity");
 	--self.Auras[0] = cPowaAura(0, {off=true});
+	self:UpdateOldAuras();
+	
+	-- Copy to Saved Sets
+	PowaSet = self.Auras;
+	for i = 121, 360 do
+		PowaGlobalSet[i] = self.Auras[i];
+	end
+	PowaTimer = {};
+	
+end
+
+function PowaAuras:UpdateOldAuras()
+	--self:Message("Saved varaible convertion: PowaTimer #", #PowaTimer);
+	-- Copy old timer info (should be once only)
+	for k, v in pairs(PowaTimer) do
+		local aura = self.Auras[k];
+		if (aura) then
+			aura.Timer = cPowaTimer(aura, v);
+			if (PowaSet[k]~=nil and PowaSet[k].timer~=nil) then
+				aura.Timer.enabled = PowaSet[k].timer;
+			end
+			if (PowaGlobalSet[k]~=nil and PowaGlobalSet[k].timer~=nil) then
+				aura.Timer.enabled = PowaGlobalSet[k].timer;
+			end
+		end	
+	end
+	
+	local rescaleRatio = UIParent:GetHeight() / 768;
 
 	-- Update for backwards combatiblity
 	for i = 1, 360 do
@@ -315,32 +343,38 @@ function PowaAuras:LoadAuras()
 					end
 					aura.buffname = newBuffName
 				end
+				
+			--Update Spell Alert logic
+			elseif (aura.bufftype==self.BuffTypes.SpellAlert) then
+				if (PowaSet[i]~=nil and PowaSet[i].RoleTank==nil) then
+					if (aura.target) then
+						aura.groupOrSelf = true;
+					elseif (aura.targetfriend) then
+						aura.targetfriend = false;
+					end
+				end
 			end
+			
+			-- Rescale if required
+			if (PowaSet[i]~=nil and PowaSet[i].RoleTank==nil) then
+				if (aura.Timer) then
+					aura.Timer.x = aura.Timer.x * rescaleRatio;
+					aura.Timer.y = aura.Timer.y * rescaleRatio;
+					aura.Timer.h = aura.Timer.h * rescaleRatio;
+				end	
+				if (aura.Stacks) then
+					aura.Stacks.x = aura.Stacks.x * rescaleRatio;
+					aura.Stacks.y = aura.Stacks.y * rescaleRatio;
+					aura.Stacks.h = aura.Stacks.h * rescaleRatio;
+				end				
+			end
+			
+		end
+	end
+	
 
-		end
-	end
 	
-	--self:Message("Saved varaible convertion: PowaTimer #", #PowaTimer);
-	-- Copy old timer info (should be once only)
-	for k, v in pairs(PowaTimer) do
-		local aura = self.Auras[k];
-		if (aura) then
-			aura.Timer = cPowaTimer(aura, v);
-			if (PowaSet[k]~=nil and PowaSet[k].timer~=nil) then
-				aura.Timer.enabled = PowaSet[k].timer;
-			end
-			if (PowaGlobalSet[k]~=nil and PowaGlobalSet[k].timer~=nil) then
-				aura.Timer.enabled = PowaGlobalSet[k].timer;
-			end
-		end
-	end
-	
-	-- Copy to Saved Sets
-	PowaSet = self.Auras;
-	for i = 121, 360 do
-		PowaGlobalSet[i] = self.Auras[i];
-	end
-	PowaTimer = {};
+
 	
 end
 ------------------------------------------------------------------------------------------------------- EVENTS
@@ -773,7 +807,7 @@ function PowaAuras:NewCheckBuffs()
 	
 	self.ChangedUnits.Buffs = {};
 	self.TotemSlots = {};
-	self.SpellCast = {};
+	self.ExtraUnitEvent = {};
 
 end
 
