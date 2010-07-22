@@ -1549,9 +1549,9 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 <Scripts>
                   <OnLoad>
                   	self:SetMinMaxValues(0,100); self:SetValue(50); self:SetValueStep(1); 
-                  	getglobal("PowaBarThresholdSliderText"):SetText(PowaAuras.Text.nomThreshold.." : 50");
-                  	getglobal("PowaBarThresholdSliderLow"):SetText("0%"); 
-                  	getglobal("PowaBarThresholdSliderHigh"):SetText("100%");
+                  	getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomThreshold.." : 50");
+                  	getglobal(self:GetName().."Low"):SetText("0%"); 
+                  	getglobal(self:GetName().."High"):SetText("100%");
                   </OnLoad>
                   <OnValueChanged>PowaAuras:BarThresholdSliderChanged();</OnValueChanged>
                 </Scripts>
@@ -1573,7 +1573,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               		</Anchor>
               	</Anchors>
               	<Scripts>
-              		<OnLoad>self.tooltipText = PowaAuras.Text.aideThreshInv; getglobal("PowaThresholdInvertButtonText"):SetText(PowaAuras.Text.nomThreshInv);</OnLoad>
+              		<OnLoad>self.tooltipText = PowaAuras.Text.aideThreshInv; getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomThreshInv);</OnLoad>
               		<OnClick>PowaAuras:ThresholdInvertChecked(self);</OnClick>
               	</Scripts>
               </CheckButton>
@@ -1594,7 +1594,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   </Anchor>
                 </Anchors>
                 <Scripts>
-                  <OnLoad>self.tooltipText = PowaAuras.Text.aideOwnTex; getglobal("PowaOwntexButtonText"):SetText(PowaAuras.Text.nomOwnTex); getglobal("PowaOwntexButtonText"):SetTextColor(1.0,0.2,0.2);</OnLoad>
+                  <OnLoad>self.tooltipText = PowaAuras.Text.aideOwnTex; getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomOwnTex); getglobal("PowaOwntexButtonText"):SetTextColor(1.0,0.2,0.2);</OnLoad>
                   <OnClick>PowaAuras:OwntexChecked();</OnClick>
                 </Scripts>
               </CheckButton>
@@ -1615,7 +1615,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   </Anchor>
                 </Anchors>
                 <Scripts>
-                  <OnLoad>self.tooltipText = PowaAuras.Text.aideExact; getglobal("PowaExactButtonText"):SetText(PowaAuras.Text.nomExact); getglobal("PowaExactButtonText"):SetTextColor(1.0,0.2,0.2);</OnLoad>
+                  <OnLoad>self.tooltipText = PowaAuras.Text.aideExact; getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomExact); getglobal("PowaExactButtonText"):SetTextColor(1.0,0.2,0.2);</OnLoad>
                   <OnClick>PowaAuras:ExactChecked();</OnClick>
                 </Scripts>
               </CheckButton>
@@ -1637,7 +1637,10 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   </Anchor>
                 </Anchors>
                 <Scripts>
-                  <OnLoad>self.tooltipText = PowaAuras.Text.aideIgnoreMaj; getglobal("PowaIngoreCaseButtonText"):SetText(PowaAuras.Text.nomCheckIgnoreMaj);</OnLoad>
+                  <OnLoad>
+					self.tooltipText = PowaAuras.Text.aideIgnoreMaj;
+					getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomCheckIgnoreMaj);
+				  </OnLoad>
                   <OnClick>PowaAuras:IgnoreMajChecked();</OnClick>
                 </Scripts>
               </CheckButton>
@@ -1661,7 +1664,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 <Scripts>
                   <OnLoad>
                   	self.tooltipText = PowaAuras.Text.aideInverse; 
-                  	getglobal("PowaInverseButtonText"):SetText(PowaAuras.Text.nomCheckInverse);
+                  	getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomCheckInverse);
                   </OnLoad>
                   <OnClick>PowaAuras:InverseChecked();</OnClick>
                 </Scripts>
@@ -1686,8 +1689,8 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 <Scripts>
                   <OnLoad>
                   	self.tooltipText = PowaAuras.Text.aideMine; 
-                  	getglobal("PowaMineButtonText"):SetText(PowaAuras.Text.nomMine); 
-                  	getglobal("PowaMineButtonText"):SetTextColor(1.0,0.2,0.2);
+                  	getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomMine); 
+                  	getglobal(self:GetName().."Text"):SetTextColor(1.0,0.2,0.2);
                   </OnLoad>
                   <OnClick>PowaAuras:SettingChecked(self, "mine");</OnClick>
                 </Scripts>
@@ -1711,6 +1714,31 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
 					</OnShow>
                 </Scripts>
 			  </CheckButton>	  
+	
+              <CheckButton name="PowaExtraButton"
+                           inherits="PowaCheckTemplate">
+                <Size>
+                  <AbsDimension x="25"
+                                y="25" />
+                </Size>
+                <Anchors>
+                  <Anchor point="LEFT"
+                          relativeTo="PowaPvPButton"
+                          relativePoint="RIGHT">
+                    <Offset>
+                      <AbsDimension x="70"
+                                    y="0" />
+                    </Offset>
+                  </Anchor>
+                </Anchors>
+                <Scripts>
+                  <OnLoad>
+                  	self.tooltipText = PowaAuras.Text.aideExtra; 
+                  	getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomExtra); 
+                  </OnLoad>
+                  <OnClick>PowaAuras:SettingChecked(self, "Extra");</OnClick>
+                </Scripts>
+              </CheckButton>  
 		  
 			  <CheckButton name="PowaInCombatButton" inherits="PowaTernarySelectorTemplate">
                 <Anchors>
@@ -2878,7 +2906,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                        autoFocus="false"
                        inherits="InputBoxTemplate">
                 <Size>
-                  <AbsDimension x="150"
+                  <AbsDimension x="420"
                                 y="16" />
                 </Size>
                 <Anchors>
@@ -3051,7 +3079,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                        autoFocus="false"
                        inherits="InputBoxTemplate">
                 <Size>
-                  <AbsDimension x="150"
+                  <AbsDimension x="420"
                                 y="16" />
                 </Size>
                 <Anchors>

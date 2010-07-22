@@ -962,6 +962,14 @@ function PowaAuras:SetOptionText(optionsText)
 		PowaMineButton:SetChecked(false);
 		self:DisableCheckBox("PowaMineButton");
 	end
+	if (optionsText.extraText) then
+		self:ShowCheckBox("PowaExtraButton");
+		PowaExtraButtonText:SetText(optionsText.extraText);
+		PowaExtraButton.tooltipText = optionsText.extraTooltip; 
+	else
+		PowaExtraButton:SetChecked(false);
+		self:HideCheckBox("PowaExtraButton");
+	end
 	if (optionsText.targetFriendText) then
 		self:EnableCheckBox("PowaTargetFriendButton");
 		PowaTargetFriendButtonText:SetText(optionsText.targetFriendText);
@@ -1085,6 +1093,7 @@ function PowaAuras:InitPage()
 	getglobal("PowaExactButton"):SetChecked(aura.exact);
 	getglobal("PowaMineButton"):SetChecked(aura.mine);
 	getglobal("PowaThresholdInvertButton"):SetChecked(aura.thresholdinvert);
+	getglobal("PowaExtraButton"):SetChecked(aura.Extra);
 	-- ----------------
 	getglobal("PowaTexModeButton"):SetChecked(aura.texmode == 1);
 
@@ -1556,8 +1565,13 @@ function PowaAuras:CustomSoundTextChanged(force)
 			PowaDropDownSound2Text:SetText(self.Sound[30]);
 			PowaDropDownSoundButton:Disable();
 			PowaDropDownSound2Button:Disable();
-			local pathToSound = "Interface\\AddOns\\PowerAuras\\Sounds\\"..aura.customsound;
-			--self:ShowText("Playing sound "..pathToSound);
+			local pathToSound;
+			if (string.find(aura.customsound, "\\")) then
+				pathToSound = aura.customsound;
+			else 
+				pathToSound = "Interface\\AddOns\\PowerAuras\\Sounds\\"..aura.customsound;
+				--self:ShowText("Playing sound "..pathToSound);
+			end
 			local played = PlaySoundFile(pathToSound);
 			--self:ShowText("played = "..played);
 			if (not played) then
@@ -1582,7 +1596,13 @@ function PowaAuras:CustomSoundEndTextChanged(force)
 			PowaDropDownSound2EndText:SetText(self.Sound[30]);
 			PowaDropDownSoundEndButton:Disable();
 			PowaDropDownSound2EndButton:Disable();
-			local pathToSound = "Interface\\AddOns\\PowerAuras\\Sounds\\"..aura.customsoundend;
+			local pathToSound;
+			if (string.find(aura.customsoundend, "\\")) then
+				pathToSound = aura.customsoundend;
+			else 
+				pathToSound = "Interface\\AddOns\\PowerAuras\\Sounds\\"..aura.customsoundend;
+				--self:ShowText("Playing sound "..pathToSound);
+			end
 			--self:ShowText("Playing sound "..pathToSound);
 			local played = PlaySoundFile(pathToSound);
 			--self:ShowText("played = "..played);
@@ -2101,7 +2121,7 @@ function PowaAuras.DropDownMenu_OnClickSound()
 	else
 		PlaySound(PowaAuras.Sound[this.value]);
 	end
-end
+end;
 
 
 function PowaAuras.DropDownMenu_OnClickSoundEnd()
@@ -2121,7 +2141,7 @@ function PowaAuras.DropDownMenu_OnClickSoundEnd()
 		PowaDropDownSoundEndText:SetText(PowaAuras.Sound[0]);
 	end
 
-	if (string.find(PowaAuras.Sound[this.value], "%.")) then
+	if (string.find(PowaAuras.Sound[aura.value], "%.")) then
 		PlaySoundFile("Interface\\AddOns\\PowerAuras\\Sounds\\"..PowaAuras.Sound[this.value]);
 	else
 		PlaySound(PowaAuras.Sound[this.value]);
@@ -2664,6 +2684,14 @@ function PowaAuras:EnableCheckBox(checkBox, colour)
 	end
 	--self:ShowText("r=", color.r, " g=", color.g, " b=", color.b); 
 	getglobal(checkBox.."Text"):SetTextColor(colour.r, colour.g, colour.b);	
+end
+
+function PowaAuras:HideCheckBox(checkBox)
+	getglobal(checkBox):Hide();
+end
+
+function PowaAuras:ShowCheckBox(checkBox)
+	getglobal(checkBox):Show();
 end
 
 ---- Blizzard Addon -----
