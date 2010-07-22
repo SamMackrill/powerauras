@@ -613,12 +613,41 @@ function PowaAuras:UNIT_FACTION(...) --- GetPVPTimer() returns the time until un
 	end
 end
 	
-	
+function PowaAuras.StringStarts(String,Start)
+   return string.sub(String,1,string.len(Start))==Start
+end
+
+function PowaAuras.StringEnds(String,End)
+   return End=='' or string.sub(String,-string.len(End))==End
+end
+
 function PowaAuras:COMBAT_LOG_EVENT_UNFILTERED(...)
+	--self:ShowText("COMBAT_LOG_EVENT_UNFILTERED");
 	local timestamp,event,sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags, spellId, spellName, _, spellType = ...;
-	--self:ShowText("COMBAT_LOG_EVENT_UNFILTERED ", event);
 	if (not self.ModTest) then
-		if (destGUID and destGUID==UnitGUID("player") and spellName) then
+		--self:ShowText("CLEU: ", event, " by me=", sourceGUID==UnitGUID("player"), " on me=", destGUID==UnitGUID("player"), " ", spellName);
+		--self:ShowText("Player=", UnitGUID("player"), " sourceGUID=", sourceGUID, " destGUID=", destGUID);
+		--self:ShowText(sourceName, " ", destName);
+		--self:ShowText(sourceFlags, " ", destFlags);
+		
+		--if bit.band(destFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) > 0 then
+		--	self:ShowText("Dest: a player")
+		--end		
+		--if bit.band(destFlags, COMBATLOG_OBJECT_AFFILIATION_MINE) > 0 then
+		--	self:ShowText("Dest: belongs to me")
+		--end
+		
+		if (destGUID==UnitGUID("player") and spellName) then
+			--self:ShowText(" On Me! ", event);
+			if (PowaAuras.StringStarts(event,"SPELL_") and sourceName) then
+				self.CastOnMe[sourceName] = {SpellName=spellName, SpellId=spellId, SourceGUID=sourceGUID, Hostile=bit.band(sourceFlags, COMBATLOG_OBJECT_REACTION_HOSTILE)};
+				self.DoCheck.Spells = true; --- scan party/raid targets for casting
+				if self.CastOnMe[sourceName].Hostile > 0 then
+					self:ShowText(self.Colors.Red, spellName, " cast on me by ", sourceName);
+				else
+					self:ShowText(self.Colors.Green, spellName, " cast on me by ", sourceName);
+				end
+			end
 			if (event == "ENVIRONMENTAL_DAMAGE") then
 				--self:ShowText("ENVIRONMENTAL_DAMAGE type=", spellId, " size=", spellName);					
 				if  (spellId ~= "FALLING") then
@@ -629,11 +658,11 @@ function PowaAuras:COMBAT_LOG_EVENT_UNFILTERED(...)
 				  or event=="SPELL_DAMAGE"
 				  or ((event=="SPELL_AURA_APPLIED" or event=="SPELL_AURA_APPLIED_DOSE") and spellType=="DEBUFF"))) then
 				--self:ShowText("SPELL_PERIODIC_DAMAGE ", spellId, " ", spellName);
-					self.AoeAuraAdded[spellId] = spellName;
-					if (not self.AoeAuraTexture[spellName]) then
-						self.AoeAuraTexture[spellId] = select(3, GetSpellInfo(spellId));
-					end
-					self.DoCheck.Aoe = true;
+				self.AoeAuraAdded[spellId] = spellName;
+				if (not self.AoeAuraTexture[spellName]) then
+					self.AoeAuraTexture[spellId] = select(3, GetSpellInfo(spellId));
+				end
+				self.DoCheck.Aoe = true;
 			end
 		end
 	end

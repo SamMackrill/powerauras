@@ -789,9 +789,9 @@ function PowaAuras:NewCheckBuffs()
 			--end
 			for k, v in pairs(self.AurasByType[auraType]) do
 				--self:ShowText(k," TestThisEffect ",v);
-				--if (not self.Auras[v].off) then
-				--	self:ShowText("TestThisEffect ",v);
-				--end
+				if (self.Auras[v].Debug) then
+					self:ShowText("TestThisEffect ",v);
+				end
 				--if (self.AuraTypeCount[auraType] == nil) then self.AuraTypeCount[auraType] = 0; end
 				--self.AuraTypeCount[auraType] = self.AuraTypeCount[auraType] + 1;
 				self:TestThisEffect(v);
@@ -808,6 +808,7 @@ function PowaAuras:NewCheckBuffs()
 	self.ChangedUnits.Buffs = {};
 	self.TotemSlots = {};
 	self.ExtraUnitEvent = {};
+	self.CastOnMe = {};
 
 end
 
@@ -966,7 +967,14 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 	
 	if (self.ModTest == false) then
 		if (aura.customsound ~= "") then
-			PlaySoundFile("Interface\\AddOns\\PowerAuras\\Sounds\\"..aura.customsound);
+			local pathToSound;
+			if (string.find(aura.customsound, "\\")) then
+				pathToSound = aura.customsound;
+			else 
+				pathToSound = "Interface\\AddOns\\PowerAuras\\Sounds\\"..aura.customsound;
+			end
+			--self:ShowText("Playing sound "..pathToSound);		
+			PlaySoundFile(pathToSound);
 		elseif (aura.sound > 0) then
 			if (PowaAuras.Sound[aura.sound]~=nil and string.len(PowaAuras.Sound[aura.sound])>0) then
 				if (string.find(PowaAuras.Sound[aura.sound], "%.")) then
@@ -1312,7 +1320,14 @@ function PowaAuras:UpdateAura(aura, elapsed)
 					if (aura.Debug) then
 						self:Message("Playing Custom end sound ", aura.customsoundend);
 					end
-					PlaySoundFile("Interface\\AddOns\\PowerAuras\\Sounds\\"..aura.customsoundend);
+					local pathToSound;
+					if (string.find(aura.customsoundend, "\\")) then
+						pathToSound = aura.customsoundend;
+					else 
+						pathToSound = "Interface\\AddOns\\PowerAuras\\Sounds\\"..aura.customsoundend;
+					end
+					--self:ShowText("Playing sound "..pathToSound);		
+					PlaySoundFile(pathToSound);
 				elseif (aura.soundend > 0) then
 					if (PowaAuras.Sound[aura.soundend]~=nil and string.len(PowaAuras.Sound[aura.soundend])>0) then
 						if (aura.Debug) then

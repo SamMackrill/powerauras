@@ -57,6 +57,7 @@ cPowaAura = PowaClass(function(aura, id, base)
 	aura.inverse = false;
 	aura.ignoremaj = true;
 	aura.exact = false;
+	aura.Extra = false;
 
 	aura.stacks = 0;
 	aura.stacksLower = 0;
@@ -373,8 +374,14 @@ function cPowaAura:IconIsRequired()
 end
 
 function cPowaAura:SetIcon(texturePath)
+	if (self.Debug) then
+		PowaAuras:Message("SetIcon texturePath=", texturePath, " IconIsRequired=", self:IconIsRequired());
+	end
 	if (texturePath==nil or string.len(texturePath)==0 or not self:IconIsRequired()) then
 		return;
+	end
+	if (self.Debug) then
+		PowaAuras:Message("self.icon=", self.icon);
 	end
 	if (texturePath ~= self.icon) then
 		if (self.owntex) then
@@ -384,7 +391,7 @@ function cPowaAura:SetIcon(texturePath)
 			end
 		end
 		if (self.Debug) then
-			PowaAuras:Message("Setting icon to ", texturePath)
+			PowaAuras:Message("Setting icon to ", texturePath);
 		end
 		self.icon = texturePath;
 	end
@@ -413,7 +420,7 @@ function cPowaAura:CheckState(giveReason)
 	end		
 	
 	--- target checks
-	if (not self.raid and not self.party and not self.groupOrSelf) then
+	if (not self.raid and not self.party and not self.groupOrSelf and not (self.bufftype==PowaAuras.BuffTypes.SpellAlert and self.Extra)) then
 		--- Check if target exists and is alive
 		if (self.target or self.targetfriend) then
 			if (UnitName("target") == nil) then
@@ -530,13 +537,26 @@ function cPowaAura:CheckState(giveReason)
 		return false, PowaAuras.Text.nomReasonInVehicle;		
 	end
 	
-	local show, reason = self:CheckInstanceType(giveReason);
-	if (not show) then
-		return show, reason;
+	if (self:AnyInstanceTypeChecksRequired()) then
+		local show, reason = self:CheckInstanceType(giveReason);
+		if (not show) then
+			return show, reason;
+		end
 	end
 	
 	if (not giveReason) then return true; end
 	return true, PowaAuras.Text.nomReasonStateOK;
+end
+
+function cPowaAura:AnyInstanceTypeChecksRequired()
+	return 	self.Instance5Man ~= 0
+	or self.Instance5ManHeroic ~= 0
+	or self.Instance10Man ~= 0
+	or self.Instance10ManHeroic ~= 0
+	or self.Instance25Man ~= 0
+	or self.Instance25ManHeroic ~= 0
+	or self.InstanceBg ~= 0
+	or self.InstanceArena ~= 0;
 end
 
 function cPowaAura:CheckInstanceType(giveReason)
@@ -2329,7 +2349,7 @@ cPowaSpellAlert.OptionText={buffNameTooltip=PowaAuras.Text.aideSpells,
                             exactTooltip=PowaAuras.Text.aideExact, 
                             typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.SpellAlert], 
 					        mineText=PowaAuras.Text.nomCanInterrupt, mineTooltip=PowaAuras.Text.aideCanInterrupt,
-					        --targetFriendText=PowaAuras.Text.nomPlayerSpell, targetFriendTooltip=PowaAuras.Text.aidePlayerSpell,
+					        extraText=PowaAuras.Text.nomOnMe, extraTooltip=PowaAuras.Text.aideOnMe,
 							targetFriendText=PowaAuras.Text.nomCheckFriend, targetFriendTooltip=PowaAuras.Text.aideTargetFriend,
 							};
 cPowaSpellAlert.CheckBoxes={
@@ -2347,10 +2367,14 @@ cPowaSpellAlert.CheckBoxes={
 cPowaSpellAlert.TooltipOptions = {r=0.4, g=0.4, b=1.0, showBuffName=true};
 
 function cPowaSpellAlert:AddEffect()
+	if self.Extra then --- On Me
+		table.insert(PowaAuras.AurasByType.Spells, self.id);
+		return;
+	end
 	local player = true;
 	if self.target or self.targetfriend then --- target casts
 		player = false;
-		if self.party or self.raid or self.groupOrSelf or self.focus then -- raid/party/focus target casts
+		if self.party or self.raid or self.groupOrSelf then -- raid/party/focus target casts
 			table.insert(PowaAuras.AurasByType.Spells, self.id);
 			return;
 		end
@@ -2391,17 +2415,25 @@ function cPowaSpellAlert:CheckUnit(unit)
 		return false;
 	end
 	
+	if (self.Extra) then -- Cast on me check
+		if (not UnitIsUnit(unit.."target","player")) then
+			if (self.Debug) then
+				PowaAuras:ShowText(unit, " is not casting on me");
+			end
+			return false;
+		end
+	end
+	
 	local spellname, spellicon, endtime, notInterruptible;
 	if (PowaAuras.ExtraUnitEvent[unit]) then
 		spellname = PowaAuras.ExtraUnitEvent[unit];
-		_, _, spellicon = GetSpellInfo(spellname);
 	else
 		spellname, _, _, spellicon, _, endtime, _, _, notInterruptible  = UnitCastingInfo(unit);
 		if not spellname then
 			spellname, _, _, spellicon, _, endtime, _, notInterruptible  = UnitChannelInfo(unit);
 		end
 	end
-	
+
 	PowaAuras:UnitTestDebug("spellname ", spellname);
 	if not spellname then -- not casting
 		if (self.Debug) then
@@ -2410,6 +2442,7 @@ function cPowaSpellAlert:CheckUnit(unit)
 		PowaAuras:UnitTestDebug(unit, " is not casting");
 		return false;
 	end
+	
 	if (self.Debug) then
 		PowaAuras:ShowText(unit, " is casting ", spellname);
 		PowaAuras:ShowText(" mine= ", self.mine, " notInterruptible =", notInterruptible );
@@ -2419,7 +2452,12 @@ function cPowaSpellAlert:CheckUnit(unit)
 		PowaAuras:ShowText(unit, " is casting ", spellname, " but can't interrupt it");
 		return false;
 	end
-		
+	
+	return self:CheckSpellName(unit, spellname, spellicon, endtime);
+end
+
+function cPowaSpellAlert:CheckSpellName(unit, spellname, spellicon, endtime, spellId)	
+	
 	if self:MatchSpell(spellname, spellicon, self.buffname, true) then
 		if (self.Timer and endtime~=nil) then
 			self.Timer:SetDurationInfo(GetTime() + endtime/1000);
@@ -2430,6 +2468,13 @@ function cPowaSpellAlert:CheckUnit(unit)
 		end
 		if (self.Debug) then
 			PowaAuras:ShowText(unit, " is casting ", spellname, " ", spellicon);
+		end
+		if (spellicon==nil) then
+			if (spellId~=nil) then
+				_, _, spellicon = GetSpellInfo(spellId);				
+			else
+				_, _, spellicon = GetSpellInfo(spellname);
+			end
 		end
 		self:SetIcon(spellicon);
 		self.DisplayValue = spellname;
@@ -2449,48 +2494,34 @@ function cPowaSpellAlert:CheckIfShouldShow(giveReason)
 	if (self.Debug) then
 		PowaAuras:ShowText("Check for spell being cast ", self.buffname);
 	end
+	if (self.Extra) then
+		for casterName,info in pairs(PowaAuras.CastOnMe) do
+			if (self.Debug) then
+				PowaAuras:ShowText(casterName, " casting ", info.SpellName, " hostile=",info.Hostile);
+			end
+			if (self.target and info.Hostile>0)
+			or (self.targetfriendly and not info.Hostile==0)
+			or (self.focus and info.SourceGUID==UnitGUID("focus"))
+			or (not self.target and not self.targetfriendly and not self.focus) then
+				if (self.Debug) then
+					PowaAuras:ShowText(" correct source, checking spell", info.SpellName);
+				end
+				if self:CheckSpellName(casterName, info.SpellName, nil, nil, info.SpellId) then
+					if (self.duration==0) then
+						PowaAuras.Pending[self.id] = GetTime() + 1;
+					else
+						PowaAuras.Pending[self.id] = GetTime() + self.duration;
+					end
+					if (not giveReason) then return true; end
+					return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonCastingOnMe, casterName, info.SpellName);
+				end
+			end
+		end
+		if (not giveReason) then return false; end
+		return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonNotCastingOnMe);
+	end
 	return self:CheckAllUnits(giveReason);
 end
---[[
-	if not self.target and not self.focus then
-		if (self.targetfriend) then
-			--PowaAuras:ShowText("Check player");
-			if (self:CheckUnit("player")) then
-				if (not giveReason) then return true; end
-				return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonYouAreCasting, self.buffname);
-			end	
-			if (not giveReason) then return false; end
-			return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonYouAreNotCasting, self.buffname);
-		end
-		--- Scan raid targets
-		local numrm = GetNumRaidMembers();
-		PowaAuras:UnitTestDebug("numrm= ", numrm);
-		if numrm > 0 then
-			for i=1, numrm do
-				if (self:CheckUnit("raid"..i.."target")) then
-					if (not giveReason) then return true; end
-					return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonRaidTargetCasting, i, self.buffname);
-				end
-			end
-		else
-			-- Scan party targets
-			local numpm = GetNumPartyMembers();
-			PowaAuras:UnitTestDebug("numpm= ", numpm);
-			if numpm > 0 then
-				for i=1, numpm do
-					if (self:CheckUnit("party"..i.."target")) then
-						if (not giveReason) then return true; end
-						return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonPartyTargetCasting, i, self.buffname);
-					end
-				end
-			end
-		end
-	end
-	if (not giveReason) then return false; end
-	return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonNoCasting, self.buffname);
-end
-
-]]
 
 function cPowaSpellAlert:ShowTimerDurationSlider()
 	return true;

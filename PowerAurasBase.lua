@@ -200,7 +200,8 @@ PowaAuras = {
 	};
 	
 	ExtraUnitEvent = {};
-
+	CastOnMe = {};
+	
 	DoCheck =
 	{
 		Buffs = false,
