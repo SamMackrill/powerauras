@@ -69,6 +69,11 @@ end
 --
 function PowaAuras:TryInspectNext()
 	self.InspectSkipped = false;
+	if (not PowaMisc.AlowInspections) then
+		self.NextInspectUnit = nil;
+		self.InspectsDone = true;
+		return;
+	end
 	for unit, unitInfo in pairs(self.GroupUnits) do
 		if (self:ShouldBeInspected(unit)) then
 			if (UnitIsUnit(unit,"player")) then

@@ -144,6 +144,7 @@ PowaMisc =
 		DefaultTimerTexture = "Original",
 		DefaultStacksTexture = "Original",
 		TimerRoundUp = true,
+		AlowInspections = true,
 		AnimationFps = 30,
 		UseGTFO = nil,
 	};
@@ -742,20 +743,22 @@ function PowaAuras:OnUpdate(elapsed)
 		self.TimerUpdateThrottleTimer = 0;
 	end
 	
-	-- Refresh Inspect, check timeout
-	if (self.NextInspectUnit ~= nil) then
-		if (GetTime() > self.NextInspectTimeOut) then
-			--self:Message("Inspection timeout for ", self.NextInspectUnit);
-			self:SetRoleUndefined(self.NextInspectUnit);
-			self.NextInspectUnit = nil;
+	if (PowaMisc.AlowInspections) then
+		-- Refresh Inspect, check timeout
+		if (self.NextInspectUnit ~= nil) then
+			if (GetTime() > self.NextInspectTimeOut) then
+				--self:Message("Inspection timeout for ", self.NextInspectUnit);
+				self:SetRoleUndefined(self.NextInspectUnit);
+				self.NextInspectUnit = nil;
+				self.InspectAgain = GetTime() + self.InspectDelay;
+			end
+		elseif (not self.InspectsDone
+				and self.InspectAgain~=nil 
+				and not UnitOnTaxi("player")
+				and GetTime()>self.InspectAgain) then
+			self:TryInspectNext();
 			self.InspectAgain = GetTime() + self.InspectDelay;
 		end
-	elseif (not self.InspectsDone
-			and self.InspectAgain~=nil 
-			and not UnitOnTaxi("player")
-			and GetTime()>self.InspectAgain) then
-		self:TryInspectNext();
-		self.InspectAgain = GetTime() + self.InspectDelay;
 	end
 
 

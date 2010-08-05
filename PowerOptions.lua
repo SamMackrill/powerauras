@@ -22,7 +22,8 @@ function PowaAuras:UpdateMainOption()
 	PowaEnableButton:SetChecked(PowaMisc.Disabled~=true);
 	PowaDebugButton:SetChecked(PowaMisc.debug==true);
 	PowaTimerRoundingButton:SetChecked(PowaMisc.TimerRoundUp==true);
-
+	PowaAlowInspectionsButton:SetChecked(PowaMisc.AlowInspections==true);
+	
 	-- affiche les icones
 	for i = 1, 24 do
 		local k = ((self.MainOptionPage-1)*24) + i;
@@ -2714,13 +2715,22 @@ function PowaAuras:DebugChecked()
 	end
 end
 
-function PowaAuras:TimerRoundingChecked()
-	if (PowaTimerRoundingButton:GetChecked()) then
+function PowaAuras:TimerRoundingChecked(control)
+	if (control:GetChecked()) then
 		PowaMisc.TimerRoundUp = true;
 	else
 		PowaMisc.TimerRoundUp = false;
 	end
 end
+
+function PowaAuras:AlowInspectionsChecked(control)
+	if (control:GetChecked()) then
+		PowaMisc.AlowInspections = true;
+	else
+		PowaMisc.AlowInspections = false;
+	end
+end
+
 
 function PowaAuras.OptionsOK()
 	PowaMisc.OnUpdateLimit = (100 - PowaOptionsUpdateSlider2:GetValue()) / 200;
@@ -2798,6 +2808,7 @@ function PowaOptionsCpuFrame2_OnShow(hide)
 	PowaEnableButton:SetChecked(PowaMisc.Disabled ~= true);
 	PowaDebugButton:SetChecked(PowaMisc.debug);
 	PowaTimerRoundingButton:SetChecked(PowaMisc.TimerRoundUp);
+	PowaAlowInspectionsButton:SetChecked(PowaMisc.AlowInspections);
 	UIDropDownMenu_SetSelectedValue(PowaDropDownDefaultTimerTexture, PowaMisc.DefaultTimerTexture);
 	UIDropDownMenu_SetSelectedValue(PowaDropDownDefaultStacksTexture, PowaMisc.DefaultStacksTexture);
 end
