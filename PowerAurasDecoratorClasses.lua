@@ -226,21 +226,21 @@ function cPowaTimer:Update(elapsed)
 	end
 	
 	--if (aura.Debug) then
-	--	PowaAuras:UnitTestInfo("Timer.Update ",self.id);
+	--	--PowaAuras:UnitTestInfo("Timer.Update ",self.id);
 	--end
 
 	if (self.enabled==false and self.InvertAuraBelow==0) then
 		--PowaAuras:UnitTestInfo("Timer disabled");
 		--PowaAuras:ShowText("Timer disabled");
 		--if (aura.Debug) then
-		--	PowaAuras:UnitTestInfo("Timer.Update ",self.id);
+		--	--PowaAuras:UnitTestInfo("Timer.Update ",self.id);
 		--end
 		return;
 	end
 
 	local newvalue = 0;
 	--if (aura.Debug) then
-	--	PowaAuras:UnitTestInfo("newvalue=",newvalue);
+	--	--PowaAuras:UnitTestInfo("newvalue=",newvalue);
 	--end
 	--- Determine the value to display in the timer
 	if (PowaAuras.ModTest) then

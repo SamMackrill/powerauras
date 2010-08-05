@@ -822,7 +822,7 @@ function PowaAuras:Debug(...)
 	if (PowaMisc.debug == true) then
 		self:Message(...) --OK
 	end
-	self:UnitTestDebug(...);
+	--self:UnitTestDebug(...);
 end
 
 function PowaAuras:Message(...)
