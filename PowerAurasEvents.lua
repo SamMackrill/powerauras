@@ -642,11 +642,11 @@ function PowaAuras:COMBAT_LOG_EVENT_UNFILTERED(...)
 			if (PowaAuras.StringStarts(event,"SPELL_") and sourceName) then
 				self.CastOnMe[sourceName] = {SpellName=spellName, SpellId=spellId, SourceGUID=sourceGUID, Hostile=bit.band(sourceFlags, COMBATLOG_OBJECT_REACTION_HOSTILE)};
 				self.DoCheck.Spells = true; --- scan party/raid targets for casting
-				if self.CastOnMe[sourceName].Hostile > 0 then
-					self:ShowText(self.Colors.Red, spellName, " cast on me by ", sourceName);
-				else
-					self:ShowText(self.Colors.Green, spellName, " cast on me by ", sourceName);
-				end
+				--if self.CastOnMe[sourceName].Hostile > 0 then
+				--	self:ShowText(self.Colors.Red, spellName, " cast on me by ", sourceName);
+				--else
+				--	self:ShowText(self.Colors.Green, spellName, " cast on me by ", sourceName);
+				--end
 			end
 			if (event == "ENVIRONMENTAL_DAMAGE") then
 				--self:ShowText("ENVIRONMENTAL_DAMAGE type=", spellId, " size=", spellName);					
