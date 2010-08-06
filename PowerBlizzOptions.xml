@@ -303,7 +303,7 @@
 				</Scripts>
 			</CheckButton>		
 
-			<CheckButton name="PowaAlowInspectionsButton" inherits="PowaCheckTemplate">
+			<CheckButton name="PowaAllowInspectionsButton" inherits="PowaCheckTemplate">
 				<Size>
 					<AbsDimension x="25" y="25"/>
 				</Size>
@@ -319,11 +319,11 @@
 			</Anchors>				
 				<Scripts>
 					<OnLoad>
-						self.tooltipText = PowaAuras.Text.aideAlowInspections;
-						getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomAlowInspections);
+						self.tooltipText = PowaAuras.Text.aideAllowInspections;
+						getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomAllowInspections);
 					</OnLoad>
 					<OnClick>
-						PowaAuras:AlowInspectionsChecked(self);
+						PowaAuras:AllowInspectionsChecked(self);
 					</OnClick>
 				</Scripts>
 			</CheckButton>	

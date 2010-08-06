@@ -869,11 +869,18 @@ end
 
 function PowaAuras:TableEmpty(t)
 	if (type(t)~="table") then return nil; end
-	for k,v in pairs(t) do
+	for k in pairs(t) do
 		return false;
 	end
 	return true;
 end
+
+function PowaAuras:ClearTable(t)
+	if (type(t)~="table") then return; end
+	for k in pairs(t) do 
+		t[k] = nil; 
+	end 
+end 
 
 function PowaAuras:CopyTable(t, lookup_table, original)
 	if (type(t)~="table") then
@@ -902,7 +909,6 @@ function PowaAuras:CopyTable(t, lookup_table, original)
 		end
 	end
 	return copy
-
 end
 
 function PowaAuras:MergeTables(desTable, sourceTable)

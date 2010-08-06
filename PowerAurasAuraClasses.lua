@@ -476,7 +476,7 @@ function cPowaAura:CheckState(giveReason)
     --- unit
 	if (self.optunitn and not ((GetNumPartyMembers() > 0) or (GetNumRaidMembers() > 0) or UnitExists("pet"))) then --- Unitn yes, but not in party/raid or with pet
 		if (not giveReason) then return false; end
-		return false, self:InsertText(self.Text.nomReasonNoCustomUnit, self.unitn);
+		return false, self:InsertText(PowaAuras.Text.nomReasonNoCustomUnit, self.unitn);
 	end
         
     --- raid
@@ -499,10 +499,6 @@ function cPowaAura:CheckState(giveReason)
 		end
 		return false, PowaAuras.Text.nomReasonInCombat;		
 	end
-
-	--if (self.PvP==true) then
-	--	PowaAuras:ShowText("PvPFlagSet=", PowaAuras.PvPFlagSet, " aura.PvP=", self.PvP);
-	--end
 	
 	if ((PowaAuras.PvPFlagSet == 1 and self.PvP == false) or (PowaAuras.PvPFlagSet ~= 1 and self.PvP == true)) then
 		if (not giveReason) then return false; end
@@ -906,7 +902,7 @@ function cPowaAura:GetUnit()
 end
 
 function cPowaAura:GetExtendedUnit()
-	if (self.target or self.targetfriend) then
+	if ((self.raid or self.party or self.groupOrSelf) and (self.target or self.targetfriend)) then
 		return "target";
 	end	
 	return "";

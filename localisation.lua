@@ -488,8 +488,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideTimerRounding = "When checked will round the timer up",
 	nomTimerRounding = "Round Timer Up",
 	
-	aideAlowInspections = "Alow Power Auras to Inspect players to determine roles, turning this off will sacrifice accuracy for speed",
-	nomAlowInspections = "Alow Inspections",
+	aideAllowInspections = "Allow Power Auras to Inspect players to determine roles, turning this off will sacrifice accuracy for speed",
+	nomAllowInspections = "Allow Inspections",
 
 	nomIgnoreUseable = "Cooldown Only",
 	aideIgnoreUseable = "Ignores if spell is usable (just uses cooldown)",

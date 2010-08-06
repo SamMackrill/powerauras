@@ -660,12 +660,9 @@ function PowaAuras:AnimationFactory(animationType, classList, aura, frame, base)
 		return nil;
 	end
 	local class = classList[animationType];
-	if (class==nil) then
-		--class = cPowaAnimationBase;
-	end
 	if (class) then
 		--self:ShowText("AnimationFactory type="..tostring(animationType).." aura.id="..tostring(aura.id).." class="..tostring(class).." frame="..tostring(frame));
-		if (base == nil) then
+		if (not base) then
 			base = {};
 		end
 		base.AnimationType = animationType;
