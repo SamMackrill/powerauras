@@ -22,7 +22,7 @@ function PowaAuras:UpdateMainOption()
 	PowaEnableButton:SetChecked(PowaMisc.Disabled~=true);
 	PowaDebugButton:SetChecked(PowaMisc.debug==true);
 	PowaTimerRoundingButton:SetChecked(PowaMisc.TimerRoundUp==true);
-	PowaAlowInspectionsButton:SetChecked(PowaMisc.AlowInspections==true);
+	PowaAllowInspectionsButton:SetChecked(PowaMisc.AllowInspections==true);
 	
 	-- affiche les icones
 	for i = 1, 24 do
@@ -2499,7 +2499,8 @@ end
 
 function PowaAuras.DropDownMenu_OnClickTimerRelative()
 	UIDropDownMenu_SetSelectedValue(this.owner, this.value);
-
+	
+	PowaAuras:ShowText(PowaAuras.Auras[PowaAuras.CurrentAuraId].id," change timer relative position ", this.value);
 	local timer = PowaAuras.Auras[PowaAuras.CurrentAuraId].Timer;
 	timer.x = 0;
 	timer.y = 0;
@@ -2593,6 +2594,7 @@ end
 function PowaAuras.DropDownMenu_OnClickStacksRelative()
 	UIDropDownMenu_SetSelectedValue(this.owner, this.value);
 
+	self:ShowText(PowaAuras.Auras[PowaAuras.CurrentAuraId].id," change stacks relative position ", this.value);
 	local stacks = PowaAuras.Auras[PowaAuras.CurrentAuraId].Stacks;
 	stacks.x = 0;
 	stacks.y = 0;
@@ -2723,11 +2725,11 @@ function PowaAuras:TimerRoundingChecked(control)
 	end
 end
 
-function PowaAuras:AlowInspectionsChecked(control)
+function PowaAuras:AllowInspectionsChecked(control)
 	if (control:GetChecked()) then
-		PowaMisc.AlowInspections = true;
+		PowaMisc.AllowInspections = true;
 	else
-		PowaMisc.AlowInspections = false;
+		PowaMisc.AllowInspections = false;
 	end
 end
 
@@ -2808,7 +2810,7 @@ function PowaOptionsCpuFrame2_OnShow(hide)
 	PowaEnableButton:SetChecked(PowaMisc.Disabled ~= true);
 	PowaDebugButton:SetChecked(PowaMisc.debug);
 	PowaTimerRoundingButton:SetChecked(PowaMisc.TimerRoundUp);
-	PowaAlowInspectionsButton:SetChecked(PowaMisc.AlowInspections);
+	PowaAllowInspectionsButton:SetChecked(PowaMisc.AllowInspections);
 	UIDropDownMenu_SetSelectedValue(PowaDropDownDefaultTimerTexture, PowaMisc.DefaultTimerTexture);
 	UIDropDownMenu_SetSelectedValue(PowaDropDownDefaultStacksTexture, PowaMisc.DefaultStacksTexture);
 end

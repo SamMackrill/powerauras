@@ -88,7 +88,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
 					<Anchors>
 						<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT">
 							<Offset>
-								<AbsDimension x="-4" y="3"/>
+								<AbsDimension x="0" y="3"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -97,7 +97,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
 					<Anchors>
 						<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT">
 							<Offset>
-								<AbsDimension x="4" y="3"/>
+								<AbsDimension x="0" y="3"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -977,9 +977,9 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
           </Slider>
 		  
           <Slider name="PowaBarAuraCoordXSlider"
-                  inherits="PowaBarSliderTemplate">
+                  inherits="PowaBarSliderTemplateWithButtons">
             <Size>
-              <AbsDimension x="380"
+              <AbsDimension x="350"
                             y="16" />
             </Size>
             <Anchors>
@@ -987,7 +987,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                       relativeTo="PowaBarAuraSizeSlider"
                       relativePoint="BOTTOMLEFT">
                 <Offset>
-                  <AbsDimension x="0"
+                  <AbsDimension x="30"
                                 y="-18" />
                 </Offset>
               </Anchor>
@@ -1036,10 +1036,11 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               <OnEnterPressed>self:ClearFocus() PowaAuras:TextCoordXChanged();</OnEnterPressed>
             </Scripts>
           </EditBox>
+		  
           <Slider name="PowaBarAuraCoordSlider"
-                  inherits="PowaBarSliderTemplate">
+                  inherits="PowaBarSliderTemplateWithButtons">
             <Size>
-              <AbsDimension x="380"
+              <AbsDimension x="350"
                             y="16" />
             </Size>
             <Anchors>
@@ -2665,9 +2666,9 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               </Frame>
 			  
               <Slider name="PowaBarAuraAnimSpeedSlider"
-                      inherits="PowaBarSliderTemplate">
+                      inherits="PowaBarSliderTemplateWithButtons">
                 <Size>
-                  <AbsDimension x="320"
+                  <AbsDimension x="360"
                                 y="16" />
                 </Size>
                 <Anchors>
@@ -2675,7 +2676,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                           relativeTo="PowaDropDownAnim1"
                           relativePoint="BOTTOMLEFT">
                     <Offset>
-                      <AbsDimension x="20"
+                      <AbsDimension x="60"
                                     y="-10" />
                     </Offset>
                   </Anchor>
@@ -2692,9 +2693,9 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               </Slider>
 			  
               <Slider name="PowaBarAuraDurationSlider"
-                      inherits="PowaBarSliderTemplate">
+                      inherits="PowaBarSliderTemplateWithButtons">
                 <Size>
-                  <AbsDimension x="320"
+                  <AbsDimension x="360"
                                 y="16" />
                 </Size>
                 <Anchors>
@@ -3197,9 +3198,9 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               </CheckButton>
 			  
               <Slider name="PowaTimerCoordXSlider"
-                      inherits="PowaBarSliderTemplate">
+                      inherits="PowaBarSliderTemplateWithButtons">
                 <Size>
-                  <AbsDimension x="160"
+                  <AbsDimension x="180"
                                 y="16" />
                 </Size>
                 <Anchors>
@@ -3207,7 +3208,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                           relativeTo="PowaBarConfigFrameEditor4"
                           relativePoint="TOPLEFT">
                     <Offset>
-                      <AbsDimension x="10"
+                      <AbsDimension x="40"
                                     y="-42" />
                     </Offset>
                   </Anchor>
@@ -3229,9 +3230,9 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               </Slider>
 			  
               <Slider name="PowaTimerCoordSlider"
-                      inherits="PowaBarSliderTemplate">
+                      inherits="PowaBarSliderTemplateWithButtons">
                 <Size>
-                  <AbsDimension x="160"
+                  <AbsDimension x="180"
                                 y="16" />
                 </Size>
                 <Anchors>
@@ -3239,7 +3240,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                           relativeTo="PowaTimerCoordXSlider"
                           relativePoint="RIGHT">
                     <Offset>
-                      <AbsDimension x="10"
+                      <AbsDimension x="40"
                                     y="0" />
                     </Offset>
                   </Anchor>
@@ -3261,9 +3262,9 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               </Slider>
 			  
               <Slider name="PowaTimerSizeSlider"
-                      inherits="PowaBarSliderTemplate">
+                      inherits="PowaBarSliderTemplateWithButtons">
                 <Size>
-                  <AbsDimension x="160"
+                  <AbsDimension x="180"
                                 y="16" />
                 </Size>
                 <Anchors>
@@ -3278,19 +3279,19 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Anchors>
                 <Scripts>
                   <OnLoad>
-                  	self:SetMinMaxValues(0.5,2.0); self:SetValue(1.0); self:SetValueStep(0.01); 
+                  	self:SetMinMaxValues(0.5,10.0); self:SetValue(1.0); self:SetValueStep(0.01); 
                   	getglobal("PowaTimerSizeSliderText"):SetText(PowaAuras.Text.nomTaille.." : 1.0");
                   	getglobal("PowaTimerSizeSliderLow"):SetText("0.5"); 
-                  	getglobal("PowaTimerSizeSliderHigh"):SetText("2.0");
+                  	getglobal("PowaTimerSizeSliderHigh"):SetText("10.0");
                   </OnLoad>
                   <OnValueChanged>PowaAuras:TimerSizeSliderChanged();</OnValueChanged>
                 </Scripts>
               </Slider>
 			  
               <Slider name="PowaTimerAlphaSlider"
-                      inherits="PowaBarSliderTemplate">
+                      inherits="PowaBarSliderTemplateWithButtons">
                 <Size>
-                  <AbsDimension x="160"
+                  <AbsDimension x="180"
                                 y="16" />
                 </Size>
                 <Anchors>
@@ -3315,9 +3316,9 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               </Slider>
 			  
               <Slider name="PowaTimerDurationSlider"
-                      inherits="PowaBarSliderTemplate">
+                      inherits="PowaBarSliderTemplateWithButtons">
                 <Size>
-                  <AbsDimension x="160"
+                  <AbsDimension x="180"
                                 y="16" />
                 </Size>
                 <Anchors>
@@ -3613,7 +3614,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               </Frame>			  
 			  
 	         <Slider name="PowaTimerInvertAuraSlider"
-                      inherits="PowaBarSliderTemplate">
+                      inherits="PowaBarSliderTemplateWithButtons">
                 <Size>
                   <AbsDimension x="260"
                                 y="16" />
@@ -3683,6 +3684,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               <OnLoad>self:SetBackdropBorderColor(0.0, 0.0, 0.0); self:SetBackdropColor(0.1, 0.1, 0.1);</OnLoad>
             </Scripts>
             <Frames>
+			
               <CheckButton name="PowaShowStacksButton"
                            inherits="PowaCheckTemplate">
                 <Size>
@@ -3708,10 +3710,11 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   <OnClick>PowaAuras:ShowStacksChecked(self);</OnClick>
                 </Scripts>
               </CheckButton>
+			  
               <Slider name="PowaStacksCoordXSlider"
-                      inherits="PowaBarSliderTemplate">
+                      inherits="PowaBarSliderTemplateWithButtons">
                 <Size>
-                  <AbsDimension x="160"
+                  <AbsDimension x="180"
                                 y="16" />
                 </Size>
                 <Anchors>
@@ -3719,7 +3722,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                           relativeTo="PowaBarConfigFrameEditor6"
                           relativePoint="TOPLEFT">
                     <Offset>
-                      <AbsDimension x="10"
+                      <AbsDimension x="40"
                                     y="-42" />
                     </Offset>
                   </Anchor>
@@ -3739,10 +3742,11 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   </OnMouseUp>
                 </Scripts>
               </Slider>
+			  
               <Slider name="PowaStacksCoordSlider"
-                      inherits="PowaBarSliderTemplate">
+                      inherits="PowaBarSliderTemplateWithButtons">
                 <Size>
-                  <AbsDimension x="160"
+                  <AbsDimension x="180"
                                 y="16" />
                 </Size>
                 <Anchors>
@@ -3750,7 +3754,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                           relativeTo="PowaStacksCoordXSlider"
                           relativePoint="RIGHT">
                     <Offset>
-                      <AbsDimension x="10"
+                      <AbsDimension x="40"
                                     y="0" />
                     </Offset>
                   </Anchor>
@@ -3770,10 +3774,11 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   </OnMouseUp>
                 </Scripts>
               </Slider>
+			  
               <Slider name="PowaStacksSizeSlider"
-                      inherits="PowaBarSliderTemplate">
+                      inherits="PowaBarSliderTemplateWithButtons">
                 <Size>
-                  <AbsDimension x="160"
+                  <AbsDimension x="180"
                                 y="16" />
                 </Size>
                 <Anchors>
@@ -3788,19 +3793,19 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Anchors>
                 <Scripts>
                   <OnLoad>
-                  	self:SetMinMaxValues(0.5,2.0); self:SetValue(1.0); self:SetValueStep(0.01); 
+                  	self:SetMinMaxValues(0.5,10.0); self:SetValue(1.0); self:SetValueStep(0.01); 
                   	getglobal("PowaStacksSizeSliderText"):SetText(PowaAuras.Text.nomTaille.." : 1.0");
                   	getglobal("PowaStacksSizeSliderLow"):SetText("0.5"); 
-                  	getglobal("PowaStacksSizeSliderHigh"):SetText("2.0");
+                  	getglobal("PowaStacksSizeSliderHigh"):SetText("10.0");
                   </OnLoad>
                   <OnValueChanged>PowaAuras:StacksSizeSliderChanged();</OnValueChanged>
                 </Scripts>
               </Slider>
 			  
               <Slider name="PowaStacksAlphaSlider"
-                      inherits="PowaBarSliderTemplate">
+                      inherits="PowaBarSliderTemplateWithButtons">
                 <Size>
-                  <AbsDimension x="160"
+                  <AbsDimension x="180"
                                 y="16" />
                 </Size>
                 <Anchors>

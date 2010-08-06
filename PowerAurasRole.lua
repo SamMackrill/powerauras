@@ -69,7 +69,7 @@ end
 --
 function PowaAuras:TryInspectNext()
 	self.InspectSkipped = false;
-	if (not PowaMisc.AlowInspections) then
+	if (not PowaMisc.AllowInspections) then
 		self.NextInspectUnit = nil;
 		self.InspectsDone = true;
 		return;

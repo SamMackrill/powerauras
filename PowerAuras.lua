@@ -144,7 +144,7 @@ PowaMisc =
 		DefaultTimerTexture = "Original",
 		DefaultStacksTexture = "Original",
 		TimerRoundUp = true,
-		AlowInspections = true,
+		AllowInspections = true,
 		AnimationFps = 30,
 		UseGTFO = nil,
 	};
@@ -281,6 +281,9 @@ function PowaAuras:UpdateOldAuras()
 	end
 	
 	local rescaleRatio = UIParent:GetHeight() / 768;
+	if (not rescaleRatio or rescaleRatio==0) then
+		rescaleRatio = 1;
+	end
 
 	-- Update for backwards combatiblity
 	for i = 1, 360 do
@@ -369,6 +372,19 @@ function PowaAuras:UpdateOldAuras()
 					aura.Stacks.h = aura.Stacks.h * rescaleRatio;
 				end				
 			end
+
+			if (PowaSet[i]~=nil) then
+				if (aura.Timer) then
+					aura.Timer.x = math.floor(aura.Timer.x);
+					aura.Timer.y = math.floor(aura.Timer.y);
+					aura.Timer.h = math.floor(aura.Timer.h * 100) / 100;
+				end	
+				if (aura.Stacks) then
+					aura.Stacks.x = math.floor(aura.Stacks.x);
+					aura.Stacks.y = math.floor(aura.Stacks.y);
+					aura.Stacks.h = math.floor(aura.Stacks.h * 100) / 100;
+				end				
+			end			
 			
 		end
 	end
@@ -500,7 +516,7 @@ end
 function PowaAuras:CreateEffectLists()
 	
 	for k in pairs(self.AurasByType) do
-		self.AurasByType[k] = {};
+		self:ClearTable(self.AurasByType[k]);
 	end
 	
 	for _, aura in pairs(self.Auras) do
@@ -731,7 +747,7 @@ function PowaAuras:OnUpdate(elapsed)
 			--self:ShowText("Checking Cascade aura."..k);
 			self:TestThisEffect(k, false, true);
 		end
-		self.Cascade = {};		
+		self:ClearTable(self.Cascade);		
 	end
 	
 	local skipTimerUpdate = false
@@ -743,7 +759,7 @@ function PowaAuras:OnUpdate(elapsed)
 		self.TimerUpdateThrottleTimer = 0;
 	end
 	
-	if (PowaMisc.AlowInspections) then
+	if (PowaMisc.AllowInspections) then
 		-- Refresh Inspect, check timeout
 		if (self.NextInspectUnit ~= nil) then
 			if (GetTime() > self.NextInspectTimeOut) then
@@ -804,14 +820,12 @@ function PowaAuras:NewCheckBuffs()
 	end
 
 	self.DoCheck.All = false;
-	for spellId in pairs (PowaAuras.AoeAuraAdded) do
-		self.AoeAuraAdded[spellId] = nil;
-	end
 	
-	self.ChangedUnits.Buffs = {};
-	self.TotemSlots = {};
-	self.ExtraUnitEvent = {};
-	self.CastOnMe = {};
+	self:ClearTable(self.AoeAuraAdded);
+	self:ClearTable(self.ChangedUnits.Buffs);
+	self:ClearTable(self.TotemSlots)
+	self:ClearTable(self.ExtraUnitEvent);
+	self:ClearTable(self.CastOnMe);
 
 end
 
