@@ -495,7 +495,10 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideIgnoreUseable = "Ignores if spell is usable (just uses cooldown)",
 
 	nomIgnoreItemUseable = "Equipped Only",
-	aideIgnoreItemUseable = "Ignores if spell is usable (just if equipped)",
+	aideIgnoreItemUseable = "Ignores if item is usable (just if equipped)",
+	
+	nomCarried = "Only if in bags",
+	aideCarried = "Ignores if item is usable (just if in a bag)",
 
 	-- Diagnostic reason text, these have substitutions (using $1, $2 etc) to allow for different sententance constructions
 	nomReasonShouldShow = "Should show because $1",
@@ -597,7 +600,11 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	
 	nomReasonItemEquipped    = "Item $1 equipped",
 	nomReasonItemNotEquipped = "Item $1 not equipped",
-	
+						
+	nomReasonItemInBags      = "Item $1 in bags",
+	nomReasonItemNotInBags   = "Item $1 not in bags",
+	nomReasonItemNotOnPlayer = "Item $1 not carried",
+
 	nomReasonSlotUsable     = "$1 Slot usable",
 	nomReasonSlotNotUsable  = "$1 Slot not usable",
 	nomReasonSlotNotReady   = "$1 Slot Not Ready, on cooldown, timer invert",

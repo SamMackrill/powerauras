@@ -66,6 +66,7 @@ function PowaAuras:AddBeginAnimation(aura, frame)
 	elseif (aura.begin==PowaAuras.AnimationBeginTypes.TranslateBottomLeft) then
 		self:AddJumpTranslateAndReturn(animationGroup, -75, -75, duration, PowaMisc.AnimationFps, 1);
 	elseif (aura.begin==PowaAuras.AnimationBeginTypes.Bounce) then
+		self:AddAlpha(animationGroup, math.min(aura.alpha,0.99), 0, 0, 1);
 		local u = 0;
 		local height = 100;
 		local efficiency = 0.6;

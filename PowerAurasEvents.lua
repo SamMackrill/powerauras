@@ -714,8 +714,8 @@ end
 function PowaAuras:UNIT_INVENTORY_CHANGED(...)
 	if (self.ModTest == false) then
 		local unit = ...;
-		--self:ShowText("UNIT_INVENTORY_CHANGED ", unit);
 		if (unit=="player") then
+			--self:ShowText("UNIT_INVENTORY_CHANGED ", unit);
 			self.DoCheck.Items = true;
 			self.DoCheck.Slots = true;
 			for _, auraId in pairs(self.AurasByType.Enchants) do
@@ -729,6 +729,14 @@ end
 function PowaAuras:BAG_UPDATE_COOLDOWN()
 	if (self.ModTest == false) then
 		--self:ShowText("BAG_UPDATE_COOLDOWN");
+		self.DoCheck.Items = true;
+		self.DoCheck.Slots = true;
+	end
+end
+
+function PowaAuras:BAG_UPDATE()
+	if (self.ModTest == false) then
+		--self:ShowText("BAG_UPDATE");
 		self.DoCheck.Items = true;
 		self.DoCheck.Slots = true;
 	end
@@ -750,17 +758,13 @@ function PowaAuras:UNIT_THREAT_SITUATION_UPDATE(...)
 			return;
 		end
 
-		for i=1,GetNumPartyMembers() do
-			if unit == "party"..i then
-				self.DoCheck.PartyAggro = true;
-				break;
-			end
+		if UnitInParty(unit) then
+			self.DoCheck.PartyAggro = true;
 		end
-		for i=1, GetNumRaidMembers() do
-			if unit == "raid"..i then
-				self.DoCheck.RaidAggro = true;
-				break;
-			end
+
+		if UnitInRaid(unit) then
+			self.DoCheck.RaidAggro = true;
 		end
+
 	end
 end
