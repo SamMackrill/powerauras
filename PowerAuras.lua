@@ -977,6 +977,9 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 	local auraId = aura.id;
 	
 	if (not aura.UseOldAnimations and aura.EndAnimation and aura.EndAnimation:IsPlaying()) then
+		if (aura.Debug) then
+			self:Message("Hide aura as already playing");
+		end
 		aura:Hide();
 	end
 
@@ -1119,21 +1122,21 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 		if (not aura.EndAnimation) then aura.EndAnimation = self:AddEndAnimation(aura, frame); end
 	
 	end
+	
+	if (not aura.UseOldAnimations) then
+		if (aura.BeginAnimation) then
+			aura.BeginAnimation:Play();
+			frame:SetAlpha(0); -- prevents flickering
+		elseif (aura.MainAnimation) then
+			aura.MainAnimation:Play();
+		end
+	end
 
 	----self:UnitTestInfo("frame:Show()", aura.id);
 	if (aura.Debug) then
 		self:Message("frame:Show()", aura.id, " ", frame);
 	end
-
 	frame:Show(); -- Show Aura Frame
-	
-	if (not aura.UseOldAnimations) then
-		if (aura.BeginAnimation) then
-			aura.BeginAnimation:Play();
-		elseif (aura.MainAnimation) then
-			aura.MainAnimation:Play();
-		end
-	end
 
 	aura.Showing = true;
 	aura.HideRequest = false;

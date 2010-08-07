@@ -3002,6 +3002,7 @@ end
 cPowaItems = PowaClass(cPowaAura, {ValueName = "Items", CanHaveStacks=true,  CooldownAura=true, CanHaveTimerOnInverse=true});
 cPowaItems.OptionText={buffNameTooltip=PowaAuras.Text.aideItems, typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.Items],
 					   mineText=PowaAuras.Text.nomIgnoreItemUseable, mineTooltip=PowaAuras.Text.aideIgnoreItemUseable,
+					   extraText=PowaAuras.Text.nomCarried, extraTooltip=PowaAuras.Text.aideCarried,
 					  };
 cPowaItems.ShowOptions={["PowaBarTooltipCheck"]=1, ["PowaBarBuffStacks"]=1};
 cPowaItems.CheckBoxes={["PowaInverseButton"]=1,["PowaOwntexButton"]=1,};
@@ -3009,6 +3010,20 @@ cPowaItems.TooltipOptions = {r=0.8, g=0.8, b=0.0};
 			 
 function cPowaItems:AddEffect()
 	table.insert(PowaAuras.AurasByType.Items, self.id);	
+end
+
+function cPowaItems:IsItemInBag(itemName)
+	--PowaAuras:ShowText("IsItemInBag ", itemName);
+	for bag = 0,4 do
+		for slot = 1,GetContainerNumSlots(bag) do
+			local item = GetContainerItemLink(bag,slot)
+			--PowaAuras:ShowText(bag, " - ", slot, " : ", item, " >> ", item:find(itemName));
+			if item and item:find(itemName) then
+				return true;
+			end
+		end
+	end
+	return false;
 end
 
 function cPowaItems:CheckIfShouldShow(giveReason)
@@ -3025,25 +3040,44 @@ function cPowaItems:CheckIfShouldShow(giveReason)
 			else
 				item = pword;
 			end
-			local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice = GetItemInfo(item);
+			local itemName = GetItemInfo(item);
 			if (itemName) then
 
 				if (self:IconIsRequired()) then
 					self:SetIcon(itemTexture);
 				end
 				
-				if (self.mine) then
-					if (itemEquipLoc) then
+				local isEquipped = IsEquippedItem(itemName);
+				local isBagged = self:IsItemInBag(itemName);
+				
+				if (not isEquipped and not isBagged) then
+					if (not giveReason) then return false; end
+					return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonItemNotOnPlayer, itemName);
+				end
+				
+				if (self.mine or self.Extra) then
+					if (self.mine) then
+						if (isEquipped) then
+							if (not giveReason) then return true; end
+							return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonItemEquipped, itemName);
+						end
+					end
+					if (not self.Extra) then
+						if (not giveReason) then return false; end
+						return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonItemNotEquipped, itemName);
+					end
+					if (isBagged) then
 						if (not giveReason) then return true; end
-						return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonItemEquipped, itemName);
+						return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonItemInBags, itemName);
 					end
-					if (giveReason) then
-						reason = PowaAuras:InsertText(PowaAuras.Text.nomReasonItemNotEquipped, pword);
+					if (not giveReason) then return false; end
+					if (not self.mine) then
+						return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonItemNotInBags, itemName);
 					end
-					return false;
+					return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonItemNotOnPlayer, itemName);
 				end
 			
-				local cdstart, cdduration, enabled  = GetItemCooldown(item);
+				local cdstart, cdduration, enabled = GetItemCooldown(item);
 				--PowaAuras:UnitTestDebug("cdstart= ",cdstart," duration= ",cdduration," enabled= ",enabled);
 				if (self.Debug) then
 					PowaAuras:Message("cdstart= ",cdstart," duration= ",cdduration," enabled= ",enabled); --OK
