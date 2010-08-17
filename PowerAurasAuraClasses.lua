@@ -2786,24 +2786,15 @@ function cPowaRunes:CheckIfShouldShow(giveReason)
 	--PowaAuras:Message("Rune Aura CheckIfShouldShow");
 
 	self:SetIcon("Interface\\icons\\spell_arcane_arcane01");
-	local DEATHRUNE= 4;
 	local runes = {[1]=0, [2]=0, [3]=0, [4]=0};
-	local runesPlusDeath = {[1]=0, [2]=0, [3]=0, [4]=0};
-	local runeEnd = {[1]={}, [2]={}, [3]={}};
+	local runeEnd = {[1]={}, [2]={}, [3]={}, [4]={}};
 	for slot = 1, 6 do
 		local startTime, duration, runeReady = GetRuneCooldown(slot);
 		local runeType = GetRuneType(slot);
 		if (runeReady) then
 			runes[runeType] = runes[runeType] + 1;
-			runesPlusDeath[runeType] = runesPlusDeath[runeType] + 1;
-			if (runeType==DEATHRUNE) then
-				runesPlusDeath[1] = runes[1] + 1;
-				runesPlusDeath[2] = runes[2] + 1;
-				runesPlusDeath[3] = runes[3] + 1;
-			end
-		elseif (runeType~=DEATHRUNE and self.Timer) then
-			local endTime = startTime + duration;
-			table.insert(runeEnd[runeType], endTime);
+		elseif (self.Timer) then
+			table.insert(runeEnd[runeType], startTime + duration);
 		end
 	end
 	
@@ -2835,17 +2826,17 @@ function cPowaRunes:CheckIfShouldShow(giveReason)
 		};
 		
 		if (self.ignoremaj) then
-			local runeMatches =(runesPlusDeath[1]>=runesCount[1]
-							and runesPlusDeath[2]>=runesCount[2]
-							and runesPlusDeath[3]>=runesCount[3]
-							and runesPlusDeath[4]>=runesCount[4]);
+			local deathRunesRequired = math.max(runesCount[1] - runes[1], 0)
+									 + math.max(runesCount[2] - runes[2], 0)
+									 + math.max(runesCount[3] - runes[3], 0);
+			local deathRunesAvailable = math.max(runes[4] - runesCount[4], 0)
 			if (self.Debug) then
 				for runeType = 1, 4 do
-					PowaAuras:Message("  runeType=",runeType, " runesPlusDeath=",runesPlusDeath[runeType], " runesCount=",runesCount[runeType]);
+					PowaAuras:Message("  runeType=",runeType, " runes=",runes[runeType], " runesCount=",runesCount[runeType]);
 				end
-				PowaAuras:Message("  runeMatches=",runeMatches);
+				PowaAuras:Message("  deathRunesRequired=",deathRunesRequired, " deathRunesAvailable=",deathRunesAvailable);
 			end
-			if (runeMatches) then
+			if (deathRunesAvailable>=deathRunesRequired and runes[4]>=runesCount[4]) then
 				if (not giveReason) then return true; end
 				return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonRunesReady); 
 			end
@@ -2856,21 +2847,23 @@ function cPowaRunes:CheckIfShouldShow(giveReason)
 				[2] = select(2, string.gsub(pword, "U", "U")),
 				[3] = select(2, string.gsub(pword, "F", "F")),
 			};
+			local deathRunesRequired = math.max(runesCountPlusDeath[1] - runes[1], 0)
+									 + math.max(runesCountPlusDeath[2] - runes[2], 0)
+									 + math.max(runesCountPlusDeath[3] - runes[3], 0);
+			local deathRunesAvailable = math.max(runes[4] - runesCount[4], 0)
 			local runesCountIgnoreDeath = {
 				[1] = select(2, string.gsub(pword, "b", "b")),
 				[2] = select(2, string.gsub(pword, "u", "u")),
 				[3] = select(2, string.gsub(pword, "f", "f")),
 			};
-			local runeMatches =(runes[1]>=runesCountIgnoreDeath[1] and runesPlusDeath[1]>=runesCountPlusDeath[1]
-							and runes[2]>=runesCountIgnoreDeath[2] and runesPlusDeath[2]>=runesCountPlusDeath[2]
-							and runes[3]>=runesCountIgnoreDeath[3] and runesPlusDeath[3]>=runesCountPlusDeath[3]); 
+			local runeMatches = runes[1]>=runesCountIgnoreDeath[1] and runes[2]>=runesCountIgnoreDeath[2] and runes[3]>=runesCountIgnoreDeath[3];
 			if (self.Debug) then
 				for runeType = 1, 3 do
-					PowaAuras:Message("  runeType=",runeType, " runes=", runes[runeType], " runesPlusDeath=", runesPlusDeath[runeType], " runesCountPlusDeath=",runesCountPlusDeath[runeType], " runesCountIgnoreDeath=",runesCountIgnoreDeath[runeType]);
+					PowaAuras:Message("  runeType=",runeType, " runes=", runes[runeType], " runesCountPlusDeath=",runesCountPlusDeath[runeType], " runesCountIgnoreDeath=",runesCountIgnoreDeath[runeType]);
 				end
-				PowaAuras:Message("  runeMatches=",runeMatches);
+				PowaAuras:Message("  deathRunesRequired=",deathRunesRequired, " deathRunesAvailable=",deathRunesAvailable, " runeMatches=",runeMatches);
 			end
-			if (runeMatches) then
+			if (deathRunesAvailable>=deathRunesRequired and runes[4]>=runesCount[4] and runeMatches) then
 				if (not giveReason) then return true; end
 				return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonRunesReady); 			
 			end

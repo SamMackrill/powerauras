@@ -2142,7 +2142,7 @@ function PowaAuras.DropDownMenu_OnClickSoundEnd()
 		PowaDropDownSoundEndText:SetText(PowaAuras.Sound[0]);
 	end
 
-	if (string.find(PowaAuras.Sound[aura.value], "%.")) then
+	if (string.find(PowaAuras.Sound[this.value], "%.")) then
 		PlaySoundFile("Interface\\AddOns\\PowerAuras\\Sounds\\"..PowaAuras.Sound[this.value]);
 	else
 		PlaySound(PowaAuras.Sound[this.value]);
