@@ -85,7 +85,7 @@ function PowaAuras:Setup()
 	end
 	
 	self.PvPFlagSet = UnitIsPVP("player");
-	self:DetermineRole("player")
+	self:DetermineRole("player");
 
 	self.WeAreInRaid = (GetNumRaidMembers() > 0);
 	self.WeAreInParty = (GetNumPartyMembers() > 0);

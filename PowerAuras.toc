@@ -21,6 +21,7 @@ localisation_zhTW.lua
 localisation_koKR.lua
 localisation_esES.lua
 localisation_esMX.lua
+PowerAurasRole.lua
 PowerAurasDump.lua
 PowerAurasDecoratorClasses.lua
 PowerAurasAuraClasses.lua
@@ -29,7 +30,6 @@ PowerAurasAnimationsOld.lua
 PowerAuras.lua
 PowerAurasEvents.lua
 PowerOptions.lua
-PowerAurasRole.lua
 PowerAuras.xml
 PowerOptions.xml
 PowerBlizzOptions.xml
