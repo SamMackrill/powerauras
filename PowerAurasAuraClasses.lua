@@ -2782,6 +2782,8 @@ function cPowaRunes:AddEffect()
 	table.insert(PowaAuras.AurasByType.Runes, self.id);
 	self.runes = {[1]=0, [2]=0, [3]=0, [4]=0};
 	self.runeEnd = {[1]=0, [2]=0, [3]=0, [4]=0, [5]=0, [6]=0};
+	self.runesMissingPlusDeath = {[1]=0, [2]=0, [3]=0};
+	self.runesMissingIgnoreDeath = {[1]=0, [2]=0, [3]=0};
 end
 
 function cPowaRunes:GetRuneState()
@@ -2800,7 +2802,7 @@ function cPowaRunes:GetRuneState()
 	end
 end	
 
-
+		
 function cPowaRunes:CheckIfShouldShow(giveReason)
 	--PowaAuras:Message("Rune Aura CheckIfShouldShow");
 
@@ -2813,68 +2815,61 @@ function cPowaRunes:CheckIfShouldShow(giveReason)
 		match = string.upper(match);
 	end
 	
-	local minTimeToActivate;
+	local minTimeToActivate, deathRunesRequired, deathRunesAvailable;
 	for pword in string.gmatch(match, "[^/]+") do
-		local pwordAll = string.upper(pword);
 		if (self.Debug) then
 			PowaAuras:Message("  pword=",pword);
-			PowaAuras:Message("  pwordAll=",pwordAll);
 		end
 		
-		local runesCount = {
-			[1] = select(2, string.gsub(pwordAll, "B", "B")),
-			[2] = select(2, string.gsub(pwordAll, "U", "U")),
-			[3] = select(2, string.gsub(pwordAll, "F", "F")),
-			[4] = select(2, string.gsub(pwordAll, "D", "D")),
-		};
-		
 		if (self.ignoremaj) then
-			local deathRunesRequired = math.max(runesCount[1] - self.runes[1], 0)
-									 + math.max(runesCount[2] - self.runes[2], 0)
-									 + math.max(runesCount[3] - self.runes[3], 0);
-			local deathRunesAvailable = math.max(self.runes[4] - runesCount[4], 0)
+			local pwordAll = string.upper(pword);
+			local deathRunes = select(2, string.gsub(pwordAll, "D", "D"));
+			self.runesMissingPlusDeath[1] = math.max(select(2, string.gsub(pwordAll, "B", "B")) - self.runes[1], 0);
+			self.runesMissingPlusDeath[2] = math.max(select(2, string.gsub(pwordAll, "U", "U")) - self.runes[2], 0);
+			self.runesMissingPlusDeath[3] = math.max(select(2, string.gsub(pwordAll, "F", "F")) - self.runes[3], 0);
+			deathRunesRequired = self.runesMissingPlusDeath[1] + self.runesMissingPlusDeath[2]  + self.runesMissingPlusDeath[3];
+			deathRunesAvailable = math.max(self.runes[4] - deathRunes, 0)
+			self.runesMissingIgnoreDeath[1] = 0;
+			self.runesMissingIgnoreDeath[2] = 0;
+			self.runesMissingIgnoreDeath[3] = 0;
 			if (self.Debug) then
-				for runeType = 1, 4 do
+				for runeType = 1, 3 do
 					PowaAuras:Message("  runeType=",runeType,
 									  " runes=",self.runes[runeType],
-									  " runesCount=",runesCount[runeType]);
+									  " runesMissingPlusDeath=",self.runesMissingPlusDeath[runeType]);
 				end
 				PowaAuras:Message("  deathRunesRequired=",deathRunesRequired,
 								  " deathRunesAvailable=",deathRunesAvailable);
 			end
-			if (deathRunesAvailable>=deathRunesRequired and self.runes[4]>=runesCount[4]) then
+			if (deathRunesAvailable>=deathRunesRequired and self.runes[4]>=deathRunes) then
 				if (not giveReason) then return true; end
 				return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonRunesReady); 
 			end
 
 		else
-			local runesCountPlusDeath = {
-				[1] = select(2, string.gsub(pword, "B", "B")),
-				[2] = select(2, string.gsub(pword, "U", "U")),
-				[3] = select(2, string.gsub(pword, "F", "F")),
-			};
-			local deathRunesRequired = math.max(runesCountPlusDeath[1] - self.runes[1], 0)
-									 + math.max(runesCountPlusDeath[2] - self.runes[2], 0)
-									 + math.max(runesCountPlusDeath[3] - self.runes[3], 0);
-			local deathRunesAvailable = math.max(self.runes[4] - runesCount[4], 0)
-			local runesCountIgnoreDeath = {
-				[1] = select(2, string.gsub(pword, "b", "b")),
-				[2] = select(2, string.gsub(pword, "u", "u")),
-				[3] = select(2, string.gsub(pword, "f", "f")),
-			};
-			local runeMatches = self.runes[1]>=runesCountIgnoreDeath[1] and self.runes[2]>=runesCountIgnoreDeath[2] and self.runes[3]>=runesCountIgnoreDeath[3];
+			local deathRunes = select(2, string.gsub(string.upper(pword), "D", "D"));
+			self.runesMissingPlusDeath[1] = math.max(select(2, string.gsub(pword, "B", "B")) - self.runes[1], 0);
+			self.runesMissingPlusDeath[2] = math.max(select(2, string.gsub(pword, "U", "U")) - self.runes[2], 0);
+			self.runesMissingPlusDeath[3] = math.max(select(2, string.gsub(pword, "F", "F")) - self.runes[3], 0);
+			deathRunesRequired = runesMissingPlusDeath[1] + runesMissingPlusDeath[2]  + runesMissingPlusDeath[3];
+			deathRunesAvailable = math.max(self.runes[4] - deathRunes, 0)
+			self.runesMissingIgnoreDeath[1] = math.max(select(2, string.gsub(pword, "b", "b")) - self.runes[1], 0);
+			self.runesMissingIgnoreDeath[2] = math.max(select(2, string.gsub(pword, "u", "u")) - self.runes[2], 0);
+			self.runesMissingIgnoreDeath[3] = math.max(select(2, string.gsub(pword, "f", "f")) - self.runes[3], 0);
+
+			local runeMatches = (self.runesMissingIgnoreDeath[1] + self.runesMissingIgnoreDeath[2] + self.runesMissingIgnoreDeath[3]) ==0;
 			if (self.Debug) then
 				for runeType = 1, 3 do
 					PowaAuras:Message("  runeType=",runeType,
 									  " runes=", self.runes[runeType],
-									  " runesCountPlusDeath=",runesCountPlusDeath[runeType],
-									  " runesCountIgnoreDeath=",runesCountIgnoreDeath[runeType]);
+									  " runesMissingPlusDeath=",self.runesMissingPlusDeath[runeType],
+									  " runesMissingIgnoreDeath=",self.runesMissingIgnoreDeath[runeType]);
 				end
 				PowaAuras:Message("  deathRunesRequired=",deathRunesRequired,
 								  " deathRunesAvailable=",deathRunesAvailable,
 								  " runeMatches=",runeMatches);
 			end
-			if (deathRunesAvailable>=deathRunesRequired and self.runes[4]>=runesCount[4] and runeMatches) then
+			if (deathRunesAvailable>=deathRunesRequired and self.runes[4]>=deathRunes and runeMatches) then
 				if (not giveReason) then return true; end
 				return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonRunesReady); 			
 			end
@@ -2883,29 +2878,18 @@ function cPowaRunes:CheckIfShouldShow(giveReason)
 		if (self.Timer and self.inverse) then		
 			local maxTime = 0;
 			
-			if (f1) then
-				maxTime = math.min()
-			
-			for runeType = 1, 3 do
-				local index = runesCount[runeType];
-				local endCount = #self.runeEnd[runeType];
-				if (self.Debug) then
-					PowaAuras:Message("  runeType=",runeType, " index=",index, " endCount=",endCount);
-				end
-				if (index>0 and endCount>0) then
-					if (index>endCount) then
-						index = endCount;
-					end
-					local endTime = self.runeEnd[runeType][index];
-					if (self.Debug) then
-						PowaAuras:Message("    runeType=",runeType, " index=",index, " endTime=",endTime);
-					end
-					if (endTime>maxTime) then
-						maxTime = endTime;
-					end
-				end
+			local endTime = self:GetEndTime(1, 1);
+			if (endTime>maxTime) then
+				maxTime = endTime;
 			end
-		
+			endTime = self:GetEndTime(2, 5);
+			if (endTime>maxTime) then
+				maxTime = endTime;
+			end
+			endTime = self:GetEndTime(3, 3);
+			if (endTime>maxTime) then
+				maxTime = endTime;
+			end				
 			if (minTimeToActivate==nil or maxTime<minTimeToActivate) then
 				minTimeToActivate = maxTime;
 			end
@@ -2921,6 +2905,16 @@ function cPowaRunes:CheckIfShouldShow(giveReason)
 	return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonRunesNotReady); 			
 end
 
+function cPowaRunes:GetEndTime(runeType, index)
+	if (self.runesMissingIgnoreDeath[runeType]==0) then	return 0; end
+	if (self.runesMissingIgnoreDeath[runeType]==1) then				
+		if (self.runeEnd[index]==0)   then return self.runeEnd[index+1]; end
+		if (self.runeEnd[index+1]==0) then return self.runeEnd[index]; end
+		return math.min(self.runeEnd[index], self.runeEnd[index+1]);
+	end
+	return math.max(self.runeEnd[index], self.runeEnd[index+1]);
+end
+	
 -- Equipment Slots Aura--
 cPowaSlots = PowaClass(cPowaAura, {ValueName = "Slots",  CooldownAura=true, CanHaveTimerOnInverse=true});
 cPowaSlots.OptionText={typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.Slots]};
