@@ -660,6 +660,9 @@ PowaAuras = {
 		"PowaDropDownStance",
 		"PowaDropDownGTFO"
 	};
+	
+	RuneSlotFromType = {[1]=1, [2]=5, [3]=3};
+
 
 };
 
@@ -670,6 +673,7 @@ PowaAuras.TalentChangeSpells = {
 	[PowaAuras.Spells.BUFF_BLOOD_PRESENCE]    = true,
 	[PowaAuras.Spells.BUFF_UNHOLY_PRESENCE]   = true,
 };
+
 	
 PowaAuras.DebuffTypeSpellIds={
 	-- Death Knight
