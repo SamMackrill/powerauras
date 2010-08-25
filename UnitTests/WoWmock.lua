@@ -144,6 +144,14 @@ UIErrorsFrame = ChatFrame1;
 function UIDropDownMenu_SetSelectedValue(owner, value)
 end
 
+
+function wipe(t)
+	if (type(t)~="table") then return; end
+	for k in pairs(t) do 
+		t[k] = nil; 
+	end 
+end 
+
 function GetName(self)
 	if ( self ) then
 		if ( self.name ) then 
@@ -490,6 +498,23 @@ function UnitPowerMax(unit, powerType)
 		return Player.PowerMax.Default;
 	end
 	return nil;
+end
+
+
+function UnitStat(unit, stat)
+	local Player = WoWMock:GetUnit(unit);
+	if (Player~=nil and Player.Stats~=nil) then
+		return Player.Stats[stat].Base, Player.Stats[stat].Stat, Player.Stats[stat].PosBuff, Player.Stats[stat].NegBuff;
+	end
+	return nil;
+end
+
+function UnitDefense(unit)
+	local Player = WoWMock:GetUnit(unit);
+	if (Player~=nil) then
+		return Player.Defense or 0, Player.DefenseModifier or 0;
+	end
+	return 0, 0;
 end
 
 function GetShapeshiftForm(arg1)

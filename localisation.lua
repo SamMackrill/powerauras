@@ -679,7 +679,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		RageEnergy = {MatchReason="$1 EnergyRagePower low", NoMatchReason="$1 EnergyRagePower not low enough"},
 		Aggro      = {MatchReason="$1 has aggro",           NoMatchReason="$1 does not have aggro"},
 		PvP        = {MatchReason="$1 PvP flag set",        NoMatchReason="$1 PvP flag not set"},
-		SpellAlert = {MatchReason="$1 casting ",        	NoMatchReason="$1 not casting"},
+		SpellAlert = {MatchReason="$1 casting $2",        	NoMatchReason="$1 not casting $2"},
 	},
 
 });

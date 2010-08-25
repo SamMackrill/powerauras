@@ -661,8 +661,11 @@ PowaAuras = {
 		"PowaDropDownGTFO"
 	};
 	
-	RuneSlotFromType = {[1]=1, [2]=5, [3]=3};
-
+	RuneSlotFromType = {
+		[1]=1, -- Blood
+		[2]=5, -- Undeath
+		[3]=3, -- Frost
+	};
 
 };
 
@@ -827,7 +830,7 @@ function PowaAuras:Debug(...)
 	if (PowaMisc.debug == true) then
 		self:Message(...) --OK
 	end
-	--self:UnitTestDebug(...);
+	self:UnitTestDebug(...);
 end
 
 function PowaAuras:Message(...)
@@ -879,13 +882,6 @@ function PowaAuras:TableEmpty(t)
 	end
 	return true;
 end
-
-function PowaAuras:ClearTable(t)
-	if (type(t)~="table") then return; end
-	for k in pairs(t) do 
-		t[k] = nil; 
-	end 
-end 
 
 function PowaAuras:CopyTable(t, lookup_table, original)
 	if (type(t)~="table") then

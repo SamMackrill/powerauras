@@ -413,7 +413,9 @@ function PowaAuras:GetUnitInfo(unit)
     UnitInfo["CreatureFamily"] = UnitCreatureFamily(unit);
     UnitInfo["CreatureType"] = UnitCreatureType(unit) ;
     UnitInfo["Damage"] = UnitDamage(unit);
-    UnitInfo["Defense"] = UnitDefense(unit);
+	local defense, defenseModifier = UnitDefense(unit);
+    UnitInfo["Defense"] = defense;
+	UnitInfo["DefenseModifier"] = defenseModifier;
     UnitInfo["FactionGroup"] = UnitFactionGroup(unit);
     UnitInfo["Health"] = UnitHealth(unit);
     UnitInfo["HealthMax"] = UnitHealthMax(unit) ;

@@ -14,6 +14,7 @@ require("localisation_ruRU")
 require("localisation_zhCN")
 require("localisation_zhTW")
 require("localisation_koKR")
+require("PowerAurasRole")
 require("PowerAurasDump")
 require("PowerAurasDecoratorClasses")
 require("PowerAurasAuraClasses")
@@ -21,7 +22,7 @@ require("PowerAurasAnimations")
 require("PowerAuras")
 require("PowerAurasEvents")
 require("PowerOptions")
-require("PowerAurasRole")
+
 
 function PowaAuras:UnitTestDebug(...)
 	if (TestPA.Debug) then
@@ -57,7 +58,6 @@ TestPA = {Debug = false;} --aura
 		WoWMock.Output = "";
 		WoWMock.Target = "target";
 		GameTooltip:SetOwner(nil);
-		UIParent ={};
 		PowaSet = {};
 		PowaGlobalSet = {};
 		Timers = {};
@@ -83,6 +83,7 @@ TestPA = {Debug = false;} --aura
 		dofile("../localisation_zhCN.lua")
 		dofile("../localisation_zhTW.lua")
 		dofile("../localisation_koKR.lua")
+		dofile("../PowerAurasRole.lua");
 		dofile("../PowerAurasDump.lua");
 		dofile("../PowerAurasDecoratorClasses.lua");
 		dofile("../PowerAurasAuraClasses.lua");
@@ -90,7 +91,7 @@ TestPA = {Debug = false;} --aura
 		dofile("../PowerAuras.lua");
 		dofile("../PowerAurasEvents.lua");
 		dofile("../PowerOptions.lua");
-		dofile("../PowerAurasRole.lua");
+
 		dofile("dumps/"..dump..".lua"); -- to restore the settings
 		
 		PowaAuras.UnitTestDebug =
@@ -145,13 +146,13 @@ TestPA = {Debug = false;} --aura
 		self:TearDown()
 	end
 
-	--dofile("PowerAuras.test.Utils.lua");
-	--dofile("PowerAuras.test.TimerClass.lua");
-	--dofile("PowerAuras.test.AuraClass.lua");
-	--dofile("PowerAuras.test.Locales.lua");
+	dofile("PowerAuras.test.Utils.lua");
+	dofile("PowerAuras.test.TimerClass.lua");
+	dofile("PowerAuras.test.AuraClass.lua");
+	dofile("PowerAuras.test.Locales.lua");
 	dofile("PowerAuras.test.ShouldShow.lua");
-	--dofile("PowerAuras.test.ActionReady.lua");
-	--dofile("PowerAuras.test.DisplayAndAnimate.lua");
+	dofile("PowerAuras.test.ActionReady.lua");
+	dofile("PowerAuras.test.DisplayAndAnimate.lua");
 
 LuaUnit.result.verbosity = 0;
 LuaUnit:run();

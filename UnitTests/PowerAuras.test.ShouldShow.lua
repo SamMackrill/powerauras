@@ -1,4 +1,4 @@
-﻿--[[
+﻿
 	function TestPA:test_ClassShouldShow()
 		self:SetUp();
 		local BuffTypeNames = PowaAuras:ReverseTable(PowaAuras.BuffTypes);
@@ -810,14 +810,14 @@
 		self:SetUp();
 		self:SetupFor("SpellAlert");
 		
-		local aura = PowaAuras:AuraFactory(PowaAuras.BuffTypes.SpellAlert, 1, {buffname="Shadow Bolt"});
+		local aura = PowaAuras:AuraFactory(PowaAuras.BuffTypes.SpellAlert, 1, {buffname="Shadow Bolt", groupOrSelf=true, target=true});
 		aura.target = true;
 		PowaAuras.Auras[aura.id] = aura;
 		--TestPA.Debug = true;
 		local result, reason = aura:ShouldShow(true);			
 		--TestPA.Debug = false;		
 		assertEquals(result, true, aura.buffname);
-		assertEquals(reason, "Target casting Shadow Bolt", "Reason "..aura.buffname);
+		assertEquals(reason, "target casting Shadow Bolt", "Reason "..aura.buffname);
 
 		self:TearDown()
 	end
@@ -826,13 +826,13 @@
 		self:SetUp();
 		self:SetupFor("SoloPaladin");
 		
-		local aura = PowaAuras:AuraFactory(PowaAuras.BuffTypes.SpellAlert, 1, {buffname="Shadow Bolt"});
+		local aura = PowaAuras:AuraFactory(PowaAuras.BuffTypes.SpellAlert, 1, {buffname="Shadow Bolt", groupOrSelf=true, target=true});
 		PowaAuras.Auras[aura.id] = aura;
 		--TestPA.Debug = true;
 		local result, reason = aura:ShouldShow(true);			
 		--TestPA.Debug = false;		
 		assertEquals(result, false, aura.buffname);
-		assertEquals(reason, "Nobody's target casting Shadow Bolt", "Reason "..aura.buffname);
+		assertEquals(reason, "groupOrSelftarget not casting Shadow Bolt", "Reason "..aura.buffname);
 
 		self:TearDown()
 	end
@@ -841,13 +841,13 @@
 		self:SetUp();
 		self:SetupFor("SpellAlert");
 		
-		local aura = PowaAuras:AuraFactory(PowaAuras.BuffTypes.SpellAlert, 1, {buffname="Fire Bolt"});
+		local aura = PowaAuras:AuraFactory(PowaAuras.BuffTypes.SpellAlert, 1, {buffname="Fire Bolt", groupOrSelf=true, target=true});
 		PowaAuras.Auras[aura.id] = aura;
 		--TestPA.Debug = true;
 		local result, reason = aura:ShouldShow(true);			
 		--TestPA.Debug = false;		
 		assertEquals(result, false, aura.buffname);
-		assertEquals(reason, "Nobody's target casting Fire Bolt", "Reason "..aura.buffname);
+		assertEquals(reason, "groupOrSelftarget not casting Fire Bolt", "Reason "..aura.buffname);
 
 		self:TearDown()
 	end
@@ -1029,7 +1029,7 @@
 
 		self:TearDown()
 	end	
-]]
+
 	function TestPA:test_Aura_TypeDebuff_BossPlain()
 		self:SetUp();
 		self:SetupFor("DebuffOnBoss");
@@ -1052,9 +1052,9 @@
 		local aura = PowaAuras:AuraFactory(PowaAuras.BuffTypes.TypeDebuff, 120, PowaSet[120]);
 
 		PowaAuras.Auras[aura.id] = aura;
-		TestPA.Debug = true;
+		--TestPA.Debug = true;
 		local result, reason = aura:ShouldShow(true);			
-		TestPA.Debug = false;		
+		--TestPA.Debug = false;		
 		assertEquals(result, false, aura.bufftype);
 		assertEquals(reason, "No one in party has debuff type Magic/Disease/Poison", "Reason "..aura.bufftype);
 

@@ -2594,7 +2594,7 @@ end
 function PowaAuras.DropDownMenu_OnClickStacksRelative()
 	UIDropDownMenu_SetSelectedValue(this.owner, this.value);
 
-	self:ShowText(PowaAuras.Auras[PowaAuras.CurrentAuraId].id," change stacks relative position ", this.value);
+	--PowaAuras:ShowText(PowaAuras.Auras[PowaAuras.CurrentAuraId].id," change stacks relative position ", this.value);
 	local stacks = PowaAuras.Auras[PowaAuras.CurrentAuraId].Stacks;
 	stacks.x = 0;
 	stacks.y = 0;
