@@ -2816,21 +2816,27 @@ function cPowaRunes:AddRuneTimeLeft(slot, count)
 	if (self.Debug) then
 		PowaAuras:Message("  AddRuneTimeLeft slot=",slot, " count=", count);
 	end
-	if (count==0 or (self.runeEnd[slot]==0 and self.runeEnd[slot+1]==0)) then return; end
+	PowaAuras:UnitTestDebug("  AddRuneTimeLeft slot=",slot, " count=", count);
+	local gaps = 0;
+	if (count==0 or (self.runeEnd[slot]==0 and self.runeEnd[slot+1]==0)) then return gaps; end
 	if (count==1) then 
+		if (self.runeEnd[slot]~=0 or self.runeEnd[slot+1]~=0) then gaps = gaps + 1; end
 		if (self.runeEnd[slot]==0) then
 			table.insert(self.timeList, self.runeEnd[slot+1]);
-			return;
+			return gaps;
 		end
 		if (self.runeEnd[slot+1]==0) then
 			table.insert(self.timeList, self.runeEnd[slot]);
-			return;
+			return gaps;
 		end
 		table.insert(self.timeList, math.min(self.runeEnd[slot], self.runeEnd[slot+1]));
-		return;
+		return gaps;
 	end
+	if (self.runeEnd[slot]~=0) then gaps = gaps + 1; end
+	if (self.runeEnd[slot+1]~=0) then gaps = gaps + 1; end
 	table.insert(self.timeList, self.runeEnd[slot]);
 	table.insert(self.timeList, self.runeEnd[slot+1]);
+	return gaps;
 end
 
 		
@@ -2918,11 +2924,10 @@ function cPowaRunes:RunesPresent(giveReason)
 		end
 		if (self.Timer and self.inverse) then		
 			local maxTime = 0;
-			
 			wipe(self.timeList);
 			if (self.runesMissingIgnoreDeath[1]>0 or self.runesMissingIgnoreDeath[2]>0 or self.runesMissingIgnoreDeath[3]>0) then
 				for runeType = 1, 3 do
-					self:AddRuneTimeLeft(PowaAuras.RuneSlotFromType[runeType], self.runesMissingIgnoreDeath[runeType]);
+					self:AddRuneTimeLeft(runeType * 2 - 1, self.runesMissingIgnoreDeath[runeType]);
 				end
 				if (self.Debug) then
 					PowaAuras:Message("  #self.timeList=",#self.timeList);
@@ -2938,24 +2943,31 @@ function cPowaRunes:RunesPresent(giveReason)
 			end
 			
 			wipe(self.timeList);
-			if (self.runesMissingPlusDeath[1]>0 or self.runesMissingPlusDeath[2]>0 or self.runesMissingPlusDeath[3]>0) then
+			local missing = deathRunesRequired - deathRunesAvailable;
+			if (missing>0) then
+				gaps = 0;
 				for runeType = 1, 3 do
-					self:AddRuneTimeLeft(PowaAuras.RuneSlotFromType[runeType], self.runesMissingPlusDeath[runeType]);
+					gaps = gaps + self:AddRuneTimeLeft(runeType * 2 - 1, self.runesMissingPlusDeath[runeType]);
 				end
 				if (self.Debug) then
-					PowaAuras:Message("  #self.timeList=",#self.timeList, " deathRunesAvailable=", deathRunesAvailable);
+					PowaAuras:Message("  #self.timeList=",#self.timeList, " deathRunesAvailable=", deathRunesAvailable, " missing=", missing);
 				end
+				PowaAuras:UnitTestDebug("  #timeList=",#self.timeList, " DR=", deathRunesAvailable);
+				PowaAuras:UnitTestDebug("  gaps=", gaps, " missing=", missing);
+
 				if (#self.timeList>deathRunesAvailable) then
 					table.sort(self.timeList);
-					local endTime = self.timeList[#self.timeList - deathRunesAvailable];
+					local endTime = self.timeList[#self.timeList - gaps + missing];
 					if (self.Debug) then
 						PowaAuras:Message("  endTime=",endTime);
 					end
+					PowaAuras:UnitTestDebug("  endTime=",endTime);
 					if (endTime>maxTime) then
 						maxTime = endTime;
 						if (self.Debug) then
 							PowaAuras:Message("  maxTime=",maxTime);
 						end
+						PowaAuras:UnitTestDebug("  maxTime=",maxTime);
 					end				
 				end
 			end

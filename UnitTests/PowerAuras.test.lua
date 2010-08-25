@@ -146,13 +146,13 @@ TestPA = {Debug = false;} --aura
 		self:TearDown()
 	end
 
-	--dofile("PowerAuras.test.Utils.lua");
-	--dofile("PowerAuras.test.TimerClass.lua");
-	--dofile("PowerAuras.test.AuraClass.lua");
-	--dofile("PowerAuras.test.Locales.lua");
-	--dofile("PowerAuras.test.ShouldShow.lua");
-	--dofile("PowerAuras.test.ActionReady.lua");
-	--dofile("PowerAuras.test.DisplayAndAnimate.lua");
+	dofile("PowerAuras.test.Utils.lua");
+	dofile("PowerAuras.test.TimerClass.lua");
+	dofile("PowerAuras.test.AuraClass.lua");
+	dofile("PowerAuras.test.Locales.lua");
+	dofile("PowerAuras.test.ShouldShow.lua");
+	dofile("PowerAuras.test.ActionReady.lua");
+	dofile("PowerAuras.test.DisplayAndAnimate.lua");
 	dofile("PowerAuras.test.Runes.lua");
 
 LuaUnit.result.verbosity = 0;

@@ -360,15 +360,15 @@ function PowaAuras:UpdateOldAuras()
 			end
 			
 			-- Rescale if required
-			if (PowaSet[i]~=nil and PowaSet[i].RoleTank==nil and rescaleRatio~=1.0) then
+			if (PowaSet[i]~=nil and PowaSet[i].RoleTank==nil and math.abs(rescaleRatio-1.0)>0.01) then
 				if (aura.Timer) then
-					self:Message("Rescaling aura ", i, " Timer");
+					self:DisplayText("Rescaling aura ", i, " Timer");
 					aura.Timer.x = aura.Timer.x * rescaleRatio;
 					aura.Timer.y = aura.Timer.y * rescaleRatio;
 					aura.Timer.h = aura.Timer.h * rescaleRatio;
 				end	
 				if (aura.Stacks) then
-					self:Message("Rescaling aura ", i, " Stacks");
+					self:DisplayText("Rescaling aura ", i, " Stacks");
 					aura.Stacks.x = aura.Stacks.x * rescaleRatio;
 					aura.Stacks.y = aura.Stacks.y * rescaleRatio;
 					aura.Stacks.h = aura.Stacks.h * rescaleRatio;
