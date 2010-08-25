@@ -661,12 +661,6 @@ PowaAuras = {
 		"PowaDropDownGTFO"
 	};
 	
-	RuneSlotFromType = {
-		[1]=1, -- Blood
-		[2]=5, -- Undeath
-		[3]=3, -- Frost
-	};
-
 };
 
 PowaAuras.TalentChangeSpells = {
