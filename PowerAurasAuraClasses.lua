@@ -2839,8 +2839,12 @@ function cPowaRunes:CheckIfShouldShow(giveReason)
 
 	self:SetIcon("Interface\\icons\\spell_arcane_arcane01");
 	
-	self:GetRuneState();	
-	
+	self:GetRuneState();
+	local show, reason = self:RunesPresent(giveReason);
+	return show, reason;
+end
+
+function cPowaRunes:RunesPresent(giveReason)	
 	local match = self.buffname;
 	if (self.ignoremaj) then
 		match = string.upper(match);
