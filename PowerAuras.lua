@@ -360,7 +360,7 @@ function PowaAuras:UpdateOldAuras()
 			end
 			
 			-- Rescale if required
-			if (PowaSet[i]~=nil and PowaSet[i].RoleTank==nil) then
+			if (PowaSet[i]~=nil and PowaSet[i].RoleTank==nil and rescaleRatio~=1.0) then
 				if (aura.Timer) then
 					self:Message("Rescaling aura ", i, " Timer");
 					aura.Timer.x = aura.Timer.x * rescaleRatio;
