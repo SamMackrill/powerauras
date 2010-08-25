@@ -2789,11 +2789,11 @@ cPowaRunes.TooltipOptions = {r=1.0, g=0.4, b=1.0, showBuffName=true};
 cPowaRunes.runes = {[1]=0, [2]=0, [3]=0, [4]=0};
 cPowaRunes.runeEnd = {[1]=0, [2]=0, [3]=0, [4]=0, [5]=0, [6]=0};
 cPowaRunes.timeList = {};
+cPowaRunes.runesMissingPlusDeath = {[1]=0, [2]=0, [3]=0};
+cPowaRunes.runesMissingIgnoreDeath = {[1]=0, [2]=0, [3]=0};
 
 function cPowaRunes:AddEffect()
 	table.insert(PowaAuras.AurasByType.Runes, self.id);
-	self.runesMissingPlusDeath = {[1]=0, [2]=0, [3]=0};
-	self.runesMissingIgnoreDeath = {[1]=0, [2]=0, [3]=0};
 end
 
 function cPowaRunes:GetRuneState()
