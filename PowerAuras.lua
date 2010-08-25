@@ -362,11 +362,13 @@ function PowaAuras:UpdateOldAuras()
 			-- Rescale if required
 			if (PowaSet[i]~=nil and PowaSet[i].RoleTank==nil) then
 				if (aura.Timer) then
+					self:Message("Rescaling aura ", i, " Timer");
 					aura.Timer.x = aura.Timer.x * rescaleRatio;
 					aura.Timer.y = aura.Timer.y * rescaleRatio;
 					aura.Timer.h = aura.Timer.h * rescaleRatio;
 				end	
 				if (aura.Stacks) then
+					self:Message("Rescaling aura ", i, " Stacks");
 					aura.Stacks.x = aura.Stacks.x * rescaleRatio;
 					aura.Stacks.y = aura.Stacks.y * rescaleRatio;
 					aura.Stacks.h = aura.Stacks.h * rescaleRatio;
@@ -388,11 +390,7 @@ function PowaAuras:UpdateOldAuras()
 			
 		end
 	end
-	
 
-	
-
-	
 end
 ------------------------------------------------------------------------------------------------------- EVENTS
 function PowaAuras:FindAllChildren()
@@ -1498,7 +1496,7 @@ function PowaAuras:SetupStaticPopups()
 		button1 = ACCEPT,
 		button2 = CANCEL,
 		hasEditBox = 1,
-		maxLetters = 2000,
+		maxLetters = self.ExportMaxSize,
 		hasWideEditBox = 1,
 		OnAccept = function(self)
 			PowaAuras:CreateNewAuraFromImport(PowaAuras.ImportAuraId, self.wideEditBox:GetText());
