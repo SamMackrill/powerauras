@@ -201,8 +201,8 @@ function PowaAuras:RAID_ROSTER_UPDATE(...)
 end
 
 function PowaAuras:FillGroup(group, count)
-	self.GroupUnits = {};
-	self.GroupNames = {};
+	wipe(self.GroupUnits);
+	wipe(self.GroupNames);
 	for i = 1, count do
 		local unit = group..i;
 		local role, roleType = self:DetermineRole(unit);
