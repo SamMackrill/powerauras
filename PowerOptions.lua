@@ -409,7 +409,7 @@ function PowaAuras:OptionNewEffect()
 	--self:Message("New Effect slot=", i)
 	self.CurrentAuraId = i;
 	self.CurrentAuraPage = self.MainOptionPage;
-	local aura = self:AuraFactory(PowaAuras.BuffTypes.Buff, i, {buffname = "???", off = false});
+	local aura = self:AuraFactory(self.BuffTypes.Buff, i, {buffname = "???", off = false});
 	--self:Message("Timer.enabled=", aura.Timer.enabled)
 	self.Auras[i] = aura;
 	self.Showing = true;
@@ -419,8 +419,11 @@ function PowaAuras:OptionNewEffect()
 	end
 	self:DisplayAura(i);
 	self:UpdateMainOption();
-	self:InitPage();
 	self:UpdateTimerOptions();
+	self:InitPage();
+
+	if (PowaEquipmentSlotsFrame:IsVisible()) then PowaEquipmentSlotsFrame:Hide(); end
+	
 	if (not getglobal("PowaBarConfigFrame"):IsVisible()) then
 		getglobal("PowaBarConfigFrame"):Show();
 		PlaySound("TalentScreenOpen");
