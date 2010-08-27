@@ -233,7 +233,7 @@ function PowaAuras:LoadAuras()
 	for k, v in pairs(PowaGlobalSet) do
 		--self:UnitTestDebug("PowaGlobalSet",k,v.buffname);
 		if (k~=0 and v.is_a == nil or not v:is_a(cPowaAura)) then
-			self:UnitTestDebug(k,v.buffname);
+			--self:UnitTestDebug(k,v.buffname);
 			self.Auras[k] = self:AuraFactory(v.bufftype, k, v);
 		end
 	end
@@ -339,7 +339,7 @@ function PowaAuras:UpdateOldAuras()
 				
 			-- Update old combo style 1235 => 1/2/3/5
 			elseif (aura.bufftype==self.BuffTypes.Combo) then
-				self:UnitTestDebug("Combo upgrade check ", aura.buffname, " for ", aura.id);
+				--self:UnitTestDebug("Combo upgrade check ", aura.buffname, " for ", aura.id);
 				if (string.len(aura.buffname)>1 and string.find(aura.buffname, "/", 1, true)==nil) then
 					local newBuffName=string.sub(aura.buffname, 1, 1);
 					for i=2, string.len(aura.buffname) do
@@ -622,7 +622,7 @@ end
 
 --=== Run time ===--
 function PowaAuras:OnUpdate(elapsed)
-	self:UnitTestInfo("OnUpdate", elapsed);
+	--self:UnitTestInfo("OnUpdate", elapsed);
 
 	if (self.Initialising) then return; end 
 		
@@ -689,7 +689,7 @@ function PowaAuras:OnUpdate(elapsed)
 		--self.CheckCount = self.CheckCount + 1;
 
 	    --self:Message("OnUpdate ",elapsedCheck, " ", self.ChecksTimer);
-		self:UnitTestInfo("ChecksTimer", self.ChecksTimer, self.NextCheck);
+		--self:UnitTestInfo("ChecksTimer", self.ChecksTimer, self.NextCheck);
 		if ((self.ChecksTimer > (self.NextCheck + PowaMisc.OnUpdateLimit))) then
 			self.ChecksTimer = 0;
 			local isMountedNow = (IsMounted()~=nil);
@@ -711,7 +711,7 @@ function PowaAuras:OnUpdate(elapsed)
 			self.PendingRescan = nil;
 		end
 		
-		self:UnitTestInfo("Pending");
+		--self:UnitTestInfo("Pending");
 		for id, cd in pairs(self.Pending) do	
 			--self:ShowText("Pending check for ", id, " cd=", cd, " time=", GetTime());
 			if cd and cd >0 then
@@ -730,7 +730,7 @@ function PowaAuras:OnUpdate(elapsed)
 			end
 		end
 	
-		self:UnitTestInfo("DoCheck update");
+		--self:UnitTestInfo("DoCheck update");
 		for k ,v in pairs(self.DoCheck) do
 			--self:ShowText("DoCheck "..k.." = " .. tostring(v)  );
 			if (v) then
@@ -740,7 +740,7 @@ function PowaAuras:OnUpdate(elapsed)
 			end
 		end
 
-		self:UnitTestInfo("Check Cascade auras");
+		--self:UnitTestInfo("Check Cascade auras");
 		for k in pairs(self.Cascade) do
 			--self:ShowText("Checking Cascade aura."..k);
 			self:TestThisEffect(k, false, true);
@@ -777,7 +777,7 @@ function PowaAuras:OnUpdate(elapsed)
 
 
 	-- Update each aura (timers and stacks)
-	self:UnitTestInfo("Aura updates");
+	--self:UnitTestInfo("Aura updates");
 	for _, aura in pairs(self.Auras) do
 		if (self:UpdateAura(aura, elapsed)) then
 			self:UpdateTimer(aura, timerElapsed, skipTimerUpdate);
@@ -792,7 +792,7 @@ function PowaAuras:OnUpdate(elapsed)
 end
 
 function PowaAuras:NewCheckBuffs()
-   	self:UnitTestInfo("NewCheckBuffs");
+   	--self:UnitTestInfo("NewCheckBuffs");
 
 	--if (self.DoCheck.All) then
 	--	self:ShowText("self.DoCheck.All");
@@ -828,7 +828,7 @@ function PowaAuras:NewCheckBuffs()
 end
 
 function PowaAuras:TestThisEffect(auraId, giveReason, ignoreCascade)
-	self:UnitTestInfo("TestThisEffect", auraId);
+	--self:UnitTestInfo("TestThisEffect", auraId);
 	--self:ShowText("TestThisEffect", auraId);
 
 	local aura = self.Auras[auraId];
@@ -968,7 +968,7 @@ end
 
 --- -----------------------------------------------------------------------------------------------------------
 function PowaAuras:ShowAuraForFirstTime(aura)
-	self:UnitTestInfo("ShowAuraForFirstTime", aura.id);
+	--self:UnitTestInfo("ShowAuraForFirstTime", aura.id);
 	if (aura.Debug) then
 		self:Message("ShowAuraForFirstTime ", aura.id);
 	end
@@ -1130,7 +1130,7 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 		end
 	end
 
-	self:UnitTestInfo("frame:Show()", aura.id);
+	--self:UnitTestInfo("frame:Show()", aura.id);
 	if (aura.Debug) then
 		self:Message("frame:Show()", aura.id, " ", frame);
 	end
@@ -1149,7 +1149,7 @@ function PowaAuras:InitialiseFrame(aura, frame)
 end
 
 function PowaAuras:ShowSecondaryAuraForFirstTime(aura)
-	self:UnitTestInfo("ShowSecondaryAuraForFirstTime", aura.id);
+	--self:UnitTestInfo("ShowSecondaryAuraForFirstTime", aura.id);
 
 	if (aura.anim2 == 0) then --- no secondary aura
 		local secondaryAura = self.SecondaryAuras[aura.id];
@@ -1250,7 +1250,7 @@ function PowaAuras:ShowSecondaryAuraForFirstTime(aura)
 		else
 			secondaryFrame:SetAlpha(0.0); -- Hide secondary until primary begin animation finishes
 		end
-		self:UnitTestInfo("secondaryFrame:Show()", aura.id);
+		--self:UnitTestInfo("secondaryFrame:Show()", aura.id);
 		secondaryFrame:Show(); -- Show Secondary Aura Frame
 		--self:Message("Show #2");
 	else	
@@ -1259,7 +1259,7 @@ function PowaAuras:ShowSecondaryAuraForFirstTime(aura)
 		end	
 	
 		if (not aura.BeginAnimation) then
-			self:UnitTestInfo("secondaryFrame:Show()", aura.id);
+			--self:UnitTestInfo("secondaryFrame:Show()", aura.id);
 			secondaryFrame:Show(); -- Show Secondary Aura Frame
 			--self:Message("Show #2");
 			if (secondaryAura.MainAnimation) then
@@ -1274,7 +1274,7 @@ function PowaAuras:ShowSecondaryAuraForFirstTime(aura)
 end
 
 function PowaAuras:DisplayAura(auraId)
-	self:UnitTestInfo("DisplayAura", auraId);
+	--self:UnitTestInfo("DisplayAura", auraId);
 	--self:ShowText("DisplayAura aura ", auraId);
 	if (self.Initialising) then return; end   --- de-actived
 
@@ -1290,7 +1290,7 @@ end
 function PowaAuras:UpdateAura(aura, elapsed)
 	--self:ShowText("UpdateAura ", aura.id, " ", elapsed);
 	if (aura == nil) then
-		self:UnitTestInfo("UpdateAura: Don't show, aura missing");
+		--self:UnitTestInfo("UpdateAura: Don't show, aura missing");
 		--self:ShowText("UpdateAura: Don't show, aura missing");
 		return false;
 	end
@@ -1314,7 +1314,7 @@ function PowaAuras:UpdateAura(aura, elapsed)
 	if (aura.Showing) then
 		local frame = aura:GetFrame();
 		if (frame == nil) then
-			--self:UnitTestInfo("UpdateAura: Don't show, frame missing");
+			----self:UnitTestInfo("UpdateAura: Don't show, frame missing");
 			--self:ShowText("UpdateAura: Don't show, frame missing");
 			return false;
 		end
@@ -1322,7 +1322,7 @@ function PowaAuras:UpdateAura(aura, elapsed)
 		
 		if (not aura.HideRequest and not aura.isSecondary and not self.ModTest and aura.TimeToHide) then
 			if (GetTime() >= aura.TimeToHide) then --- If duration has expired then hide this aura
-				--self:UnitTestInfo("UpdateAura: Hide, duration expired");
+				----self:UnitTestInfo("UpdateAura: Hide, duration expired");
 				--self:ShowText("UpdateAura: Hide, duration expired");
 				self:SetAuraHideRequest(aura);
 				aura.TimeToHide = nil;
