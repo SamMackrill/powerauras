@@ -101,16 +101,16 @@ function cPowaStacks:ShowValue(aura, newvalue)
 end
 
 function cPowaStacks:SetStackCount(count)
-	PowaAuras:UnitTestInfo("SetStackCount ",self.id);
+	--PowaAuras:UnitTestInfo("SetStackCount ",self.id);
 	--PowaAuras:Message("SetStackCount ",self.id);
 	local aura = PowaAuras.Auras[self.id];
 	if (aura == nil) then
-		PowaAuras:UnitTestInfo("Stacks aura missing");
+		--PowaAuras:UnitTestInfo("Stacks aura missing");
 		--PowaAuras:Message("Stacks aura missing");
 		return;
 	end
 	if (self.enabled==false) then 
-		PowaAuras:UnitTestInfo("Stacks disabled");
+		--PowaAuras:UnitTestInfo("Stacks disabled");
 		--PowaAuras:Message("Stacks disabled");
 		return;
 	end
@@ -217,10 +217,10 @@ function cPowaTimer:GetTexture()
 end
 --- ------------------------------------------------------------------------------------------------- TIMERS
 function cPowaTimer:Update(elapsed)
-	PowaAuras:UnitTestInfo("Timer.Update ",self.id);
+	--PowaAuras:UnitTestInfo("Timer.Update ",self.id);
 	local aura = PowaAuras.Auras[self.id];
 	if (aura == nil) then
-		PowaAuras:UnitTestInfo("Timer aura missing");
+		--PowaAuras:UnitTestInfo("Timer aura missing");
 		if (PowaAuras.DebugCycle) then
 			PowaAuras:ShowText("Timer aura missing for id=",self.id);
 		end
@@ -232,7 +232,7 @@ function cPowaTimer:Update(elapsed)
 	end
 
 	if (self.enabled==false and self.InvertAuraBelow==0) then
-		PowaAuras:UnitTestInfo("Timer disabled");
+		--PowaAuras:UnitTestInfo("Timer disabled");
 		if (PowaAuras.DebugCycle) then
 			PowaAuras:ShowText("Timer disabled");
 		end
@@ -268,12 +268,12 @@ function cPowaTimer:Update(elapsed)
 		PowaAuras:Message("newvalue=",newvalue); --OK
 	end
 
-	PowaAuras:UnitTestInfo("Timer newvalue", newvalue);
+	--PowaAuras:UnitTestInfo("Timer newvalue", newvalue);
 	--PowaAuras:ShowText("Timer newvalue=", newvalue, " elapsed=", elapsed);
 
 	
 	if (self.enabled==false or (aura.ForceTimeInvert and aura.InvertTimeHides)) then
-		PowaAuras:UnitTestInfo("Timer disabled");
+		--PowaAuras:UnitTestInfo("Timer disabled");
 		--PowaAuras:ShowText("Timer disabled");
 		return;
 	end

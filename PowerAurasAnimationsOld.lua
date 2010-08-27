@@ -60,7 +60,7 @@ function cPowaAnimationBase:UpdateFrame()
 end 
 
 function cPowaAnimationBase:Update(elapsed)
-	PowaAuras:UnitTestInfo("Base Update ", elapsed);
+	--PowaAuras:UnitTestInfo("Base Update ", elapsed);
 	return true;
 end 
 
@@ -95,7 +95,7 @@ function cPowaAnimationBeginZoomIn:Initialise()
 	self:ResetBase();
 end
 function cPowaAnimationBeginZoomIn:Update(elapsed)
-	PowaAuras:UnitTestInfo("BeginZoomIn Update ", elapsed);
+	--PowaAuras:UnitTestInfo("BeginZoomIn Update ", elapsed);
 
 	local step = elapsed * 150 * self.Aura.speed;
 	
@@ -123,7 +123,7 @@ function cPowaAnimationBeginZoomOut:Initialise()
 	self:Reset();
 end
 function cPowaAnimationBeginZoomOut:Update(elapsed)
-	PowaAuras:UnitTestInfo("cPowaAnimationBeginZoomOut Update ", elapsed);
+	--PowaAuras:UnitTestInfo("cPowaAnimationBeginZoomOut Update ", elapsed);
 
 	local step = elapsed * 150 * self.Aura.speed;
 	
@@ -210,7 +210,7 @@ function cPowaAnimationBeginBounce:Initialise()
 	--PowaAuras:Message("Bounce Init v=", self.Velocity, " Y=", self.Y);
 end
 function cPowaAnimationBeginBounce:Update(elapsed)
-	PowaAuras:UnitTestInfo("BeginBounce Update ", elapsed);
+	--PowaAuras:UnitTestInfo("BeginBounce Update ", elapsed);
 
 	self.Alpha  = math.max(self.TargetAlpha + elapsed * 2 * self.Aura.speed * self.TargetAlpha , self.TargetAlpha);
 
@@ -281,7 +281,7 @@ function cPowaAnimationFlashing:Initialise()
 	self.Alpha = self.Frame:GetAlpha();
 end
 function cPowaAnimationFlashing:Update(elapsed)
-	PowaAuras:UnitTestInfo("cPowaAnimationFlashing Update ", elapsed);
+	--PowaAuras:UnitTestInfo("cPowaAnimationFlashing Update ", elapsed);
 	
 	self.Alpha = self.Alpha + self.Direction * elapsed / 2;
 	if (self.Alpha<=self.MinAlpha) then
@@ -305,7 +305,7 @@ function cPowaAnimationGrowing:Initialise()
 	self.Alpha     = self.Frame:GetAlpha();
 end
 function cPowaAnimationGrowing:Update(elapsed)
-	PowaAuras:UnitTestInfo("cPowaAnimationGrowing Update ", elapsed);
+	--PowaAuras:UnitTestInfo("cPowaAnimationGrowing Update ", elapsed);
 	
 	local step = elapsed * 25 * self.Aura.speed * self.Aura.size;
 	self.Width  = self.Width  + step;
@@ -329,7 +329,7 @@ function cPowaAnimationPulse:Initialise()
 	self.Height    = self.Frame:GetHeight();
 end
 function cPowaAnimationPulse:Update(elapsed)
-	PowaAuras:UnitTestInfo("cPowaAnimationPulse Update ", elapsed);
+	--PowaAuras:UnitTestInfo("cPowaAnimationPulse Update ", elapsed);
 	
 	local step  = self.Direction * elapsed * 50 * self.Aura.speed * self.Aura.size;
 	self.Width  = self.Width  + step * self.Aura.torsion;
@@ -357,7 +357,7 @@ function cPowaAnimationBubble:Initialise()
 	self.Height    = self.Frame:GetHeight();
 end
 function cPowaAnimationBubble:Update(elapsed)
-	PowaAuras:UnitTestInfo("cPowaAnimationBubble Update ", elapsed);
+	--PowaAuras:UnitTestInfo("cPowaAnimationBubble Update ", elapsed);
 	
 	local step  = self.Direction * elapsed * 50 * self.Aura.speed * self.Aura.size;
 	self.Width  = self.Width  + step * self.Aura.torsion;
@@ -387,7 +387,7 @@ function cPowaAnimationWaterDrop:Initialise()
 	self.Status = 0;
 end
 function cPowaAnimationWaterDrop:Update(elapsed)
-	PowaAuras:UnitTestInfo("cPowaAnimationWaterDrop Update ", elapsed);
+	--PowaAuras:UnitTestInfo("cPowaAnimationWaterDrop Update ", elapsed);
 
 	self.Alpha = self.Alpha - elapsed * self.TargetAlpha * 0.5 * self.Aura.speed;
 	if (self.Alpha <= 0) then
@@ -419,7 +419,7 @@ function cPowaAnimationElectric:Initialise()
 	self.Status = 0;
 end
 function cPowaAnimationElectric:Update(elapsed)
-	PowaAuras:UnitTestInfo("cPowaAnimationElectric Update ", elapsed);
+	--PowaAuras:UnitTestInfo("cPowaAnimationElectric Update ", elapsed);
 	
 	if (self.Status == 0) then
 		if (random( 210 - self.Aura.speed * 100 ) == 1) then
@@ -452,7 +452,7 @@ function cPowaAnimationShrinking:Initialise()
 	self.Status = 0;
 end
 function cPowaAnimationShrinking:Update(elapsed)
-	PowaAuras:UnitTestInfo("cPowaAnimationShrinking Update ", elapsed);
+	--PowaAuras:UnitTestInfo("cPowaAnimationShrinking Update ", elapsed);
 
 	if (self.Status == 0) then --- demarre le zoom out (max size)
 		self.Width = self.MaxWidth;
@@ -500,7 +500,7 @@ function cPowaAnimationFlame:Initialise()
 	self.Status = 0;
 end
 function cPowaAnimationFlame:Update(elapsed)
-	PowaAuras:UnitTestInfo("cPowaAnimationFlame Update ", elapsed);
+	--PowaAuras:UnitTestInfo("cPowaAnimationFlame Update ", elapsed);
 
 		
 	if (self.Status < 2) then --- reset to center
@@ -549,7 +549,7 @@ function cPowaAnimationOrbit:Initialise()
 	end
 end
 function cPowaAnimationOrbit:Update(elapsed)
-	PowaAuras:UnitTestInfo("cPowaAnimationOrbit Update ", elapsed);
+	--PowaAuras:UnitTestInfo("cPowaAnimationOrbit Update ", elapsed);
 
 	local speedScale = elapsed * 75 * self.Aura.speed;
 	
