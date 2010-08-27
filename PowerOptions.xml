@@ -208,7 +208,8 @@
 						PlaySound("igCharacterInfoTab");
 					</OnClick>
 				</Scripts>
-			</Button>	
+			</Button>
+			
 			-- Test All Button
 			<Button name="PowaMainTestAllButton" inherits="OptionsButtonTemplate">
 				<Anchors>
@@ -527,7 +528,7 @@
 						</Layers>
 					</Frame>
 					
-					-- bouton Nouveau
+					-- Button - New Aura
 					<Button name="PowaOptionsSelectorNew" inherits="OptionsButtonTemplate" text="Nouveau">
 						<Size>
 							<AbsDimension x="90" y="22"/>
@@ -549,8 +550,9 @@
 							</OnClick>
 						</Scripts>
 					</Button>
-					-- bouton Delete
-					<Button name="PowaOptionsSelectorDelete" inherits="OptionsButtonTemplate" text="Suppr.">
+					
+					-- Button - Delete
+					<Button name="PowaOptionsSelectorDelete" inherits="OptionsButtonTemplate">
 						<Size>
 							<AbsDimension x="90" y="22"/>
 						</Size>
@@ -578,10 +580,9 @@
 							</OnLeave>
 						</Scripts>
 					</Button>
-					
-										
-					-- bouton Deplacer
-					<Button name="PowaOptionsMove" inherits="OptionsButtonTemplate" text="Deplacer">
+													
+					-- Button - Move
+					<Button name="PowaOptionsMove" inherits="OptionsButtonTemplate">
 						<Size>
 							<AbsDimension x="90" y="22"/>
 						</Size>
@@ -602,7 +603,8 @@
 							</OnClick>
 						</Scripts>
 					</Button>
-					-- bouton Copier
+					
+					-- Button - Move
 					<Button name="PowaOptionsCopy" inherits="OptionsButtonTemplate" text="Copier">
 						<Size>
 							<AbsDimension x="90" y="22"/>
@@ -625,7 +627,7 @@
 						</Scripts>
 					</Button>
 					
-					-- buton Import
+					-- Button - Import
 					<Button name="PowaOptionsSelectorImport" inherits="OptionsButtonTemplate" text="Import">
 						<Size>
 							<AbsDimension x="90" y="22"/>
@@ -647,7 +649,8 @@
 							</OnClick>
 						</Scripts>
 					</Button>
-					-- bouton Export
+					
+					-- Button - Export
 					<Button name="PowaOptionsSelectorExport" inherits="OptionsButtonTemplate" text="Export">
 						<Size>
 							<AbsDimension x="90" y="22"/>
@@ -668,10 +671,9 @@
 								PlaySound("igCharacterInfoTab");
 							</OnClick>
 						</Scripts>
-					</Button>
+					</Button>				
 					
-					
-					-- button Import Set
+					-- Button - Import Set
 					<Button name="PowaOptionsSelectorImportSet" inherits="OptionsButtonTemplate" text="Import Set">
 						<Size>
 							<AbsDimension x="90" y="22"/>
@@ -693,7 +695,8 @@
 							</OnClick>
 						</Scripts>
 					</Button>
-					-- bouton Export Set
+					
+					-- Button - Export Set
 					<Button name="PowaOptionsSelectorExportSet" inherits="OptionsButtonTemplate" text="Export Set">
 						<Size>
 							<AbsDimension x="90" y="22"/>
