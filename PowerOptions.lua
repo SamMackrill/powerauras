@@ -412,15 +412,22 @@ function PowaAuras:OptionNewEffect()
 	local aura = self:AuraFactory(self.BuffTypes.Buff, i, {buffname = "???", off = false});
 	--self:Message("Timer.enabled=", aura.Timer.enabled)
 	self.Auras[i] = aura;
-	self.Showing = true;
 	-- effet global ?
 	if (i > 120) then
 		PowaGlobalSet[i] = aura;
 	end
+	
+	aura.Active = true;
+	aura:CreateFrames();
+	
+	self.SecondaryAuras[i] = nil; -- Force recreate
 	self:DisplayAura(i);
+
 	self:UpdateMainOption();
 	self:UpdateTimerOptions();
 	self:InitPage();
+
+	self:UpdateMainOption();
 
 	if (PowaEquipmentSlotsFrame:IsVisible()) then PowaEquipmentSlotsFrame:Hide(); end
 	
@@ -854,7 +861,7 @@ function PowaAuras:UpdateTimerOptions()
 	local aura = self.Auras[self.CurrentAuraId];
 	
 	if (not aura.Timer) then
-		aura.Timer = cPowaTimer(self);
+		aura.Timer = cPowaTimer(aura);
 	end
 	local timer = aura.Timer;
 	
@@ -2422,7 +2429,7 @@ function PowaAuras:ShowTimerChecked(control)
 	if (self.Initialising) then return; end
 	if (control:GetChecked()) then
 		self.Auras[self.CurrentAuraId].Timer.enabled = true;
-		--self:CreateTimerFrameIfMissing(self.CurrentAuraId);	
+		self:CreateTimerFrameIfMissing(self.CurrentAuraId);	
 	else
 		self.Auras[self.CurrentAuraId].Timer.enabled = false;
 		self.Auras[self.CurrentAuraId].Timer:Delete();

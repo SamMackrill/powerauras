@@ -221,27 +221,28 @@ function cPowaTimer:Update(elapsed)
 	local aura = PowaAuras.Auras[self.id];
 	if (aura == nil) then
 		PowaAuras:UnitTestInfo("Timer aura missing");
-		--PowaAuras:ShowText("Timer aura missing");
+		if (PowaAuras.DebugCycle) then
+			PowaAuras:ShowText("Timer aura missing for id=",self.id);
+		end
 		return;
 	end
 	
-	--if (aura.Debug) then
-	--	PowaAuras:ShowText("Timer.Update ",self.id);
-	--end
+	if (PowaAuras.DebugCycle) then
+		PowaAuras:ShowText("Timer.Update ",self.id);
+	end
 
 	if (self.enabled==false and self.InvertAuraBelow==0) then
 		PowaAuras:UnitTestInfo("Timer disabled");
-		--PowaAuras:ShowText("Timer disabled");
-		--if (aura.Debug) then
-		--	PowaAuras:ShowText("Timer.Update ",self.id);
-		--end
+		if (PowaAuras.DebugCycle) then
+			PowaAuras:ShowText("Timer disabled");
+		end
 		return;
 	end
 
 	local newvalue = 0;
-	--if (aura.Debug) then
-	--	PowaAuras:ShowText("newvalue=",newvalue);
-	--end
+	if (PowaAuras.DebugCycle) then
+		PowaAuras:ShowText("newvalue=",newvalue);
+	end
 	--- Determine the value to display in the timer
 	if (PowaAuras.ModTest) then
 		newvalue = random(0,99) + (random(0, 99) / 100);
