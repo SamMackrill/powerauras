@@ -181,22 +181,25 @@ cPowaTimer = PowaClass(function(timer, aura, base)
 		end
 	end
 	timer.Showing = false;
-	
-	--PowaAuras:Message("CTR Timer id=", aura.id);
-	--PowaAuras:Message("CooldownAura=", aura.CooldownAura);
-	--PowaAuras:Message("inverse=", aura.inverse);
-	--PowaAuras:Message("CanHaveTimer=", aura.CanHaveTimer);
-	--PowaAuras:Message("CanHaveTimerOnInverse=", aura.CanHaveTimerOnInverse);
-	--PowaAuras:Message("ShowActivation=", timer.ShowActivation);
-	timer.ShowOnAuraHide = timer.ShowActivation~=true and ((aura.CooldownAura and (not aura.inverse and aura.CanHaveTimer)) or (not aura.CooldownAura and (aura.inverse and aura.CanHaveTimerOnInverse)));
-	--PowaAuras:Message("ShowOnAuraHide=", timer.ShowOnAuraHide);
- 
 	timer.id = aura.id;
+	timer:SetShowOnAuraHide(aura);
+
 	--for k,v in pairs (timer) do
 	--	PowaAuras:ShowText("  "..tostring(k).."="..tostring(v));
 	--end
 end);
 
+
+function cPowaTimer:SetShowOnAuraHide(aura)
+	--PowaAuras:Message("CTR Timer id=", aura.id);
+	--PowaAuras:Message("CooldownAura=", aura.CooldownAura);
+	--PowaAuras:Message("inverse=", aura.inverse);
+	--PowaAuras:Message("CanHaveTimer=", aura.CanHaveTimer);
+	--PowaAuras:Message("CanHaveTimerOnInverse=", aura.CanHaveTimerOnInverse);
+	--PowaAuras:Message("ShowActivation=", self.ShowActivation);
+	self.ShowOnAuraHide = self.ShowActivation~=true and ((aura.CooldownAura and (not aura.inverse and aura.CanHaveTimer)) or (not aura.CooldownAura and (aura.inverse and aura.CanHaveTimerOnInverse)));
+	--PowaAuras:Message("ShowOnAuraHide=", self.ShowOnAuraHide);
+ end
 
 function cPowaTimer:IsRelative()
 	return (self.Relative and self.Relative~="NONE");
