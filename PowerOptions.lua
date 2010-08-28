@@ -2004,7 +2004,7 @@ function PowaAuras.DropDownMenu_Initialize(owner)
 		PowaAuras:FillDropdownSorted(PowaAuras.Text.AuraType, {func = PowaAuras.DropDownMenu_OnClickBuffType, owner = owner});
 		
 		UIDropDownMenu_SetSelectedValue(PowaDropDownBuffType, aura.bufftype);
-	elseif (aura.Timer and owner:GetName() == "PowaBuffTimerRelativeButton" or owner:GetName() == "PowaBuffTimerRelative") then
+	elseif (owner:GetName() == "PowaBuffTimerRelativeButton" or owner:GetName() == "PowaBuffTimerRelative") then
 		info = {func = PowaAuras.DropDownMenu_OnClickTimerRelative, owner = owner};
 		for _,v in pairs({"NONE", "TOPLEFT", "TOP", "TOPRIGHT", "RIGHT", "BOTTOMRIGHT", "BOTTOM", "BOTTOMLEFT", "LEFT", "TOPLEFT", "CENTER"}) do
 			info.text = PowaAuras.Text.Relative[v];
@@ -2012,8 +2012,8 @@ function PowaAuras.DropDownMenu_Initialize(owner)
 			UIDropDownMenu_AddButton(info);
 		end
 		
-		UIDropDownMenu_SetSelectedValue(PowaBuffTimerRelative, aura.Timer.Relative);
-	elseif (aura.Stacks and owner:GetName() == "PowaBuffStacksRelativeButton" or owner:GetName() == "PowaBuffStacksRelative") then
+		if (aura.Timer) then UIDropDownMenu_SetSelectedValue(PowaBuffTimerRelative, aura.Timer.Relative); end
+	elseif (owner:GetName() == "PowaBuffStacksRelativeButton" or owner:GetName() == "PowaBuffStacksRelative") then
 
 		info = {func = PowaAuras.DropDownMenu_OnClickStacksRelative, owner = owner};
 		for _,v in pairs({"NONE", "TOPLEFT", "TOP", "TOPRIGHT", "RIGHT", "BOTTOMRIGHT", "BOTTOM", "BOTTOMLEFT", "LEFT", "TOPLEFT", "CENTER"}) do
@@ -2022,7 +2022,7 @@ function PowaAuras.DropDownMenu_Initialize(owner)
 			UIDropDownMenu_AddButton(info);
 		end
 		
-		UIDropDownMenu_SetSelectedValue(PowaBuffStacksRelative, aura.Stacks.Relative);
+		if (aura.Stacks) then UIDropDownMenu_SetSelectedValue(PowaBuffStacksRelative, aura.Stacks.Relative); end
 	end
 end
 
@@ -2520,12 +2520,14 @@ end
 
 function PowaAuras:TimerChecked(control, setting)
 	if (self.Initialising) then return; end
+	local aura = self.Auras[self.CurrentAuraId];
 	if (control:GetChecked()) then
-		self.Auras[self.CurrentAuraId].Timer[setting] = true;
+		aura.Timer[setting] = true;
 	else
-		self.Auras[self.CurrentAuraId].Timer[setting] = false;
+		aura.Timer[setting] = false;
 	end
-	self.Auras[self.CurrentAuraId].Timer:Delete();
+	aura.Timer:Delete();
+	aura.Timer:SetShowOnAuraHide(aura);
 	--self:CreateTimerFrameIfMissing(self.CurrentAuraId);
 end
 

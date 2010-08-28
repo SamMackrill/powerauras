@@ -474,9 +474,12 @@ function cPowaAura:CheckState(giveReason)
 	end
         
     --- unit
-	if (self.optunitn and not ((GetNumPartyMembers() > 0) or (GetNumRaidMembers() > 0) or UnitExists("pet"))) then --- Unitn yes, but not in party/raid or with pet
+	if (self.optunitn and not ((GetNumPartyMembers() > 0 and UnitInParty(self.unitn))
+							or (GetNumRaidMembers() > 0 and UnitInRaid(self.unitn))
+							or UnitIsUnit("pet", self.unitn)
+							or UnitIsUnit("player", self.unitn))) then --- Unitn yes, but not in party/raid or with pet
 		if (not giveReason) then return false; end
-		return false, self:InsertText(PowaAuras.Text.nomReasonNoCustomUnit, self.unitn);
+		return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonNoCustomUnit, self.unitn);
 	end
         
     --- raid

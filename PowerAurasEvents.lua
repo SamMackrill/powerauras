@@ -47,6 +47,7 @@ function PowaAuras:VARIABLES_LOADED(...)
 	if (self.maxtextures<100) then
 		self:DisplayText(self.Colors.Purple.."<Power Auras Classic>|r "..self.Colors.Gold..self.Version.."|r - "..self.Text.welcome);
 		self:DisplayText(self.Colors.Red.."WARNING only "..self.maxtextures.." textures found! Try a /reload to fix this");
+		self.maxtextures = 1; -- stop crashing
 	end
 	
 	PowaBarAuraTextureSlider:SetMinMaxValues(1, self.maxtextures);
@@ -424,6 +425,7 @@ function PowaAuras:BuffsChanged(unit)
 		--end
 		self.ChangedUnits.Buffs[unit] = true;
 		--self:ShowText("ChangedUnits empty=", self:TableEmpty(self.ChangedUnits.Buffs));
+		self.DoCheck.UnitBuffs = true;
 		if (unit == "target") then
 			self.DoCheck.TargetBuffs = true;
 			self.DoCheck.StealableTargetSpells = true;
@@ -441,8 +443,8 @@ function PowaAuras:BuffsChanged(unit)
 		elseif (unit == "player") then
 			self.DoCheck.Buffs = true;
 			self.DoCheck.GroupOrSelfBuffs = true;
-		else
-			self.DoCheck.UnitBuffs = true;
+		end
+		if (UnitCanAttack(unit, "player")) then
 			self.DoCheck.StealableSpells = true;
 			self.DoCheck.PurgeableSpells = true;
 		end
