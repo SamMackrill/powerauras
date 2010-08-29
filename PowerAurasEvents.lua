@@ -158,14 +158,18 @@ end
 function PowaAuras:ACTIVE_TALENT_GROUP_CHANGED(...)
 	self.ActiveTalentGroup = GetActiveTalentGroup();
 	if (self.ModTest == false) then
-		--self:ShowText("ACTIVE_TALENT_GROUP_CHANGED");
+		if (self.DebugEvents) then
+			self:ShowText("ACTIVE_TALENT_GROUP_CHANGED");
+		end
 		self.PendingRescan = GetTime() + 1;
 	end
 end
 
 function PowaAuras:PLAYER_TALENT_UPDATE(...)
 	if (self.ModTest == false) then
-		--self:ShowText("PLAYER_TALENT_UPDATE");
+		if (self.DebugEvents) then
+			self:ShowText("PLAYER_TALENT_UPDATE");
+		end
 		self.PendingRescan = GetTime() + 1;
 	end
 end
@@ -218,7 +222,9 @@ function PowaAuras:FillGroup(group, count)
 end
 
 function PowaAuras:INSPECT_TALENT_READY()
-	--self:Message("INSPECT_TALENT_READY");
+	if (self.DebugEvents) then
+		self:Message("INSPECT_TALENT_READY");
+	end
 	self:InspectRole();
 end
 	
@@ -290,7 +296,9 @@ end
 function PowaAuras:SpellcastEvent(unit)
 	if (self.ModTest == false) then
 		--- spell alert handling
-		--self:ShowText("SpellcastEvent: ", unit);
+		if (self.DebugEvents) then
+			self:ShowText("SpellcastEvent: ", unit);
+		end
 		if unit and not UnitIsDead(unit) then
 			if UnitIsUnit(unit, "player") then
 				self.DoCheck.PlayerSpells = true;
@@ -329,7 +337,9 @@ function PowaAuras:UNIT_SPELLCAST_SUCCEEDED(...)
 			self:ResetTalentScan(unit);
 			self.DoCheck.All = true;
 		end
-		--self:ShowText("UNIT_SPELLCAST_SUCCEEDED ",unit, " ", spell);
+		if (self.DebugEvents) then
+			self:ShowText("UNIT_SPELLCAST_SUCCEEDED ",unit, " ", spell);
+		end
 		--- druid shapeshift special case
 		if (unit == "player") then
 			if ( (spell == self.Spells.DRUID_SHIFT_CAT)
@@ -391,7 +401,9 @@ end
 
 function PowaAuras:RUNE_POWER_UPDATE(...)
 	if (self.ModTest == false) then
-		--self:ShowText("PLAYER_TOTEM_UPDATE slot=", slot);
+		if (self.DebugEvents) then
+			self:ShowText("PLAYER_TOTEM_UPDATE slot=", slot);
+		end
 		self.DoCheck.Runes = true;
 	end
 end
@@ -399,7 +411,9 @@ end
 function PowaAuras:RUNE_TYPE_UPDATE(...)
 	local runeId = ...;
 	if (self.ModTest == false) then
-		--self:ShowText("PLAYER_TOTEM_UPDATE slot=", slot);
+		if (self.DebugEvents) then
+			self:ShowText("PLAYER_TOTEM_UPDATE slot=", slot);
+		end
 		self.DoCheck.Runes = true;
 	end
 end
@@ -453,19 +467,26 @@ end
 
 function PowaAuras:UNIT_AURA(...)
 	local unit = select(1, ...);
-	--self:ShowText("UNIT_AURA ", unit);
+	if (self.DebugEvents) then
+		self:ShowText("UNIT_AURA ", unit);
+	end
 	self:BuffsChanged(unit);
 end
 
 function PowaAuras:UNIT_AURASTATE(...)
 	local unit = select(1, ...);
-	--self:ShowText("UNIT_AURASTATE ", unit);
+	if (self.DebugEvents) then
+		self:ShowText("UNIT_AURASTATE ", unit);
+	end
 	self:BuffsChanged(unit);
 end
 
 function PowaAuras:PLAYER_DEAD(...)
 	if (self.ModTest == false) then
 		self.DoCheck.All = true;
+	end
+	if (self.DebugEvents) then
+		self:ShowText("PLAYER_DEAD");
 	end
 	self.WeAreMounted = false;
 	self.WeAreInVehicle = false;
@@ -474,6 +495,9 @@ end
 	
 function PowaAuras:PLAYER_ALIVE(...)
 	if not UnitIsDeadOrGhost("player") then
+		if (self.DebugEvents) then
+			self:ShowText("PLAYER_ALIVE");
+		end
 		self.WeAreAlive = true;
 		if (self.ModTest == false) then
 			self.DoCheck.All = true;
@@ -483,6 +507,9 @@ end
 	
 function PowaAuras:PLAYER_UNGHOST(...)
 	if not UnitIsDeadOrGhost("player") then
+		if (self.DebugEvents) then
+			self:ShowText("PLAYER_UNGHOST");
+		end
 		self.WeAreAlive = true;
 		if (self.ModTest == false) then
 			self.DoCheck.All = true;
@@ -492,7 +519,9 @@ end
  
 function PowaAuras:PLAYER_TARGET_CHANGED(...)
 	if (self.ModTest == false) then
-		--self:ShowText("PLAYER_TARGET_CHANGED");
+		if (self.DebugEvents) then
+			self:ShowText("PLAYER_TARGET_CHANGED");
+		end
 		self.DoCheck.TargetBuffs = true;
 		self.DoCheck.TargetHealth = true;
 		self.DoCheck.TargetMana = true;
@@ -507,7 +536,9 @@ end
 function PowaAuras:PLAYER_REGEN_DISABLED(...)
 	self.WeAreInCombat = true;
 	if (self.ModTest == false) then
-		--self:ShowText("PLAYER_REGEN_DISABLED");
+		if (self.DebugEvents) then
+			self:ShowText("PLAYER_REGEN_DISABLED");
+		end
 		self.DoCheck.All = true;
 	end	   
 end
@@ -515,7 +546,9 @@ end
 function PowaAuras:PLAYER_REGEN_ENABLED(...)
 	self.WeAreInCombat = false;
 	if (self.ModTest == false) then
-		--self:ShowText("PLAYER_REGEN_ENABLED");
+		if (self.DebugEvents) then
+			self:ShowText("PLAYER_REGEN_ENABLED");
+		end
 		self.DoCheck.All = true;
 	end
 end   
@@ -526,7 +559,9 @@ function PowaAuras:ZONE_CHANGED_NEW_AREA()
 	if (self.Instance == instanceType) then return; end
 	self.Instance = instanceType;
 	if (self.ModTest == false) then
-		--self:ShowText("ZONE_CHANGED_NEW_AREA ", self.InInstance, " - ", self.InstanceType);
+		if (self.DebugEvents) then
+			self:ShowText("ZONE_CHANGED_NEW_AREA ", self.InInstance, " - ", self.InstanceType);
+		end
 		self.DoCheck.All = true;
 	end
 end
@@ -535,7 +570,9 @@ function PowaAuras:UNIT_COMBO_POINTS(...)
 	local unit = ...;
 	if (unit ~= "player") then return; end
 	if (self.ModTest == false) then
-		--self:ShowText("UNIT_COMBO_POINTS");
+		if (self.DebugEvents) then
+			self:ShowText("UNIT_COMBO_POINTS");
+		end
 		self.DoCheck.Combo = true;
 	end
 end
@@ -544,7 +581,9 @@ function PowaAuras:UNIT_PET(...)
 	local unit = ...;
 	if (unit ~= "player") then return; end
 	if (self.ModTest == false) then
-		--self:ShowText("UNIT_PET");
+		if (self.DebugEvents) then
+			self:ShowText("UNIT_PET");
+		end
 		self.DoCheck.Pet = true;
 	end
 end
@@ -552,12 +591,16 @@ end
 function PowaAuras:PLAYER_TOTEM_UPDATE(...)
 	local slot = ...;
 	if (self.ModTest == false) then
-		--self:ShowText("PLAYER_TOTEM_UPDATE slot=", slot, " class=", self.playerclass);
+		if (self.DebugEvents) then
+			self:ShowText("PLAYER_TOTEM_UPDATE slot=", slot, " class=", self.playerclass);
+		end
 		if (self.playerclass=="SHAMAN") then
 			self.TotemSlots[slot] = true;
 			self.DoCheck.Totems = true;
 		elseif (self.playerclass=="DEATHKNIGHT" and not self.MasterOfGhouls) then
-			--self:ShowText("Ghoul (temp version)");
+			if (self.DebugEvents) then
+				self:ShowText("Ghoul (temp version)");
+			end
 			self.DoCheck.Pet = true;
 		end
 	end
@@ -583,7 +626,9 @@ end
 	
 function PowaAuras:UNIT_FACTION(...) --- GetPVPTimer() returns the time until unflag in ms
 	local unit = ...;
-	--self:ShowText("UNIT_FACTION unit = ",unit);
+	if (self.DebugEvents) then
+		self:ShowText("UNIT_FACTION unit = ",unit);
+	end
 	if (unit == "player") then
 		local flag = UnitIsPVP("player");
 		if (flag ~= self.PvPFlagSet) then
@@ -640,7 +685,9 @@ function PowaAuras:COMBAT_LOG_EVENT_UNFILTERED(...)
 		--end
 		
 		if (destGUID==UnitGUID("player") and spellName) then
-			--self:ShowText(" On Me! ", event);
+			if (self.DebugEvents) then
+				self:ShowText("COMBAT_LOG_EVENT_UNFILTERED", "-  On Me! ", event);
+			end
 			if (PowaAuras.StringStarts(event,"SPELL_") and sourceName) then
 				self.CastOnMe[sourceName] = {SpellName=spellName, SpellId=spellId, SourceGUID=sourceGUID, Hostile=bit.band(sourceFlags, COMBATLOG_OBJECT_REACTION_HOSTILE)};
 				self.DoCheck.Spells = true; --- scan party/raid targets for casting
@@ -684,7 +731,9 @@ end
 	
 function PowaAuras:ACTIONBAR_UPDATE_COOLDOWN(...)
 	if (self.ModTest == false) then
-		--self:ShowText("ACTIONBAR_UPDATE_COOLDOWN");
+		if (self.DebugEvents) then
+			self:ShowText("ACTIONBAR_UPDATE_COOLDOWN");
+		end
 		self.DoCheck.Actions = true;
 		self.DoCheck.Stance = true;
 	end	
@@ -692,7 +741,9 @@ end
 		
 function PowaAuras:ACTIONBAR_UPDATE_USABLE(...)
 	if (self.ModTest == false) then
-		--self:ShowText("ACTIONBAR_UPDATE_USABLE");
+		if (self.DebugEvents) then
+			self:ShowText("ACTIONBAR_UPDATE_USABLE");
+		end
 		self.DoCheck.Actions = true;
 		self.DoCheck.Stance = true;
 	end
@@ -700,14 +751,18 @@ end
 	
 function PowaAuras:SPELL_UPDATE_COOLDOWN(...)
 	if (self.ModTest == false) then
-		--self:ShowText("SPELL_UPDATE_COOLDOWN");
+		if (self.DebugEvents) then
+			self:ShowText("SPELL_UPDATE_COOLDOWN");
+		end
 		self.DoCheck.OwnSpells = true;
 	end	
 end
 		
 function PowaAuras:UPDATE_SHAPESHIFT_FORM(...)
 	if (self.ModTest == false) then
-		--self:ShowText("UPDATE_SHAPESHIFT_FORM");
+		if (self.DebugEvents) then
+			self:ShowText("UPDATE_SHAPESHIFT_FORM");
+		end
 		self.DoCheck.Stance = true;
 		self.DoCheck.Actions = true;
 	end  
@@ -717,11 +772,15 @@ function PowaAuras:UNIT_INVENTORY_CHANGED(...)
 	if (self.ModTest == false) then
 		local unit = ...;
 		if (unit=="player") then
-			--self:ShowText("UNIT_INVENTORY_CHANGED ", unit);
+			if (self.DebugEvents) then
+				self:ShowText("UNIT_INVENTORY_CHANGED ", unit);
+			end
 			self.DoCheck.Items = true;
 			self.DoCheck.Slots = true;
 			for _, auraId in pairs(self.AurasByType.Enchants) do
-				--self:ShowText("Pending set for Enchants ", auraId);
+				if (self.DebugEvents) then
+					self:ShowText("Pending set for Enchants ", auraId);
+				end
 				self.Pending[auraId] = GetTime() + 0.25; -- Allow time for client to update or timer will be wrong
 			end
 		end			
@@ -730,7 +789,9 @@ end
 
 function PowaAuras:BAG_UPDATE_COOLDOWN()
 	if (self.ModTest == false) then
-		--self:ShowText("BAG_UPDATE_COOLDOWN");
+		if (self.DebugEvents) then
+			self:ShowText("BAG_UPDATE_COOLDOWN");
+		end
 		self.DoCheck.Items = true;
 		self.DoCheck.Slots = true;
 	end
@@ -738,7 +799,9 @@ end
 
 function PowaAuras:BAG_UPDATE()
 	if (self.ModTest == false) then
-		--self:ShowText("BAG_UPDATE");
+		if (self.DebugEvents) then
+			self:ShowText("BAG_UPDATE");
+		end
 		self.DoCheck.Items = true;
 		self.DoCheck.Slots = true;
 	end
@@ -746,7 +809,9 @@ end
 
 function PowaAuras:MINIMAP_UPDATE_TRACKING()
 	if (self.ModTest == false) then
-		--self:ShowText("MINIMAP_UPDATE_TRACKING");
+		if (self.DebugEvents) then
+			self:ShowText("MINIMAP_UPDATE_TRACKING");
+		end
 		self.DoCheck.Tracking = true;
 	end
 end
@@ -754,7 +819,9 @@ end
 function PowaAuras:UNIT_THREAT_SITUATION_UPDATE(...)
 	local unit = ...;
 	if (self.ModTest == false) then
-		--self:ShowText("UNIT_THREAT_SITUATION_UPDATE ", unit);
+		if (self.DebugEvents) then
+			self:ShowText("UNIT_THREAT_SITUATION_UPDATE ", unit);
+		end
 		if unit == "player" then
 			self.DoCheck.Aggro = true;
 			return;
