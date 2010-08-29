@@ -1275,9 +1275,11 @@ function cPowaBuffBase:CheckAllAuraSlots(target, giveReason)
 		end
 	end
 	
-	local startFrom = 0;
+	local startFrom = 1;
 	if (self.CurrentSlot and self.CurrentMatch) then
-		--PowaAuras:ShowText("buff for current slot (", self.CurrentSlot, ")");
+		if (self.Debug) then
+			PowaAuras:ShowText("buff for current slot (", self.CurrentSlot, ")");
+		end
 		present, reason = self:IsPresent(target, self.CurrentSlot, giveReason, self.CurrentMatch);
 		if (present) then
 			--PowaAuras:ShowText("Found again ", self.CurrentSlot);
@@ -1288,10 +1290,12 @@ function cPowaBuffBase:CheckAllAuraSlots(target, giveReason)
 		self.CurrentSlot = nil;
 		self.CurrentMatch = nil;
 	end
-	if (not startFrom) then startFrom = 0; end
+	if (not startFrom) then startFrom = 1; end
 	for pword in string.gmatch(self.buffname, "[^/]+") do
 		for i = startFrom - 1, 1, -1 do
-			--PowaAuras:ShowText("Buff for slot down (", i, ") ", pword);
+			if (self.Debug) then
+				PowaAuras:ShowText("Buff for slot down (", i, ") ", pword);
+			end
 			present, reason = self:IsPresent(target, i, giveReason, pword);
 			if (present) then
 				--PowaAuras:UnitTestDebug("CheckAllAuraSlots Present!");
@@ -1302,8 +1306,10 @@ function cPowaBuffBase:CheckAllAuraSlots(target, giveReason)
 				return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonBuffPresent, target, self.auraType, self.buffname);
 			end	
 		end
-		for i = startFrom + 1, 40 do
-			--PowaAuras:ShowText("Buff for slot up (", i, ") ", pword);
+		for i = startFrom, 40 do
+			if (self.Debug) then
+				PowaAuras:ShowText("Buff for slot up (", i, ") ", pword);
+			end
 			present, reason = self:IsPresent(target, i, giveReason, pword);
 			if (present==nil) then
 				break;
