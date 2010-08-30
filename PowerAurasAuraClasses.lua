@@ -3126,7 +3126,10 @@ function cPowaItems:CheckIfShouldShow(giveReason)
 			else
 				item = pword;
 			end
-			local itemName = GetItemInfo(item);
+			if (self.Debug) then
+				PowaAuras:Message("Looking for item=",item); --OK
+			end
+			local itemName, _, _, _, _, _, _, itemStackCount, _, itemTexture = GetItemInfo(item);
 			if (itemName) then
 
 				if (self:IconIsRequired()) then
@@ -3172,7 +3175,7 @@ function cPowaItems:CheckIfShouldShow(giveReason)
 				if (enabled) then
 
 					if (self.Stacks) then
-						self.Stacks:SetStackCount(GetItemCount(item));
+						self.Stacks:SetStackCount(itemStackCount);
 					end
 			
 					if (cdstart == 0) then
