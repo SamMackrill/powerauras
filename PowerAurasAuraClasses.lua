@@ -719,7 +719,7 @@ function cPowaAura:SetStacks(text)
 	PowaAuras:Debug(stacks);
 		
 	if (stacks ~= self.stacks) then
-		if (stacks > 100) or (stacks < 0) then stacks = 0; end
+		if (stacks > 9999) or (stacks < 0) then stacks = 0; end
 		self.stacks = stacks or 0;
 	end
 	
@@ -728,7 +728,7 @@ function cPowaAura:SetStacks(text)
 	PowaAuras:Debug(stacksLower);
 	
 	if (stacksLower ~= self.stacksLower) then
-		if (stacksLower > 100) or (stacksLower < 0) or (stacksLower > stacks) then stacksLower = 0; end
+		if (stacksLower > 9999) or (stacksLower < 0) or (stacksLower > stacks) then stacksLower = 0; end
 		self.stacksLower = stacksLower or 0;
 	end
 	
@@ -3098,17 +3098,45 @@ function cPowaItems:AddEffect()
 	table.insert(PowaAuras.AurasByType.Items, self.id);	
 end
 
+function cPowaItems:ItemLinkIsNamedItem(itemLink, itemName)
+	if not itemLink then
+		return false;
+	end
+	local itemLinkName = GetItemInfo(itemLink);
+	if (self.Debug) then
+		PowaAuras:Message(bag, " - ", slot, " : ", itemLink, " >> ", itemLinkName);
+	end
+	if itemLinkName==itemName then
+		self.lastSlot = slot;
+		self.lastBag = bag;
+		return true;
+	end
+	return false;
+end
+
 function cPowaItems:IsItemInBag(itemName)
 	--PowaAuras:ShowText("IsItemInBag ", itemName);
+	if (self.Debug) then
+		PowaAuras:Message("itemName=", itemName);
+	end
+	if (self.lastBag and self.lastSlot) then
+		local itemLink = GetContainerItemLink(self.lastBag, self.lastSlot)
+		if (self:ItemLinkIsNamedItem(itemLink, itemName)) then
+			return true;
+		end
+	end
 	for bag = 0,4 do
 		for slot = 1,GetContainerNumSlots(bag) do
-			local item = GetContainerItemLink(bag,slot)
-			--PowaAuras:ShowText(bag, " - ", slot, " : ", item, " >> ", item:find(itemName));
-			if item and item:find(itemName) then
+			local itemLink = GetContainerItemLink(bag,slot)
+			if (self:ItemLinkIsNamedItem(itemLink, itemName)) then
+				self.lastSlot = slot;
+				self.lastBag = bag;
 				return true;
 			end
 		end
 	end
+	self.lastSlot = nil;
+	self.lastBag = nil;
 	return false;
 end
 
@@ -3129,7 +3157,10 @@ function cPowaItems:CheckIfShouldShow(giveReason)
 			if (self.Debug) then
 				PowaAuras:Message("Looking for item=",item); --OK
 			end
-			local itemName, _, _, _, _, _, _, itemStackCount, _, itemTexture = GetItemInfo(item);
+			local itemName, _, _, _, _, _, _, _, _, itemTexture = GetItemInfo(item);
+			if (self.Debug) then
+				PowaAuras:Message("itemName=",itemName," itemStackCount=",itemStackCount," itemTexture=",itemTexture); --OK
+			end
 			if (itemName) then
 
 				if (self:IconIsRequired()) then
@@ -3138,12 +3169,24 @@ function cPowaItems:CheckIfShouldShow(giveReason)
 				
 				local isEquipped = IsEquippedItem(itemName);
 				local isBagged = self:IsItemInBag(itemName);
+				if (self.Debug) then
+					PowaAuras:Message("isEquipped=",isEquipped," isBagged=",isBagged); --OK
+				end
 				
 				if (not isEquipped and not isBagged) then
 					if (not giveReason) then return false; end
 					return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonItemNotOnPlayer, itemName);
 				end
 				
+				local itemStackCount = GetItemCount(itemName);
+				if (not self:CheckStacks(itemStackCount)) then
+					if (giveReason) then return nil, PowaAuras:InsertText(PowaAuras.Text.nomReasonStacksMismatch, itemStackCount, self:StacksText()); end
+					return nil;
+				end
+				if (self.Stacks) then
+					self.Stacks:SetStackCount(itemStackCount);
+				end
+					
 				if (self.mine or self.Extra) then
 					if (self.mine) then
 						if (isEquipped) then
@@ -3173,10 +3216,6 @@ function cPowaItems:CheckIfShouldShow(giveReason)
 				end
 
 				if (enabled) then
-
-					if (self.Stacks) then
-						self.Stacks:SetStackCount(itemStackCount);
-					end
 			
 					if (cdstart == 0) then
 						if (self.Debug) then

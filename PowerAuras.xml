@@ -1365,7 +1365,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                        autoFocus="false"
                        inherits="InputBoxTemplate">
                 <Size>
-                  <AbsDimension x="50"
+                  <AbsDimension x="90"
                                 y="16" />
                 </Size>
                 <Anchors>
