@@ -2510,7 +2510,7 @@ end
 function PowaAuras.DropDownMenu_OnClickTimerRelative()
 	UIDropDownMenu_SetSelectedValue(this.owner, this.value);
 	
-	PowaAuras:ShowText(PowaAuras.Auras[PowaAuras.CurrentAuraId].id," change timer relative position ", this.value);
+	--PowaAuras:ShowText(PowaAuras.Auras[PowaAuras.CurrentAuraId].id," change timer relative position ", this.value);
 	local timer = PowaAuras.Auras[PowaAuras.CurrentAuraId].Timer;
 	timer.x = 0;
 	timer.y = 0;

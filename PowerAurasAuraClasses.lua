@@ -2626,38 +2626,44 @@ function cPowaTotems:AddEffect()
 end
 
 function cPowaTotems:CheckIfShouldShow(giveReason)
-	--PowaAuras:Message("Totem Aura CheckIfShouldShow");
-	if (#PowaAuras.TotemSlots==0) then
-		PowaAuras.TotemSlots = {[1]=true,[2]=true,[3]=true,[4]=true};
+	if (self.Debug) then
+		PowaAuras:Message("Totem Aura CheckIfShouldShow");
 	end
 	for pword in string.gmatch(self.buffname, "[^/]+") do
-		--PowaAuras:Message("  pword=",pword);
+		if (self.Debug) then
+			PowaAuras:Message("  pword=",pword);
+		end
 		local pwordNumber = tonumber(pword);
 		if (pwordNumber) then
-			--PowaAuras:Message("  SlotCheck=",pwordNumber);
-			if (PowaAuras.TotemSlots[pwordNumber]) then
-				--PowaAuras:Message("  SlotCheck Requested=",pwordNumber);
-				local haveTotem, totemName, startTime, duration = GetTotemInfo(pwordNumber);
-				--PowaAuras:Message("  haveTotem=",haveTotem, " totemName=",totemName, " startTime=",startTime, " duration=",duration);
-				if (totemName~=nil and totemName~="") then
-
-					if (self:IconIsRequired()) then
-						--PowaAuras:Message("  Icon Required");
-						local _, _, spellIcon = GetSpellInfo(totemName);
-						self:SetIcon(spellIcon);
-					end
-					if (self.Timer) then
-						self.Timer:SetDurationInfo(startTime + duration);
-						self:CheckTimerInvert();
-						if (self.ForceTimeInvert) then
-							if (not giveReason) then return false; end
-							return false, getglobal("BINDING_NAME_MULTICASTACTIONBUTTON"..pwordNumber).." found (slot "..pwordNumber..") - "..totemName;
-						end
-					end
-					if (not giveReason) then return true; end
-					return true, getglobal("BINDING_NAME_MULTICASTACTIONBUTTON"..pwordNumber).." found (slot "..pwordNumber..") - "..totemName;		
-				end
+			if (self.Debug) then
+				PowaAuras:Message("  SlotCheck=",pwordNumber);
 			end
+			if (self.Debug) then
+				PowaAuras:Message("  SlotCheck Requested=",pwordNumber);
+			end
+			local haveTotem, totemName, startTime, duration = GetTotemInfo(pwordNumber);
+			if (self.Debug) then
+				PowaAuras:Message("  haveTotem=",haveTotem, " totemName=",totemName, " startTime=",startTime, " duration=",duration);
+			end
+			if (totemName~=nil and totemName~="") then
+
+				if (self:IconIsRequired()) then
+					--PowaAuras:Message("  Icon Required");
+					local _, _, spellIcon = GetSpellInfo(totemName);
+					self:SetIcon(spellIcon);
+				end
+				if (self.Timer) then
+					self.Timer:SetDurationInfo(startTime + duration);
+					self:CheckTimerInvert();
+					if (self.ForceTimeInvert) then
+						if (not giveReason) then return false; end
+						return false, getglobal("BINDING_NAME_MULTICASTACTIONBUTTON"..pwordNumber).." found (slot "..pwordNumber..") - "..totemName;
+					end
+				end
+				if (not giveReason) then return true; end
+				return true, getglobal("BINDING_NAME_MULTICASTACTIONBUTTON"..pwordNumber).." found (slot "..pwordNumber..") - "..totemName;		
+			end
+
 		else
 			for slot in pairs (PowaAuras.TotemSlots) do
 				local haveTotem, totemName, startTime, duration = GetTotemInfo(slot);

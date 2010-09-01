@@ -821,7 +821,6 @@ function PowaAuras:NewCheckBuffs()
 	
 	wipe(self.AoeAuraAdded);
 	wipe(self.ChangedUnits.Buffs);
-	wipe(self.TotemSlots)
 	wipe(self.ExtraUnitEvent);
 	wipe(self.CastOnMe);
 

@@ -102,8 +102,6 @@ PowaAuras = {
 	AoeAuraAdded = {};
 	AoeAuraFaded = {};
 	AoeAuraTexture = {};
-	
-	TotemSlots = {};
 
 	playerclass = "unknown",
 	
