@@ -11,9 +11,6 @@
 			PowaAuras:OnLoad(self)
 		</OnLoad>
 		<OnEvent>
-			if (PowaAuras.ModTest == false) then
-				PowaAuras:Debug(event);
-			end
 			PowaAuras[event](PowaAuras, ...);
 		</OnEvent>
 		<OnUpdate>
@@ -21,7 +18,7 @@
 		</OnUpdate>
     </Scripts>
   </Frame>
-  
+ 
   <!-- Tootips -->
   <GameTooltip name="PowaAuras_Tooltip"
                frameStrata="TOOLTIP"
@@ -387,50 +384,6 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
 		</HighlightTexture>
 	</Button>
 	
-	
-  <Frame name="PowaDebugMessages"
-         parent="UIParent"
-         frameStrata="HIGH"
-         hidden="true">
-    <Size>
-      <AbsDimension x="300"
-                    y="300" />
-    </Size>
-    <Anchors>
-      <Anchor point="LEFT"
-              relativeTo="UIParent"
-              relativePoint="LEFT">
-        <Offset>
-          <AbsDimension x="0"
-                        y="0" />
-        </Offset>
-      </Anchor>
-    </Anchors>
-    <Layers>
-      <Layer>
-        <FontString name="PowaDebugMessagesText"
-                    inherits="GameFontNormalSmall"
-                    justifyH="LEFT"
-                    text="Texte">
-          <Size>
-            <AbsDimension x="300"
-                          y="300" />
-          </Size>
-          <Anchors>
-            <Anchor point="LEFT">
-              <Offset>
-                <AbsDimension x="0"
-                              y="0" />
-              </Offset>
-            </Anchor>
-          </Anchors>
-          <FontHeight>
-            <AbsValue val="14" />
-          </FontHeight>
-        </FontString>
-      </Layer>
-    </Layers>
-  </Frame>
   
   <!-- Aura Configuration Frame -->
   <Frame name="PowaBarConfigFrame"
@@ -576,23 +529,24 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
           <OnLoad>self:SetBackdropBorderColor(0.0, 0.0, 0.0); self:SetBackdropColor(0.1, 0.1, 0.1);</OnLoad>
         </Scripts>
         <Layers>
-          <Layer>-- texture 
-          <Texture name="AuraTexture"
-                   file="Interface\AddOns\PowerAuras\Auras\Aura1.tga"
-                   alphaMode="ADD">
-            <Size>
-              <AbsDimension x="107"
-                            y="107" />
-            </Size>
-            <Anchors>
-              <Anchor point="TOPLEFT">
-                <Offset>
-                  <AbsDimension x="22"
-                                y="-5" />
-                </Offset>
-              </Anchor>
-            </Anchors>
-          </Texture></Layer>
+          <Layer>
+			  <Texture name="AuraTexture"
+					   file="Interface\AddOns\PowerAuras\Auras\Aura1.tga"
+					   alphaMode="ADD">
+				<Size>
+				  <AbsDimension x="107"
+								y="107" />
+				</Size>
+				<Anchors>
+				  <Anchor point="TOPLEFT">
+					<Offset>
+					  <AbsDimension x="22"
+									y="-5" />
+					</Offset>
+				  </Anchor>
+				</Anchors>
+			  </Texture>
+		  </Layer>
         </Layers>
         <Frames>
           <Slider name="PowaBarAuraTextureSlider"
@@ -4471,4 +4425,5 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
     	</Frame>
     </Frames>
   </Frame>
+ 
 </Ui>
