@@ -214,9 +214,14 @@ function PowaAuras:OnLoad(frame)
 	SLASH_POWA1 = "/powa";
 end
 
+function PowaAuras:ReregisterEvents(frame)
+	PowaAuras_Frame:UnregisterAllEvents();
+	self:RegisterEvents(frame);
+end
+
 function PowaAuras:RegisterEvents(frame)
 	--- TODO: conditionally Register/unregister events according to options for improved performance
-	for _, event in ipairs(self.Events) do
+	for event in ipairs(self.Events) do
 		if (self[event]) then
 			frame:RegisterEvent(event);
 		else
@@ -520,6 +525,7 @@ function PowaAuras:CreateEffectLists()
 	for _, aura in pairs(self.Auras) do
 		--print("Aura", aura.id);
 		aura:AddEffect();
+		aura:AddEvents();
 	end 
 
 	if (PowaMisc.debug == true) then
