@@ -357,10 +357,6 @@ function cPowaAura:SubstituteInText(text, old, getNewText, nilText)
 	return string.gsub(text, old, new);
 end
 
-function cPowaAura:AddEffect()
-	table.insert(PowaAuras.AurasByType[self.AuraType], self.id);
-end
-
 function cPowaAura:IsPlayerAura()
 	return 	(not self.target) 
 		and (not self.targetfriend)
@@ -1124,7 +1120,10 @@ end
 	
 cPowaBuffBase = PowaClass(cPowaAura, {CanHaveTimer=true, CanHaveStacks=true, CanHaveInvertTime=true, InvertTimeHides=true});
 
-function cPowaBuffBase:AddEffect()
+function cPowaBuffBase:AddEffectAndEvents()
+
+	PowaAuras.Events.UNIT_AURA = true;
+	PowaAuras.Events.UNIT_AURASTATE = true;
 
 	if not self.target 
    and not self.targetfriend 
@@ -1139,7 +1138,8 @@ function cPowaBuffBase:AddEffect()
 		table.insert(PowaAuras.AurasByType.PartyBuffs, self.id);
 	end
 	if self.focus then --- focus buffs
-		table.insert(PowaAuras.AurasByType.FocusBuffs, self.id);
+		table.insert(PowaAuras.AurasByType.FocusBuffs, self.id);		
+		PowaAuras.Events.PLAYER_FOCUS_CHANGED = true;
 	end
 	if self.raid then --- raid buffs
 		table.insert(PowaAuras.AurasByType.RaidBuffs, self.id);
@@ -1151,9 +1151,11 @@ function cPowaBuffBase:AddEffect()
 		table.insert(PowaAuras.AurasByType.UnitBuffs, self.id);
 	end
 	if (self.target or self.targetfriend) then --- target buff
-		table.insert(PowaAuras.AurasByType.TargetBuffs, self.id);
+		table.insert(PowaAuras.AurasByType.TargetBuffs, self.id);		
+		PowaAuras.Events.PLAYER_TARGET_CHANGED = true;
 	end			
 end
+
 
 function cPowaBuffBase:IsPresent(unit, s, giveReason, textToCheck)
 
@@ -1376,7 +1378,7 @@ function cPowaBuffBase:CheckGroup(group, count, giveReason)
 			if (self.Debug) then
 				PowaAuras:ShowText("Detected buff change in unit ", unit);
 			end
-			if (unit~=self.CurrentUnit and string.find(unit, group)) then
+			if (unit~=self.CurrentUnit and string.find(unit, group, 1, true)) then
 				--PowaAuras:ShowText("Checking buff for changed unit (", unit, ")");
 				show, reason = self:CheckSingleUnit(group, unit, giveReason);
 				if (show ~= nil) then
@@ -1486,6 +1488,7 @@ function cPowaBuffBase:CheckIfShouldShow(giveReason)
 	PowaAuras:Debug("on player");
 	return self:CheckAllAuraSlots("player", giveReason);
 end
+
 function cPowaBuffBase:ShowTimerDurationSlider()
 	return (self.target
 		 or self.targetfriend
@@ -1526,7 +1529,6 @@ cPowaBuff.OptionText={buffNameTooltip=PowaAuras.Text.aideBuff,
 					};
 
 cPowaBuff.TooltipOptions = {r=0.0, g=1.0, b=1.0, showBuffName=true, stacksColour={r=0.7,g=1.0,b=0.7}};
-
 									  
 cPowaDebuff = PowaClass(cPowaBuffBase, {buffAuraType = "HARMFUL", auraType="debuff"});
 cPowaDebuff.OptionText={buffNameTooltip=PowaAuras.Text.aideBuff2,
@@ -1625,15 +1627,17 @@ cPowaStealableSpell.CheckBoxes={["PowaTargetButton"]=1,
 												  
 cPowaStealableSpell.TooltipOptions = {r=0.8, g=0.8, b=0.2, showBuffName=true};
 
-function cPowaStealableSpell:AddEffect()
+function cPowaStealableSpell:AddEffectAndEvents()
 	if not self.target and not self.focus then --- any enemy casts
 		table.insert(PowaAuras.AurasByType.StealableSpells, self.id);
 	end
 	if self.target then --- target casts
 		table.insert(PowaAuras.AurasByType.StealableTargetSpells, self.id);
+		PowaAuras.Events.PLAYER_TARGET_CHANGED = true;
 	end
 	if self.focus then --- focus casts
 		table.insert(PowaAuras.AurasByType.StealableFocusSpells, self.id);
+		PowaAuras.Events.PLAYER_FOCUS_CHANGED = true;
 	end
 end
 
@@ -1722,15 +1726,17 @@ cPowaPurgeableSpell.CheckBoxes={["PowaTargetButton"]=1,
 												  
 cPowaPurgeableSpell.TooltipOptions = {r=0.2, g=0.8, b=0.2, showBuffName=true};
 
-function cPowaPurgeableSpell:AddEffect()
+function cPowaPurgeableSpell:AddEffectAndEvents()
 	if not self.target and not self.focus then --- any enemy casts
 		table.insert(PowaAuras.AurasByType.PurgeableSpells, self.id);
 	end
 	if self.target then --- target casts
 		table.insert(PowaAuras.AurasByType.PurgeableTargetSpells, self.id);
+		PowaAuras.Events.PLAYER_TARGET_CHANGED = true;
 	end
 	if self.focus then --- focus casts
 		table.insert(PowaAuras.AurasByType.PurgeableFocusSpells, self.id);
+		PowaAuras.Events.PLAYER_FOCUS_CHANGED = true;
 	end
 end
 
@@ -1815,6 +1821,12 @@ cPowaAoE.OptionText={buffNameTooltip=PowaAuras.Text.aideBuff4, exactTooltip=Powa
 cPowaAoE.ShowOptions={["PowaBarTooltipCheck"]=1};				 
 cPowaAoE.CheckBoxes={["PowaIngoreCaseButton"]=1};
 cPowaAoE.TooltipOptions = {r=0.6, g=0.4, b=1.0, showBuffName=true};
+
+function cPowaAoE:AddEffectAndEvents()
+	table.insert(PowaAuras.AurasByType[self.AuraType], self.id);
+	PowaAuras.Events.COMBAT_LOG_EVENT_UNFILTERED = true;
+end
+
 function cPowaAoE:CheckIfShouldShow(giveReason)
 	PowaAuras:Debug("Check AoE");
 
@@ -1842,6 +1854,12 @@ cPowaEnchant.CheckBoxes={["PowaIngoreCaseButton"]=1,
 						 ["PowaInverseButton"]=1,
 						 ["PowaOwntexButton"]=1};
 cPowaEnchant.TooltipOptions = {r=1.0, g=0.8, b=1.0, showBuffName=true};
+
+
+function cPowaEnchant:AddEffectAndEvents()
+	table.insert(PowaAuras.AurasByType[self.AuraType], self.id);
+	PowaAuras.Events.UNIT_INVENTORY_CHANGED = true;
+end
 
 function cPowaEnchant:CheckforEnchant(slot, enchantText, textToFind)
 	PowaAuras:Debug("Check enchant ("..enchantText..") active in slot",slot);
@@ -1964,7 +1982,11 @@ cPowaCombo = PowaClass(cPowaAura,
 
 							  					 
 cPowaCombo.TooltipOptions = {r=1.0, g=1.0, b=0.0, showBuffName=true};
-							  
+
+function cPowaCombo:AddEffectAndEvents()
+	table.insert(PowaAuras.AurasByType[self.AuraType], self.id);
+	PowaAuras.Events.UNIT_COMBO_POINTS = true;
+end						  
 
 function cPowaCombo:CheckIfShouldShow(giveReason)
 	if (not(PowaAuras.playerclass == "ROGUE" or (PowaAuras.playerclass=="DRUID" and GetShapeshiftForm()==3))) then
@@ -2002,6 +2024,15 @@ cPowaActionReady.CheckBoxes={["PowaIngoreCaseButton"]=1,
 				
 							  					 
 cPowaActionReady.TooltipOptions = {r=0.8, g=0.8, b=1.0, showBuffName=true};
+
+
+function cPowaActionReady:AddEffectAndEvents()
+	table.insert(PowaAuras.AurasByType[self.AuraType], self.id);
+	PowaAuras.Events.ACTIONBAR_SLOT_CHANGED = true;
+	PowaAuras.Events.ACTIONBAR_UPDATE_COOLDOWN = true;
+	PowaAuras.Events.ACTIONBAR_UPDATE_USABLE = true;
+	PowaAuras.Events.UPDATE_SHAPESHIFT_FORM = true;
+end
 							  
 function cPowaActionReady:CheckIfShouldShow(giveReason)
 	PowaAuras:Debug("Check Action / Button:", self.slot);
@@ -2102,6 +2133,10 @@ cPowaOwnSpell.CheckBoxes={
 							  					 
 cPowaOwnSpell.TooltipOptions = {r=1.0, g=0.6, b=0.2, showBuffName=true};
 
+function cPowaOwnSpell:AddEffectAndEvents()
+	table.insert(PowaAuras.AurasByType[self.AuraType], self.id);
+	PowaAuras.Events.SPELL_UPDATE_COOLDOWN = true;
+end
 
 function cPowaOwnSpell:CheckIfShouldShow(giveReason)
 	--PowaAuras:UnitTestDebug("Check Spell:", self.buffname);
@@ -2185,7 +2220,7 @@ cPowaAuraStats.CheckBoxes={
    };
 
 							  
-function cPowaAuraStats:AddEffect()
+function cPowaAuraStats:AddEffectAndEvents()
   if not self.target 
   and not self.targetfriend 
   and not self.party 
@@ -2199,9 +2234,11 @@ function cPowaAuraStats:AddEffect()
 	end
 	if self.focus then     
 		table.insert(PowaAuras.AurasByType["Focus"..self.ValueName], self.id);
+		PowaAuras.Events.PLAYER_FOCUS_CHANGED = true;
 	end
-	if (self.target or self.targetfriend) then --- TargetHealth
+	if (self.target or self.targetfriend) then
 		table.insert(PowaAuras.AurasByType["Target"..self.ValueName], self.id);
+		PowaAuras.Events.PLAYER_TARGET_CHANGED = true;
 	end
 	if self.party then
 		table.insert(PowaAuras.AurasByType["Party"..self.ValueName], self.id);
@@ -2209,7 +2246,23 @@ function cPowaAuraStats:AddEffect()
 	if self.raid then
 		table.insert(PowaAuras.AurasByType["Raid"..self.ValueName], self.id);
 	end
+	
+	if (self.ValueName=="Health") then
+		PowaAuras.Events.UNIT_HEALTH = true;
+		PowaAuras.Events.UNIT_MAXHEALTH = true;
+	elseif (self.ValueName=="Mana") then
+		PowaAuras.Events.UNIT_MANA = true;
+		PowaAuras.Events.UNIT_MAXMANA = true;
+	elseif (self.ValueName=="RageEnergy") then
+		PowaAuras.Events.UNIT_RAGE = true;
+		PowaAuras.Events.UNIT_ENERGY = true;
+		PowaAuras.Events.UNIT_MAXENERGY = true;
+		PowaAuras.Events.UNIT_RUNIC_POWER = true;
+		PowaAuras.Events.UNIT_MAXRUNIC_POWER = true;
+	end
+	
 end
+
 function cPowaAuraStats:CheckUnit(unit)
 	PowaAuras:Debug("CheckUnit " .. unit);
 	if (not self:IsCorrectPowerType(unit)) then
@@ -2290,8 +2343,9 @@ cPowaAggro.CheckBoxes={["PowaPartyButton"]=1,
 					   ["PowaGroupOrSelfButton"]=1,
 					   ["PowaInverseButton"]=1};
 cPowaAggro.TooltipOptions = {r=1.0, g=0.4, b=0.2};
-function cPowaAggro:AddEffect()
-
+function cPowaAggro:AddEffectAndEvents()
+	PowaAuras.Events.UNIT_THREAT_SITUATION_UPDATE = true;
+	
 	if not self.target 
    and not self.targetfriend 
    and not self.party
@@ -2330,7 +2384,7 @@ cPowaPvP.CheckBoxes={
 							  
 cPowaPvP.TooltipOptions = {r=1.0, g=1.0, b=0.8};
 
-function cPowaPvP:AddEffect()
+function cPowaPvP:AddEffectAndEvents()
 	if not self.target 
   and not self.targetfriend 
   and not self.party
@@ -2383,7 +2437,17 @@ cPowaSpellAlert.CheckBoxes={
 							  
 cPowaSpellAlert.TooltipOptions = {r=0.4, g=0.4, b=1.0, showBuffName=true};
 
-function cPowaSpellAlert:AddEffect()
+function cPowaSpellAlert:AddEffectAndEvents()
+	PowaAuras.Events.COMBAT_LOG_EVENT_UNFILTERED = true;
+	PowaAuras.Events.UNIT_SPELLCAST_CHANNEL_START = true;
+	PowaAuras.Events.UNIT_SPELLCAST_CHANNEL_STOP = true;
+	PowaAuras.Events.UNIT_SPELLCAST_CHANNEL_UPDATE = true;
+	PowaAuras.Events.UNIT_SPELLCAST_DELAYED = true;
+	PowaAuras.Events.UNIT_SPELLCAST_FAILED = true;
+	PowaAuras.Events.UNIT_SPELLCAST_INTERRUPTED = true;
+	PowaAuras.Events.UNIT_SPELLCAST_START = true;
+	PowaAuras.Events.UNIT_SPELLCAST_STOP = true;
+	
 	if self.Extra then --- On Me
 		table.insert(PowaAuras.AurasByType.Spells, self.id);
 		return;
@@ -2396,10 +2460,12 @@ function cPowaSpellAlert:AddEffect()
 			return;
 		end
 		table.insert(PowaAuras.AurasByType.TargetSpells, self.id);
+		PowaAuras.Events.PLAYER_TARGET_CHANGED = true;
 	end
 	if self.focus then --- focus casts
 		player = false;
 		table.insert(PowaAuras.AurasByType.FocusSpells, self.id);
+		PowaAuras.Events.PLAYER_FOCUS_CHANGED = true;
 	end
 	if self.party then --- party casts
 		player = false;
@@ -2554,6 +2620,14 @@ cPowaStance.CheckBoxes={["PowaInverseButton"]=1};
 							  
 cPowaStance.TooltipOptions = {r=1.0, g=0.6, b=0.2, showStance=true};
 
+function cPowaStance:AddEffectAndEvents()
+	table.insert(PowaAuras.AurasByType[self.AuraType], self.id);
+	PowaAuras.Events.ACTIONBAR_UPDATE_COOLDOWN = true;
+	PowaAuras.Events.ACTIONBAR_UPDATE_USABLE = true;
+	PowaAuras.Events.UPDATE_SHAPESHIFT_FORM = true;
+	PowaAuras.Events.UPDATE_SHAPESHIFT_FORMS = true;
+end
+
 function cPowaStance:CheckIfShouldShow(giveReason)
 	PowaAuras:Debug("Check Stance");
 	local nStance = GetShapeshiftForm(false);
@@ -2577,7 +2651,7 @@ cPowaGTFO.CheckBoxes={};
 cPowaGTFO.TooltipOptions = {r=1.0, g=0.4, b=0.2, showGTFO=true};
 cPowaGTFO.ShowOptions={["PowaDropDownGTFO"]=1};
 
-function cPowaGTFO:AddEffect()
+function cPowaGTFO:AddEffectAndEvents()
 	if (self.GTFO == 0) then
 		table.insert(PowaAuras.AurasByType.GTFOHigh, self.id);
 	elseif (self.GTFO == 1) then
@@ -2621,8 +2695,9 @@ cPowaTotems.CheckBoxes={["PowaInverseButton"]=1,
 
 cPowaTotems.TooltipOptions = {r=1.0, g=1.0, b=0.4, showBuffName=true};
 
-function cPowaTotems:AddEffect()
-	table.insert(PowaAuras.AurasByType.Totems, self.id);	
+function cPowaTotems:AddEffectAndEvents()
+	table.insert(PowaAuras.AurasByType[self.AuraType], self.id);
+	PowaAuras.Events.PLAYER_TOTEM_UPDATE = true;
 end
 
 function cPowaTotems:CheckIfShouldShow(giveReason)
@@ -2711,8 +2786,15 @@ function cPowaPet:Init()
 	end
 end
 
-function cPowaPet:AddEffect()
-	table.insert(PowaAuras.AurasByType.Pet, self.id);	
+function cPowaPet:AddEffectAndEvents()
+	table.insert(PowaAuras.AurasByType.Pet, self.id);
+	PowaAuras.Events.UNIT_PET = true;
+	if (self.playerclass=="DEATHKNIGHT" and not self.MasterOfGhouls) then -- temporary Ghoul is a totem!
+		if (self.DebugEvents) then
+			self:ShowText("Ghoul (temp version)");
+		end
+		PowaAuras.Events.PLAYER_TOTEM_UPDATE = true;
+	end	
 end
 
 function cPowaPet:CheckIfShouldShow(giveReason)
@@ -2807,8 +2889,10 @@ cPowaRunes.timeList = {};
 cPowaRunes.runesMissingPlusDeath = {[1]=0, [2]=0, [3]=0};
 cPowaRunes.runesMissingIgnoreDeath = {[1]=0, [2]=0, [3]=0};
 
-function cPowaRunes:AddEffect()
-	table.insert(PowaAuras.AurasByType.Runes, self.id);
+function cPowaRunes:AddEffectAndEvents()
+	table.insert(PowaAuras.AurasByType[self.AuraType], self.id);
+	PowaAuras.Events.RUNE_POWER_UPDATE = true;
+	PowaAuras.Events.RUNE_TYPE_UPDATE = true;
 end
 
 function cPowaRunes:GetRuneState()
@@ -3012,8 +3096,10 @@ cPowaSlots.ShowOptions={["PowaBarTooltipCheck"]=1};
 cPowaSlots.CheckBoxes={["PowaInverseButton"]=1,["PowaOwntexButton"]=1,};
 cPowaSlots.TooltipOptions = {r=0.8, g=0.8, b=0.2};
 
-function cPowaSlots:AddEffect()
-	table.insert(PowaAuras.AurasByType.Slots, self.id);	
+function cPowaSlots:AddEffectAndEvents()
+	PowaAuras.Events.BAG_UPDATE = true;
+	PowaAuras.Events.BAG_UPDATE_COOLDOWN = true;
+	PowaAuras.Events.UNIT_INVENTORY_CHANGED = true;
 end
 
 function cPowaSlots:CheckIfShouldShow(giveReason)
@@ -3099,9 +3185,13 @@ cPowaItems.OptionText={buffNameTooltip=PowaAuras.Text.aideItems, typeText=PowaAu
 cPowaItems.ShowOptions={["PowaBarTooltipCheck"]=1, ["PowaBarBuffStacks"]=1};
 cPowaItems.CheckBoxes={["PowaInverseButton"]=1,["PowaOwntexButton"]=1,};
 cPowaItems.TooltipOptions = {r=0.8, g=0.8, b=0.0};
-			 
-function cPowaItems:AddEffect()
-	table.insert(PowaAuras.AurasByType.Items, self.id);	
+
+
+function cPowaItems:AddEffectAndEvents()
+	table.insert(PowaAuras.AurasByType[self.AuraType], self.id);
+	PowaAuras.Events.BAG_UPDATE = true;
+	PowaAuras.Events.BAG_UPDATE_COOLDOWN = true;
+	PowaAuras.Events.UNIT_INVENTORY_CHANGED = true;
 end
 
 function cPowaItems:ItemLinkIsNamedItem(itemLink, itemName)
@@ -3282,8 +3372,9 @@ cPowaTracking.CheckBoxes={["PowaInverseButton"]=1,
 						 };
 cPowaTracking.TooltipOptions = {r=0.4, g=1.0, b=0.4};
 
-function cPowaTracking:AddEffect()
-	table.insert(PowaAuras.AurasByType.Tracking, self.id);	
+function cPowaAoE:AddEffectAndEvents()
+	table.insert(PowaAuras.AurasByType[self.AuraType], self.id);
+	PowaAuras.Events.MINIMAP_UPDATE_TRACKING = true;
 end
 
 function cPowaTracking:CheckIfShouldShow(giveReason)
@@ -3320,7 +3411,7 @@ cPowaStatic.OptionText={typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.Sta
 cPowaStatic.CheckBoxes={};
 cPowaStatic.TooltipOptions = {r=0.4, g=0.4, b=0.4};
 
-function cPowaStatic:AddEffect()
+function cPowaStatic:AddEffectAndEvents()
 	table.insert(PowaAuras.AurasByType.Static, self.id);	
 end
 
