@@ -103,27 +103,27 @@ PowaAuras = {
 	AoeAuraFaded = {};
 	AoeAuraTexture = {};
 
-	playerclass = "unknown",
+	playerclass = "unknown";
 	
 	Events = {};
 	AlwaysEvents = 
 	{
-		"ACTIVE_TALENT_GROUP_CHANGED" = true,	
-		"INSPECT_TALENT_READY" = true,	
-		"PARTY_MEMBERS_CHANGED" = true,	
-		"PLAYER_ALIVE" = true,
-		"PLAYER_DEAD" = true,	
-		"PLAYER_REGEN_DISABLED" = true,
-		"PLAYER_REGEN_ENABLED" = true,
-		"PLAYER_TALENT_UPDATE" = true,	
-		"PLAYER_UNGHOST" = true,
-		"PLAYER_UPDATE_RESTING" = true,	
-		"RAID_ROSTER_UPDATE" = true,		
-		"UNIT_ENTERED_VEHICLE" = true,
-		"UNIT_EXITED_VEHICLE" = true,	
-		"UNIT_FACTION" = true,
-		"UNIT_SPELLCAST_SUCCEEDED" = true,
-		"ZONE_CHANGED_NEW_AREA" = true,
+		ACTIVE_TALENT_GROUP_CHANGED = true,	
+		INSPECT_TALENT_READY = true,	
+		PARTY_MEMBERS_CHANGED = true,	
+		PLAYER_ALIVE = true,
+		PLAYER_DEAD = true,	
+		PLAYER_REGEN_DISABLED = true,
+		PLAYER_REGEN_ENABLED = true,
+		PLAYER_TALENT_UPDATE = true,	
+		PLAYER_UNGHOST = true,
+		PLAYER_UPDATE_RESTING = true,	
+		RAID_ROSTER_UPDATE = true,		
+		UNIT_ENTERED_VEHICLE = true,
+		UNIT_EXITED_VEHICLE = true,	
+		UNIT_FACTION = true,
+		UNIT_SPELLCAST_SUCCEEDED = true,
+		ZONE_CHANGED_NEW_AREA = true,
 	};
 
 	RelativeToParent = 
