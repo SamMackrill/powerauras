@@ -719,6 +719,7 @@ end
 function PowaAuras:ACTIONBAR_SLOT_CHANGED(...)
 	local actionIndex = ...;
 	self:MemorizeActions(actionIndex);
+	self.DoCheck.Actions = true;
 end
 	
 function PowaAuras:UPDATE_SHAPESHIFT_FORMS(...)
@@ -729,42 +730,41 @@ function PowaAuras:UPDATE_SHAPESHIFT_FORMS(...)
 end
 	
 function PowaAuras:ACTIONBAR_UPDATE_COOLDOWN(...)
-	if (self.ModTest == false) then
-		if (self.DebugEvents) then
-			self:ShowText("ACTIONBAR_UPDATE_COOLDOWN");
-		end
-		self.DoCheck.Actions = true;
-		self.DoCheck.Stance = true;
-	end	
+	if (self.ModTest) then return; end
+	if (self.DebugEvents) then
+		self:ShowText("ACTIONBAR_UPDATE_COOLDOWN");
+	end
+	self.DoCheck.Actions = true;
+	self.DoCheck.Stance = true;
 end
 		
 function PowaAuras:ACTIONBAR_UPDATE_USABLE(...)
-	if (self.ModTest == false) then
-		if (self.DebugEvents) then
-			self:ShowText("ACTIONBAR_UPDATE_USABLE");
-		end
-		self.DoCheck.Actions = true;
-		self.DoCheck.Stance = true;
+	if (self.ModTest) then return; end
+	if (self.DebugEvents) then
+		self:ShowText("ACTIONBAR_UPDATE_USABLE");
 	end
+	self.DoCheck.Actions = true;
+	self.DoCheck.Stance = true;
 end
 	
 function PowaAuras:SPELL_UPDATE_COOLDOWN(...)
-	if (self.ModTest == false) then
-		if (self.DebugEvents) then
-			self:ShowText("SPELL_UPDATE_COOLDOWN");
-		end
-		self.DoCheck.OwnSpells = true;
-	end	
+	if (self.ModTest) then return; end
+	if (self.DebugEvents) then
+		self:ShowText("SPELL_UPDATE_COOLDOWN");
+	end
+	self.DoCheck.OwnSpells = true;
+
 end
 		
 function PowaAuras:UPDATE_SHAPESHIFT_FORM(...)
-	if (self.ModTest == false) then
-		if (self.DebugEvents) then
-			self:ShowText("UPDATE_SHAPESHIFT_FORM");
-		end
-		self.DoCheck.Stance = true;
-		self.DoCheck.Actions = true;
-	end  
+	if (self.ModTest) then return; end
+
+	if (self.DebugEvents) then
+		self:ShowText("UPDATE_SHAPESHIFT_FORM");
+	end
+	self.DoCheck.Stance = true;
+	self.DoCheck.Actions = true;
+
 end
 
 function PowaAuras:UNIT_INVENTORY_CHANGED(...)
