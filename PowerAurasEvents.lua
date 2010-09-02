@@ -18,10 +18,6 @@ function PowaAuras:VARIABLES_LOADED(...)
 	
 	PowaOptionsCpuFrame2_OnShow();
 
-	if (not PowaMisc.Disabled) then
-		self:RegisterEvents(PowaAuras_Frame);
-	end
-
 	if (TestPA==nil) then
 		PowaState = {};
 	end
@@ -55,6 +51,10 @@ function PowaAuras:VARIABLES_LOADED(...)
 	
 	self:FindAllChildren();
 	self:CreateEffectLists();
+
+	if (not PowaMisc.Disabled) then
+		self:RegisterEvents(PowaAuras_Frame);
+	end
 	
 	if (self.SetupDone) then
 		self.Initialising = false;
