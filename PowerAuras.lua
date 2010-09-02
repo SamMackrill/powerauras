@@ -522,10 +522,10 @@ function PowaAuras:CreateEffectLists()
 		wipe(self.AurasByType[k]);
 	end
 	
+	self.Events = self:CopyTable(self.AlwaysEvents);
 	for _, aura in pairs(self.Auras) do
 		--print("Aura", aura.id);
-		aura:AddEffect();
-		aura:AddEvents();
+		aura:AddEffectAndEvents();
 	end 
 
 	if (PowaMisc.debug == true) then

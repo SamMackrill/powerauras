@@ -261,7 +261,6 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideUnitn2 = "Only for raid/group.",
 
 	aideMaxTex = "Define the maximum number of textures available on the Effect Editor. If you add textures on the Mod directory (with the names AURA1.tga to AURA50.tga), you must indicate the correct number here.",
-	aideAddEffect = "Add an effect for edition.",
 	aideWowTextures = "Check this to use the texture of WoW instead of textures in the Power Auras directory for this effect.",
 	aideTextAura = "Check this to type text instead of texture.",
 	aideRealaura = "Real Aura",
