@@ -149,11 +149,6 @@ function PowaAuras:PLAYER_ENTERING_WORLD(...)
 	self:Setup();
 end
 
-function PowaAuras:GetStances()
-	for iForm=1, GetNumShapeshiftForms() do
-		self.PowaStance[iForm] = select(2,GetShapeshiftFormInfo(iForm));
-	end
-end
 		
 function PowaAuras:ACTIVE_TALENT_GROUP_CHANGED(...)
 	self.ActiveTalentGroup = GetActiveTalentGroup();
@@ -268,6 +263,11 @@ function PowaAuras:UNIT_RUNIC_POWER(...)
 	self:SetCheckResource("RageEnergy", unit);
 end
 
+function PowaAuras:UNIT_MAXRUNIC_POWER(...)
+	local unit = ...;
+	self:SetCheckResource("RageEnergy", unit);
+end
+
 function PowaAuras:SetCheckResource(resourceType, unitType)
 	if (self.ModTest == false) then
 		if (unitType == "target") then
@@ -286,11 +286,6 @@ function PowaAuras:SetCheckResource(resourceType, unitType)
 			self.DoCheck[resourceType] = true;	
 		end
 	end
-end
-
-function PowaAuras:UNIT_MAXRUNIC_POWER(...)
-	local unit = ...;
-	self:SetCheckResource("RageEnergy", unit);
 end
 
 function PowaAuras:SpellcastEvent(unit)
@@ -402,7 +397,7 @@ end
 function PowaAuras:RUNE_POWER_UPDATE(...)
 	if (self.ModTest == false) then
 		if (self.DebugEvents) then
-			self:ShowText("PLAYER_TOTEM_UPDATE slot=", slot);
+			self:ShowText("RUNE_POWER_UPDATE");
 		end
 		self.DoCheck.Runes = true;
 	end
@@ -727,6 +722,12 @@ function PowaAuras:UPDATE_SHAPESHIFT_FORMS(...)
 	if (self.ModTest) then return; end
 	
 	self.DoCheck.Stance = true;
+end
+
+function PowaAuras:GetStances()
+	for iForm=1, GetNumShapeshiftForms() do
+		self.PowaStance[iForm] = select(2,GetShapeshiftFormInfo(iForm));
+	end
 end
 	
 function PowaAuras:ACTIONBAR_UPDATE_COOLDOWN(...)
