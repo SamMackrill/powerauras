@@ -2343,6 +2343,7 @@ cPowaAggro.CheckBoxes={["PowaPartyButton"]=1,
 					   ["PowaGroupOrSelfButton"]=1,
 					   ["PowaInverseButton"]=1};
 cPowaAggro.TooltipOptions = {r=1.0, g=0.4, b=0.2};
+
 function cPowaAggro:AddEffectAndEvents()
 	PowaAuras.Events.UNIT_THREAT_SITUATION_UPDATE = true;
 	
@@ -2403,12 +2404,14 @@ function cPowaPvP:AddEffectAndEvents()
 		table.insert(PowaAuras.AurasByType.RaidPvP, self.id);
 	end
 end
+
 function cPowaPvP:CheckUnit(unit)
 	if (not self:CorrectTargetType(unit)) then
 		return false;
 	end
 	return UnitIsPVP(unit);
-end	
+end
+
 function cPowaPvP:CheckIfShouldShow(giveReason)
 	PowaAuras:Debug("Check PvP Flag");
 	return self:CheckAllUnits(giveReason);
@@ -3090,13 +3093,14 @@ function cPowaRunes:RunesPresent(giveReason)
 end
 	
 -- Equipment Slots Aura--
-cPowaSlots = PowaClass(cPowaAura, {ValueName = "Slots",  CooldownAura=true, CanHaveTimerOnInverse=true});
+cPowaSlots = PowaClass(cPowaAura, {AuraType="Slots", ValueName="Slots",  CooldownAura=true, CanHaveTimerOnInverse=true});
 cPowaSlots.OptionText={typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.Slots]};
 cPowaSlots.ShowOptions={["PowaBarTooltipCheck"]=1};
 cPowaSlots.CheckBoxes={["PowaInverseButton"]=1,["PowaOwntexButton"]=1,};
 cPowaSlots.TooltipOptions = {r=0.8, g=0.8, b=0.2};
 
 function cPowaSlots:AddEffectAndEvents()
+	table.insert(PowaAuras.AurasByType[self.AuraType], self.id);
 	PowaAuras.Events.BAG_UPDATE = true;
 	PowaAuras.Events.BAG_UPDATE_COOLDOWN = true;
 	PowaAuras.Events.UNIT_INVENTORY_CHANGED = true;
@@ -3177,7 +3181,7 @@ function cPowaSlots:CheckIfShouldShow(giveReason)
 end
 
 -- Named Items Aura--
-cPowaItems = PowaClass(cPowaAura, {ValueName = "Items", CanHaveStacks=true,  CooldownAura=true, CanHaveTimerOnInverse=true});
+cPowaItems = PowaClass(cPowaAura, {AuraType="Items", ValueName = "Items", CanHaveStacks=true,  CooldownAura=true, CanHaveTimerOnInverse=true});
 cPowaItems.OptionText={buffNameTooltip=PowaAuras.Text.aideItems, typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.Items],
 					   mineText=PowaAuras.Text.nomIgnoreItemUseable, mineTooltip=PowaAuras.Text.aideIgnoreItemUseable,
 					   extraText=PowaAuras.Text.nomCarried, extraTooltip=PowaAuras.Text.aideCarried,
@@ -3364,7 +3368,7 @@ end
 
 
 -- Tracking Aura--
-cPowaTracking= PowaClass(cPowaAura, {ValueName = "Tracking", });
+cPowaTracking= PowaClass(cPowaAura, {AuraType="Tracking", ValueName = "Tracking", });
 cPowaTracking.OptionText={buffNameTooltip=PowaAuras.Text.aideTracking, typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.Tracking], exactTooltip=PowaAuras.Text.aideExact,};
 cPowaTracking.CheckBoxes={["PowaInverseButton"]=1,
 						  ["PowaIngoreCaseButton"]=1,
@@ -3372,7 +3376,7 @@ cPowaTracking.CheckBoxes={["PowaInverseButton"]=1,
 						 };
 cPowaTracking.TooltipOptions = {r=0.4, g=1.0, b=0.4};
 
-function cPowaAoE:AddEffectAndEvents()
+function cPowaTracking:AddEffectAndEvents()
 	table.insert(PowaAuras.AurasByType[self.AuraType], self.id);
 	PowaAuras.Events.MINIMAP_UPDATE_TRACKING = true;
 end
@@ -3405,7 +3409,7 @@ function cPowaTracking:CheckIfShouldShow(giveReason)
 end
 
 -- Static Aura--
-cPowaStatic= PowaClass(cPowaAura, {ValueName = "Static"});
+cPowaStatic= PowaClass(cPowaAura, {AuraType="Static", ValueName = "Static"});
 cPowaStatic.OptionText={typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.Static]};
 
 cPowaStatic.CheckBoxes={};
