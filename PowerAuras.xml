@@ -11,8 +11,8 @@
 			PowaAuras:OnLoad(self)
 		</OnLoad>
 		<OnEvent>
-			if (PowaAuras.ModTest == false) then
-				PowaAuras:Debug(event);
+			if (PowaAuras.DebugEvents) then
+				PowaAuras:ShowText("Event:", event);
 			end
 			PowaAuras[event](PowaAuras, ...);
 		</OnEvent>

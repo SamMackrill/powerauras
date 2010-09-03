@@ -840,6 +840,14 @@ function PowaAuras:TableEmpty(t)
 	return true;
 end
 
+function PowaAuras:TableSize(t)
+	if (type(t)~="table") then return nil; end
+	local size = 0;
+	for k in pairs(t) do
+		size = size + 1;
+	end
+	return size;
+end
 function PowaAuras:CopyTable(t, lookup_table, original)
 	if (type(t)~="table") then
 		return t;
