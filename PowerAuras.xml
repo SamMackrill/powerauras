@@ -406,7 +406,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
         </Offset>
       </Anchor>
     </Anchors>
-    <Backdrop bgFile="Dungeons\Textures\rock\BM_BRSPIRE_CUBEROCK01"
+    <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background"
               edgeFile="Interface\DialogFrame\UI-DialogBox-Border"
               tile="true">
       <BackgroundInsets>
@@ -509,7 +509,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
             </Offset>
           </Anchor>
         </Anchors>
-        <Backdrop bgFile="Dungeons\Textures\rock\BM_BRSPIRE_CUBEROCK01"
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background"
                   edgeFile="Interface\Tooltips\UI-Tooltip-Border"
                   tile="true">
           <EdgeSize>
@@ -1117,7 +1117,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Offset>
               </Anchor>
             </Anchors>
-            <Backdrop bgFile="Dungeons\Textures\rock\BM_BRSPIRE_CUBEROCK01"
+            <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background"
                       edgeFile="Interface\Tooltips\UI-Tooltip-Border"
                       tile="true">
               <EdgeSize>
@@ -2406,7 +2406,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Offset>
               </Anchor>
             </Anchors>
-            <Backdrop bgFile="Dungeons\Textures\rock\BM_BRSPIRE_CUBEROCK01"
+            <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background"
                       edgeFile="Interface\Tooltips\UI-Tooltip-Border"
                       tile="true">
               <EdgeSize>
@@ -2718,7 +2718,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Offset>
               </Anchor>
             </Anchors>
-            <Backdrop bgFile="Dungeons\Textures\rock\BM_BRSPIRE_CUBEROCK01"
+            <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background"
                       edgeFile="Interface\Tooltips\UI-Tooltip-Border"
                       tile="true">
               <EdgeSize>
@@ -3105,7 +3105,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Offset>
               </Anchor>
             </Anchors>
-            <Backdrop bgFile="Dungeons\Textures\rock\BM_BRSPIRE_CUBEROCK01"
+            <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background"
                       edgeFile="Interface\Tooltips\UI-Tooltip-Border"
                       tile="true">
               <EdgeSize>
@@ -3618,7 +3618,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Offset>
               </Anchor>
             </Anchors>
-            <Backdrop bgFile="Dungeons\Textures\rock\BM_BRSPIRE_CUBEROCK01"
+            <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background"
                       edgeFile="Interface\Tooltips\UI-Tooltip-Border"
                       tile="true">
               <EdgeSize>
@@ -4187,7 +4187,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
         </Offset>
       </Anchor>
     </Anchors>
-    <Backdrop bgFile="Dungeons\Textures\rock\BM_BRSPIRE_CUBEROCK01"
+    <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background"
               edgeFile="Interface\DialogFrame\UI-DialogBox-Border"
               tile="true">
       <BackgroundInsets>
@@ -4314,7 +4314,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
             </Offset>
           </Anchor>
         </Anchors>
-        <Backdrop bgFile="Dungeons\Textures\rock\BM_BRSPIRE_CUBEROCK01"
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background"
                   edgeFile="Interface\Tooltips\UI-Tooltip-Border"
                   tile="true">
           <EdgeSize>
