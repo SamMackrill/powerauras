@@ -162,18 +162,12 @@ end
 function PowaAuras:ACTIVE_TALENT_GROUP_CHANGED(...)
 	self.ActiveTalentGroup = GetActiveTalentGroup();
 	if (self.ModTest == false) then
-		if (self.DebugEvents) then
-			self:ShowText("ACTIVE_TALENT_GROUP_CHANGED");
-		end
 		self.PendingRescan = GetTime() + 1;
 	end
 end
 
 function PowaAuras:PLAYER_TALENT_UPDATE(...)
 	if (self.ModTest == false) then
-		if (self.DebugEvents) then
-			self:ShowText("PLAYER_TALENT_UPDATE");
-		end
 		self.PendingRescan = GetTime() + 1;
 	end
 end
@@ -226,9 +220,6 @@ function PowaAuras:FillGroup(group, count)
 end
 
 function PowaAuras:INSPECT_TALENT_READY()
-	if (self.DebugEvents) then
-		self:Message("INSPECT_TALENT_READY");
-	end
 	self:InspectRole();
 end
 	
@@ -405,9 +396,6 @@ end
 
 function PowaAuras:RUNE_POWER_UPDATE(...)
 	if (self.ModTest == false) then
-		if (self.DebugEvents) then
-			self:ShowText("RUNE_POWER_UPDATE");
-		end
 		self.DoCheck.Runes = true;
 	end
 end
@@ -489,9 +477,6 @@ function PowaAuras:PLAYER_DEAD(...)
 	if (self.ModTest == false) then
 		self.DoCheck.All = true;
 	end
-	if (self.DebugEvents) then
-		self:ShowText("PLAYER_DEAD");
-	end
 	self.WeAreMounted = false;
 	self.WeAreInVehicle = false;
 	self.WeAreAlive = false;
@@ -499,9 +484,6 @@ end
 	
 function PowaAuras:PLAYER_ALIVE(...)
 	if not UnitIsDeadOrGhost("player") then
-		if (self.DebugEvents) then
-			self:ShowText("PLAYER_ALIVE");
-		end
 		self.WeAreAlive = true;
 		if (self.ModTest == false) then
 			self.DoCheck.All = true;
@@ -511,9 +493,6 @@ end
 	
 function PowaAuras:PLAYER_UNGHOST(...)
 	if not UnitIsDeadOrGhost("player") then
-		if (self.DebugEvents) then
-			self:ShowText("PLAYER_UNGHOST");
-		end
 		self.WeAreAlive = true;
 		if (self.ModTest == false) then
 			self.DoCheck.All = true;
@@ -523,9 +502,6 @@ end
  
 function PowaAuras:PLAYER_TARGET_CHANGED(...)
 	if (self.ModTest == false) then
-		if (self.DebugEvents) then
-			self:ShowText("PLAYER_TARGET_CHANGED");
-		end
 		self.DoCheck.TargetBuffs = true;
 		self.DoCheck.TargetHealth = true;
 		self.DoCheck.TargetMana = true;
@@ -540,9 +516,6 @@ end
 function PowaAuras:PLAYER_REGEN_DISABLED(...)
 	self.WeAreInCombat = true;
 	if (self.ModTest == false) then
-		if (self.DebugEvents) then
-			self:ShowText("PLAYER_REGEN_DISABLED");
-		end
 		self.DoCheck.All = true;
 	end	   
 end
@@ -550,9 +523,6 @@ end
 function PowaAuras:PLAYER_REGEN_ENABLED(...)
 	self.WeAreInCombat = false;
 	if (self.ModTest == false) then
-		if (self.DebugEvents) then
-			self:ShowText("PLAYER_REGEN_ENABLED");
-		end
 		self.DoCheck.All = true;
 	end
 end   
@@ -574,9 +544,6 @@ function PowaAuras:UNIT_COMBO_POINTS(...)
 	local unit = ...;
 	if (unit ~= "player") then return; end
 	if (self.ModTest == false) then
-		if (self.DebugEvents) then
-			self:ShowText("UNIT_COMBO_POINTS");
-		end
 		self.DoCheck.Combo = true;
 	end
 end
@@ -585,9 +552,6 @@ function PowaAuras:UNIT_PET(...)
 	local unit = ...;
 	if (unit ~= "player") then return; end
 	if (self.ModTest == false) then
-		if (self.DebugEvents) then
-			self:ShowText("UNIT_PET");
-		end
 		self.DoCheck.Pet = true;
 	end
 end
@@ -741,40 +705,25 @@ end
 	
 function PowaAuras:ACTIONBAR_UPDATE_COOLDOWN(...)
 	if (self.ModTest) then return; end
-	if (self.DebugEvents) then
-		self:ShowText("ACTIONBAR_UPDATE_COOLDOWN");
-	end
 	self.DoCheck.Actions = true;
 	self.DoCheck.Stance = true;
 end
 		
 function PowaAuras:ACTIONBAR_UPDATE_USABLE(...)
 	if (self.ModTest) then return; end
-	if (self.DebugEvents) then
-		self:ShowText("ACTIONBAR_UPDATE_USABLE");
-	end
 	self.DoCheck.Actions = true;
 	self.DoCheck.Stance = true;
 end
 	
 function PowaAuras:SPELL_UPDATE_COOLDOWN(...)
 	if (self.ModTest) then return; end
-	if (self.DebugEvents) then
-		self:ShowText("SPELL_UPDATE_COOLDOWN");
-	end
 	self.DoCheck.OwnSpells = true;
-
 end
 		
 function PowaAuras:UPDATE_SHAPESHIFT_FORM(...)
 	if (self.ModTest) then return; end
-
-	if (self.DebugEvents) then
-		self:ShowText("UPDATE_SHAPESHIFT_FORM");
-	end
 	self.DoCheck.Stance = true;
 	self.DoCheck.Actions = true;
-
 end
 
 function PowaAuras:UNIT_INVENTORY_CHANGED(...)
@@ -798,9 +747,6 @@ end
 
 function PowaAuras:BAG_UPDATE_COOLDOWN()
 	if (self.ModTest == false) then
-		if (self.DebugEvents) then
-			self:ShowText("BAG_UPDATE_COOLDOWN");
-		end
 		self.DoCheck.Items = true;
 		self.DoCheck.Slots = true;
 	end
@@ -808,9 +754,6 @@ end
 
 function PowaAuras:BAG_UPDATE()
 	if (self.ModTest == false) then
-		if (self.DebugEvents) then
-			self:ShowText("BAG_UPDATE");
-		end
 		self.DoCheck.Items = true;
 		self.DoCheck.Slots = true;
 	end
@@ -818,16 +761,13 @@ end
 
 function PowaAuras:MINIMAP_UPDATE_TRACKING()
 	if (self.ModTest == false) then
-		if (self.DebugEvents) then
-			self:ShowText("MINIMAP_UPDATE_TRACKING");
-		end
 		self.DoCheck.Tracking = true;
 	end
 end
 
 function PowaAuras:UNIT_THREAT_SITUATION_UPDATE(...)
-	local unit = ...;
 	if (self.ModTest == false) then
+		local unit = ...;
 		if (self.DebugEvents) then
 			self:ShowText("UNIT_THREAT_SITUATION_UPDATE ", unit);
 		end
@@ -843,6 +783,5 @@ function PowaAuras:UNIT_THREAT_SITUATION_UPDATE(...)
 		if UnitInRaid(unit) then
 			self.DoCheck.RaidAggro = true;
 		end
-
 	end
 end
