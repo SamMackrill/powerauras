@@ -34,13 +34,7 @@ function PowaAuras:VARIABLES_LOADED(...)
 		getglobal("PowaOptionsList"..i+5):SetText(PowaGlobalListe[i]);
 	end
 	
-	self.maxtextures = 145;
-	for texi = 1, self.maxtextures do
-		local texture = "Interface\\Addons\\PowerAuras\\Auras\\Aura"..texi..".tga";
-		local ret = AuraTexture:SetTexture(texture);
-		--self:DisplayText(texture," - ",ret);
-	end
-	
+	self.maxtextures = 145;	
 	PowaBarAuraTextureSlider:SetMinMaxValues(1, self.maxtextures);
 	PowaBarAuraTextureSliderHigh:SetText(self.maxtextures);
 	
