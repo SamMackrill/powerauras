@@ -33,19 +33,7 @@ function PowaAuras:VARIABLES_LOADED(...)
 		getglobal("PowaOptionsList"..i+5):SetText(PowaGlobalListe[i]);
 	end
 	
-	local texi = 1;
-	while ( AuraTexture:SetTexture("Interface\\Addons\\PowerAuras\\Auras\\Aura"..texi..".tga") == 1 ) do
-		if (TestPA~=nil and texi>145) then break; end
-		texi = texi + 1;
-	end
-	self.maxtextures = texi - 1;
-
-	if (self.maxtextures<100) then
-		self:DisplayText(self.Colors.Purple.."<Power Auras Classic>|r "..self.Colors.Gold..self.Version.."|r - "..self.Text.welcome);
-		self:DisplayText(self.Colors.Red.."WARNING only "..self.maxtextures.." textures found! Try a /reload to fix this");
-		self.maxtextures = 1; -- stop crashing
-	end
-	
+	self.maxtextures = 145;	
 	PowaBarAuraTextureSlider:SetMinMaxValues(1, self.maxtextures);
 	PowaBarAuraTextureSliderHigh:SetText(self.maxtextures);
 	
