@@ -11,6 +11,9 @@
 			PowaAuras:OnLoad(self)
 		</OnLoad>
 		<OnEvent>
+			if (PowaAuras.DebugEvents) then
+				PowaAuras:ShowText("Event:", event);
+			end
 			PowaAuras[event](PowaAuras, ...);
 		</OnEvent>
 		<OnUpdate>

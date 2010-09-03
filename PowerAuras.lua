@@ -89,8 +89,7 @@ function PowaAuras:ReregisterEvents(frame)
 end
 
 function PowaAuras:RegisterEvents(frame)
-	--- TODO: conditionally Register/unregister events according to options for improved performance
-	for event in ipairs(self.Events) do
+	for event in pairs(self.Events) do
 		if (self[event]) then
 			frame:RegisterEvent(event);
 		else
