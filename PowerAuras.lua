@@ -1,138 +1,8 @@
 --- ------------------------------------------------
 ---            << Power Auras >>
----              Par -Sinsthar-
----    [Ziya/Tiven - serveur Fr - Kirin Tor] 
----
----     Effets visuels autour du personnage 
----     en cas de buff, debuff et autres...
 --- ------------------------------------------------
-
---- Author: Smacker(v2.6.2),Gameldar (v2.6.1), Driizt (v2.5+), Garstiger (Powa Continued), Sinsthar (original author/concept)
---- Thanks: Kouri for debuff type detection code
---- Thanks: StingerSoft for Russian translations
---- Thanks: Doomiris for Chinese Translations
---- Thanks: JD for new aura textures
---- Thanks: Suicidalkatt for the number textures
---- Changes:
---- Version 2.6.3 (lolkat)
---- Version 2.6.2 (WotLK Raid or Self or Party)
----  Feature: Option to match buff/debuff on group (raid or party or self)
----  Feature: Option to match on buff/debuff tool-tip text
----  Feature: In Vehicle flag added
----  Feature: Resting flag added (except when in combat)
----  Feature: Stun/Silence/Root/CC/Snare detection added to DebuffType
----  Feature: Can flag to trigger only dispellable DebuffTypes 
----  Feature: Added >= and <= stack comparisons
----  Feature: Copy/Import/Export now includes timer settings
----  Feature: Ability to look-up buffs/debuffs/spellalerts by icon name (ensure at least one underscore is in the buff name)
----  Feature: Ability to look-up spells by spellIds (use [12345])
----  Feature: Russian localisation added (thanks to StingerSoft)
----  Feature: Option to hide leading zeros on timers
----  Feature: Option to use transparent timer textures
----  Change: Use Blizzard threat values instead of Banzi
----  Bugfix: PvP Trigger now works
----  Bugfix: Timers on buffs/debuff on other players now show
---- Version 2.6.1a (WotLK Dual-Specs)
----  Bugfix: corrected typo in the index value for the dual spec conditional (j != k)
---- Version 2.6.1 (WotLK Dual-Specs)
----  Feature: WoW 3.1 verison match (no longer out of date)
----  Feature: Basic integration of dual specs support
---- Version 2.6.0 (WotLK)
----  Feature: WoW 3.1 compatibility update.
----  Feature: Deathknight Presences added to Stance Auras.
----  Feature: Whitespace added to export strings to facilitate forum posting.
----  Feature: Better granularity for Mana/Health/Rage/Energy/Power threshold (step 5 -> 2).
----  Feature: Mounted option changed to toggle (checked: only when mounted, unchecked: only when dismounted)
----  Feature: Texture glow option affects timer.
----  Bugfix: Mana/Rage/Energy/RunicPower Party & Raid triggers.
----  Bugfix: Mana/Rage/Energy/RunicPower Unit triggers.
----  Bugfix: PvP Trigger.
----  Bugfix: "Casted" -> "Cast" typo.
---- Version 2.5.9a (WotLK)
----  Bugfix: 'hundredth', 'dual' timers checkbox errors.
---- Version 2.5.9 (WotLK)
----  Feature: Option to monitor "my" buffs/debuffs.
----  Feature: Unlimited timers. (1 per aura instead of 5 total)
----  Feature: Dynamic Aura update when multiple matches and 'own texture' checked.
----  Feature: Import and export Auras as strings.
----  Feature: Any/All toggle for party, raid buff checks. (default = all)
----  Bugfix: Action Usable aura when action linked to stance.
----  Bugfix: Make "Activate Power Auras" checkbox actually do something and shutdown processing when unchecked. :P
---- Version 2.5.8b (WotLK)
----  Bugfix: gui bug threshold invert option.
---- Version 2.5.8a (WotLK)
----  Bugfix: combination triggers with "show when not active" checked.
----  Various internal logic optimizations.
---- Version 2.5.8 (WotLK)
----  Bugfix: Various label fonts (template breakage by Blizzard in builds 8982->9014)
----  Bugfix: Font Select button not visible on first editor open.
----  Feature: Text shadow option for textauras.
----  Feature: Ability to setup auras with combination of triggers.
----  Feature: Spell Casting activation trigger added (target and focus).
---- Version 2.5.7b (WotLK)
----  Bugfix: Begin animation "replaying" on aura refresh.
---- Version 2.5.7a (WotLK)
----  Bugfix: Offhand temporary enchant detection/stacks
----	 Feature: Weapon buff auras can be defined separately per temporary enchant 
----           and optionally filtered by slot (main or offhand)
---- Version 2.5.7 (WotLK)
----  Feature: Text Aura Option added (thanks to Garstiger for initial code)
----  Feature: Option to invert default threshold behavior added.
----  Feature: Pet health/mana activation enabled (enter "pet" in UnitName editbox)
----  Bugfix: Manual.html pictures (submitted by Garstiger)
----  Bugfix: Aura Type checkboxes
----  Bugfix: UnitName nil error
----  Bugfix: Threshold when Rage/Energy/Power is zero.
---- Version 2.5.6c (WotLK)
----  Bugfix: Not in Combat initial state.
---- Version 2.5.6b (WotLK)
----  Bugfix: .TimerFrame checkboxes nil error
----  Bugfix: Target buff/debuff timers
---- Version 2.5.6a (WotLK)
----  Bugfix: GetComboPoints() API change.
---- Version 2.5.6 (WotLK)
----  Feature: Runic Power threshold added.
----  Bugfix: GetPlayerBuff/UnitBuff/Debuff API changes.
----  Bugfix: UIDropMenu, PanelTemplates_TabResize, Font Widget, this->self changes. 
---- Version 2.5.5b
----  Bugfix: Health/Mana threshold for party/raid units (line 1297 error)
---- Version 2.5.5a
----  Bugfix: Custom duration timer for target buffs/debuffs (wasn't reseting on target change)
----  Bugfix: Hide player auras when dead/ghost.
---- Version 2.5.5
----  Feature: Stance options for Druid and Rogue(stealth) added
----  Bugfix: Stance detection is now dynamic so lower levels that don't have all forms/stances yet are supported.
----  Feature: Custom timer enabled for action usable. It overrides the calculated timers if used.
----  Feature: Rage/Energy trigger implemented with upper thresholds.
---- Version 2.5.4a
----  Bugfix: Buff and Debuff timers for non-player units.
---- Version 2.5.4
----  Bugfix: Buff and Debuff timers.
----  Feature: Custom textures editbox now accepts spellname or spellid in addition to filename.tga
---- Version 2.5.3
----  Bugfix: Buff and Debuff stacks.
----  Bugfix: Mana-threshold auras when shifting to bear/cat.
----  Feature: New custom sounds.
----  Feature: Updated zh-CN localization by <Doomiris>.
---- Version 2.5.2
----  Feature: 30 more wow textures added to available choices
----  Feature: PvP flag added to triggers
----  Feature: Aggro status added to triggers
----  Feature: Option to use ability/spell texture instead of predetermined choice where available.
---- Version 2.5.1a
----  Feature: Hide Auras when hiding the interface (Alt+z)
---- Version 2.5.1
----  Feature: WoW 2.4 compatibility re-code (various changes related to the new combatlog)
----  Feature: New textures can now be added to defaults as long as they're named Auraxx.tga
----           The selection slider will accommodate automatically next time you start the game.
----  Bugfix: Stance detection
----  Bugfix: Mounted detection (flying included)
----  Bugfix: Aura change
----  Bugfix: Action Usable (workaround for the absense of cooldown complete events)
----          If you want to get notification when a trinket or bag item is usable you have
----					 drag it to an actionbar (doesn't have to be a visible one)	 
-
 -- ^\s*[^-\s][^-\s].*:ShowText\(.*$
+
 -- Exposed for Saving
 PowaMisc = 
 	{
@@ -595,14 +465,14 @@ function PowaAuras:MemorizeActions(actionIndex)
 							--- remember the texture
 							local tempicon;
 							if (actionAura.owntex == true) then
-								getglobal("PowaIconTexture"):SetTexture(GetActionTexture(i));
-								tempicon = getglobal("PowaIconTexture"):GetTexture();
+								PowaIconTexture:SetTexture(GetActionTexture(i));
+								tempicon = PowaIconTexture:GetTexture();
 								if (actionAura.icon ~= tempicon) then
 									actionAura.icon = tempicon;
 								end
 							elseif (actionAura.icon == "") then
-								getglobal("PowaIconTexture"):SetTexture(GetActionTexture(i));
-								actionAura.icon = getglobal("PowaIconTexture"):GetTexture();
+								PowaIconTexture:SetTexture(GetActionTexture(i));
+								actionAura.icon = PowaIconTexture:GetTexture();
 							end
 						end
 					end

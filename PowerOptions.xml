@@ -180,7 +180,7 @@
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-						getglobal("PowaEditButtonText"):SetText(PowaAuras.Text.nomEdit);
+						PowaEditButtonText:SetText(PowaAuras.Text.nomEdit);
 					</OnLoad>
 					<OnClick>
 						PowaAuras:EditorShow();
@@ -200,7 +200,7 @@
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-						getglobal("PowaMainTestButtonText"):SetText(PowaAuras.Text.nomTest);
+						PowaMainTestButtonText:SetText(PowaAuras.Text.nomTest);
 					</OnLoad>
 					<OnClick>
 						PowaAuras:OptionTest();
@@ -221,7 +221,7 @@
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-						getglobal("PowaMainTestAllButtonText"):SetText(PowaAuras.Text.nomTestAll);
+						PowaMainTestAllButtonText:SetText(PowaAuras.Text.nomTestAll);
 					</OnLoad>
 					<OnClick>
 						PowaAuras:OptionTestAll();
@@ -242,7 +242,7 @@
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-						getglobal("PowaMainHideAllButtonText"):SetText(PowaAuras.Text.nomHide);
+						PowaMainHideAllButtonText:SetText(PowaAuras.Text.nomHide);
 					</OnLoad>
 					<OnClick>
 						PowaAuras:OptionHideAll();
@@ -542,7 +542,7 @@
 						</Anchors>
 						<Scripts>
 							<OnLoad>
-								getglobal("PowaOptionsSelectorNewText"):SetText(PowaAuras.Text.nomNew);
+								PowaOptionsSelectorNewText:SetText(PowaAuras.Text.nomNew);
 							</OnLoad>
 							<OnClick>
 								PowaAuras:OptionNewEffect();
@@ -565,7 +565,7 @@
 						</Anchors>
 						<Scripts>
 							<OnLoad>
-								getglobal("PowaOptionsSelectorDeleteText"):SetText(PowaAuras.Text.nomDel);
+								PowaOptionsSelectorDeleteText:SetText(PowaAuras.Text.nomDel);
 							</OnLoad>
 							<OnClick>
 								PowaAuras:OptionDeleteEffect(PowaAuras.CurrentAuraId);
@@ -595,7 +595,7 @@
 						</Anchors>
 						<Scripts>
 							<OnLoad>
-								getglobal("PowaOptionsMoveText"):SetText(PowaAuras.Text.nomMove);
+								PowaOptionsMoveText:SetText(PowaAuras.Text.nomMove);
 							</OnLoad>
 							<OnClick>
 								PowaAuras:OptionMoveEffect(true);
@@ -618,7 +618,7 @@
 						</Anchors>
 						<Scripts>
 							<OnLoad>
-								getglobal("PowaOptionsCopyText"):SetText(PowaAuras.Text.nomCopy);
+								PowaOptionsCopyText:SetText(PowaAuras.Text.nomCopy);
 							</OnLoad>
 							<OnClick>
 								PowaAuras:OptionMoveEffect(false);
@@ -641,7 +641,7 @@
 						</Anchors>
 						<Scripts>
 							<OnLoad>
-								getglobal("PowaOptionsSelectorImportText"):SetText(PowaAuras.Text.nomImport);
+								PowaOptionsSelectorImportText:SetText(PowaAuras.Text.nomImport);
 							</OnLoad>
 							<OnClick>
 								PowaAuras:OptionImportEffect();
@@ -664,7 +664,7 @@
 						</Anchors>
 						<Scripts>
 							<OnLoad>
-								getglobal("PowaOptionsSelectorExportText"):SetText(PowaAuras.Text.nomExport);
+								PowaOptionsSelectorExportText:SetText(PowaAuras.Text.nomExport);
 							</OnLoad>
 							<OnClick>
 								PowaAuras:OptionExportEffect();
@@ -687,7 +687,7 @@
 						</Anchors>
 						<Scripts>
 							<OnLoad>
-								getglobal("PowaOptionsSelectorImportSetText"):SetText(PowaAuras.Text.nomImportSet);
+								PowaOptionsSelectorImportSetText:SetText(PowaAuras.Text.nomImportSet);
 							</OnLoad>
 							<OnClick>
 								PowaAuras:OptionImportSet();
@@ -710,7 +710,7 @@
 						</Anchors>
 						<Scripts>
 							<OnLoad>
-								getglobal("PowaOptionsSelectorExportSetText"):SetText(PowaAuras.Text.nomExportSet);
+								PowaOptionsSelectorExportSetText:SetText(PowaAuras.Text.nomExportSet);
 							</OnLoad>
 							<OnClick>
 								PowaAuras:OptionExportSet();
@@ -767,7 +767,7 @@
 					<OnLoad>
 						self:SetBackdropBorderColor(0.0, 0.0, 0.0);
 						self:SetBackdropColor(0.1, 0.1, 0.1);
-						getglobal("PowaOptionsPlayerTitre"):SetText(PowaAuras.Text.nomPlayerEffects);
+						PowaOptionsPlayerTitre:SetText(PowaAuras.Text.nomPlayerEffects);
 					</OnLoad>
 				</Scripts>
 				<Frames>
@@ -866,7 +866,7 @@
 					<OnLoad>
 						self:SetBackdropBorderColor(0.0, 0.0, 0.0);
 						self:SetBackdropColor(0.1, 0.1, 0.1);
-						getglobal("PowaOptionsGlobalTitre"):SetText(PowaAuras.Text.nomGlobalEffects);
+						PowaOptionsGlobalTitre:SetText(PowaAuras.Text.nomGlobalEffects);
 					</OnLoad>
 				</Scripts>
 				<Frames>
