@@ -53,7 +53,7 @@
 			--CharacterInfo:ItemSlotButton_OnEnter();
 		</OnEnter>
 		<OnLeave>
-			this.updateTooltip = nil;
+			self.updateTooltip = nil;
 			GameTooltip:Hide();
 			ResetCursor();
 		</OnLeave>
@@ -99,9 +99,9 @@
 	</Anchors>
 	<Scripts>
 		<OnLoad>
-			this:SetBackdropColor(0.05, 0.05, 0.05, 0.8);
-			this:SetBackdropBorderColor(0.4, 0.4, 0.4, 1);
-			tinsert(UISpecialFrames,this:GetName());
+			self:SetBackdropColor(0.05, 0.05, 0.05, 0.8);
+			self:SetBackdropBorderColor(0.4, 0.4, 0.4, 1);
+			tinsert(UISpecialFrames,self:GetName());
 		</OnLoad>
 		<OnShow>
 			PowaAuras:EquipmentSlotsShow();
@@ -145,7 +145,7 @@
 			</Anchors>
 			<Scripts>
 				<OnLoad>
-					this:SetFrameLevel(this:GetFrameLevel() + 4);
+					self:SetFrameLevel(self:GetFrameLevel() + 4);
 				</OnLoad>
 			</Scripts>
 		</Button>
