@@ -59,7 +59,7 @@
 			<Scripts>
 					<OnLoad>
 						self.tooltipText = PowaAuras.Text.aideDebug;
-						getglobal("PowaDebugButtonText"):SetText(PowaAuras.Text.nomDebug);
+						PowaDebugButtonText:SetText(PowaAuras.Text.nomDebug);
 					</OnLoad>
 					<OnClick>
 						PowaAuras:DebugChecked();
@@ -86,9 +86,9 @@
 			<Scripts>
 			  <OnLoad>
 				self:SetMinMaxValues(0,100); self:SetValue(100-200*PowaMisc.OnUpdateLimit); self:SetValueStep(1); 
-				getglobal("PowaOptionsUpdateSlider2Text"):SetText(PowaAuras.Text.nomUpdateSpeed.." : "..self:GetValue().."%");
-				getglobal("PowaOptionsUpdateSlider2Low"):SetText("0%"); 
-				getglobal("PowaOptionsUpdateSlider2High"):SetText("100%");
+				PowaOptionsUpdateSlider2Text:SetText(PowaAuras.Text.nomUpdateSpeed.." : "..self:GetValue().."%");
+				PowaOptionsUpdateSlider2Low:SetText("0%"); 
+				PowaOptionsUpdateSlider2High:SetText("100%");
 			  </OnLoad>
 			  <OnValueChanged>PowaAuras:PowaOptionsUpdateSliderChanged2(self);</OnValueChanged>
 			</Scripts>
@@ -113,9 +113,9 @@
 			<Scripts>
 			  <OnLoad>
 				self:SetMinMaxValues(0,60); self:SetValue(PowaMisc.AnimationFps); self:SetValueStep(1); 
-				getglobal("PowaOptionsAnimationsSlider2Text"):SetText(PowaAuras.Text.nomFPS.." : "..self:GetValue().." FPS");
-				getglobal("PowaOptionsAnimationsSlider2Low"):SetText("0"); 
-				getglobal("PowaOptionsAnimationsSlider2High"):SetText("60");
+				PowaOptionsAnimationsSlider2Text:SetText(PowaAuras.Text.nomFPS.." : "..self:GetValue().." FPS");
+				PowaOptionsAnimationsSlider2Low:SetText("0"); 
+				PowaOptionsAnimationsSlider2High:SetText("60");
 			  </OnLoad>
 			  <OnValueChanged>PowaAuras:PowaOptionsAnimationsSliderChanged2(self);</OnValueChanged>
 			</Scripts>
@@ -140,9 +140,9 @@
 			<Scripts>
 			  <OnLoad>
 				self:SetMinMaxValues(0,100); self:SetValue(100-1000*PowaMisc.AnimationLimit); self:SetValueStep(1); 
-				getglobal("PowaOptionsTimerUpdateSlider2Text"):SetText(PowaAuras.Text.nomTimerUpdate.." : "..self:GetValue().."%");
-				getglobal("PowaOptionsTimerUpdateSlider2Low"):SetText("0%"); 
-				getglobal("PowaOptionsTimerUpdateSlider2High"):SetText("100%");
+				PowaOptionsTimerUpdateSlider2Text:SetText(PowaAuras.Text.nomTimerUpdate.." : "..self:GetValue().."%");
+				PowaOptionsTimerUpdateSlider2Low:SetText("0%"); 
+				PowaOptionsTimerUpdateSlider2High:SetText("100%");
 			  </OnLoad>
 			  <OnValueChanged>PowaAuras:PowaOptionsTimerUpdateSliderChanged2(self);</OnValueChanged>
 			</Scripts>
@@ -162,7 +162,7 @@
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-						getglobal("PowaShowAuraBrowserButtonText"):SetText(PowaAuras.Text.nomPowaShowAuraBrowser);
+						PowaShowAuraBrowserButtonText:SetText(PowaAuras.Text.nomPowaShowAuraBrowser);
 					</OnLoad>
 					<OnClick>
 						PowaAuras:MainOptionShow();
@@ -184,7 +184,7 @@
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-						getglobal("PowaResetPositionButtonText"):SetText(PowaAuras.Text.nomReset);
+						PowaResetPositionButtonText:SetText(PowaAuras.Text.nomReset);
 					</OnLoad>
 					<OnClick>
 						PowaAuras:ShowText("PowaResetPositionButton OnClick");

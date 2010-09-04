@@ -464,14 +464,14 @@ function PowaAuras:MemorizeActions(actionIndex)
 							--- remember the texture
 							local tempicon;
 							if (actionAura.owntex == true) then
-								getglobal("PowaIconTexture"):SetTexture(GetActionTexture(i));
-								tempicon = getglobal("PowaIconTexture"):GetTexture();
+								PowaIconTexture:SetTexture(GetActionTexture(i));
+								tempicon = PowaIconTexture:GetTexture();
 								if (actionAura.icon ~= tempicon) then
 									actionAura.icon = tempicon;
 								end
 							elseif (actionAura.icon == "") then
-								getglobal("PowaIconTexture"):SetTexture(GetActionTexture(i));
-								actionAura.icon = getglobal("PowaIconTexture"):GetTexture();
+								PowaIconTexture:SetTexture(GetActionTexture(i));
+								actionAura.icon = PowaIconTexture:GetTexture();
 							end
 						end
 					end
