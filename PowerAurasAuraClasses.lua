@@ -2743,7 +2743,7 @@ function cPowaTotems:CheckIfShouldShow(giveReason)
 			end
 
 		else
-			for slot in pairs (PowaAuras.TotemSlots) do
+			for slot = 1, 4 do
 				local haveTotem, totemName, startTime, duration = GetTotemInfo(slot);
 				if (self:MatchText(totemName, pword)) then
 					if (self:IconIsRequired()) then
