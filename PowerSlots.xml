@@ -46,12 +46,6 @@
 <!-- ItemSlot Template -->
 <Button name="PowaItemSlotTemplate" inherits="ItemButtonTemplate" virtual="true">
 	<Scripts>
-		<OnLoad>
-			--CharacterInfo:ItemSlotButton_OnLoad();
-		</OnLoad>
-		<OnEnter>
-			--CharacterInfo:ItemSlotButton_OnEnter();
-		</OnEnter>
 		<OnLeave>
 			self.updateTooltip = nil;
 			GameTooltip:Hide();

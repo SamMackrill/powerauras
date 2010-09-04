@@ -716,7 +716,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
             <Scripts>
               <OnLoad>
               	self.tooltipText = PowaAuras.Text.aideTexMode; 
-              	getglobal("PowaTexModeButtonText"):SetText(PowaAuras.Text.nomTexMode);
+              	PowaTexModeButtonText:SetText(PowaAuras.Text.nomTexMode);
               </OnLoad>
               <OnClick>PowaAuras:TexModeChecked();</OnClick>
             </Scripts>
@@ -742,7 +742,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
             <Scripts>
               <OnLoad>
               	self.tooltipText = PowaAuras.Text.aideWowTextures; 
-              	getglobal("PowaWowTextureButtonText"):SetText(PowaAuras.Text.nomWowTextures);
+              	PowaWowTextureButtonText:SetText(PowaAuras.Text.nomWowTextures);
               </OnLoad>
               <OnClick>PowaAuras:WowTexturesChecked();</OnClick>
             </Scripts>
@@ -767,7 +767,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
             <Scripts>
               <OnLoad>
               	self.tooltipText = PowaAuras.Text.aideCustomTextures; 
-              	getglobal("PowaCustomTextureButtonText"):SetText(PowaAuras.Text.nomCustomTextures);
+              	PowaCustomTextureButtonText:SetText(PowaAuras.Text.nomCustomTextures);
               </OnLoad>
               <OnClick>PowaAuras:CustomTexturesChecked();</OnClick>
             </Scripts>
@@ -793,7 +793,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
             <Scripts>
               <OnLoad>
               	self.tooltipText = PowaAuras.Text.aideTextAura; 
-              	getglobal("PowaTextAuraButtonText"):SetText(PowaAuras.Text.nomTextAura);
+              	PowaTextAuraButtonText:SetText(PowaAuras.Text.nomTextAura);
               </OnLoad>
               <OnClick>PowaAuras:TextAuraChecked();</OnClick>
             </Scripts>
@@ -819,7 +819,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
             <Scripts>
               <OnLoad>
               	self.tooltipText = PowaAuras.Text.aideRandomColor; 
-              	getglobal("PowaRandomColorButtonText"):SetText(PowaAuras.Text.nomRandomColor);
+              	PowaRandomColorButtonText:SetText(PowaAuras.Text.nomRandomColor);
               </OnLoad>
               <OnClick>PowaAuras:RandomColorChecked();</OnClick>
             </Scripts>
@@ -844,9 +844,9 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
             <Scripts>
               <OnLoad>
               	self:SetMinMaxValues(0.1,1.0); self:SetValue(1.0); self:SetValueStep(0.01); 
-              	getglobal("PowaBarAuraAlphaSliderText"):SetText(PowaAuras.Text.nomAlpha.." : 1.0");
-              	getglobal("PowaBarAuraAlphaSliderLow"):SetText("10"); 
-              	getglobal("PowaBarAuraAlphaSliderHigh"):SetText("100");
+              	PowaBarAuraAlphaSliderText:SetText(PowaAuras.Text.nomAlpha.." : 1.0");
+              	PowaBarAuraAlphaSliderLow:SetText("10"); 
+              	PowaBarAuraAlphaSliderHigh:SetText("100");
               </OnLoad>
               <OnValueChanged>PowaAuras:BarAuraAlphaSliderChanged();</OnValueChanged>
             </Scripts>
@@ -871,9 +871,9 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
             <Scripts>
               <OnLoad>
               	self.aide = PowaAuras.Text.aideDeform; self:SetMinMaxValues(0.5,1.5); self:SetValue(1); self:SetValueStep(0.01); 
-              	getglobal("PowaBarAuraDeformSliderText"):SetText(PowaAuras.Text.nomDeform.." : 1"); 
-              	getglobal("PowaBarAuraDeformSliderLow"):SetText(PowaAuras.Text.hauteur); 
-              	getglobal("PowaBarAuraDeformSliderHigh"):SetText(PowaAuras.Text.largeur);
+              	PowaBarAuraDeformSliderText:SetText(PowaAuras.Text.nomDeform.." : 1"); 
+              	PowaBarAuraDeformSliderLow:SetText(PowaAuras.Text.hauteur); 
+              	PowaBarAuraDeformSliderHigh:SetText(PowaAuras.Text.largeur);
               </OnLoad>
               <OnValueChanged>PowaAuras:BarAuraDeformSliderChanged();</OnValueChanged>
             </Scripts>
@@ -898,9 +898,9 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
             <Scripts>
               <OnLoad>
               	self:SetMinMaxValues(0,3); self:SetValue(0); self:SetValueStep(1); 
-              	getglobal("PowaBarAuraSymSliderText"):SetText(PowaAuras.Text.nomSymetrie.." : "..PowaAuras.Text.aucune);
-              	getglobal("PowaBarAuraSymSliderLow"):SetText(PowaAuras.Text.aucune); 
-              	getglobal("PowaBarAuraSymSliderHigh"):SetText("XY");
+              	PowaBarAuraSymSliderText:SetText(PowaAuras.Text.nomSymetrie.." : "..PowaAuras.Text.aucune);
+              	PowaBarAuraSymSliderLow:SetText(PowaAuras.Text.aucune); 
+              	PowaBarAuraSymSliderHigh:SetText("XY");
               </OnLoad>
               <OnValueChanged>PowaAuras:BarAuraSymSliderChanged();</OnValueChanged>
             </Scripts>
@@ -925,9 +925,9 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
             <Scripts>
               <OnLoad>
               	self:SetMinMaxValues(0.02,5.0); self:SetValue(1.0); self:SetValueStep(0.01); 
-              	getglobal("PowaBarAuraSizeSliderText"):SetText(PowaAuras.Text.nomTaille.." : 100");
-              	getglobal("PowaBarAuraSizeSliderLow"):SetText("2%"); 
-              	getglobal("PowaBarAuraSizeSliderHigh"):SetText("500%");
+              	PowaBarAuraSizeSliderText:SetText(PowaAuras.Text.nomTaille.." : 100");
+              	PowaBarAuraSizeSliderLow:SetText("2%"); 
+              	PowaBarAuraSizeSliderHigh:SetText("500%");
               </OnLoad>
               <OnValueChanged>PowaAuras:BarAuraSizeSliderChanged();</OnValueChanged>
             </Scripts>
@@ -952,15 +952,15 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
             <Scripts>
               <OnLoad>
               	self:SetMinMaxValues(-300,300); self:SetValue(0); self:SetValueStep(1); 
-              	getglobal("PowaBarAuraCoordXSliderText"):SetText(PowaAuras.Text.nomPos.." X : 0");
-              	getglobal("PowaBarAuraCoordXSliderLow"):SetText("-300"); 
-              	getglobal("PowaBarAuraCoordXSliderHigh"):SetText("300");
+              	PowaBarAuraCoordXSliderText:SetText(PowaAuras.Text.nomPos.." X : 0");
+              	PowaBarAuraCoordXSliderLow:SetText("-300"); 
+              	PowaBarAuraCoordXSliderHigh:SetText("300");
               </OnLoad>
               <OnValueChanged>PowaAuras:BarAuraCoordXSliderChanged();</OnValueChanged>
               <OnMouseUp>
               	self:SetMinMaxValues(self:GetValue()-200,self:GetValue()+200); 
-              	getglobal("PowaBarAuraCoordXSliderLow"):SetText(self:GetValue()-200);
-              	getglobal("PowaBarAuraCoordXSliderHigh"):SetText(self:GetValue()+200);
+              	PowaBarAuraCoordXSliderLow:SetText(self:GetValue()-200);
+              	PowaBarAuraCoordXSliderHigh:SetText(self:GetValue()+200);
               </OnMouseUp>
             </Scripts>
           </Slider>
@@ -1013,15 +1013,15 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
             <Scripts>
               <OnLoad>
               	self:SetMinMaxValues(-300,300); self:SetValue(-30); self:SetValueStep(1); 
-              	getglobal("PowaBarAuraCoordSliderText"):SetText(PowaAuras.Text.nomPos.." Y : -30");
-              	getglobal("PowaBarAuraCoordSliderLow"):SetText("-300"); 
-              	getglobal("PowaBarAuraCoordSliderHigh"):SetText("300");
+              	PowaBarAuraCoordSliderText:SetText(PowaAuras.Text.nomPos.." Y : -30");
+              	PowaBarAuraCoordSliderLow:SetText("-300"); 
+              	PowaBarAuraCoordSliderHigh:SetText("300");
               </OnLoad>
               <OnValueChanged>PowaAuras:BarAuraCoordSliderChanged();</OnValueChanged>
               <OnMouseUp>
               	self:SetMinMaxValues(self:GetValue()-200,self:GetValue()+200); 
-              	getglobal("PowaBarAuraCoordSliderLow"):SetText(self:GetValue()-200);
-              	getglobal("PowaBarAuraCoordSliderHigh"):SetText(self:GetValue()+200);
+              	PowaBarAuraCoordSliderLow:SetText(self:GetValue()-200);
+              	PowaBarAuraCoordSliderHigh:SetText(self:GetValue()+200);
               </OnMouseUp>
             </Scripts>
           </Slider>
@@ -1337,7 +1337,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Anchors>
                 <Scripts>
                   <OnLoad>
-                  	getglobal("PowaBarBuffStacksLabel"):SetText(PowaAuras.Text.nomStacks); 
+                  	PowaBarBuffStacksLabel:SetText(PowaAuras.Text.nomStacks); 
                   	self:SetMaxLetters(10);
 					self.aide = PowaAuras.Text.aideStacks;
                   </OnLoad>
@@ -1397,7 +1397,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Layers>
                 <Scripts>
                   <OnLoad>
-                  	getglobal("PowaDropDownBuffTypeLabel"):SetText(PowaAuras.Text.nomActivationBy); 
+                  	PowaDropDownBuffTypeLabel:SetText(PowaAuras.Text.nomActivationBy); 
                   	UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);
                   </OnLoad>
                   <OnEnter>GameTooltip:SetOwner(self, "ANCHOR_RIGHT");</OnEnter>
@@ -1438,7 +1438,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Layers>
                 <Scripts>
                   <OnLoad>
-                  	getglobal("PowaDropDownStanceLabel"):SetText(PowaAuras.Text.nomStance); 
+                  	PowaDropDownStanceLabel:SetText(PowaAuras.Text.nomStance); 
                   	UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);
                   </OnLoad>
                   <OnShow>UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);</OnShow>
@@ -1480,7 +1480,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Layers>
                 <Scripts>
                   <OnLoad>
-                  	getglobal("PowaDropDownGTFOLabel"):SetText(PowaAuras.Text.nomGTFO); 
+                  	PowaDropDownGTFOLabel:SetText(PowaAuras.Text.nomGTFO); 
                   	UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);
                   </OnLoad>
                   <OnShow>UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);</OnShow>
@@ -1552,7 +1552,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   </Anchor>
                 </Anchors>
                 <Scripts>
-                  <OnLoad>self.tooltipText = PowaAuras.Text.aideOwnTex; getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomOwnTex); getglobal("PowaOwntexButtonText"):SetTextColor(1.0,0.2,0.2);</OnLoad>
+                  <OnLoad>self.tooltipText = PowaAuras.Text.aideOwnTex; getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomOwnTex); PowaOwntexButtonText:SetTextColor(1.0,0.2,0.2);</OnLoad>
                   <OnClick>PowaAuras:OwntexChecked();</OnClick>
                 </Scripts>
               </CheckButton>
@@ -1573,7 +1573,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   </Anchor>
                 </Anchors>
                 <Scripts>
-                  <OnLoad>self.tooltipText = PowaAuras.Text.aideExact; getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomExact); getglobal("PowaExactButtonText"):SetTextColor(1.0,0.2,0.2);</OnLoad>
+                  <OnLoad>self.tooltipText = PowaAuras.Text.aideExact; getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomExact); PowaExactButtonText:SetTextColor(1.0,0.2,0.2);</OnLoad>
                   <OnClick>PowaAuras:ExactChecked();</OnClick>
                 </Scripts>
               </CheckButton>
@@ -2078,8 +2078,8 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 <Scripts>
                   <OnLoad>
                   	self.tooltipText = PowaAuras.Text.aideTarget; 
-                  	getglobal("PowaTargetButtonText"):SetText(PowaAuras.Text.nomCheckTarget);
-                  	getglobal("PowaTargetButtonText"):SetTextColor(1.0,0.2,0.2);
+                  	PowaTargetButtonText:SetText(PowaAuras.Text.nomCheckTarget);
+                  	PowaTargetButtonText:SetTextColor(1.0,0.2,0.2);
                   </OnLoad>
                   <OnClick>PowaAuras:TargetChecked();</OnClick>
                 </Scripts>
@@ -2103,8 +2103,8 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 <Scripts>
                   <OnLoad>
                   	self.tooltipText = PowaAuras.Text.aideTargetFriend; 
-                  	getglobal("PowaTargetFriendButtonText"):SetText(PowaAuras.Text.nomCheckFriend);
-                  	getglobal("PowaTargetFriendButtonText"):SetTextColor(0.2,1.0,0.2);
+                  	PowaTargetFriendButtonText:SetText(PowaAuras.Text.nomCheckFriend);
+                  	PowaTargetFriendButtonText:SetTextColor(0.2,1.0,0.2);
                   </OnLoad>
                   <OnClick>PowaAuras:TargetFriendChecked();</OnClick>
                 </Scripts>
@@ -2128,8 +2128,8 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 <Scripts>
                   <OnLoad>
                   	self.tooltipText = PowaAuras.Text.aideFocus; 
-                  	getglobal("PowaFocusButtonText"):SetText(PowaAuras.Text.nomCheckFocus); 
-                  	getglobal("PowaFocusButtonText"):SetTextColor(0.2,1.0,0.2);
+                  	PowaFocusButtonText:SetText(PowaAuras.Text.nomCheckFocus); 
+                  	PowaFocusButtonText:SetTextColor(0.2,1.0,0.2);
                   </OnLoad>
                   <OnClick>PowaAuras:FocusChecked();</OnClick>
                 </Scripts>
@@ -2154,8 +2154,8 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 <Scripts>
                   <OnLoad>
                   	self.tooltipText = PowaAuras.Text.aideGroupOrSelf; 
-                  	getglobal("PowaGroupOrSelfButtonText"):SetText(PowaAuras.Text.nomCheckGroupOrSelf); 
-                  	getglobal("PowaGroupOrSelfButtonText"):SetTextColor(0.2,1.0,0.2);
+                  	PowaGroupOrSelfButtonText:SetText(PowaAuras.Text.nomCheckGroupOrSelf); 
+                  	PowaGroupOrSelfButtonText:SetTextColor(0.2,1.0,0.2);
                   </OnLoad>
                   <OnClick>PowaAuras:GroupOrSelfChecked();</OnClick>
                 </Scripts>
@@ -2181,8 +2181,8 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 <Scripts>
                   <OnLoad>
                   	self.tooltipText = PowaAuras.Text.aideParty; 
-                  	getglobal("PowaPartyButtonText"):SetText(PowaAuras.Text.nomCheckParty); 
-                  	getglobal("PowaPartyButtonText"):SetTextColor(0.2,1.0,0.2);
+                  	PowaPartyButtonText:SetText(PowaAuras.Text.nomCheckParty); 
+                  	PowaPartyButtonText:SetTextColor(0.2,1.0,0.2);
                   </OnLoad>
                   <OnClick>PowaAuras:PartyChecked();</OnClick>
                 </Scripts>
@@ -2206,8 +2206,8 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 <Scripts>
                   <OnLoad>
                   	self.tooltipText = PowaAuras.Text.aideRaid; 
-                  	getglobal("PowaRaidButtonText"):SetText(PowaAuras.Text.nomCheckRaid); 
-                  	getglobal("PowaRaidButtonText"):SetTextColor(0.2,1.0,0.2);
+                  	PowaRaidButtonText:SetText(PowaAuras.Text.nomCheckRaid); 
+                  	PowaRaidButtonText:SetTextColor(0.2,1.0,0.2);
                   </OnLoad>
                   <OnClick>PowaAuras:RaidChecked();</OnClick>
                 </Scripts>
@@ -2231,8 +2231,8 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 <Scripts>
                   <OnLoad>
                   	self.tooltipText = PowaAuras.Text.aideOptunitn; 
-                  	getglobal("PowaOptunitnButtonText"):SetText(PowaAuras.Text.nomCheckOptunitn);
-                  	getglobal("PowaOptunitnButtonText"):SetTextColor(0.2,1.0,0.2);
+                  	PowaOptunitnButtonText:SetText(PowaAuras.Text.nomCheckOptunitn);
+                  	PowaOptunitnButtonText:SetTextColor(0.2,1.0,0.2);
                   </OnLoad>
                   <OnClick>PowaAuras:OptunitnChecked();</OnClick>
                 </Scripts>
@@ -2310,7 +2310,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   </Anchor>
                 </Anchors>
                 <Scripts>
-                  <OnLoad>self.tooltipText = PowaAuras.Text.aideTalentGroup1; getglobal("PowaTalentGroup1ButtonText"):SetText(PowaAuras.Text.nomTalentGroup1);</OnLoad>
+                  <OnLoad>self.tooltipText = PowaAuras.Text.aideTalentGroup1; PowaTalentGroup1ButtonText:SetText(PowaAuras.Text.nomTalentGroup1);</OnLoad>
                   <OnClick>PowaAuras:SettingChecked(self, "spec1");</OnClick>
                 </Scripts>
               </CheckButton>
@@ -2331,7 +2331,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   </Anchor>
                 </Anchors>
                 <Scripts>
-                  <OnLoad>self.tooltipText = PowaAuras.Text.aideTalentGroup2; getglobal("PowaTalentGroup2ButtonText"):SetText(PowaAuras.Text.nomTalentGroup2);</OnLoad>
+                  <OnLoad>self.tooltipText = PowaAuras.Text.aideTalentGroup2; PowaTalentGroup2ButtonText:SetText(PowaAuras.Text.nomTalentGroup2);</OnLoad>
                   <OnClick>PowaAuras:SettingChecked(self, "spec2");</OnClick>
                 </Scripts>
               </CheckButton>
@@ -2355,7 +2355,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 <Scripts>
                   <OnLoad>
                   	self.tooltipText = PowaAuras.Text.aideGroupAny; 
-                  	getglobal("PowaGroupAnyButtonText"):SetText(PowaAuras.Text.nomCheckGroupAny); 
+                  	PowaGroupAnyButtonText:SetText(PowaAuras.Text.nomCheckGroupAny); 
                   </OnLoad>
                   <OnClick>PowaAuras:GroupAnyChecked();</OnClick>
                 </Scripts>
@@ -2463,7 +2463,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Layers>
                 <Scripts>
                   <OnLoad>
-                  	getglobal("PowaDropDownAnimBeginLabel"):SetText(PowaAuras.Text.nomBegin); 
+                  	PowaDropDownAnimBeginLabel:SetText(PowaAuras.Text.nomBegin); 
                   	UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);
                   </OnLoad>
                   <OnShow>UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);</OnShow>
@@ -2503,7 +2503,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Layers>
                 <Scripts>
                   <OnLoad>
-                  	getglobal("PowaDropDownAnimEndLabel"):SetText(PowaAuras.Text.nomEnd); 
+                  	PowaDropDownAnimEndLabel:SetText(PowaAuras.Text.nomEnd); 
                   	UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);
                   </OnLoad>
                   <OnShow>UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);</OnShow>
@@ -2529,7 +2529,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 <Scripts>
                   <OnLoad>
                   	self.tooltipText = PowaAuras.Text.aideShowSpinAtBeginning; 
-                  	getglobal("PowaShowSpinAtBeginningText"):SetText(PowaAuras.Text.nomCheckShowSpinAtBeginning);
+                  	PowaShowSpinAtBeginningText:SetText(PowaAuras.Text.nomCheckShowSpinAtBeginning);
                   </OnLoad>
                   <OnClick>PowaAuras:ShowSpinAtBeginningChecked(self);</OnClick>
                 </Scripts>
@@ -2570,7 +2570,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Layers>
                 <Scripts>
                   <OnLoad>
-                  	getglobal("PowaDropDownAnim1Label"):SetText(PowaAuras.Text.nomAnim1); 
+                  	PowaDropDownAnim1Label:SetText(PowaAuras.Text.nomAnim1); 
                   	UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);
                   </OnLoad>
                   <OnShow>UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);</OnShow>
@@ -2613,7 +2613,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Layers>
                 <Scripts>
                   <OnLoad>
-                  	getglobal("PowaDropDownAnim2Label"):SetText(PowaAuras.Text.nomAnim2); 
+                  	PowaDropDownAnim2Label:SetText(PowaAuras.Text.nomAnim2); 
                   	UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);
                   </OnLoad>
                   <OnShow>UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);</OnShow>
@@ -2641,9 +2641,9 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 <Scripts>
                   <OnLoad>
                   	self:SetMinMaxValues(0.05,2.00); self:SetValue(1.0); self:SetValueStep(0.01); 
-                  	getglobal("PowaBarAuraAnimSpeedSliderText"):SetText(PowaAuras.Text.nomSpeed.." : 100%");
-                  	getglobal("PowaBarAuraAnimSpeedSliderLow"):SetText("5"); 
-                  	getglobal("PowaBarAuraAnimSpeedSliderHigh"):SetText("200");
+                  	PowaBarAuraAnimSpeedSliderText:SetText(PowaAuras.Text.nomSpeed.." : 100%");
+                  	PowaBarAuraAnimSpeedSliderLow:SetText("5"); 
+                  	PowaBarAuraAnimSpeedSliderHigh:SetText("200");
                   </OnLoad>
                   <OnValueChanged>PowaAuras:BarAuraAnimSpeedSliderChanged(self);</OnValueChanged>
                 </Scripts>
@@ -2668,9 +2668,9 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 <Scripts>
                   <OnLoad>
                   	self.aide = PowaAuras.Text.aideDuration; self:SetMinMaxValues(0,30); self:SetValue(0); self:SetValueStep(0.25);
-                  	getglobal("PowaBarAuraDurationSliderText"):SetText(PowaAuras.Text.nomDuration.." : 0 sec"); 
-                  	getglobal("PowaBarAuraDurationSliderLow"):SetText(PowaAuras.Text.aucune);
-                  	getglobal("PowaBarAuraDurationSliderHigh"):SetText("30");
+                  	PowaBarAuraDurationSliderText:SetText(PowaAuras.Text.nomDuration.." : 0 sec"); 
+                  	PowaBarAuraDurationSliderLow:SetText(PowaAuras.Text.aucune);
+                  	PowaBarAuraDurationSliderHigh:SetText("30");
                   </OnLoad>
                   <OnValueChanged>PowaAuras:BarAuraAnimDurationSliderChanged(self);</OnValueChanged>
                 </Scripts>
@@ -2695,7 +2695,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 <Scripts>
                   <OnLoad>
                   	self.tooltipText = "Use Old Animations"; 
-                  	getglobal("PowaOldAnimationText"):SetText("Old Animations");
+                  	PowaOldAnimationText:SetText("Old Animations");
                   </OnLoad>
                   <OnClick>PowaAuras:OldAnimationChecked(self);</OnClick>
                 </Scripts>
@@ -2807,8 +2807,8 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Layers>
                 <Scripts>
                   <OnLoad>
-                  	getglobal("PowaDropDownSoundLabel"):SetText(PowaAuras.Text.nomSound); 
-                  	getglobal("PowaStartSoundText"):SetText(PowaAuras.Text.nomSoundStarting); 
+                  	PowaDropDownSoundLabel:SetText(PowaAuras.Text.nomSound); 
+                  	PowaStartSoundText:SetText(PowaAuras.Text.nomSoundStarting); 
                   	UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);
                   </OnLoad>
                   <OnShow>UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);</OnShow>
@@ -2851,7 +2851,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Layers>
                 <Scripts>
                   <OnLoad>
-                  	getglobal("PowaDropDownSound2Label"):SetText(PowaAuras.Text.nomSound2); 
+                  	PowaDropDownSound2Label:SetText(PowaAuras.Text.nomSound2); 
                   	UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);
                   </OnLoad>
                   <OnShow>UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);</OnShow>
@@ -2884,7 +2884,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   </Layer>
                 </Layers>
                 <Scripts>
-                  <OnLoad>getglobal("PowaBarCustomSoundText"):SetText(PowaAuras.Text.nomCustomSound); self:SetMaxLetters(200) self.aide = PowaAuras.Text.aideCustomSound;</OnLoad>
+                  <OnLoad>PowaBarCustomSoundText:SetText(PowaAuras.Text.nomCustomSound); self:SetMaxLetters(200) self.aide = PowaAuras.Text.aideCustomSound;</OnLoad>
                   <OnEnterPressed>self:ClearFocus()</OnEnterPressed>
                   <OnTextChanged>PowaAuras:CustomSoundTextChanged()</OnTextChanged>
                   <OnEnter>GameTooltip:SetOwner(self, "ANCHOR_RIGHT"); GameTooltip:SetText(self.aide, nil, nil, nil, nil, 1);</OnEnter>
@@ -2980,8 +2980,8 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Layers>
                 <Scripts>
                   <OnLoad>
-                  	getglobal("PowaDropDownSoundEndLabel"):SetText(PowaAuras.Text.nomSoundEnd); 
-                 	getglobal("PowaEndSoundText"):SetText(PowaAuras.Text.nomSoundEnding); 
+                  	PowaDropDownSoundEndLabel:SetText(PowaAuras.Text.nomSoundEnd); 
+                 	PowaEndSoundText:SetText(PowaAuras.Text.nomSoundEnding); 
                   	UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);
                   </OnLoad>
                   <OnShow>UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);</OnShow>
@@ -3024,7 +3024,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Layers>
                 <Scripts>
                   <OnLoad>
-                  	getglobal("PowaDropDownSound2EndLabel"):SetText(PowaAuras.Text.nomSound2End); 
+                  	PowaDropDownSound2EndLabel:SetText(PowaAuras.Text.nomSound2End); 
                   	UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);
                   </OnLoad>
                   <OnShow>UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);</OnShow>
@@ -3057,7 +3057,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   </Layer>
                 </Layers>
                 <Scripts>
-                  <OnLoad>getglobal("PowaBarCustomSoundEndText"):SetText(PowaAuras.Text.nomCustomSoundEnd); self:SetMaxLetters(200) self.aide = PowaAuras.Text.aideCustomSoundEnd;</OnLoad>
+                  <OnLoad>PowaBarCustomSoundEndText:SetText(PowaAuras.Text.nomCustomSoundEnd); self:SetMaxLetters(200) self.aide = PowaAuras.Text.aideCustomSoundEnd;</OnLoad>
                   <OnEnterPressed>self:ClearFocus()</OnEnterPressed>
                   <OnTextChanged>PowaAuras:CustomSoundEndTextChanged()</OnTextChanged>
                   <OnEnter>GameTooltip:SetOwner(self, "ANCHOR_RIGHT"); GameTooltip:SetText(self.aide, nil, nil, nil, nil, 1);</OnEnter>
@@ -3147,8 +3147,8 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 <Scripts>
                   <OnLoad>
                   	self.tooltipText = PowaAuras.Text.aideShowTimer; 
-                  	getglobal("PowaShowTimerButtonText"):SetText(PowaAuras.Text.nomCheckShowTimer);
-                  	getglobal("PowaShowTimerButtonText"):SetTextColor(0.2,1.0,0.2);
+                  	PowaShowTimerButtonText:SetText(PowaAuras.Text.nomCheckShowTimer);
+                  	PowaShowTimerButtonText:SetTextColor(0.2,1.0,0.2);
                   </OnLoad>
                   <OnClick>PowaAuras:ShowTimerChecked(self);</OnClick>
                 </Scripts>
@@ -3173,15 +3173,15 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 <Scripts>
                   <OnLoad>
                   	self:SetMinMaxValues(-150,150); self:SetValue(0); self:SetValueStep(1); 
-                  	getglobal("PowaTimerCoordXSliderText"):SetText(PowaAuras.Text.nomPos.." X : 0");
-                  	getglobal("PowaTimerCoordXSliderLow"):SetText("-150"); 
-                  	getglobal("PowaTimerCoordXSliderHigh"):SetText("150");
+                  	PowaTimerCoordXSliderText:SetText(PowaAuras.Text.nomPos.." X : 0");
+                  	PowaTimerCoordXSliderLow:SetText("-150"); 
+                  	PowaTimerCoordXSliderHigh:SetText("150");
                   </OnLoad>
                   <OnValueChanged>PowaAuras:TimerCoordXSliderChanged();</OnValueChanged>
                   <OnMouseUp>
                   	self:SetMinMaxValues(self:GetValue()-100,self:GetValue()+100); 
-                  	getglobal("PowaTimerCoordXSliderLow"):SetText(self:GetValue()-100);
-                  	getglobal("PowaTimerCoordXSliderHigh"):SetText(self:GetValue()+100);
+                  	PowaTimerCoordXSliderLow:SetText(self:GetValue()-100);
+                  	PowaTimerCoordXSliderHigh:SetText(self:GetValue()+100);
                   </OnMouseUp>
                 </Scripts>
               </Slider>
@@ -3205,15 +3205,15 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 <Scripts>
                   <OnLoad>
                   	self:SetMinMaxValues(-200,100); self:SetValue(0); self:SetValueStep(1); 
-                  	getglobal("PowaTimerCoordSliderText"):SetText(PowaAuras.Text.nomPos.." Y : 0");
-                  	getglobal("PowaTimerCoordSliderLow"):SetText("-200"); 
-                  	getglobal("PowaTimerCoordSliderHigh"):SetText("100");
+                  	PowaTimerCoordSliderText:SetText(PowaAuras.Text.nomPos.." Y : 0");
+                  	PowaTimerCoordSliderLow:SetText("-200"); 
+                  	PowaTimerCoordSliderHigh:SetText("100");
                   </OnLoad>
                   <OnValueChanged>PowaAuras:TimerCoordSliderChanged();</OnValueChanged>
                   <OnMouseUp>
                   	self:SetMinMaxValues(self:GetValue()-100,self:GetValue()+100); 
-                  	getglobal("PowaTimerCoordSliderLow"):SetText(self:GetValue()-100);
-                  	getglobal("PowaTimerCoordSliderHigh"):SetText(self:GetValue()+100);
+                  	PowaTimerCoordSliderLow:SetText(self:GetValue()-100);
+                  	PowaTimerCoordSliderHigh:SetText(self:GetValue()+100);
                   </OnMouseUp>
                 </Scripts>
               </Slider>
@@ -3237,9 +3237,9 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 <Scripts>
                   <OnLoad>
                   	self:SetMinMaxValues(0.5,10.0); self:SetValue(1.0); self:SetValueStep(0.01); 
-                  	getglobal("PowaTimerSizeSliderText"):SetText(PowaAuras.Text.nomTaille.." : 1.0");
-                  	getglobal("PowaTimerSizeSliderLow"):SetText("0.5"); 
-                  	getglobal("PowaTimerSizeSliderHigh"):SetText("10.0");
+                  	PowaTimerSizeSliderText:SetText(PowaAuras.Text.nomTaille.." : 1.0");
+                  	PowaTimerSizeSliderLow:SetText("0.5"); 
+                  	PowaTimerSizeSliderHigh:SetText("10.0");
                   </OnLoad>
                   <OnValueChanged>PowaAuras:TimerSizeSliderChanged();</OnValueChanged>
                 </Scripts>
@@ -3264,9 +3264,9 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 <Scripts>
                   <OnLoad>
                   	self:SetMinMaxValues(0.1,1.0); self:SetValue(1.0); self:SetValueStep(0.01); 
-                  	getglobal("PowaTimerAlphaSliderText"):SetText(PowaAuras.Text.nomAlpha.." : 1.0");
-                  	getglobal("PowaTimerAlphaSliderLow"):SetText("0.1"); 
-                  	getglobal("PowaTimerAlphaSliderHigh"):SetText("1.0");
+                  	PowaTimerAlphaSliderText:SetText(PowaAuras.Text.nomAlpha.." : 1.0");
+                  	PowaTimerAlphaSliderLow:SetText("0.1"); 
+                  	PowaTimerAlphaSliderHigh:SetText("1.0");
                   </OnLoad>
                   <OnValueChanged>PowaAuras:TimerAlphaSliderChanged();</OnValueChanged>
                 </Scripts>
@@ -3291,9 +3291,9 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 <Scripts>
                   <OnLoad>
                   	self.aide = PowaAuras.Text.aideTimerDuration; self:SetMinMaxValues(0,60); self:SetValue(0); self:SetValueStep(1);
-                  	getglobal("PowaTimerDurationSliderText"):SetText(PowaAuras.Text.nomTimerDuration.." : 0"); 
-                  	getglobal("PowaTimerDurationSliderLow"):SetText("0");
-                  	getglobal("PowaTimerDurationSliderHigh"):SetText("60");
+                  	PowaTimerDurationSliderText:SetText(PowaAuras.Text.nomTimerDuration.." : 0"); 
+                  	PowaTimerDurationSliderLow:SetText("0");
+                  	PowaTimerDurationSliderHigh:SetText("60");
                   </OnLoad>
                   <OnValueChanged>PowaAuras:TimerDurationSliderChanged();</OnValueChanged>
                 </Scripts>
@@ -3661,8 +3661,8 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 <Scripts>
                   <OnLoad>
                   	self.tooltipText = PowaAuras.Text.aideShowStacks; 
-                  	getglobal("PowaShowStacksButtonText"):SetText(PowaAuras.Text.nomCheckShowStacks);
-                  	getglobal("PowaShowStacksButtonText"):SetTextColor(0.2,1.0,0.2);
+                  	PowaShowStacksButtonText:SetText(PowaAuras.Text.nomCheckShowStacks);
+                  	PowaShowStacksButtonText:SetTextColor(0.2,1.0,0.2);
                   </OnLoad>
                   <OnClick>PowaAuras:ShowStacksChecked(self);</OnClick>
                 </Scripts>
@@ -3687,15 +3687,15 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 <Scripts>
                   <OnLoad>
                   	self:SetMinMaxValues(-150,150); self:SetValue(0); self:SetValueStep(1); 
-                  	getglobal("PowaStacksCoordXSliderText"):SetText(PowaAuras.Text.nomPos.." X : 0");
-                  	getglobal("PowaStacksCoordXSliderLow"):SetText("-150"); 
-                  	getglobal("PowaStacksCoordXSliderHigh"):SetText("150");
+                  	PowaStacksCoordXSliderText:SetText(PowaAuras.Text.nomPos.." X : 0");
+                  	PowaStacksCoordXSliderLow:SetText("-150"); 
+                  	PowaStacksCoordXSliderHigh:SetText("150");
                   </OnLoad>
                   <OnValueChanged>PowaAuras:StacksCoordXSliderChanged();</OnValueChanged>
                   <OnMouseUp>
                   	self:SetMinMaxValues(self:GetValue()-100,self:GetValue()+100); 
-                  	getglobal("PowaStacksCoordXSliderLow"):SetText(self:GetValue()-100);
-                  	getglobal("PowaStacksCoordXSliderHigh"):SetText(self:GetValue()+100);
+                  	PowaStacksCoordXSliderLow:SetText(self:GetValue()-100);
+                  	PowaStacksCoordXSliderHigh:SetText(self:GetValue()+100);
                   </OnMouseUp>
                 </Scripts>
               </Slider>
@@ -3719,15 +3719,15 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 <Scripts>
                   <OnLoad>
                   	self:SetMinMaxValues(-200,100); self:SetValue(0); self:SetValueStep(1); 
-                  	getglobal("PowaStacksCoordSliderText"):SetText(PowaAuras.Text.nomPos.." Y : 0");
-                  	getglobal("PowaStacksCoordSliderLow"):SetText("-200"); 
-                  	getglobal("PowaStacksCoordSliderHigh"):SetText("100");
+                  	PowaStacksCoordSliderText:SetText(PowaAuras.Text.nomPos.." Y : 0");
+                  	PowaStacksCoordSliderLow:SetText("-200"); 
+                  	PowaStacksCoordSliderHigh:SetText("100");
                   </OnLoad>
                   <OnValueChanged>PowaAuras:StacksCoordSliderChanged();</OnValueChanged>
                   <OnMouseUp>
                   	self:SetMinMaxValues(self:GetValue()-100,self:GetValue()+100); 
-                  	getglobal("PowaStacksCoordSliderLow"):SetText(self:GetValue()-100);
-                  	getglobal("PowaStacksCoordSliderHigh"):SetText(self:GetValue()+100);
+                  	PowaStacksCoordSliderLow:SetText(self:GetValue()-100);
+                  	PowaStacksCoordSliderHigh:SetText(self:GetValue()+100);
                   </OnMouseUp>
                 </Scripts>
               </Slider>
@@ -3751,9 +3751,9 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 <Scripts>
                   <OnLoad>
                   	self:SetMinMaxValues(0.5,10.0); self:SetValue(1.0); self:SetValueStep(0.01); 
-                  	getglobal("PowaStacksSizeSliderText"):SetText(PowaAuras.Text.nomTaille.." : 1.0");
-                  	getglobal("PowaStacksSizeSliderLow"):SetText("0.5"); 
-                  	getglobal("PowaStacksSizeSliderHigh"):SetText("10.0");
+                  	PowaStacksSizeSliderText:SetText(PowaAuras.Text.nomTaille.." : 1.0");
+                  	PowaStacksSizeSliderLow:SetText("0.5"); 
+                  	PowaStacksSizeSliderHigh:SetText("10.0");
                   </OnLoad>
                   <OnValueChanged>PowaAuras:StacksSizeSliderChanged();</OnValueChanged>
                 </Scripts>
@@ -3778,9 +3778,9 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 <Scripts>
                   <OnLoad>
                   	self:SetMinMaxValues(0.1,1.0); self:SetValue(1.0); self:SetValueStep(0.01); 
-                  	getglobal("PowaStacksAlphaSliderText"):SetText(PowaAuras.Text.nomAlpha.." : 1.0");
-                  	getglobal("PowaStacksAlphaSliderLow"):SetText("0.1"); 
-                  	getglobal("PowaStacksAlphaSliderHigh"):SetText("1.0");
+                  	PowaStacksAlphaSliderText:SetText(PowaAuras.Text.nomAlpha.." : 1.0");
+                  	PowaStacksAlphaSliderLow:SetText("0.1"); 
+                  	PowaStacksAlphaSliderHigh:SetText("1.0");
                   </OnLoad>
                   <OnValueChanged>PowaAuras:StacksAlphaSliderChanged();</OnValueChanged>
                 </Scripts>
@@ -3803,7 +3803,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   </Anchor>
                 </Anchors>
                 <Scripts>
-                  <OnLoad>getglobal("PowaBuffStacksTransparentButtonText"):SetText(PowaAuras.Text.nomTransparent);</OnLoad>
+                  <OnLoad>PowaBuffStacksTransparentButtonText:SetText(PowaAuras.Text.nomTransparent);</OnLoad>
                   <OnClick>PowaAuras:StacksChecked(self, "Transparent");</OnClick>
                 </Scripts>
               </CheckButton>
@@ -3825,7 +3825,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   </Anchor>
                 </Anchors>
                 <Scripts>
-                  <OnLoad>getglobal("PowaBuffStacksUpdatePingButtonText"):SetText(PowaAuras.Text.nomUpdatePing);</OnLoad>
+                  <OnLoad>PowaBuffStacksUpdatePingButtonText:SetText(PowaAuras.Text.nomUpdatePing);</OnLoad>
                   <OnClick>PowaAuras:StacksChecked(self, "UpdatePing");</OnClick>
                 </Scripts>
               </CheckButton>
@@ -4012,15 +4012,15 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               	PanelTemplates_DeselectTab(PowaEditorTab3); 
               	PanelTemplates_DeselectTab(PowaEditorTab4);
               	PanelTemplates_DeselectTab(PowaEditorTab5);
-              	getglobal("PowaBarConfigFrameEditor2"):Show(); 
-              	getglobal("PowaBarConfigFrameEditor3"):Hide(); 
-              	getglobal("PowaBarConfigFrameEditor4"):Hide();
-              	getglobal("PowaBarConfigFrameEditor5"):Hide(); 
-              	getglobal("PowaBarConfigFrameEditor6"):Hide(); 
+              	PowaBarConfigFrameEditor2:Show(); 
+              	PowaBarConfigFrameEditor3:Hide(); 
+              	PowaBarConfigFrameEditor4:Hide();
+              	PowaBarConfigFrameEditor5:Hide(); 
+              	PowaBarConfigFrameEditor6:Hide(); 
               	PlaySound("igCharacterInfoTab");
               </OnClick>
               <OnLoad>
-              	getglobal("PowaEditorTab2Text"):SetText(PowaAuras.Text.nomTabActiv); 
+              	PowaEditorTab2Text:SetText(PowaAuras.Text.nomTabActiv); 
               	PanelTemplates_SelectTab(self); PanelTemplates_TabResize(self, 0);
               	getglobal(self:GetName().."HighlightTexture"):SetWidth(self:GetTextWidth() + 31);
               </OnLoad>
@@ -4045,15 +4045,15 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               	PanelTemplates_DeselectTab(PowaEditorTab3); 
               	PanelTemplates_DeselectTab(PowaEditorTab4);
               	PanelTemplates_DeselectTab(PowaEditorTab5);
-              	getglobal("PowaBarConfigFrameEditor2"):Hide(); 
-              	getglobal("PowaBarConfigFrameEditor3"):Show(); 
-              	getglobal("PowaBarConfigFrameEditor4"):Hide();
-              	getglobal("PowaBarConfigFrameEditor5"):Hide(); 
-              	getglobal("PowaBarConfigFrameEditor6"):Hide(); 
+              	PowaBarConfigFrameEditor2:Hide(); 
+              	PowaBarConfigFrameEditor3:Show(); 
+              	PowaBarConfigFrameEditor4:Hide();
+              	PowaBarConfigFrameEditor5:Hide(); 
+              	PowaBarConfigFrameEditor6:Hide(); 
               	PlaySound("igCharacterInfoTab");
               </OnClick>
               <OnLoad>
-              	getglobal("PowaEditorTab1Text"):SetText(PowaAuras.Text.nomTabAnim); 
+              	PowaEditorTab1Text:SetText(PowaAuras.Text.nomTabAnim); 
               	PanelTemplates_DeselectTab(self); 
               	PanelTemplates_TabResize(self, 0);
               	getglobal(self:GetName().."HighlightTexture"):SetWidth(self:GetTextWidth() + 31);
@@ -4079,15 +4079,15 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               	PanelTemplates_DeselectTab(PowaEditorTab2); 
               	PanelTemplates_DeselectTab(PowaEditorTab3);
               	PanelTemplates_DeselectTab(PowaEditorTab5);
-              	getglobal("PowaBarConfigFrameEditor5"):Show(); 
-              	getglobal("PowaBarConfigFrameEditor2"):Hide(); 
-              	getglobal("PowaBarConfigFrameEditor3"):Hide();
-              	getglobal("PowaBarConfigFrameEditor4"):Hide(); 
-              	getglobal("PowaBarConfigFrameEditor6"):Hide(); 
+              	PowaBarConfigFrameEditor5:Show(); 
+              	PowaBarConfigFrameEditor2:Hide(); 
+              	PowaBarConfigFrameEditor3:Hide();
+              	PowaBarConfigFrameEditor4:Hide(); 
+              	PowaBarConfigFrameEditor6:Hide(); 
               	PlaySound("igCharacterInfoTab");
               </OnClick>
               <OnLoad>
-              	getglobal("PowaEditorTab4Text"):SetText(PowaAuras.Text.nomTabSound); 
+              	PowaEditorTab4Text:SetText(PowaAuras.Text.nomTabSound); 
               	PanelTemplates_DeselectTab(self); 
               	PanelTemplates_TabResize(self, 0);
               	getglobal(self:GetName().."HighlightTexture"):SetWidth(self:GetTextWidth() + 31);
@@ -4113,16 +4113,16 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               	PanelTemplates_DeselectTab(PowaEditorTab2); 
               	PanelTemplates_DeselectTab(PowaEditorTab4);
               	PanelTemplates_DeselectTab(PowaEditorTab5);
-              	getglobal("PowaBarConfigFrameEditor4"):Show(); 
-              	getglobal("PowaBarConfigFrameEditor2"):Hide(); 
-              	getglobal("PowaBarConfigFrameEditor3"):Hide();
-              	getglobal("PowaBarConfigFrameEditor5"):Hide(); 
-              	getglobal("PowaBarConfigFrameEditor6"):Hide(); 
+              	PowaBarConfigFrameEditor4:Show(); 
+              	PowaBarConfigFrameEditor2:Hide(); 
+              	PowaBarConfigFrameEditor3:Hide();
+              	PowaBarConfigFrameEditor5:Hide(); 
+              	PowaBarConfigFrameEditor6:Hide(); 
               	PowaAuras:UpdateTimerOptions(); 
               	PlaySound("igCharacterInfoTab");
               </OnClick>
               <OnLoad>
-              	getglobal("PowaEditorTab3Text"):SetText(PowaAuras.Text.nomTabTimer); 
+              	PowaEditorTab3Text:SetText(PowaAuras.Text.nomTabTimer); 
               	PanelTemplates_DeselectTab(self); 
               	PanelTemplates_TabResize(self, 0);
               	getglobal(self:GetName().."HighlightTexture"):SetWidth(self:GetTextWidth() + 31);
@@ -4148,16 +4148,16 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               	PanelTemplates_DeselectTab(PowaEditorTab2); 
               	PanelTemplates_DeselectTab(PowaEditorTab3); 
               	PanelTemplates_DeselectTab(PowaEditorTab4);
-              	getglobal("PowaBarConfigFrameEditor6"):Show(); 
-              	getglobal("PowaBarConfigFrameEditor2"):Hide(); 
-              	getglobal("PowaBarConfigFrameEditor3"):Hide();
-             	getglobal("PowaBarConfigFrameEditor4"):Hide();
-              	getglobal("PowaBarConfigFrameEditor5"):Hide(); 
+              	PowaBarConfigFrameEditor6:Show(); 
+              	PowaBarConfigFrameEditor2:Hide(); 
+              	PowaBarConfigFrameEditor3:Hide();
+             	PowaBarConfigFrameEditor4:Hide();
+              	PowaBarConfigFrameEditor5:Hide(); 
               	PowaAuras:UpdateStacksOptions(); 
               	PlaySound("igCharacterInfoTab");
               </OnClick>
               <OnLoad>
-              	getglobal("PowaEditorTab5Text"):SetText(PowaAuras.Text.nomTabStacks); 
+              	PowaEditorTab5Text:SetText(PowaAuras.Text.nomTabStacks); 
               	PanelTemplates_DeselectTab(self); 
               	PanelTemplates_TabResize(self, 0);
               	getglobal(self:GetName().."HighlightTexture"):SetWidth(self:GetTextWidth() + 31);
