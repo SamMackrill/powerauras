@@ -224,7 +224,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
 		</Size>
 		<Scripts>
 			<OnClick>
-				PowaAuras.Ternary_OnClick()
+				PowaAuras.Ternary_OnClick(self)
 			</OnClick>
 		  <OnEnter>
 			PowaAuras.Ternary_CheckTooltip(self)
