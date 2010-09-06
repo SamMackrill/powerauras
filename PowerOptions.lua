@@ -2042,12 +2042,12 @@ function PowaAuras:FillDropdownSorted(t, info)
 	end
 end
 
-function PowaAuras.DropDownMenu_OnClickBuffType()
-	--PowaAuras:Message("DropDownMenu_OnClickBuffType bufftype ", this.value, " for aura ", PowaAuras.CurrentAuraId, " ", this.owner);
+function PowaAuras.DropDownMenu_OnClickBuffType(self)
+	--PowaAuras:Message("DropDownMenu_OnClickBuffType bufftype ", self.value, " for aura ", PowaAuras.CurrentAuraId, " ", self.owner);
 
-	UIDropDownMenu_SetSelectedValue(this.owner, this.value);
+	UIDropDownMenu_SetSelectedValue(self.owner, self.value);
 
-	aura = PowaAuras:AuraFactory(this.value, PowaAuras.CurrentAuraId, PowaAuras.Auras[PowaAuras.CurrentAuraId]);
+	aura = PowaAuras:AuraFactory(self.value, PowaAuras.CurrentAuraId, PowaAuras.Auras[PowaAuras.CurrentAuraId]);
 	aura.icon= "";
 	PowaAuras.Auras[PowaAuras.CurrentAuraId] = aura
 	if (PowaAuras.CurrentAuraId > 120) then
@@ -2113,88 +2113,88 @@ function PowaAuras.DropDownMenu_OnClickAnim2(owner)
 	PowaAuras:RedisplayAura(auraId);
 end
 
-function PowaAuras.DropDownMenu_OnClickSound()
-	--PowaAuras:ShowText("DropDownMenu_OnClickSound n=", this.owner:GetName()," v=",this.value, " t=", PowaAuras.Sound[this.value]);
-	UIDropDownMenu_SetSelectedValue(this.owner, this.value);
+function PowaAuras.DropDownMenu_OnClickSound(self)
+	--PowaAuras:ShowText("DropDownMenu_OnClickSound n=", self.owner:GetName()," v=",self.value, " t=", PowaAuras.Sound[self.value]);
+	UIDropDownMenu_SetSelectedValue(self.owner, self.value);
 
-	if (this.value==0 or this.value==30 or not PowaAuras.Sound[this.value]) then
+	if (self.value==0 or self.value==30 or not PowaAuras.Sound[self.value]) then
 		PowaAuras.Auras[PowaAuras.CurrentAuraId].sound = 0;
 		return; 
 	end
 
-	PowaAuras.Auras[PowaAuras.CurrentAuraId].sound = this.value;
+	PowaAuras.Auras[PowaAuras.CurrentAuraId].sound = self.value;
 	
-	if (this.value<30) then
+	if (self.value<30) then
 		PowaDropDownSound2Text:SetText(PowaAuras.Sound[30]);
 	else
 		PowaDropDownSoundText:SetText(PowaAuras.Sound[0]);
 	end
 
-	if (string.find(PowaAuras.Sound[this.value], "%.")) then
-		PlaySoundFile("Interface\\AddOns\\PowerAuras\\Sounds\\"..PowaAuras.Sound[this.value]);
+	if (string.find(PowaAuras.Sound[self.value], "%.")) then
+		PlaySoundFile("Interface\\AddOns\\PowerAuras\\Sounds\\"..PowaAuras.Sound[self.value]);
 	else
-		PlaySound(PowaAuras.Sound[this.value]);
+		PlaySound(PowaAuras.Sound[self.value]);
 	end
 end;
 
 
-function PowaAuras.DropDownMenu_OnClickSoundEnd()
-	--PowaAuras:ShowText("DropDownMenu_OnClickSoundEnd n=", this.owner:GetName()," v=",this.value, " t=", PowaAuras.Sound[this.value]);
-	UIDropDownMenu_SetSelectedValue(this.owner, this.value);
+function PowaAuras.DropDownMenu_OnClickSoundEnd(self)
+	--PowaAuras:ShowText("DropDownMenu_OnClickSoundEnd n=", self.owner:GetName()," v=",self.value, " t=", PowaAuras.Sound[self.value]);
+	UIDropDownMenu_SetSelectedValue(self.owner, self.value);
 
-	if (this.value==0 or this.value==30 or not PowaAuras.Sound[this.value]) then
+	if (self.value==0 or self.value==30 or not PowaAuras.Sound[self.value]) then
 		PowaAuras.Auras[PowaAuras.CurrentAuraId].soundend = 0;
 		return; 
 	end
 
-	PowaAuras.Auras[PowaAuras.CurrentAuraId].soundend = this.value;
+	PowaAuras.Auras[PowaAuras.CurrentAuraId].soundend = self.value;
 	
-	if (this.value<30) then
+	if (self.value<30) then
 		PowaDropDownSound2EndText:SetText(PowaAuras.Sound[30]);
 	else
 		PowaDropDownSoundEndText:SetText(PowaAuras.Sound[0]);
 	end
 
-	if (string.find(PowaAuras.Sound[this.value], "%.")) then
-		PlaySoundFile("Interface\\AddOns\\PowerAuras\\Sounds\\"..PowaAuras.Sound[this.value]);
+	if (string.find(PowaAuras.Sound[self.value], "%.")) then
+		PlaySoundFile("Interface\\AddOns\\PowerAuras\\Sounds\\"..PowaAuras.Sound[self.value]);
 	else
-		PlaySound(PowaAuras.Sound[this.value]);
+		PlaySound(PowaAuras.Sound[self.value]);
 	end
 end
 
-function PowaAuras.DropDownMenu_OnClickStance()
-	UIDropDownMenu_SetSelectedValue(this.owner, this.value);
+function PowaAuras.DropDownMenu_OnClickStance(self)
+	UIDropDownMenu_SetSelectedValue(self.owner, self.value);
 	local auraId = PowaAuras.CurrentAuraId;
 
-	if (PowaAuras.Auras[auraId].stance ~= this.value) then
-		PowaAuras.Auras[auraId].stance = this.value;
+	if (PowaAuras.Auras[auraId].stance ~= self.value) then
+		PowaAuras.Auras[auraId].stance = self.value;
 		PowaAuras.Auras[auraId].icon = "";
 	end
 	PowaAuras:InitPage();
 end
 
-function PowaAuras.DropDownMenu_OnClickGTFO()
-	UIDropDownMenu_SetSelectedValue(this.owner, this.value);
+function PowaAuras.DropDownMenu_OnClickGTFO(self)
+	UIDropDownMenu_SetSelectedValue(self.owner, self.value);
 	local auraId = PowaAuras.CurrentAuraId;
 
-	if (PowaAuras.Auras[auraId].GTFO ~= this.value) then
-		PowaAuras.Auras[auraId].GTFO = this.value;
+	if (PowaAuras.Auras[auraId].GTFO ~= self.value) then
+		PowaAuras.Auras[auraId].GTFO = self.value;
 		PowaAuras.Auras[auraId].icon = "";
 	end
 	PowaAuras:InitPage();
 end
 
-function PowaAuras.DropDownMenu_OnClickBegin(owner)
-	UIDropDownMenu_SetSelectedID(this.owner, this.value + 1); 
+function PowaAuras.DropDownMenu_OnClickBegin(self)
+	UIDropDownMenu_SetSelectedID(self.owner, self.value + 1); 
 	local optionName =  UIDropDownMenu_GetText(PowaDropDownAnimBegin); 
 	UIDropDownMenu_SetSelectedValue(PowaDropDownAnimBegin, optionName);
 
-	PowaAuras.Auras[PowaAuras.CurrentAuraId].begin = this.value;
+	PowaAuras.Auras[PowaAuras.CurrentAuraId].begin = self.value;
 	PowaAuras:RedisplayAura(auraId);
 end
 
-function PowaAuras.DropDownMenu_OnClickEnd(owner)
-	local optionID = owner:GetID();
+function PowaAuras.DropDownMenu_OnClickEnd(self)
+	local optionID = self:GetID();
 	local auraId = PowaAuras.CurrentAuraId;
 
 	UIDropDownMenu_SetSelectedID(PowaDropDownAnimEnd, optionID); 
@@ -2510,14 +2510,14 @@ function PowaAuras:TimerDurationSliderChanged()
 	--self:CreateTimerFrameIfMissing(self.CurrentAuraId);
 end
 
-function PowaAuras.DropDownMenu_OnClickTimerRelative()
-	UIDropDownMenu_SetSelectedValue(this.owner, this.value);
+function PowaAuras.DropDownMenu_OnClickTimerRelative(self)
+	UIDropDownMenu_SetSelectedValue(self.owner, self.value);
 	
-	--PowaAuras:ShowText(PowaAuras.Auras[PowaAuras.CurrentAuraId].id," change timer relative position ", this.value);
+	--PowaAuras:ShowText(PowaAuras.Auras[PowaAuras.CurrentAuraId].id," change timer relative position ", self.value);
 	local timer = PowaAuras.Auras[PowaAuras.CurrentAuraId].Timer;
 	timer.x = 0;
 	timer.y = 0;
-	timer.Relative = this.value;
+	timer.Relative = self.value;
 	timer:Delete();
 end
 
@@ -2606,14 +2606,14 @@ function PowaAuras:StacksCoordXSliderChanged()
 	self.Auras[self.CurrentAuraId].Stacks.x = SliderValue;
 end
 
-function PowaAuras.DropDownMenu_OnClickStacksRelative()
-	UIDropDownMenu_SetSelectedValue(this.owner, this.value);
+function PowaAuras.DropDownMenu_OnClickStacksRelative(self)
+	UIDropDownMenu_SetSelectedValue(self.owner, self.value);
 
-	--PowaAuras:ShowText(PowaAuras.Auras[PowaAuras.CurrentAuraId].id," change stacks relative position ", this.value);
+	--PowaAuras:ShowText(PowaAuras.Auras[PowaAuras.CurrentAuraId].id," change stacks relative position ", self.value);
 	local stacks = PowaAuras.Auras[PowaAuras.CurrentAuraId].Stacks;
 	stacks.x = 0;
 	stacks.y = 0;
-	stacks.Relative = this.value;
+	stacks.Relative = self.value;
 	stacks:Delete();	
 end
 
@@ -2850,8 +2850,8 @@ function PowaAuras.DropDownDefaultStacksMenu_Initialize(owner)
 	PowaAuras:InitializeTextureDropdown(owner, PowaAuras.DropDownMenu_OnClickDefault, PowaMisc.DefaultStacksTexture, false);
 end
 
-function PowaAuras.DropDownMenu_OnClickDefault()
-	UIDropDownMenu_SetSelectedValue(this.owner, this.value);
+function PowaAuras.DropDownMenu_OnClickDefault(self)
+	UIDropDownMenu_SetSelectedValue(self.owner, self.value);
 end
 
 function PowaAuras:InitializeTextureDropdown(owner, onClick, currentValue, addDefaultOption)
@@ -2874,11 +2874,11 @@ function PowaAuras.DropDownTimerMenu_Initialize(owner)
 	PowaAuras:InitializeTextureDropdown(owner, PowaAuras.DropDownMenu_OnClickTimerTexture, aura.Timer.Texture, true);
 end
 
-function PowaAuras.DropDownMenu_OnClickTimerTexture()
-	UIDropDownMenu_SetSelectedValue(this.owner, this.value);
+function PowaAuras.DropDownMenu_OnClickTimerTexture(self)
+	UIDropDownMenu_SetSelectedValue(self.owner, self.value);
 	local aura = PowaAuras.Auras[PowaAuras.CurrentAuraId];
 	if (aura==nil or aura.Timer==nil) then return; end
-	aura.Timer.Texture = this.value;
+	aura.Timer.Texture = self.value;
 	aura.Timer:Delete();
 	--PowaAuras:CreateTimerFrameIfMissing(PowaAuras.CurrentAuraId);
 end
@@ -2889,11 +2889,11 @@ function PowaAuras.DropDownStacksMenu_Initialize(owner)
 	PowaAuras:InitializeTextureDropdown(owner, PowaAuras.DropDownMenu_OnClickStacksTexture, aura.Stacks.Texture, true);
 end
 
-function PowaAuras.DropDownMenu_OnClickStacksTexture()
-	UIDropDownMenu_SetSelectedValue(this.owner, this.value);
+function PowaAuras.DropDownMenu_OnClickStacksTexture(self)
+	UIDropDownMenu_SetSelectedValue(self.owner, self.value);
 	local aura = PowaAuras.Auras[PowaAuras.CurrentAuraId];
 	if (aura==nil or aura.Stacks==nil) then return; end
-	aura.Stacks.Texture = this.value;
+	aura.Stacks.Texture = self.value;
 	aura.Stacks:Delete();
 end
 
@@ -2920,20 +2920,20 @@ function PowaAuras:TernarySetState(button, value)
 	end
 end
 
-function PowaAuras.Ternary_OnClick()
+function PowaAuras.Ternary_OnClick(self)
 
 	local aura = PowaAuras.Auras[PowaAuras.CurrentAuraId];
-	--PowaAuras:ShowText("Ternary_OnClick control=",this:GetName(), " Parameter=", this.Parameter);
-	if (aura[this.Parameter]==0) then
-		aura[this.Parameter] = true; -- Ignore => On
-	elseif (aura[this.Parameter]==true) then
-		aura[this.Parameter] = false; -- On => Off
+	--PowaAuras:ShowText("Ternary_OnClick control=",self:GetName(), " Parameter=", self.Parameter);
+	if (aura[self.Parameter]==0) then
+		aura[self.Parameter] = true; -- Ignore => On
+	elseif (aura[self.Parameter]==true) then
+		aura[self.Parameter] = false; -- On => Off
 	else
-		aura[this.Parameter] = 0; -- Off => Ignore
+		aura[self.Parameter] = 0; -- Off => Ignore
 	end	
 
-	PowaAuras:TernarySetState(this, aura[this.Parameter]);
-	PowaAuras.Ternary_CheckTooltip(this)
+	PowaAuras:TernarySetState(self, aura[self.Parameter]);
+	PowaAuras.Ternary_CheckTooltip(self)
 end
 
 function PowaAuras.Ternary_CheckTooltip(button)
