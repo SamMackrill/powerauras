@@ -141,7 +141,7 @@ function PowaAuras:Dump_Safe()
 	PowaState.SpellBook = {};
 	local i = 1;
 	while (true) do
-		local spellName, spellRank = GetSpellBookItemName(i, BOOKTYPE_SPELL);
+		local spellName, spellRank = GetSpellName(i, BOOKTYPE_SPELL);
 		local Texture = GetSpellTexture(i, BOOKTYPE_SPELL);
 		if (spellName==nil or Texture==nil) then
 			do break end

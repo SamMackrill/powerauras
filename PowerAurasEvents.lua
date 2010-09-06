@@ -1,6 +1,5 @@
 
 function PowaAuras:VARIABLES_LOADED(...)
-
 	PowaMisc.disabled = nil;
 
 	-- Ensure PowaMisc gets any new values
@@ -12,10 +11,10 @@ function PowaAuras:VARIABLES_LOADED(...)
 		if (PowaAuras.PowaMiscDefault[k]==nil) then PowaMisc[k] = nil; end
 	end
 
-	--if (self.Version~=PowaMisc.Version) then
+	if (self.Version~=PowaMisc.Version) then
 		self:DisplayText(self.Colors.Purple.."<Power Auras Classic>|r "..self.Colors.Gold..self.Version.."|r - "..self.Text.welcome);
 		PowaMisc.Version = self.Version;
-	--end
+	end
 	
 	PowaOptionsCpuFrame2_OnShow();
 
@@ -49,26 +48,6 @@ function PowaAuras:VARIABLES_LOADED(...)
 		self.Initialising = false;
 	end
 	self.VariablesLoaded = true;
-	
-end
-
-function PowaAuras:VARIABLES_LOADED22(...)	
-
-	local texi = 1;
-	while ( AuraTexture:SetTexture("Interface\\Addons\\PowerAuras\\Auras\\Aura"..texi..".tga") == 1 ) do
-		if (TestPA~=nil and texi>145) then break; end
-		texi = texi + 1;
-	end
-
-	self.maxtextures = texi - 1;
-
-	if (self.maxtextures<100) then
-		self:DisplayText(self.Colors.Purple.."<Power Auras Classic>|r "..self.Colors.Gold..self.Version.."|r - "..self.Text.welcome);
-		self:DisplayText(self.Colors.Red.."WARNING only "..self.maxtextures.." textures found! Try a /reload to fix this");
-		self.maxtextures = 1; -- stop crashing
-	end
-	
-
 end
 
 function PowaAuras:Setup()
@@ -77,7 +56,7 @@ function PowaAuras:Setup()
 	local spellId = self.GCDSpells[PowaAuras.playerclass];
 	if (not spellId) then return false; end
 	self.GCDSpellName = GetSpellInfo(spellId);
-	self:ShowText("GCD spell = ", self.GCDSpellName, "(", spellId, ") CD=", GetSpellCooldown(self.GCDSpellName));
+	--self:ShowText("GCD spell = ", self.GCDSpellName, "(", spellId, ") CD=", GetSpellCooldown(self.GCDSpellName));
 
 	-- Look-up spells by spellId for debuff types
 	self.DebuffCatSpells = {}

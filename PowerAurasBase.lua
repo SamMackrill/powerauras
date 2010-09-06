@@ -402,16 +402,16 @@ PowaAuras = {
 
 	-- Use these spells to detect GCD
 	GCDSpells = {
-		PALADIN = 635,       -- Holy Light [OK]
-		PRIEST = 21562,      -- Power Word: Fortitude
-		SHAMAN = 8017,       -- Rockbiter
-		WARRIOR = 772,       -- Rend (only from level 4) [OK]
-		DRUID = 5176,        -- Wrath
-		MAGE = 7302,         -- Frost Armor
-		WARLOCK = 1454,      -- Life Tap (only from level 6)
-		ROGUE = 1752,        -- Sinister Strike
-		HUNTER = 1978,       -- Serpent Sting (only from level 4)
-		DEATHKNIGHT = 45902, -- Blood Strike
+		PALADIN = 635,       -- Holy Light I [OK]
+		PRIEST = 1243,       -- Power Word: Fortitude I
+		SHAMAN = 8017,       -- Rockbiter I
+		WARRIOR = 772,       -- Rend I (only from level 4) [OK]
+		DRUID = 5176,        -- Wrath I
+		MAGE = 168,          -- Frost Armor I
+		WARLOCK = 687,       -- Demon Skin I
+		ROGUE = 1752,        -- Sinister Strike I
+		HUNTER = 1978,       -- Serpent Sting I (only from level 4)
+		DEATHKNIGHT = 45902, -- Blood Strike I
 	};
 	
 	Sound = {
@@ -643,8 +643,7 @@ PowaAuras.DebuffTypeSpellIds={
 	[45524] = PowaAuras.DebuffCatType.Snare,	-- Chains of Ice
 	[55666] = PowaAuras.DebuffCatType.Snare,	-- Desecration (no duration, lasts as long as you stand in it)
 	[58617] = PowaAuras.DebuffCatType.Snare,	-- Glyph of Heart Strike
-	[50434] = PowaAuras.DebuffCatType.Snare,	-- Icy Clutch - I
-	[50435] = PowaAuras.DebuffCatType.Snare,	-- Icy Clutch - II
+	[50436] = PowaAuras.DebuffCatType.Snare,	-- Icy Clutch (Chilblains)
 	-- Druid
 	[5211]  = PowaAuras.DebuffCatType.Stun,		-- Bash (also Shaman Spirit Wolf ability)
 	[33786] = PowaAuras.DebuffCatType.CC,		-- Cyclone
@@ -653,8 +652,7 @@ PowaAuras.DebuffTypeSpellIds={
 	[9005]  = PowaAuras.DebuffCatType.Stun,		-- Pounce
 	[339]   = PowaAuras.DebuffCatType.Root,		-- Entangling Roots
 	[19675] = PowaAuras.DebuffCatType.Root,		-- Feral Charge Effect (immobilize with interrupt [spell lockout, not silence])
-	[58179] = PowaAuras.DebuffCatType.Snare,	-- Infected Wounds - I
-	[58180] = PowaAuras.DebuffCatType.Snare,	-- Infected Wounds - II
+	[58179] = PowaAuras.DebuffCatType.Snare,	-- Infected Wounds
 	[61391] = PowaAuras.DebuffCatType.Snare,	-- Typhoon
 	-- Hunter
 	[3355]  = PowaAuras.DebuffCatType.CC,		-- Freezing Trap Effect
