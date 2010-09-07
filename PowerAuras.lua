@@ -2,6 +2,7 @@
 ---            << Power Auras >>
 --- ------------------------------------------------
 -- ^\s*[^-\s][^-\s].*:ShowText\(.*$
+
 -- Exposed for Saving
 PowaMisc = 
 	{
