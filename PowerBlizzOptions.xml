@@ -55,7 +55,8 @@
 								y="-10" />
 				</Offset>
 			  </Anchor>
-			</Anchors>				<Scripts>
+			</Anchors>
+				<Scripts>
 					<OnLoad>
 						self.tooltipText = PowaAuras.Text.aideDebug;
 						PowaDebugButtonText:SetText(PowaAuras.Text.nomDebug);
@@ -186,7 +187,6 @@
 						PowaResetPositionButtonText:SetText(PowaAuras.Text.nomReset);
 					</OnLoad>
 					<OnClick>
-						--PowaAuras:ShowText("PowaResetPositionButton OnClick");
 						PowaAuras:MainOptionShow();
 					</OnClick>
 				</Scripts>

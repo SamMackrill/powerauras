@@ -11,7 +11,7 @@ function PowaAuras:VARIABLES_LOADED(...)
 		if (PowaAuras.PowaMiscDefault[k]==nil) then PowaMisc[k] = nil; end
 	end
 
-	if (self.Version~=PowaMisc.Version) then
+	if (self.Version~=PowaMisc.Version or PowaAuras.Cataclysm) then
 		self:DisplayText(self.Colors.Purple.."<Power Auras Classic>|r "..self.Colors.Gold..self.Version.."|r - "..self.Text.welcome);
 		if (PowaAuras.Cataclysm) then
 			self:DisplayText(self.Colors.Orange.."Cataclysm");
