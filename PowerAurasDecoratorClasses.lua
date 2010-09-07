@@ -403,7 +403,9 @@ function cPowaTimer:ShowValue(aura, frameIndex, displayValue)
 		timerFrame.texture:SetTexCoord(tStep * uni, tStep * (uni+1), tStep * deci, tStep * (deci+1));
 	end
 	if (not timerFrame:IsVisible()) then
-		--PowaAuras:ShowText("Show timer frame id=",self.id, " index=", frameIndex);
+		if (aura.Debug) then
+			PowaAuras:ShowText("Show timer frame id=", self.id, " index=", frameIndex);
+		end
 		timerFrame:Show(); -- Timer Frame
 	end
 	--PowaAuras:ShowText("Show #3 ", k, " ", i, " ", j, " ", seconds);
@@ -425,6 +427,8 @@ function cPowaTimer:Hide()
 		self:HideFrame(1);
 		self:HideFrame(2);
 	end
+	self.lastShownLarge = nil;
+	self.lastShownSmall = nil;
 	self.Showing = false;
 	--PowaAuras:ShowText("Hide timer frame");
 end
