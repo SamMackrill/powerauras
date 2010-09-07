@@ -14,6 +14,9 @@ function PowaAuras:VARIABLES_LOADED(...)
 
 	--if (self.Version~=PowaMisc.Version) then
 		self:DisplayText(self.Colors.Purple.."<Power Auras Classic>|r "..self.Colors.Gold..self.Version.."|r - "..self.Text.welcome);
+		if (PowaAuras.Cataclysm) then
+			self:DisplayText(self.Colors.Orange.."Cataclysm");
+		end
 		PowaMisc.Version = self.Version;
 	--end
 	
@@ -237,7 +240,9 @@ function PowaAuras:UNIT_MANA(...)
 	local unit = ...;
 	self:SetCheckResource("Mana", unit);
 end
-		
+
+-- Power type changes
+	
 function PowaAuras:UNIT_MAXMANA(...)
 	local unit = ...;
 	self:SetCheckResource("Mana", unit);
@@ -266,6 +271,24 @@ end
 function PowaAuras:UNIT_MAXRUNIC_POWER(...)
 	local unit = ...;
 	self:SetCheckResource("RageEnergy", unit);
+end
+
+function PowaAuras:UNIT_POWER(...)
+	local unit, resourceType = ...;
+	self:CheckPower(unit, resourceType);
+end
+
+function PowaAuras:UNIT_MAXPOWER(...)
+	local unit, resourceType = ...;
+	self:CheckPower(unit, resourceType);
+end
+
+function PowaAuras:CheckPower(unit, resourceType)
+	if (resourceType=="MANA") then
+		self:SetCheckResource("Mana", unit);
+	elseif (resourceType=="RAGE" or resourceType=="ENERGY" or resourceType=="RUNIC_POWER") then
+		self:SetCheckResource("RageEnergy", unit);
+	end
 end
 
 function PowaAuras:SetCheckResource(resourceType, unitType)

@@ -626,6 +626,9 @@ PowaAuras = {
 	
 };
 
+PowaAuras.Cataclysm = string.find(PowaAuras.Version, "^4");
+
+
 PowaAuras.TalentChangeSpells = {
 	[PowaAuras.Spells.ACTIVATE_FIRST_TALENT]  = true,
 	[PowaAuras.Spells.ACTIVATE_SECOND_TALENT] = true,
