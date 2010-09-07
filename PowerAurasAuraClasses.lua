@@ -2250,15 +2250,22 @@ function cPowaAuraStats:AddEffectAndEvents()
 	if (self.ValueName=="Health") then
 		PowaAuras.Events.UNIT_HEALTH = true;
 		PowaAuras.Events.UNIT_MAXHEALTH = true;
-	elseif (self.ValueName=="Mana") then
-		PowaAuras.Events.UNIT_MANA = true;
-		PowaAuras.Events.UNIT_MAXMANA = true;
-	elseif (self.ValueName=="RageEnergy") then
-		PowaAuras.Events.UNIT_RAGE = true;
-		PowaAuras.Events.UNIT_ENERGY = true;
-		PowaAuras.Events.UNIT_MAXENERGY = true;
-		PowaAuras.Events.UNIT_RUNIC_POWER = true;
-		PowaAuras.Events.UNIT_MAXRUNIC_POWER = true;
+	else
+		if (PowaAuras.Cataclysm) then
+			PowaAuras.Events.UNIT_POWER = true;
+			PowaAuras.Events.UNIT_MAXPOWER = true;
+		else
+			if (self.ValueName=="Mana") then
+				PowaAuras.Events.UNIT_MANA = true;
+				PowaAuras.Events.UNIT_MAXMANA = true;
+			elseif (self.ValueName=="RageEnergy") then
+				PowaAuras.Events.UNIT_RAGE = true;
+				PowaAuras.Events.UNIT_ENERGY = true;
+				PowaAuras.Events.UNIT_MAXENERGY = true;
+				PowaAuras.Events.UNIT_RUNIC_POWER = true;
+				PowaAuras.Events.UNIT_MAXRUNIC_POWER = true;
+			end
+		end
 	end
 	
 end
