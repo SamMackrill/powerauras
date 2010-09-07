@@ -759,33 +759,37 @@ function cPowaAura:MatchSpell(spellName, spellTexture, textToFind)
 			local textureMatch;
 			if string.find(pword, "_") then
 				 _, _,textToSearch = string.find(spellTexture, "([%w_]*)$")
+				 spellName = pword;
 			else
 				textToSearch = spellName;
-				pword, textureMatch = self:GetSpellNameFromMatch(pword);
+				spellName, textureMatch = self:GetSpellNameFromMatch(pword);
+			end
+			if (spellName==nil) then
+				PowaAuras:ShowText("aura "..self.id.." references an unknown spellId: ", pword);
 			end
 			--PowaAuras:ShowText("textureMatch=", textureMatch);
-			if (not textureMatch or textureMatch==spellTexture) then
+			if (spellName and (not textureMatch or textureMatch==spellTexture)) then
 				if (textToSearch) then
 					if (self.ignoremaj) then
 						textToSearch = string.upper(textToSearch)
-						pword = string.upper(pword);
+						spellName = string.upper(spellName);
 					end
 					if (self.Debug) then
-						PowaAuras:Message("pword="..tostring(pword).."<<");
+						PowaAuras:Message("spellName="..tostring(spellName).."<<");
 						PowaAuras:Message("search="..tostring(textToSearch).."<<");
 					end
 					if (self.exact) then
 						if (self.Debug) then
-							PowaAuras:Message("exact=", (textToSearch == pword)); --OK
+							PowaAuras:Message("exact=", (textToSearch == spellName)); --OK
 						end
-						if (textToSearch == pword) then
+						if (textToSearch == spellName) then
 							return true;
 						end
 					else
 						if (self.Debug) then
-							PowaAuras:Message("find=", string.find(textToSearch, pword, 1, true)); --OK
+							PowaAuras:Message("find=", string.find(textToSearch, spellName, 1, true)); --OK
 						end
-						if (string.find(textToSearch, pword, 1, true)) then
+						if (string.find(textToSearch, spellName, 1, true)) then
 							return true;
 						end
 					end
