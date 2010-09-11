@@ -251,14 +251,14 @@ function PowaAuras:UpdateOldAuras()
 
 			if (PowaSet[i]~=nil) then
 				if (aura.Timer) then
-					aura.Timer.x = math.floor(aura.Timer.x);
-					aura.Timer.y = math.floor(aura.Timer.y);
-					aura.Timer.h = math.floor(aura.Timer.h * 100) / 100;
+					aura.Timer.x = math.floor(aura.Timer.x + 0.5);
+					aura.Timer.y = math.floor(aura.Timer.y + 0.5);
+					aura.Timer.h = math.floor(aura.Timer.h * 100 + 0.5) / 100;
 				end	
 				if (aura.Stacks) then
-					aura.Stacks.x = math.floor(aura.Stacks.x);
-					aura.Stacks.y = math.floor(aura.Stacks.y);
-					aura.Stacks.h = math.floor(aura.Stacks.h * 100) / 100;
+					aura.Stacks.x = math.floor(aura.Stacks.x + 0.5);
+					aura.Stacks.y = math.floor(aura.Stacks.y + 0.5);
+					aura.Stacks.h = math.floor(aura.Stacks.h * 100 + 0.5) / 100;
 				end				
 			end			
 			
