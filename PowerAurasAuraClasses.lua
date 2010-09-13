@@ -445,13 +445,13 @@ function cPowaAura:CheckState(giveReason)
 		end
 					
 		--- Check if target is an enemy
-		if (self.target and self.targetfriend == false and UnitIsFriend("player","target")) then
+		if (self.target and self.targetfriend == false and UnitIsFriend("player", "target")) then
 			if (not giveReason) then return false; end
 			return false, PowaAuras.Text.nomReasonTargetFriendly;
 		end
 			
 		--- Check if target is a friend
-		if (self.target == false and self.targetfriend and not UnitIsFriend("player","target")) then
+		if (self.target == false and self.targetfriend and not UnitIsFriend("player", "target")) then
 			if (not giveReason) then return false; end
 			return false, PowaAuras.Text.nomReasonTargetNotFriendly;
 		end
@@ -2262,7 +2262,7 @@ function cPowaAuraStats:AddEffectAndEvents()
 			if (self.ValueName=="Mana") then
 				PowaAuras.Events.UNIT_MANA = true;
 				PowaAuras.Events.UNIT_MAXMANA = true;
-			elseif (self.ValueName=="RageEnergy") then
+			elseif (self.ValueName=="Power") then
 				PowaAuras.Events.UNIT_RAGE = true;
 				PowaAuras.Events.UNIT_ENERGY = true;
 				PowaAuras.Events.UNIT_MAXENERGY = true;
@@ -2313,7 +2313,7 @@ cPowaHealth = PowaClass(cPowaAuraStats, {ValueName = "Health"});
 cPowaHealth.OptionText={typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.Health]};
 cPowaHealth.TooltipOptions = {r=0.2, g=1.0, b=0.2, showThreshold=true};
 function cPowaHealth:IsCorrectPowerType(unit)
-	return true;
+	return true; -- everyone has health!
 end
 function cPowaHealth:UnitValue(unit)
 	return UnitHealth(unit);
@@ -2339,10 +2339,10 @@ function cPowaMana:UnitValueMax(unit)
 	return UnitPowerMax(unit);
 end
 
-cPowaEnergyRagePower = PowaClass(cPowaMana, {ValueName = "RageEnergy"});
-cPowaEnergyRagePower.OptionText={typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.EnergyRagePower]};
-cPowaEnergyRagePower.TooltipOptions = {r=1.0, g=0.4, b=0.0, showThreshold=true};
-function cPowaEnergyRagePower:IsCorrectPowerType(unit)
+cPowaPower = PowaClass(cPowaMana, {ValueName = "Power"});
+cPowaPower.OptionText={typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.EnergyRagePower]};
+cPowaPower.TooltipOptions = {r=1.0, g=0.4, b=0.0, showThreshold=true};
+function cPowaPower:IsCorrectPowerType(unit)
 	local powerType = UnitPowerType(unit);
 	return (powerType and powerType > 0);
 end
@@ -3447,7 +3447,7 @@ PowaAuras.AuraClasses = {
 	[PowaAuras.BuffTypes.ActionReady]=cPowaActionReady,
 	[PowaAuras.BuffTypes.Health]=cPowaHealth,
 	[PowaAuras.BuffTypes.Mana]=cPowaMana,
-	[PowaAuras.BuffTypes.EnergyRagePower]=cPowaEnergyRagePower,
+	[PowaAuras.BuffTypes.EnergyRagePower]=cPowaPower,
 	[PowaAuras.BuffTypes.Aggro]=cPowaAggro,
 	[PowaAuras.BuffTypes.PvP]=cPowaPvP,
 	[PowaAuras.BuffTypes.SpellAlert]=cPowaSpellAlert,

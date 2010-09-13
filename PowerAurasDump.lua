@@ -26,8 +26,8 @@ function PowaAuras:Dump_Safe()
 	PowaState = {};
 	-- Build
 	if (GetBuildInfo~=nil) then
-		local version, buildnum, builddate = GetBuildInfo();
-		PowaState["BuildInfo"] = {Version=version, BuildNum=buildnum, BuildDate=builddate};
+		local version, buildnum, builddate, toc = GetBuildInfo();
+		PowaState["BuildInfo"] = {Version=version, BuildNum=buildnum, BuildDate=builddate, Toc=toc};
 	end
 	-- Time
 	PowaState["Time"] = GetTime();
