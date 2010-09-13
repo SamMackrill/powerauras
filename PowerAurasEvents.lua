@@ -231,27 +231,27 @@ end
 
 function PowaAuras:UNIT_RAGE(...)
 	local unit = ...;
-	self:SetCheckResource("RageEnergy", unit);
+	self:SetCheckResource("Power", unit);
 end
 
 function PowaAuras:UNIT_ENERGY(...)
 	local unit = ...;
-	self:SetCheckResource("RageEnergy", unit);
+	self:SetCheckResource("Power", unit);
 end
 
 function PowaAuras:UNIT_MAXENERGY(...)
 	local unit = ...;
-	self:SetCheckResource("RageEnergy", unit);
+	self:SetCheckResource("Power", unit);
 end
 
 function PowaAuras:UNIT_RUNIC_POWER(...)
 	local unit = ...;
-	self:SetCheckResource("RageEnergy", unit);
+	self:SetCheckResource("Power", unit);
 end
 
 function PowaAuras:UNIT_MAXRUNIC_POWER(...)
 	local unit = ...;
-	self:SetCheckResource("RageEnergy", unit);
+	self:SetCheckResource("Power", unit);
 end
 
 function PowaAuras:UNIT_POWER(...)
@@ -264,11 +264,11 @@ function PowaAuras:UNIT_MAXPOWER(...)
 	self:CheckPower(unit, resourceType);
 end
 
-function PowaAuras:CheckPower(unit, resourceType)
+function PowaAuras:Power(unit, resourceType)
 	if (resourceType=="MANA") then
 		self:SetCheckResource("Mana", unit);
-	elseif (resourceType=="RAGE" or resourceType=="ENERGY" or resourceType=="RUNIC_POWER") then
-		self:SetCheckResource("RageEnergy", unit);
+	elseif (resourceType=="RAGE" or resourceType=="ENERGY" or resourceType=="RUNIC_POWER" or resourceType=="HOLY_POWER") then
+		self:SetCheckResource("Power", unit);
 	end
 end
 
@@ -346,7 +346,7 @@ function PowaAuras:UNIT_SPELLCAST_SUCCEEDED(...)
 			  or (spell == self.Spells.DRUID_SHIFT_DIREBEAR)
 			  or (spell == self.Spells.DRUID_SHIFT_MOONKIN) ) then
 				self.DoCheck.Mana = true;
-				self.DoCheck.RageEnergy = true;
+				self.DoCheck.Power = true;
 			end			
 			for _, auraId in pairs(self.AurasByType.OwnSpells) do	
 				--self:ShowText("Pending set for OwnSpells ", auraId);
@@ -419,7 +419,7 @@ function PowaAuras:PLAYER_FOCUS_CHANGED(...)
 		self.DoCheck.FocusBuffs = true;
 		self.DoCheck.FocusHealth = true;
 		self.DoCheck.FocusMana = true;
-		self.DoCheck.FocusRageEnergy = true;
+		self.DoCheck.FocusPower = true;
 		self.DoCheck.FocusSpells = true;
 		self.DoCheck.StealableFocusSpells = true;
 		self.DoCheck.PurgeableFocusSpells = true;
@@ -509,7 +509,7 @@ function PowaAuras:PLAYER_TARGET_CHANGED(...)
 		self.DoCheck.TargetBuffs = true;
 		self.DoCheck.TargetHealth = true;
 		self.DoCheck.TargetMana = true;
-		self.DoCheck.TargetRageEnergy = true;
+		self.DoCheck.TargetPower = true;
 		self.ResetTargetTimers = true;
 		self.DoCheck.Actions = true;
 		self.DoCheck.StealableTargetSpells = true;

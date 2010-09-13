@@ -1159,11 +1159,11 @@ end
 function EditMacro()
 end
 
-function GetBuildInfo110()
+function GetBuildInfo()
 	if (PowaState.BuildInfo~=nil) then
-		return PowaState.BuildInfo.Version, PowaState.BuildInfo.BuildNum, PowaState.BuildInfo.BuildDate;
+		return PowaState.BuildInfo.Version, PowaState.BuildInfo.BuildNum, PowaState.BuildInfo.BuildDate, PowaState.BuildInfo.Toc;
 	end
-	return nil, nil, nil;
+	return nil, nil, nil, nil;
 end	
 
 function GetActiveTalentGroup(isInspect,isPet)

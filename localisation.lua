@@ -675,7 +675,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	ReasonStat = {
 		Health     = {MatchReason="$1 Health low",          NoMatchReason="$1 Health not low enough"},
 		Mana       = {MatchReason="$1 Mana low",            NoMatchReason="$1 Mana not low enough"},
-		RageEnergy = {MatchReason="$1 EnergyRagePower low", NoMatchReason="$1 EnergyRagePower not low enough"},
+		Power      = {MatchReason="$1 Power low", 			NoMatchReason="$1 Power not low enough"},
 		Aggro      = {MatchReason="$1 has aggro",           NoMatchReason="$1 does not have aggro"},
 		PvP        = {MatchReason="$1 PvP flag set",        NoMatchReason="$1 PvP flag not set"},
 		SpellAlert = {MatchReason="$1 casting $2",        	NoMatchReason="$1 not casting $2"},
