@@ -190,12 +190,12 @@ PowaAuras = {
 		FocusMana = false,
 		NamedUnitMana = false,
 
-		RageEnergy = false,
-		TargetRageEnergy = false,
-		PartyRageEnergy = false,
-		RaidRageEnergy = false,
-		FocusRageEnergy = false,
-		UnitRageEnergy = false,
+		Power = false,
+		TargetPower = false,
+		PartyPower = false,
+		RaidPower = false,
+		FocusPower = false,
+		UnitPower = false,
 
 		Combo = false,
 		Aoe = false,
@@ -334,12 +334,12 @@ PowaAuras = {
 		RaidMana = {},
 		NamedUnitMana = {},
 
-		RageEnergy = {},
-		TargetRageEnergy = {},
-		PartyRageEnergy = {},
-		RaidRageEnergy = {},
-		FocusRageEnergy = {},
-		UnitRageEnergy = {},
+		Power = {},
+		TargetPower = {},
+		PartyPower = {},
+		RaidPower = {},
+		FocusPower = {},
+		UnitPower = {},
 
 		Combo = {},
 		Aoe = {},
@@ -614,7 +614,7 @@ PowaAuras = {
 	
 };
 
-PowaAuras.Cataclysm = string.find(PowaAuras.Version, "^4");
+PowaAuras.Cataclysm = (select(4,GetBuildInfo()) == 40000) ;
 
 -- Use these spells to detect GCD
 if (PowaAuras.Cataclysm) then
