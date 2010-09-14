@@ -62,7 +62,8 @@ PowaAuras = {
 	PowaStance = {[0] = "Humanoid"};
 	
 	PowaGTFO = {[0] = "High Damage", [1] = "Low Damage", [2] = "Fail Alert"};
-	
+
+		
 	allowedOperators = {
 		["="] = true,
 		[">"] = true,
@@ -261,10 +262,20 @@ PowaAuras = {
 		Items=22,
 		Slots=23,
 		Tracking=24,
-		GTFO=50
+		GTFO=50,
+	};
+	
+	PowerTypes =
+	{
+		Any=0,
+		Rage=1,
+		Focus=2,
+		Energy=3,
+		Happiness=4,
+		RunicPower=6,
+		HolyPower=10,
 	};
 
-	
 	AnimationBeginTypes =
 	{
 		None=0,
@@ -400,8 +411,6 @@ PowaAuras = {
 		PvE = 10,
 	};
 
-
-	
 	Sound = {
 		[1] = "LEVELUP",
 		[2] = "LOOTWINDOWCOINSOUND",
@@ -609,7 +618,8 @@ PowaAuras = {
 		"PowaThresholdInvertButton",
 		"PowaBarBuffStacks",
 		"PowaDropDownStance",
-		"PowaDropDownGTFO"
+		"PowaDropDownGTFO",
+		"PowaDropDownPowerType",
 	};
 	
 };

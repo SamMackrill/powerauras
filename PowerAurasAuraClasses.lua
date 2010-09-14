@@ -107,6 +107,7 @@ cPowaAura = PowaClass(function(aura, id, base)
 	aura.gcd = false;
 	aura.stance = 10;
 	aura.GTFO = 0;
+	aura.PowerType = 0;
 	aura.multiids = "";
 	aura.tooltipCheck = "";
 	aura.UseOldAnimations = false;
@@ -2286,6 +2287,10 @@ function cPowaAuraStats:CheckUnit(unit)
 	end			
 
 	local curValue = self:UnitValue(unit);
+	if (self.Stacks) then
+		self.Stacks:SetStackCount(curValue);
+	end	
+	
 	local maxValue = self:UnitValueMax(unit);
 	--PowaAuras:UnitTestDebug("curValue=", curValue, " maxValue=", maxValue);
 	if (curValue==nil or maxValue==nil) then return false; end
@@ -2339,12 +2344,23 @@ function cPowaMana:UnitValueMax(unit)
 	return UnitPowerMax(unit);
 end
 
-cPowaPower = PowaClass(cPowaMana, {ValueName = "Power"});
-cPowaPower.OptionText={typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.EnergyRagePower]};
-cPowaPower.TooltipOptions = {r=1.0, g=0.4, b=0.0, showThreshold=true};
-function cPowaPower:IsCorrectPowerType(unit)
-	local powerType = UnitPowerType(unit);
-	return (powerType and powerType > 0);
+cPowaPowerType = PowaClass(cPowaMana, {ValueName = "Power"});
+cPowaPowerType.OptionText={typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.EnergyRagePower]};
+cPowaPowerType.TooltipOptions = {r=1.0, g=0.4, b=0.0, showThreshold=true};
+cPowaPowerType.ShowOptions.PowaDropDownPowerType=1;
+
+function cPowaPowerType:IsCorrectPowerType(unit)
+	local unitPowerType = UnitPowerType(unit);
+	if (self.Debug) then
+		PowaAuras:ShowText("cPowaPowerType IsCorrectPowerType powerType=", unitPowerType);
+	end
+	if (not unitPowerType) then
+		return false;
+	end
+	if (self.PowerType==0) then
+		return (unitPowerType > 0);
+	end
+	return (unitPowerType==self.PowerType);
 end
 
 cPowaAggro = PowaClass(cPowaAura, {ValueName = "Aggro"});
@@ -3447,7 +3463,7 @@ PowaAuras.AuraClasses = {
 	[PowaAuras.BuffTypes.ActionReady]=cPowaActionReady,
 	[PowaAuras.BuffTypes.Health]=cPowaHealth,
 	[PowaAuras.BuffTypes.Mana]=cPowaMana,
-	[PowaAuras.BuffTypes.EnergyRagePower]=cPowaPower,
+	[PowaAuras.BuffTypes.EnergyRagePower]=cPowaPowerType,
 	[PowaAuras.BuffTypes.Aggro]=cPowaAggro,
 	[PowaAuras.BuffTypes.PvP]=cPowaPvP,
 	[PowaAuras.BuffTypes.SpellAlert]=cPowaSpellAlert,
