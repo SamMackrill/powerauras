@@ -262,7 +262,7 @@ function PowaAuras:UNIT_MAXPOWER(...)
 	self:CheckPower(unit, resourceType);
 end
 
-function PowaAuras:Power(unit, resourceType)
+function PowaAuras:CheckPower(unit, resourceType)
 	if (resourceType=="MANA") then
 		self:SetCheckResource("Mana", unit);
 	elseif (resourceType=="RAGE" or resourceType=="ENERGY" or resourceType=="RUNIC_POWER" or resourceType=="HOLY_POWER") then
