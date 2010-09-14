@@ -63,13 +63,13 @@ PowaAuras:MergeTables(PowaAuras.Text,
 
 	DebuffCatType =
 	{
-		[PowaAuras.DebuffCatType.CC] = "CC",
+		[PowaAuras.DebuffCatType.CC]      = "CC",
 		[PowaAuras.DebuffCatType.Silence] = "Silence",
-		[PowaAuras.DebuffCatType.Snare] = "Snare",
-		[PowaAuras.DebuffCatType.Stun] = "Stun",
-		[PowaAuras.DebuffCatType.Root] = "Root",
-		[PowaAuras.DebuffCatType.Disarm] = "Disarm",
-		[PowaAuras.DebuffCatType.PvE] = "PvE",
+		[PowaAuras.DebuffCatType.Snare]   = "Snare",
+		[PowaAuras.DebuffCatType.Stun]    = "Stun",
+		[PowaAuras.DebuffCatType.Root]    = "Root",
+		[PowaAuras.DebuffCatType.Disarm]  = "Disarm",
+		[PowaAuras.DebuffCatType.PvE]     = "PvE",
 	},
 	
 	Role =
@@ -107,7 +107,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		[PowaAuras.BuffTypes.ActionReady] = "Action Usable",
 		[PowaAuras.BuffTypes.Health] = "Health",
 		[PowaAuras.BuffTypes.Mana] = "Mana",
-		[PowaAuras.BuffTypes.EnergyRagePower] = "Rage/Energy/Runic",
+		[PowaAuras.BuffTypes.EnergyRagePower] = "Rage/Energy/Power",
 		[PowaAuras.BuffTypes.Aggro] = "Aggro",
 		[PowaAuras.BuffTypes.PvP] = "PvP",
 		[PowaAuras.BuffTypes.Stance] = "Stance",
@@ -124,7 +124,18 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		[PowaAuras.BuffTypes.Tracking] = "Tracking",
 		[PowaAuras.BuffTypes.GTFO] = "GTFO Alert",
 	},
-
+	
+	PowerType =
+	{
+		[PowaAuras.PowerTypes.Any] = "Any",
+		[PowaAuras.PowerTypes.Rage] = "Rage",
+		[PowaAuras.PowerTypes.Focus] = "Focus",
+		[PowaAuras.PowerTypes.Energy] = "Energy",
+		[PowaAuras.PowerTypes.Happiness] = "Happiness",
+		[PowaAuras.PowerTypes.RunicPower] = "Runic Power",
+		[PowaAuras.PowerTypes.HolyPower] = "Holy Power",
+	},
+	
 	Relative = 
 	{
 		NONE        = "Free", 
@@ -292,6 +303,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomThreshInv = "</>",
 	nomStance = "Stance",
 	nomGTFO = "Alert Type",
+	nomPowerType = "Power Type:",
 
 	nomMine = "Cast by me",
 	aideMine = "Check this to test only buffs/debuffs cast by the player",
@@ -325,6 +337,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideExact = "Check this to test the exact name of the buff/debuff/action.",
 	aideStance = "Select which Stance,Aura or Form trigger the event.",
 	aideGTFO = "Select which GTFO Alert will trigger the event.",
+	aidePowerType = "Select which type of resource to track",
 
 	aideShowSpinAtBeginning= "At the end of the begin animation show a 360 degree spin",
 	nomCheckShowSpinAtBeginning = "Show Spin after begin animation ends",

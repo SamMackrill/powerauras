@@ -1406,11 +1406,12 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   </Layer>
                 </Layers>
               </EditBox>
+			  
               <Frame name="PowaDropDownBuffType"
                      inherits="UIDropDownMenuTemplate"
                      id="10">
                 <Size>
-                  <AbsDimension x="225" />
+                  <AbsDimension x="245" />
                 </Size>
                 <Anchors>
                   <Anchor point="BOTTOMLEFT"
@@ -1418,6 +1419,48 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                           relativePoint="TOPLEFT">
                     <Offset>
                       <AbsDimension x="-25"
+                                    y="10" />
+                    </Offset>
+                  </Anchor>
+                </Anchors>
+                <Layers>
+                  <Layer level="BACKGROUND">
+                    <FontString name="$parentLabel"
+                                inherits="GameFontNormalSmall">
+                      <Anchors>
+                        <Anchor point="BOTTOMLEFT"
+                                relativePoint="TOPLEFT">
+                          <Offset>
+                            <AbsDimension x="21"
+                                          y="0" />
+                          </Offset>
+                        </Anchor>
+                      </Anchors>
+                    </FontString>
+                  </Layer>
+                </Layers>
+                <Scripts>
+                  <OnLoad>
+                  	PowaDropDownBuffTypeLabel:SetText(PowaAuras.Text.nomActivationBy); 
+					UIDropDownMenu_SetWidth(self, 150);
+                 	UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);
+                  </OnLoad>
+                  <OnEnter>GameTooltip:SetOwner(self, "ANCHOR_RIGHT");</OnEnter>
+                  <OnLeave>GameTooltip:Hide();</OnLeave>
+                </Scripts>
+              </Frame>
+			  
+              <Frame name="PowaDropDownPowerType"
+                     inherits="UIDropDownMenuTemplate">
+                <Size>
+                  <AbsDimension x="210" />
+                </Size>
+                <Anchors>
+                  <Anchor point="TOPLEFT"
+                          relativeTo="PowaBarBuffName"
+                          relativePoint="TOPRIGHT">
+                    <Offset>
+                      <AbsDimension x="10"
                                     y="5" />
                     </Offset>
                   </Anchor>
@@ -1431,7 +1474,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                                 relativePoint="TOPLEFT">
                           <Offset>
                             <AbsDimension x="21"
-                                          y="5" />
+                                          y="0" />
                           </Offset>
                         </Anchor>
                       </Anchors>
@@ -1440,16 +1483,17 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Layers>
                 <Scripts>
                   <OnLoad>
-                  	PowaDropDownBuffTypeLabel:SetText(PowaAuras.Text.nomActivationBy); 
+                  	PowaDropDownPowerTypeLabel:SetText(PowaAuras.Text.nomPowerType); 
                   	UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);
                   </OnLoad>
-                  <OnEnter>GameTooltip:SetOwner(self, "ANCHOR_RIGHT");</OnEnter>
+                  <OnShow>UIDropDownMenu_Initialize(self, PowaAuras.DropDownMenu_Initialize);</OnShow>
+                  <OnEnter>GameTooltip:SetOwner(self, "ANCHOR_RIGHT"); GameTooltip:SetText(PowaAuras.Text.aidePowerType, nil, nil, nil, nil, 1);</OnEnter>
                   <OnLeave>GameTooltip:Hide();</OnLeave>
                 </Scripts>
               </Frame>
+			  
               <Frame name="PowaDropDownStance"
-                     inherits="UIDropDownMenuTemplate"
-                     id="12">
+                     inherits="UIDropDownMenuTemplate">
                 <Size>
                   <AbsDimension x="210" />
                 </Size>
@@ -1489,6 +1533,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   <OnLeave>GameTooltip:Hide();</OnLeave>
                 </Scripts>
               </Frame>
+			  
               <Frame name="PowaDropDownGTFO"
                      inherits="UIDropDownMenuTemplate"
                      id="12">
@@ -1531,6 +1576,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   <OnLeave>GameTooltip:Hide();</OnLeave>
                 </Scripts>
               </Frame>
+			  
               <Slider name="PowaBarThresholdSlider"
                       inherits="PowaBarSliderTemplate">
                 <Size>
@@ -1557,6 +1603,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   <OnValueChanged>PowaAuras:BarThresholdSliderChanged();</OnValueChanged>
                 </Scripts>
               </Slider>
+			  
               <CheckButton name="PowaThresholdInvertButton"
               						 inherits="PowaCheckTemplate">
               	<Size>
@@ -1578,6 +1625,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               		<OnClick>PowaAuras:ThresholdInvertChecked(self);</OnClick>
               	</Scripts>
               </CheckButton>
+			  
               <CheckButton name="PowaOwntexButton"
                            inherits="PowaCheckTemplate">
                 <Size>
@@ -1589,7 +1637,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                           relativeTo="PowaDropDownBuffType"
                           relativePoint="TOPRIGHT">
                     <Offset>
-                      <AbsDimension x="-70"
+                      <AbsDimension x="40"
                                     y="15" />
                     </Offset>
                   </Anchor>
