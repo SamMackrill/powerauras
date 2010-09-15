@@ -52,7 +52,6 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	
 	Unknown	 = "unknown",
 
-
 	DebuffType =
 	{
 		Magic   = "Magic",
