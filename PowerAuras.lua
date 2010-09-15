@@ -1381,21 +1381,21 @@ function PowaAuras:SetupStaticPopups()
 		maxLetters = self.ExportMaxSize,
 		hasWideEditBox = 1,
 		OnAccept = function(self)
-			PowaAuras:CreateNewAuraFromImport(PowaAuras.ImportAuraId, self.wideEditBox:GetText());
+			PowaAuras:CreateNewAuraFromImport(PowaAuras.ImportAuraId, self.editBox:GetText());
 			self:Hide();
 		end,
 		OnShow = function(self)
-			self.wideEditBox:SetFocus();
+			self.editBox:SetFocus();
 		end,
 		OnHide = function(self)
 			ChatEdit_FocusActiveWindow(); 	
-			self.wideEditBox:SetText("");
+			self.editBox:SetText("");
 			PowaAuras:DisplayAura(PowaAuras.CurrentAuraId);
 			PowaAuras:UpdateMainOption();
 		end,
 		EditBoxOnEnterPressed = function(self)
 			local parent = self:GetParent();
-			PowaAuras:CreateNewAuraFromImport(PowaAuras.ImportAuraId, parent.wideEditBox:GetText());
+			PowaAuras:CreateNewAuraFromImport(PowaAuras.ImportAuraId, parent.editBox:GetText());
 			parent:Hide();
 		end,
 		EditBoxOnEscapePressed = function(self)
@@ -1415,13 +1415,13 @@ function PowaAuras:SetupStaticPopups()
 		maxLetters = self.ExportMaxSize,
 		hasWideEditBox = 1,
 		OnShow = function(self)
-			self.wideEditBox:SetText(PowaAuras.Auras[PowaAuras.CurrentAuraId]:CreateAuraString());
-			self.wideEditBox:SetFocus();
-			self.wideEditBox:HighlightText();
+			self.editBox:SetText(PowaAuras.Auras[PowaAuras.CurrentAuraId]:CreateAuraString());
+			self.editBox:SetFocus();
+			self.editBox:HighlightText();
 		end,
 		OnHide = function(self)
 			ChatEdit_FocusActiveWindow(); 
-			self.wideEditBox:SetText("");
+			self.editBox:SetText("");
 		end,
 		EditBoxOnEnterPressed = function(self)
 			self:GetParent():Hide();
