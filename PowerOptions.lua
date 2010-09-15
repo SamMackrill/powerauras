@@ -2884,7 +2884,7 @@ function PowaAuras:InitializeTextureDropdown(owner, onClick, currentValue, addDe
 	end
 	for k,v in pairs(PowaAuras.TimerTextures) do
 		info.text = v;
-		info.value = k;
+		info.value = v;
 		UIDropDownMenu_AddButton(info);
 	end
 	UIDropDownMenu_SetSelectedValue(owner, currentValue);
