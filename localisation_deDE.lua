@@ -50,6 +50,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	offHand = "Schildhand",
 	bothHands = "beide",
 
+	Unknown	 = "Unbekannt",
+	
 	DebuffType =
 	{
 		Magic = "Magie",
@@ -69,6 +71,30 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		[PowaAuras.DebuffCatType.PvE] = "PvE",
 	},
 	
+	Role =
+	{
+		RoleTank     = "Tank",
+		RoleHealer   = "Heiler",
+		RoleMeleDps  = "Nahkampf DPS",
+		RoleRangeDps = "Fernkampf DPS",
+	},
+	
+	nomReasonRole =
+	{
+		RoleTank     = "Is a Tank",
+		RoleHealer   = "Is a Healer",
+		RoleMeleDps  = "Is a Melee DPS",
+		RoleRangeDps = "Is a Ranged DPS",
+	},
+
+	nomReasonNotRole =
+	{
+		RoleTank     = "Not a Tank",
+		RoleHealer   = "Not a Healer",
+		RoleMeleDps  = "Not a Melee DPS",
+		RoleRangeDps = "Not a Ranged DPS",
+	},
+	
 	AuraType =
 	{
 		[PowaAuras.BuffTypes.Buff] = "Buff",
@@ -83,15 +109,15 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		[PowaAuras.BuffTypes.EnergyRagePower] = "Wut/Energie/Runen",
 		[PowaAuras.BuffTypes.Aggro] = "Aggro",
 		[PowaAuras.BuffTypes.PvP] = "PvP",
-		[PowaAuras.BuffTypes.Stance] = "Stance",
+		[PowaAuras.BuffTypes.Stance] = "Haltung",
 		[PowaAuras.BuffTypes.SpellAlert] = "Spell Alert", 
 		[PowaAuras.BuffTypes.OwnSpell] = "My Spell Cooldown", 
 		[PowaAuras.BuffTypes.StealableSpell] = "Stealable Spell",
 		[PowaAuras.BuffTypes.PurgeableSpell] = "Purgeable Spell",
 		[PowaAuras.BuffTypes.Static] = "Static Aura",
 		[PowaAuras.BuffTypes.Totems] = "Totems",
-		[PowaAuras.BuffTypes.Pet] = "Pet",
-		[PowaAuras.BuffTypes.Runes] = "Runes",
+		[PowaAuras.BuffTypes.Pet] = "Haustier",
+		[PowaAuras.BuffTypes.Runes] = "Runen",
 		[PowaAuras.BuffTypes.Slots] = "Equipment Slots",
 		[PowaAuras.BuffTypes.Items] = "Named Items",
 		[PowaAuras.BuffTypes.Tracking] = "Tracking",
@@ -316,7 +342,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideIgnoreMaj = "Aktivieren um die Groß/Kleinschreibung bei Buff- und Debuffnamen zu ignorieren.",
 
 	nomAuraDebug= "Debug",
-	aideAuraDebug = "Debug this Aura",
+	aideAuraDebug = "Diese Aura debuggen",
 
 	nomDuration = "Animationsdauer",
 	aideDuration = "Nach dieser Zeit wird die Aura verschwinden (0 um zu daktivieren)",
@@ -345,9 +371,9 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomRandomColor = "Zufällige Farbe",
 	nomTexMode = "Glühen",
 
-	nomTalentGroup1 = "Spec 1",
+	nomTalentGroup1 = "Specc 1",
 	aideTalentGroup1 = "Zeige diesen Effekt nur, wenn du in deiner primären Talenzspezialisierung bist.",
-	nomTalentGroup2 = "Spec 2",
+	nomTalentGroup2 = "Specc 2",
 	aideTalentGroup2 = "Zeige diesen Effekt nur, wenn du in deiner sekundären Talenzspezialisierung bist.",
 
 	nomReset = "Setzte Editorpositionen zurück",	
@@ -369,18 +395,18 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		ismounted = "Auf Reittier",
 		inVehicle = "In Fahrzeug",
 		isAlive= "Am Leben",
-		PvP= "PvP flag set",
-		Instance5Man= "5-Man",
-		Instance5ManHeroic= "5-Man Hc",
-		Instance10Man= "10-Man",
-		Instance10ManHeroic= "10-Man Hc",
-		Instance25Man= "25-Man",
-		Instance25ManHeroic= "25-Man Hc",
-		InstanceBg= "Battleground",
+		PvP= "PvP aktiv",
+		Instance5Man= "5-Mann",
+		Instance5ManHeroic= "5-Mann HC",
+		Instance10Man= "10-Mann",
+		Instance10ManHeroic= "10-Mann HC",
+		Instance25Man= "25-Mann",
+		Instance25ManHeroic= "25-Mann HC",
+		InstanceBg= "Schlachtfeld",
 		InstanceArena= "Arena",
 	},
 
-	nomWhatever = "Ignoriert",
+	nomWhatever = "Ignorieren",
 	aideTernary = "Legt fest, wie der Status die Aura ein/ausschaltet.",
 	TernaryYes = {
 		combat = "Nur wenn im Kampf",
@@ -426,7 +452,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		ismounted = "Effekt beeinflusst durch Reittierstatus.",
 		inVehicle = "Effekt beeinflusst durch Fahrzeugstatus.",
 		isAlive= "Effekt beeinflusst durch Lebensstatus.",
-		PvP= "Effect modified by PvP flag",
+		PvP= "Effekt beinflusst durch PvP Status",
 		Instance5Man= "Effect modified by being in a 5-Man Normal instance",
 		Instance5ManHeroic= "Effect modified by being in a 5-Man Heroic instance",
 		Instance10Man= "Effect modified by being in a 10-Man Normal instance",
@@ -467,7 +493,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomReasonNoOneInGroupHasBuff   = "Keiner in $1 hat $2 $3",  --$1=GroupType $2=BuffType, $3=BuffName (e.g. "No one in Raid has Buff Blessing of Kings")
 
 	nomReasonBuffPresentTimerInvert = "der Buff läuft, Timer umgekehrt",
-	nomReasonBuffPresentNotMine     = "Not cast by me",
+	nomReasonBuffPresentNotMine     = "nicht von mir gezaubert",
 	nomReasonBuffFound              = "der Buff läuft",
 	nomReasonStacksMismatch         = "der Stapel = $1. $2 erwartet", --$1=Actual Stack count, $2=Expected Stack logic match (e.g. ">=0")
 
@@ -495,8 +521,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomReasonNotInRaid = "nicht im Schlachtzug",
 	nomReasonNoFocus = "kein Fokus",	
 	nomReasonNoCustomUnit = "benutzerdefinierte Einheit nicht in der Gruppe, im Schlachtzug oder mit Begleichtereinheit $1 gefunden werden konnte",
-	nomReasonPvPFlagNotSet = "PvP flag not set",
-	nomReasonPvPFlagSet = "PvP flag set",
+	nomReasonPvPFlagNotSet = "PvP Status nicht aktiv",
+	nomReasonPvPFlagSet = "PvP Status aktiv",
 
 	nomReasonNotMounted = "auf keinem Reittier",
 	nomReasonMounted = "auf einem Reittier",		
