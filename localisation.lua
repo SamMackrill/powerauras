@@ -127,7 +127,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	
 	PowerType =
 	{
-		[PowaAuras.PowerTypes.Any] = "Any",
+		[PowaAuras.PowerTypes.Any] = "Default",
 		[PowaAuras.PowerTypes.Rage] = "Rage",
 		[PowaAuras.PowerTypes.Focus] = "Focus",
 		[PowaAuras.PowerTypes.Energy] = "Energy",
