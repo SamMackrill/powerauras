@@ -2020,7 +2020,7 @@ function PowaAuras.DropDownMenu_Initialize(owner)
 		UIDropDownMenu_SetSelectedValue(PowaDropDownBuffType, aura.bufftype);
 	elseif (owner:GetName() == "PowaBuffTimerRelativeButton" or owner:GetName() == "PowaBuffTimerRelative") then
 		info = {func = PowaAuras.DropDownMenu_OnClickTimerRelative, owner = owner};
-		for _,v in pairs({"NONE", "TOPLEFT", "TOP", "TOPRIGHT", "RIGHT", "BOTTOMRIGHT", "BOTTOM", "BOTTOMLEFT", "LEFT", "TOPLEFT", "CENTER"}) do
+		for _,v in pairs({"NONE", "TOPLEFT", "TOP", "TOPRIGHT", "RIGHT", "BOTTOMRIGHT", "BOTTOM", "BOTTOMLEFT", "LEFT", "CENTER"}) do
 			info.text = PowaAuras.Text.Relative[v];
 			info.value = v;
 			UIDropDownMenu_AddButton(info);
