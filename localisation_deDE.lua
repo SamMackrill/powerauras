@@ -11,8 +11,8 @@ PowaAuras.Anim[7] = "Elektrisch";
 PowaAuras.Anim[8] = "Schrumpfend";
 PowaAuras.Anim[9] = "Flamme";
 PowaAuras.Anim[10] = "Orbit";
-PowaAuras.Anim[11] = "Spin Clockwise";
-PowaAuras.Anim[12] = "Spin Anti-Clockwise";
+PowaAuras.Anim[11] = "Im Uhrzeigersinn drehend";
+PowaAuras.Anim[12] = "Gegen den Uhrzeigersinn drehend";
 
 PowaAuras.BeginAnimDisplay[0] = "[Nichts]";
 PowaAuras.BeginAnimDisplay[1] = "Reinzoomend";
@@ -100,16 +100,16 @@ PowaAuras:MergeTables(PowaAuras.Text,
 
 	Relative = 
 	{
-		NONE        = "Free", 
-		TOPLEFT     = "Top-Left", 
-		TOP         = "Top", 
-		TOPRIGHT    = "Top-Right", 
-		RIGHT       = "Right", 
-		BOTTOMRIGHT = "BottomRight", 
-		BOTTOM      = "Bottom", 
-		BOTTOMLEFT  = "Bottom-Left", 
-		LEFT        = "Left", 
-		CENTER      = "Center",
+		NONE        = "Frei", 
+		TOPLEFT     = "Oben links", 
+		TOP         = "Oben", 
+		TOPRIGHT    = "Oben rechts", 
+		RIGHT       = "Rechts", 
+		BOTTOMRIGHT = "Unten rechts", 
+		BOTTOM      = "Unten", 
+		BOTTOMLEFT  = "Unten links", 
+		LEFT        = "Links", 
+		CENTER      = "Mitte",
 	},
 	
 	Slots =
@@ -176,21 +176,22 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideTracking = "Enter name of Tracking type e.g. fish",
 
 	-- editor
+	nomSoundStarting = "Start Sound:",
 	nomSound = "Sound abspielen:",
 	aideSound = "Spielt einen Sound am Anfang ab.",
-	nomSound2 = "More sounds to play",
-	aideSound = "Plays a sound at the beginning.",
-	aideSound2 = "Plays a sound at the beginning.",
+	nomSound2 = "Noch mehr Sounds zum abspielen:",
+	aideSound = "Spielt einen Sound am Anfang ab",
+	aideSound2 = "Spielt einen Sound am Anfang ab",
 	nomCustomSound = "ODER Sounddatei:",
 	aideCustomSound = "Dateiname der Sounddatei eingeben, die VOR dem Starten von WoW im Sounds Verzeichniss war. mp3 und wav werden unterstützt. Bsp.: 'cookie.mp3' ;)",
 
-	nomSoundEnding = "Ending Sound:",
-	nomSoundEnd = "Sound to play",
-	nomSound2End = "More sounds to play",
-	aideSoundEnd = "Plays a sound at the end.",
-	aideSound2End = "Plays a sound at the end.",
-	nomCustomSoundEnd = "OR soundfile:",
-	aideCustomSoundEnd = "Enter a soundfile that is in the Sounds folder, BEFORE you started the game. mp3 and wav are supported. example: 'cookie.mp3' ;)",
+	nomSoundEnding = "End Sound:",
+	nomSoundEnd = "Sound abspielen:",
+	nomSound2End = "Noch mehr Sounds zum abspielen:",
+	aideSoundEnd = "Spielt einen Sound am Ende ab",
+	aideSound2End = "Spielt einen Sound am Ende ab",
+	nomCustomSoundEnd = "ODER Sounddatei:",
+	aideCustomSoundEnd = "Dateiname der Sounddatei eingeben, die VOR dem Starten von WoW im Sounds Verzeichniss war. mp3 und wav werden unterstützt. Bsp.: 'cookie.mp3' ;)",
 	nomTexture = "Grafik",
 	aideTexture = "Die Grafik die angezeigt werden soll. Du kannst ganz leicht Grafiken austauschen, indem du die Aura#.tga Dateien im Verzeichnis des Addons veränderst.",
 
@@ -203,8 +204,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideDeform = "Strecke die Grafik in Höhe und Breite.",
 
 	aideColor = "Klicken, um die Farbe der Grafik zu ändern.",
-	aideTimerColor = "Click here to change the color of the timer.",
-	aideStacksColor = "Click here to change the color of the stacks.",
+	aideTimerColor = "Hier klicken um die Farbe der Timer zu ändern.",
+	aideStacksColor = "Hier klicken um die Farbe der Stacks zu ändern."
 	aideFont = "Klicken, um die Schriftart zu wählen. Drücke OK, um die Auswahl anzuwenden.",
 	aideMultiID = "Gib hier andere Aura-IDs für kombinierte Checks ein. Mehrere IDs müssen mit einem '/' getrennt werden. Die Aura ID kann als [#] in der ersten Zeile des Aura Tooltips gefunden werden.",
 	aideTooltipCheck = "Checke auch die Tooltips, die diesen Text enthalten.",
@@ -302,12 +303,13 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomCheckShowTimer = "Zeigen",
 	nomTimerDuration = "Dauer",
 	aideTimerDuration = "Zeigt einen Timer um die Buff/Debuff Dauer auf dem Ziel zu simulieren (0 um zu daktivieren)",
-	aideShowTimer = "Aktivieren um den Timer anzuzeigen.",
+	aideShowTimer = "Aktivieren um den Timer für diesen Effekt anzuzeigen.",
 	aideSelectTimer = "Auswählen welcher Timer die Dauer anzeigen soll.",
 	aideSelectTimerBuff = "Auswählen welcher Timer die Dauer anzeigen soll (dieser ist für die Buffs des Spielers reserviert)",
 	aideSelectTimerDebuff = "Auswählen welcher Timer die Dauer anzeigen soll (dieser ist für die Debuffs des Spielers reserviert)",
 
 	nomCheckShowStacks = "Zeigen",
+	aideShowStacks = "Aktivieren um die Stacks für diesen Effekt anzuzeigen.",
 
 	nomCheckInverse = "Umkehren",
 	aideInverse = "Kehrt die Logik des Effekts um, sodass er nur angezeigt wird, wenn der Buff/Debuff nicht aktiv ist.",	
@@ -319,16 +321,19 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideAuraDebug = "Debug this Aura",
 
 	nomDuration = "Animationsdauer",
-	aideDuration = "Nach dieser Zeit wird die Aura verschwinden (0 um zu daktivieren)",
+	aideDuration = "Nach dieser Zeit wird die Aura verschwinden (0 um zu deaktivieren)",
 
+	nomOldAnimations = "Alte Animationen";
+	aideOldAnimations = "Benutze die alten Animationen";
+	
 	nomCentiemes = "Zeige hundertstel",
 	nomDual = "Zeige zwei Timer",
 	nomHideLeadingZeros = "Verstecke führende Nullen",
 	nomTransparent = "Verwende transparente Grafiken",
-	nomActivationTime = "Show Time since activation",
-	nomUseOwnColor = "Use own color:",
+	nomActivationTime = "Zeige Zeit seit aktivierung",
+	nomUseOwnColor = "Eigene Farbe benutzen:",
 	nomUpdatePing = "Animiere bei Wiederholung",
-	nomRelative = "Relative to Main Aura",
+	nomRelative = "Ausrichtung relativ zur Hauptaura",
 	nomClose = "Schließen",
 	nomEffectEditor = "Effekt Editor",
 	nomAdvOptions = "Optionen",
