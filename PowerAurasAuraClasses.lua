@@ -2296,10 +2296,15 @@ function cPowaAuraStats:CheckUnit(unit)
 	if (curValue==nil or maxValue==nil) then return false; end
 
 	local curpercenthp = (curValue / maxValue) * 100;
+	
+	if (self.Debug) then
+		PowaAuras:ShowText("curValue=", curValue, " maxValue=", maxValue);
+		PowaAuras:ShowText("%=", curpercenthp, " threshold=",self.threshold);
+	end
 	if self.thresholdinvert then 
 		thresholdvalidate = (curpercenthp > self.threshold);
 	else
-		thresholdvalidate = (curpercenthp < self.threshold)
+		thresholdvalidate = (curpercenthp < self.threshold);
 	end	
 	if (thresholdvalidate) then
 		self:SetIcon("Interface\\icons\\Spell_fire_meteorstorm");
