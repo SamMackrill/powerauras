@@ -36,6 +36,8 @@ for i = 1, 10 do
 	PowaGlobalListe[i] = PowaAuras.Text.ListeGlobal.." "..i;
 end
 
+
+
 --- ---------------------------------------------------------------------------------------------------------
 
 function PowaAuras:Toggle(enable)
@@ -72,6 +74,12 @@ function PowaAuras:Toggle(enable)
 end
 
 function PowaAuras:OnLoad(frame)
+
+	-- Remove Cata stuff from live
+	if (not PowaAuras.Cataclysm) then
+		PowaAuras.Text.PowerType[PowaAuras.PowerTypes.HolyPower] = nil;
+		PowaAuras.PowerTypes.HolyPower = nil;
+	end
 	
 	--- Setting up the Import/Export static popups
 	self:SetupStaticPopups();
