@@ -934,13 +934,16 @@ function cPowaAura:CheckAllUnits(giveReason)
 	local numrm = GetNumRaidMembers();
 	
 	--PowaAuras:UnitTestDebug("CheckAllUnits on unit "..unit.."-"..postfix," numpm=",numpm," numrm=",numrm);
-
+	local result;
+	
 	if (unit == "party" or unit == "raid" or unit == "groupOrSelf") then
 
 		if unit == "party" then
 			for pm = 1, numpm do
 				local groupUnit = "party"..pm..postfix;
-				if self:CheckUnit(groupUnit) then
+				
+				result = self:CheckUnit(groupUnit);
+				if result then
 					if (not giveReason) then return true; end
 					return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, groupUnit, self.buffname);
 				end
@@ -948,7 +951,8 @@ function cPowaAura:CheckAllUnits(giveReason)
 		elseif unit == "raid" then
 			for rm = 1, numrm do
 				local groupUnit = "raid"..rm..postfix;
-				if self:CheckUnit(groupUnit) then
+				result = self:CheckUnit(groupUnit);
+				if result then
 					if (not giveReason) then return true; end
 					return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, groupUnit, self.buffname);
 				end
@@ -957,7 +961,8 @@ function cPowaAura:CheckAllUnits(giveReason)
 			if (numrm>0) then
 				for rm = 1, numrm do
 					local groupUnit = "raid"..rm..postfix;
-					if self:CheckUnit(groupUnit) then
+					result = self:CheckUnit(groupUnit);
+					if result then
 						if (not giveReason) then return true; end
 						return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, groupUnit, self.buffname);
 					end
@@ -965,21 +970,24 @@ function cPowaAura:CheckAllUnits(giveReason)
 			elseif (numpm>0) then
 				for pm = 1, numpm do
 					local groupUnit = "party"..pm..postfix;
-					if self:CheckUnit(groupUnit) then
+					result = self:CheckUnit(groupUnit);
+					if result then
 						if (not giveReason) then return true; end
 						return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, groupUnit, self.buffname);
 					end
 				end
 				local playerUnit = postfix;
 				if (playerUnit==nil or playerUnit=="") then playerUnit = "player"; end
-				if self:CheckUnit(playerUnit) then
+				result = self:CheckUnit(playerUnit);
+				if result then
 					if (not giveReason) then return true; end
 					return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, playerUnit, self.buffname);
 				end
 			else
 				local playerUnit = postfix;
 				if (playerUnit==nil or playerUnit=="") then playerUnit = "player"; end
-				if self:CheckUnit(playerUnit) then
+				result = self:CheckUnit(playerUnit);
+				if result then
 					if (not giveReason) then return true; end
 					return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, playerUnit, self.buffname);
 				end	
@@ -987,20 +995,25 @@ function cPowaAura:CheckAllUnits(giveReason)
 		end
 		if (self.target) then -- Check any nearby hostiles that may not be targeted
 			for unit in pairs(PowaAuras.ExtraUnitEvent) do
-				if self:CheckUnit(unit) then
+				result = self:CheckUnit(unit);
+				if result then
 					if (not giveReason) then return true; end
 					return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, unit, self.buffname);
 				end
 			end
 		end
 	else
-		if self:CheckUnit(unit..postfix) then
+		result = self:CheckUnit(unit..postfix);
+		if result then
 			if (not giveReason) then return true; end
 			return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, unit..postfix, self.buffname);
 		end
 	end
 
 	if (not giveReason) then return false; end
+	if (result==nil and PowaAuras.Text.ReasonStat[self.ValueName].NilReason) then
+		return false, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].NilReason, unit..postfix, self.buffname);
+	end
 	return false, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].NoMatchReason, unit..postfix, self.buffname);
 end
 
@@ -2278,7 +2291,6 @@ end
 function cPowaAuraStats:CheckUnit(unit)
 	PowaAuras:Debug("CheckUnit " .. unit);
 	if (not self:IsCorrectPowerType(unit)) then
-		--PowaAuras:UnitTestDebug("Correct powertype " ,self:IsCorrectPowerType(unit));
 		return nil;
 	end			
 	if (UnitIsDeadOrGhost(unit)) then
@@ -2292,7 +2304,6 @@ function cPowaAuraStats:CheckUnit(unit)
 	end	
 	
 	local maxValue = self:UnitValueMax(unit);
-	--PowaAuras:UnitTestDebug("curValue=", curValue, " maxValue=", maxValue);
 	if (curValue==nil or maxValue==nil) then return false; end
 
 	local curpercenthp = (curValue / maxValue) * 100;
@@ -2342,11 +2353,11 @@ function cPowaMana:IsCorrectPowerType(unit)
 end
 function cPowaMana:UnitValue(unit)
 	PowaAuras:Debug("Mana UnitValue for ", unit);
-	return UnitPower(unit);
+	return UnitPower(unit, 0);
 end
 function cPowaMana:UnitValueMax(unit)
 	PowaAuras:Debug("Mana UnitValueMax for ", unit);
-	return UnitPowerMax(unit);
+	return UnitPowerMax(unit, 0);
 end
 
 cPowaPowerType = PowaClass(cPowaMana, {ValueName = "Power"});
@@ -2354,15 +2365,30 @@ cPowaPowerType.OptionText={typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.
 cPowaPowerType.TooltipOptions = {r=1.0, g=0.4, b=0.0, showThreshold=true};
 cPowaPowerType.ShowOptions.PowaDropDownPowerType=1;
 
+function cPowaPowerType:UnitValue(unit)
+	PowaAuras:Debug("UnitValue for ", unit);
+	if (not self.PowerType or self.PowerType==0) then
+		return UnitPower(unit);
+	end
+	return UnitPower(unit, self.PowerType);
+end
+function cPowaPowerType:UnitValueMax(unit)
+	PowaAuras:Debug("UnitValueMax for ", unit);
+	if (not self.PowerType or self.PowerType==0) then
+		return UnitPowerMax(unit);
+	end
+	return UnitPowerMax(unit, self.PowerType);
+end
+
 function cPowaPowerType:IsCorrectPowerType(unit)
 	local unitPowerType = UnitPowerType(unit);
 	if (self.Debug) then
-		PowaAuras:ShowText("cPowaPowerType IsCorrectPowerType powerType=", unitPowerType);
+		PowaAuras:ShowText("cPowaPowerType IsCorrectPowerType powerType=", unitPowerType, " expected=", self.PowerType);
 	end
 	if (not unitPowerType) then
 		return false;
 	end
-	if (self.PowerType==0) then
+	if (not self.PowerType or self.PowerType==0) then
 		return (unitPowerType > 0);
 	end
 	return (unitPowerType==self.PowerType);
