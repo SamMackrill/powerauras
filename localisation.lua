@@ -351,6 +351,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideSelectTimerDebuff = "Select which timer will show the duration (this one is reserved for player's debuffs)",
 
 	nomCheckShowStacks = "Show",
+	aideShowStacks = "Activate this to show the stacks for this effect.",
 
 	nomCheckInverse = "Invert",
 	aideInverse = "Invert the logic to show this effect only when buff/debuff is not active.",	
@@ -364,6 +365,9 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomDuration = "Anim. duration",
 	aideDuration = "After this time, this effect will disapear (0 to deactivate)",
 
+	nomOldAnimations = "Old Animations";
+	aideOldAnimations = "Use Old Animations";
+	
 	nomCentiemes = "Show hundredth",
 	nomDual = "Show two timers",
 	nomHideLeadingZeros = "Hide Leading Zeros",
