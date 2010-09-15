@@ -2789,8 +2789,8 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Anchors>
                 <Scripts>
                   <OnLoad>
-                  	self.tooltipText = "Use Old Animations"; 
-                  	PowaOldAnimationText:SetText("Old Animations");
+                  	self.tooltipText = PowaAuras.Text.aideOldAnimations; 
+                  	PowaOldAnimationText:SetText(PowaAuras.Text.nomOldAnimations);
                   </OnLoad>
                   <OnClick>PowaAuras:OldAnimationChecked(self);</OnClick>
                 </Scripts>
