@@ -205,7 +205,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 
 	aideColor = "Klicken, um die Farbe der Grafik zu ändern.",
 	aideTimerColor = "Hier klicken um die Farbe der Timer zu ändern.",
-	aideStacksColor = "Hier klicken um die Farbe der Stacks zu ändern."
+	aideStacksColor = "Hier klicken um die Farbe der Stacks zu ändern.",
 	aideFont = "Klicken, um die Schriftart zu wählen. Drücke OK, um die Auswahl anzuwenden.",
 	aideMultiID = "Gib hier andere Aura-IDs für kombinierte Checks ein. Mehrere IDs müssen mit einem '/' getrennt werden. Die Aura ID kann als [#] in der ersten Zeile des Aura Tooltips gefunden werden.",
 	aideTooltipCheck = "Checke auch die Tooltips, die diesen Text enthalten.",
