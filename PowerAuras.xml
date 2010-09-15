@@ -1204,6 +1204,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               </Layer>
             </Layers>
             <Frames>
+			
               <EditBox name="PowaBarBuffName"
                        autoFocus="false"
                        inherits="InputBoxTemplate"
@@ -1257,6 +1258,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   </Layer>
                 </Layers>
               </EditBox>
+			  
               <EditBox name="PowaBarMultiID"
                        autoFocus="false"
                        inherits="InputBoxTemplate">
@@ -1309,6 +1311,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   </Layer>
                 </Layers>
               </EditBox>
+			  
               <EditBox name="PowaBarTooltipCheck"
                        autoFocus="false"
                        inherits="InputBoxTemplate">
@@ -1361,6 +1364,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   </Layer>
                 </Layers>
               </EditBox>
+			  
               <EditBox name="PowaBarBuffStacks"
                        autoFocus="false"
                        inherits="InputBoxTemplate">
