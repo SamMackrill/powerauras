@@ -2,8 +2,6 @@
 -- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< MAIN OPTIONS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 -- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
--- ---------------------------------------------------------------------------------------------------------------------
-
 function PowaAuras:ResetPositions()
 	PowaBarConfigFrame:ClearAllPoints();
 	PowaBarConfigFrame:SetPoint("CENTER", "UIParent", "CENTER", 0, 50);
@@ -11,7 +9,6 @@ function PowaAuras:ResetPositions()
 	PowaOptionsFrame:SetPoint("CENTER", "UIParent", "CENTER", 0, 50);
 end
 
--- ---------------------------------------------------------------------------------------------------------------------
 function PowaAuras:UpdateMainOption()
 	PowaOptionsHeader:SetText("POWER AURAS "..self.Version);
 	PowaMainHideAllButton:SetText(self.Text.nomHide);
@@ -71,7 +68,6 @@ function PowaAuras:UpdateMainOption()
 	getglobal("PowaOptionsList"..self.MainOptionPage):LockHighlight();
 end
 
--- ---------------------------------------------------------------------------------------------------------------------
 function PowaAuras:IconeClick(owner, button)
 	local iconeID = owner:GetID();
 	local auraId = ((self.MainOptionPage-1)*24) + iconeID;
@@ -259,7 +255,7 @@ function PowaAuras:MainListEntered(owner)
 		GameTooltip:Show();
 	end
 end
--- ---------------------------------------------------------------------------------------------------------------------
+
 function PowaAuras:OptionRename()
 	PowaOptionsRename:Hide();
 	PowaOptionsRenameEditBox:Show();
@@ -280,7 +276,7 @@ function PowaAuras:OptionRenameEdited()
 		PowaPlayerListe[self.MainOptionPage] = PowaOptionsRenameEditBox:GetText();
 	end
 end
--- ---------------------------------------------------------------------------------------------------------------------
+
 function PowaAuras:TriageIcones(nPage)
 	  local min = ((nPage-1)*24) + 1;
 	  local max = min + 23;
@@ -814,7 +810,7 @@ function PowaAuras:DoCopyEffect(idFrom, idTo, isMove)
 		self:DeleteAura(self.Auras[idFrom]);
 	end
 end
--- ---------------------------------------------------------------------------------------------------------------------
+
 function PowaAuras:MainOptionShow()
 	--self:ShowText("MainOptionShow");
 	if (PowaOptionsFrame:IsVisible()) then
@@ -1087,7 +1083,7 @@ function PowaAuras:InitPage()
 	PowaBarCustomSound.aide = self.Text.aideCustomSound;
 	PowaBarCustomSoundEnd.aide = self.Text.aideCustomSoundEnd;
 	PowaBarBuffStacks.aide = self.Text.aideStacks;
-	-- ---------------
+
 	PowaOwntexButton:SetChecked(aura.owntex);
 	PowaWowTextureButton:SetChecked(aura.wowtex);
 	PowaCustomTextureButton:SetChecked(aura.customtex);
@@ -1109,7 +1105,7 @@ function PowaAuras:InitPage()
 	PowaMineButton:SetChecked(aura.mine);
 	PowaThresholdInvertButton:SetChecked(aura.thresholdinvert);
 	PowaExtraButton:SetChecked(aura.Extra);
-	-- ----------------
+
 	PowaTexModeButton:SetChecked(aura.texmode == 1);
 
 	-- Ternary Logic
@@ -1140,7 +1136,7 @@ function PowaAuras:InitPage()
 	
 	PowaTimerDurationSlider:SetValue(aura.timerduration);
 	PowaBarThresholdSlider:SetValue(aura.threshold);
-	----------------
+
 	-- dual specs
 	self:EnableCheckBox("PowaTalentGroup1Button");
 	self:EnableCheckBox("PowaTalentGroup2Button");
@@ -1296,9 +1292,9 @@ function PowaAuras:InitPage()
 
 	PowaHeader:SetText(self.Text.nomEffectEditor);
 end
------------------------------------------------------------------------------------------------------------------------
+--================
 -- Sliders Changed
------------------------------------------------------------------------------------------------------------------------
+--================
 
 function PowaAuras:BarAuraTextureSliderChanged()
 	if (self.Initialising) then return; end
@@ -1456,9 +1452,9 @@ function PowaAuras:BarThresholdSliderChanged()
 	self.Auras[auraId].threshold = SliderValue;
 end
 
-------------------------------------------------------------------
+--=============
 -- Text Changed
-------------------------------------------------------------------
+--=============
 
 function PowaAuras:TextCoordXChanged()
 	local thisText = PowaBarAuraCoordXEdit:GetText();
@@ -1631,9 +1627,9 @@ function PowaAuras:CustomSoundEndTextChanged(force)
 	end	
 end
 
----------------------------------
+--===================
 -- Checkboxes changed
----------------------------------
+--===================
 
 function PowaAuras:InverseChecked()
 	local aura = self.Auras[self.CurrentAuraId];
@@ -1694,8 +1690,6 @@ function PowaAuras:ThresholdInvertChecked(owner)
 		self.Auras[auraId].thresholdinvert = false;
 	end
 end
-
-------------------------------------
 
 function PowaAuras:OwntexChecked()
 	local auraId = self.CurrentAuraId;
@@ -1795,9 +1789,9 @@ function PowaAuras:TextAuraChecked()
 	self:RedisplayAura(self.CurrentAuraId);
 end
 
------------------------------------------------
+--=====================================
 -- Targets, Party, Raid, ... Checkboxes
------------------------------------------------
+--=====================================
 
 function PowaAuras:TargetChecked()
 	local auraId = self.CurrentAuraId;
@@ -1881,9 +1875,9 @@ function PowaAuras:OptunitnChecked()
 	end
 end
 
-------------------------------------------
+--==============
 -- Dropdownmenus
-------------------------------------------
+--==============
 
 function PowaAuras.DropDownMenu_Initialize(owner)
 	local info;
@@ -2231,7 +2225,6 @@ function PowaAuras.DropDownMenu_OnClickEnd(self)
 	PowaAuras:RedisplayAura(auraId);
 end
 
-----------------------------------------------------------
 -- OPTIONS DEPLACEMENT
 
 function PowaAuras:Bar_MouseDown(owner, button, frmFrame)
@@ -2244,7 +2237,6 @@ function PowaAuras:Bar_MouseUp(owner, button, frmFrame)
 	getglobal( frmFrame ):StopMovingOrSizing( );
 end
 
-----------------------------------------------------------
 -- COLOR PICKER
 
 function PowaAuras.SetColor()
@@ -2297,7 +2289,6 @@ function PowaAuras:OpenColorPicker(control, source, setTexture)
 	end
 end
 
-----------------------------------------------------------
 -- FONT SELECTOR
 
 function PowaAuras:FontSelectorOnShow(owner)
@@ -2376,7 +2367,7 @@ function PowaAuras.FontScrollBar_Update(owner)
 	
 end
 
-----------------------------------------------------------------------
+
 function PowaAuras:EditorShow()
 	if (PowaBarConfigFrame:IsVisible()) then
 		self:EditorClose();
@@ -2580,7 +2571,7 @@ function PowaAuras:TimerTransparentChecked(control)
 	--self:CreateTimerFrameIfMissing(self.CurrentAuraId);
 end
 
------- Stacks ----
+--==== Stacks ====
 
 function PowaAuras:ShowStacksChecked(control)
 	if (self.Initialising) then return; end
@@ -2653,8 +2644,6 @@ function PowaAuras:StacksChecked(control, setting)
 	self.Auras[self.CurrentAuraId].Stacks:Delete();
 end
 
--- ----------------------------------------------------------- LIGNE DE COMMANDE
-
 function PowaAuras_CommanLine(msg)
 	if (msg=="dump") then
 		PowaAuras:Dump();
@@ -2687,9 +2676,9 @@ function PowaAuras:ShowAurasOnUnit(display, auraType)
 	end
 end
 
-------------------------------------
+--=================================
 -- Enable/Disable Options Functions
-------------------------------------
+--=================================
 
 function PowaAuras:DisableSlider(slider)
 	getglobal(slider):EnableMouse(false);
@@ -2738,7 +2727,7 @@ function PowaAuras:ShowCheckBox(checkBox)
 	getglobal(checkBox):Show();
 end
 
----- Blizzard Addon -----
+--==== Blizzard Addon ====
 
 function PowaAuras:EnableChecked()
 	--PowaAuras:ShowText("EnableChecked");

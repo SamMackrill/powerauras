@@ -1,4 +1,4 @@
-------------cPowaAura----------------
+--=========cPowaAura=========
 --   cPowaAura is the base class and is not instanced directly, the other classes inherit properties and methods from it
 --===========================
 
@@ -1276,7 +1276,7 @@ end
 
 
 function cPowaBuffBase:CheckAllAuraSlots(target, giveReason)
-	--PowaAuras:UnitTestDebug("-------------");
+	--PowaAuras:UnitTestDebug("===========");
 	--PowaAuras:UnitTestDebug("CheckAllAuraSlots for ", target);
 	--PowaAuras.BuffUnitCount = PowaAuras.BuffUnitCount + 1;
 	if (self.Debug) then
@@ -2054,7 +2054,7 @@ end
 							  
 function cPowaActionReady:CheckIfShouldShow(giveReason)
 	PowaAuras:Debug("Check Action / Button:", self.slot);
-	--PowaAuras:ShowText("-----ACTION READY---------");
+	--PowaAuras:ShowText("====ACTION READY====");
 	--PowaAuras:ShowText("Slot=", self.slot);
 	if (not self.slot or self.slot == 0) then 
 		if (not giveReason) then return false; end
@@ -2158,7 +2158,7 @@ end
 
 function cPowaOwnSpell:CheckIfShouldShow(giveReason)
 	--PowaAuras:UnitTestDebug("Check Spell:", self.buffname);
-	--PowaAuras:ShowText("-----OWN SPELL---------");
+	--PowaAuras:ShowText("====OWN SPELL====");
 	--PowaAuras:ShowText("Spell=", self.buffname);
 	for pword in string.gmatch(self.buffname, "[^/]+") do
 		local spellName, spellIcon = self:GetSpellNameFromMatch(pword);
