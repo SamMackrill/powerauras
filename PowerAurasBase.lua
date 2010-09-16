@@ -569,7 +569,6 @@ PowaAuras = {
 	};
 
 	-- Colors used in messages
-	--------------------------
 	Colors = {
 		["Blue"] = "|cff6666ff",
 		["Grey"] = "|cff999999",
@@ -844,9 +843,9 @@ function PowaAuras:DisplayText(...)
 	self:Message(...);
 end
 
-----------------------------------------------------------------------------------------
+-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 -- This function will print a Message to the GUI screen (not the chat window) then fade.
-----------------------------------------------------------------------------------------
+-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 function PowaAuras:Error( msg, holdtime )
 	if (holdtime==nil) then
 		holdtime = UIERRORS_HOLD_TIME;
@@ -923,7 +922,9 @@ function PowaAuras:MergeTables(desTable, sourceTable)
 			if (type(v)~="table") then
 				desTable[i] = v;
 			else
-				desTable[i] = {};
+				if (not desTable[i] or type(desTable[i])~="table") then
+					desTable[i] = {};
+				end
 				self:MergeTables(desTable[i], v);
 			end
 		end
