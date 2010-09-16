@@ -703,7 +703,13 @@ end
 
 function PowaAuras:GetStances()
 	for iForm=1, GetNumShapeshiftForms() do
-		self.PowaStance[iForm] = select(2,GetShapeshiftFormInfo(iForm));
+		-- Fix for warlock metamorphosis
+		if (self.playerclass=="WARLOCK") then
+			self.PowaStance[1] = "";
+			self.PowaStance[2] = select(2,GetShapeshiftFormInfo(1));
+		else
+			self.PowaStance[iForm] = select(2,GetShapeshiftFormInfo(iForm));
+		end
 	end
 end
 	
