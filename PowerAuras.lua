@@ -1381,7 +1381,7 @@ function PowaAuras:SetupStaticPopups()
 		button2 = CANCEL,
 		hasEditBox = 1,
 		maxLetters = self.ExportMaxSize,
-		hasWideEditBox = 1,
+		--hasWideEditBox = 1,
 		editBoxWidth = self.ExportWidth,
 		OnAccept = function(self)
 			PowaAuras:CreateNewAuraFromImport(PowaAuras.ImportAuraId, self.editBox:GetText());
@@ -1415,7 +1415,7 @@ function PowaAuras:SetupStaticPopups()
 		button1 = DONE,
 		hasEditBox = 1,
 		maxLetters = self.ExportMaxSize,
-		hasWideEditBox = 1,
+		--hasWideEditBox = 1,
 		editBoxWidth = self.ExportWidth,
 		OnShow = function(self)
 			self.editBox:SetText(PowaAuras.Auras[PowaAuras.CurrentAuraId]:CreateAuraString());
@@ -1445,7 +1445,7 @@ function PowaAuras:SetupStaticPopups()
 		button2 = CANCEL,
 		hasEditBox = 1,
 		maxLetters = self.ExportMaxSize * 24,
-		hasWideEditBox = 1,
+		--hasWideEditBox = 1,
 		editBoxWidth = self.ExportWidth,
 		OnAccept = function(self)
 			PowaAuras:CreateNewAuraSetFromImport(self.editBox:GetText());
@@ -1479,7 +1479,7 @@ function PowaAuras:SetupStaticPopups()
 		button1 = DONE,
 		hasEditBox = 1,
 		maxLetters = self.ExportMaxSize * 24,
-		hasWideEditBox = 1,
+		--hasWideEditBox = 1,
 		editBoxWidth = self.ExportWidth,
 		OnShow = function(self)
 			self.editBox:SetText(PowaAuras:CreateAuraSetString());
