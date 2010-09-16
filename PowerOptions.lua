@@ -1911,12 +1911,16 @@ function PowaAuras.DropDownMenu_Initialize(owner)
 		end
 		UIDropDownMenu_SetSelectedValue(PowaDropDownAnim2, aura.anim2);
 	elseif (owner:GetName() == "PowaDropDownStanceButton" or owner:GetName() == "PowaDropDownStance") then
-		info = {func = PowaAuras.DropDownMenu_OnClickStance, owner = owner};
+		info = {func = PowaAuras.DropDownMenu_OnClickStance, owner = owner};	
 		for i = 0, #(PowaAuras.PowaStance) do
-			info.text = PowaAuras.PowaStance[i]; 
-			info.value = i;
-			UIDropDownMenu_AddButton(info);
-		end				
+			-- Fix for warlock metamorphosis
+			if (i == 1 and PowaAuras.playerclass == "WARLOCK") then
+			else
+				info.text = PowaAuras.PowaStance[i]; 
+				info.value = i;
+				UIDropDownMenu_AddButton(info);
+			end
+		end		
 		UIDropDownMenu_SetSelectedValue(PowaDropDownStance, aura.stance);
 		UIDropDownMenu_SetWidth(PowaDropDownStance, 210, 1);
 	elseif (owner:GetName() == "PowaDropDownGTFOButton" or owner:GetName() == "PowaDropDownGTFO") then
