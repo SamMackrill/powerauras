@@ -17,8 +17,13 @@
 		
 		aura:SetStacks(">101");
 		assertEquals(aura.stacksOperator, ">", ">101 >");
-		assertEquals(aura.stacks, 0, ">101 0");
+		assertEquals(aura.stacks, 101, ">101 0");
 		assertEquals(aura.stacksLower, 0, ">101 0");
+		
+		aura:SetStacks(">9999");
+		assertEquals(aura.stacksOperator, ">", ">9999 >");
+		assertEquals(aura.stacks, 0, ">9999 0");
+		assertEquals(aura.stacksLower, 0, ">9999 0");
 		
 		aura:SetStacks(">");
 		assertEquals(aura.stacksOperator, ">", "> >");
