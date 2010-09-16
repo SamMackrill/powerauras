@@ -148,7 +148,7 @@ function cPowaStacks:Delete()
 	end
 end
 
-------- Timer -------
+--===== Timer =====
 
 cPowaTimer = PowaClass(function(timer, aura, base)
 	timer.enabled = false;
@@ -218,7 +218,7 @@ function cPowaTimer:GetTexture()
 	--PowaAuras:ShowText("Timer texture: ", texture);
 	return texture;
 end
---- ------------------------------------------------------------------------------------------------- TIMERS
+-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TIMERS
 function cPowaTimer:Update(elapsed)
 	--PowaAuras:UnitTestInfo("Timer.Update ",self.id);
 	local aura = PowaAuras.Auras[self.id];
