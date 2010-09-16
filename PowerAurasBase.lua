@@ -8,6 +8,7 @@ PowaAuras = {
 	InspectTimeOut = 12;
 	InspectDelay = 2;
 	ExportMaxSize = 4000;
+	ExportWidth = 500;
 	
 	DebugEvents = false;
 	
