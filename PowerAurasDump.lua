@@ -5,9 +5,9 @@ Power Auras debug dump function
 
 --]]
 
-----------------------------------------------
+--==============================================
 -- Dump eveything we can think of into PowaState
-----------------------------------------------
+--==============================================
 function PowaAuras:Dump()
 
 	--self:Dump_Safe();
