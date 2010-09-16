@@ -1,6 +1,6 @@
---- ------------------------------------------------
----            << Power Auras >>
---- ------------------------------------------------
+-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+--      << Power Auras >>
+-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 -- ^\s*[^-\s][^-\s].*:ShowText\(.*$
 
 -- Exposed for Saving
@@ -38,7 +38,7 @@ end
 
 
 
---- ---------------------------------------------------------------------------------------------------------
+-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 function PowaAuras:Toggle(enable)
 	if (self.Initialising) then return; end
@@ -274,7 +274,8 @@ function PowaAuras:UpdateOldAuras()
 	end
 
 end
-------------------------------------------------------------------------------------------------------- EVENTS
+
+-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> EVENTS
 function PowaAuras:FindAllChildren()
 	--self:ShowText("FindAllChildren");
 	for _, aura in pairs(self.Auras) do
@@ -323,7 +324,7 @@ function PowaAuras:CustomTexPath(customname)
 	return texpath;
 end
 
---- ------------------------------------------------------------------------------------
+-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 function PowaAuras:CreateTimerFrame(auraId, index, updatePing)
 	local frame = CreateFrame("Frame", nil, UIParent);
@@ -391,8 +392,6 @@ function PowaAuras:CreateStacksFrameIfMissing(auraId, updatePing)
 	return self.StacksFrames[auraId];
 end
 
---- ----------------------------------------------------------------------------------------------- CREE LA LISTE DES CHECKS
-
 function PowaAuras:CreateEffectLists()
 	
 	for k in pairs(self.AurasByType) do
@@ -420,7 +419,7 @@ function PowaAuras:InitialiseAllAuras()
 		aura:Init();
 	end 
 end
---- ----------------------------------------------------------------------------------------------- Memorize les actions
+
 function PowaAuras:MemorizeActions(actionIndex)
 	local imin, imax;
 	--self:Debug("---MemorizeActions---");
@@ -470,7 +469,7 @@ function PowaAuras:MemorizeActions(actionIndex)
 						if (self:MatchString(name, actionAura.buffname, actionAura.ignoremaj)
 						 or self:MatchString(text, actionAura.buffname, actionAura.ignoremaj)) then
 							actionAura.slot = i; --- remember the slot
-							--self:ShowText("---------------------------------------");
+							--self:ShowText("========================================");
 							--self:ShowText("Name=", name, "Tooltip=", text, " Match=", actionAura.buffname);
 							--- remember the texture
 							local tempicon;
@@ -733,7 +732,7 @@ function PowaAuras:TestThisEffect(auraId, giveReason, ignoreCascade)
 	--self.EffectCount = self.EffectCount + 1;
 
 	if (debugEffectTest) then
-		self:Message("----------------------------------");
+		self:Message("===================================");
 		self:Message("Test Aura for Hide or Show = ",auraId);
 		self:Message("Active= ", aura.Active);
 		self:Message("Showing= ", aura.Showing);
@@ -850,7 +849,7 @@ function PowaAuras:SetAuraHideRequest(aura, secondaryAura)
 	end
 end
 
---- -----------------------------------------------------------------------------------------------------------
+-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 function PowaAuras:ShowAuraForFirstTime(aura)
 	--self:UnitTestInfo("ShowAuraForFirstTime", aura.id);
 	if (aura.Debug) then
@@ -1189,7 +1188,7 @@ function PowaAuras:UpdateAura(aura, elapsed)
 	end
 	
 	if (PowaAuras.DebugCycle) then
-		self:DisplayText("------Aura"..aura.id.."------");
+		self:DisplayText("====Aura"..aura.id.."====");
 		self:DisplayText("aura.HideRequest=",aura.HideRequest);
 		self:DisplayText("aura.Showing=",aura.Showing);
 	end
@@ -1300,7 +1299,7 @@ end
 function PowaAuras:UpdateTimer(aura, timerElapsed, skipTimerUpdate)
 
 	--if (aura.Debug) then
-	--	PowaAuras:UnitTestInfo("UpdateTimer ",self.id, " ", aura.Timer, " skip=",skipTimerUpdate);
+	--	--PowaAuras:UnitTestInfo("UpdateTimer ",self.id, " ", aura.Timer, " skip=",skipTimerUpdate);
 	--end
 	
 	if (not aura.Timer or skipTimerUpdate) then

@@ -64,7 +64,6 @@
 		</Layers>
 	</Button>
 
--- ------------------------------------------------------------------------------------------------
 	<Frame name="PowaOptionsFrame" toplevel="true" movable="true" parent="UIParent" frameStrata="MEDIUM" hidden="true" enableMouse="true" enableKeyboard="true">
 		<Size>
           <AbsDimension x="328" y="457" />
@@ -156,7 +155,7 @@
 			</FontString>
 	      </Layer>
 		</Layers>
--- ----------------------------------------------------------------------------------- boutons
+-- Buttons
 		<Frames>
 			-- bouton fermer
             <Button name="$parentCloseButton" inherits="UIPanelCloseButton">
@@ -252,7 +251,7 @@
 				</Scripts>
 			</Button>
 					
-			-- --------------------------------------------------------------------- Fenetre icones effets
+			-- Fenetre icones effets
 			<Frame name="PowaOptionsSelectorFrame">
 				<Size>
 					<AbsDimension x="194" y="382"/>
@@ -721,7 +720,7 @@
 
 				</Frames>
 			</Frame>
--- --------------------------------------------------------------------- Fenetre player liste
+-- Fenetre player liste
 			<Frame name="PowaOptionsPlayerListFrame">
 				<Size>
 					<AbsDimension x="90" y="110"/>
@@ -820,7 +819,7 @@
 
 				</Frames>
 			</Frame>
--- --------------------------------------------------------------------- Fenetre global liste
+-- Fenetre global liste
 			<Frame name="PowaOptionsGlobalListFrame">
 				<Size>
 					<AbsDimension x="90" y="187"/>
