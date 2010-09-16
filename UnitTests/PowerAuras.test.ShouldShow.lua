@@ -51,7 +51,7 @@
 		if (aura==nil) then return; end;
 		
 		local BuffTypeNames = PowaAuras:ReverseTable(PowaAuras.BuffTypes);
-        PowaAuras:UnitTestDebug("--------------------------");	
+        PowaAuras:UnitTestDebug("==================================");	
         PowaAuras:UnitTestDebug("TestingEffect aura",auraId,BuffTypeNames[aura.bufftype],aura.buffname);
 		local result, reason = PowaAuras:TestThisEffect(auraId, true);
 		assertEquals(result, expected, aura.id.." (" ..tostring(aura.buffname)..")");
@@ -920,7 +920,7 @@
 		local result, reason = aura:ShouldShow(true);			
 		--TestPA.Debug = false;		
 		assertEquals(result, true, aura.bufftype);
-		assertEquals(reason, "player EnergyRagePower low", "Reason "..aura.bufftype);
+		assertEquals(reason, "player Power low", "Reason "..aura.bufftype);
 
 		self:TearDown()
 	end
@@ -935,7 +935,7 @@
 		local result, reason = aura:ShouldShow(true);			
 		--TestPA.Debug = false;		
 		assertEquals(result, false, aura.bufftype);
-		assertEquals(reason, "player EnergyRagePower not low enough", "Reason "..aura.bufftype);
+		assertEquals(reason, "player Power not low enough", "Reason "..aura.bufftype);
 
 		self:TearDown()
 	end
@@ -950,7 +950,7 @@
 		local result, reason = aura:ShouldShow(true);			
 		--TestPA.Debug = false;		
 		assertEquals(result, false, aura.bufftype);
-		assertEquals(reason, "player EnergyRagePower not low enough", "Reason "..aura.bufftype);
+		assertEquals(reason, "player Power not low enough", "Reason "..aura.bufftype);
 
 		self:TearDown()
 	end
@@ -965,7 +965,7 @@
 		local result, reason = aura:ShouldShow(true);			
 		--TestPA.Debug = false;		
 		assertEquals(result, true, aura.bufftype);
-		assertEquals(reason, "player EnergyRagePower low", "Reason "..aura.bufftype);
+		assertEquals(reason, "player Power low", "Reason "..aura.bufftype);
 
 		self:TearDown()
 	end
@@ -980,7 +980,7 @@
 		local result, reason = aura:ShouldShow(true);			
 		--TestPA.Debug = false;		
 		assertEquals(result, true, aura.bufftype);
-		assertEquals(reason, "player EnergyRagePower low", "Reason "..aura.bufftype);
+		assertEquals(reason, "player Power low", "Reason "..aura.bufftype);
 
 		self:TearDown()
 	end
@@ -995,7 +995,7 @@
 		local result, reason = aura:ShouldShow(true);			
 		--TestPA.Debug = false;		
 		assertEquals(result, false, aura.bufftype);
-		assertEquals(reason, "player EnergyRagePower not low enough", "Reason "..aura.bufftype);
+		assertEquals(reason, "player Power not low enough", "Reason "..aura.bufftype);
 
 		self:TearDown()
 	end
@@ -1010,7 +1010,7 @@
 		local result, reason = aura:ShouldShow(true);			
 		--TestPA.Debug = false;		
 		assertEquals(result, true, aura.bufftype);
-		assertEquals(reason, "player EnergyRagePower low", "Reason "..aura.bufftype);
+		assertEquals(reason, "player Power low", "Reason "..aura.bufftype);
 
 		self:TearDown()
 	end
@@ -1025,7 +1025,7 @@
 		local result, reason = aura:ShouldShow(true);			
 		--TestPA.Debug = false;		
 		assertEquals(result, false, aura.bufftype);
-		assertEquals(reason, "player EnergyRagePower not low enough", "Reason "..aura.bufftype);
+		assertEquals(reason, "player Power not low enough", "Reason "..aura.bufftype);
 
 		self:TearDown()
 	end	

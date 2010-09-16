@@ -125,7 +125,7 @@ TestPA = {Debug = false;} --aura
 	function TestPA:AuraTest(auraId, expected, expectedReason)
 		local BuffTypeNames = PowaAuras:ReverseTable(PowaAuras.BuffTypes);
 		local aura = PowaAuras.Auras[auraId];
-        PowaAuras:UnitTestDebug("--------------------------");	
+        PowaAuras:UnitTestDebug("============================");	
 		PowaAuras:UnitTestDebug(auraId,"  Aura count", #PowaAuras.Auras, auraId);
         PowaAuras:UnitTestDebug("Testing aura",auraId,BuffTypeNames[aura.bufftype],aura.buffname);
 		local result, reason = aura:ShouldShow(true);
@@ -136,7 +136,7 @@ TestPA = {Debug = false;} --aura
 		end
 	end
 	
---------------------TESTS START HERE ---------------------
+--====TESTS START HERE ====
 
 
 	function TestPA:test_WelcomeMessage()
