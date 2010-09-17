@@ -512,6 +512,7 @@ function PowaAuras:PLAYER_TARGET_CHANGED(...)
 		self.DoCheck.Actions = true;
 		self.DoCheck.StealableTargetSpells = true;
 		self.DoCheck.PurgeableTargetSpells = true;
+		self.DoCheck.Combo = true;
 	end
 end
 	 
