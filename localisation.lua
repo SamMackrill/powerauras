@@ -49,7 +49,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	mainHand = "main",
 	offHand = "off",
 	bothHands = "both",
-	
+
 	Unknown	 = "unknown",
 
 	DebuffType =
@@ -207,14 +207,12 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideEffectTooltip = "(Shift-click to toggle effect ON or OFF)",
 	aideEffectTooltip2 = "(Ctrl-click to give reason for activation)",
 
-
 	aideItems = "Enter full name of Item or [xxx] for Id",
 	aideTracking = "Enter name of Tracking type e.g. fish",
 
-
 	-- editor
 	aideCustomText = "Enter text to display (%t=target name, %f=focus name, %v=display value, %u=unit name, %str=str, agl=agl, %sta=sta, %int=int, %sp1=spi, %sp=spell power, %ap=attack power, %df=defence)",
-	
+
 	nomSoundStarting = "Starting Sound:",
 	nomSound = "Sound to play",
 	nomSound2 = "More sounds to play",
