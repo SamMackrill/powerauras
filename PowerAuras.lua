@@ -314,12 +314,20 @@ function PowaAuras:FindChildren(aura)
 end
 
 function PowaAuras:CustomTexPath(customname)
+	--self:ShowText("CustomTexPath ", customname);
 	local texpath;
 	if string.find(customname,".", 1, true) then
 		texpath = "Interface\\Addons\\PowerAuras\\Custom\\"..customname;
 	else
-		_, _, texpath = GetSpellInfo(customname);
+		local spellId = select(3, string.find(customname, "%[?(%d+)%]?"));
+		if (spellId) then		
+			--self:ShowText("spellId ", spellId);
+			texpath = select(3, GetSpellInfo(tonumber(spellId)));
+		else
+			texpath = select(3, GetSpellInfo(customname));
+		end
 	end
+	--self:ShowText("texpath ", texpath);
 	if not texpath then texpath = "" end
 	return texpath;
 end

@@ -700,7 +700,7 @@ function cPowaAura:SetTexture(texture)
 end
 
 function cPowaAura:GetSpellNameFromMatch(spellMatch)
-	local _, _,spellId = string.find(spellMatch, "%[(%d+)%]")
+	local _, _,spellId = string.find(spellMatch, "%[(%d+)%]");
 	if (spellId) then		
 		local spellName, rank, spellIcon = GetSpellInfo(tonumber(spellId));
 		return spellName, spellIcon;
