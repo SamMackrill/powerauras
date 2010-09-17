@@ -55,7 +55,7 @@
 								y="-10" />
 				</Offset>
 			  </Anchor>
-			</Anchors>				
+			</Anchors>
 				<Scripts>
 					<OnLoad>
 						self.tooltipText = PowaAuras.Text.aideDebug;
