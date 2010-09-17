@@ -348,6 +348,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideSelectTimerDebuff = "Select which timer will show the duration (this one is reserved for player's debuffs)",
 
 	nomCheckShowStacks = "Show",
+	aideShowStacks = "Activate this to show the stacks for this effect.",
 
 	nomCheckInverse = "Invert",
 	aideInverse = "Invert the logic to show this effect only when buff/debuff is not active.",	

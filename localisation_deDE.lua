@@ -11,8 +11,8 @@ PowaAuras.Anim[7] = "Elektrisch";
 PowaAuras.Anim[8] = "Schrumpfend";
 PowaAuras.Anim[9] = "Flamme";
 PowaAuras.Anim[10] = "Orbit";
-PowaAuras.Anim[11] = "Spin Clockwise";
-PowaAuras.Anim[12] = "Spin Anti-Clockwise";
+PowaAuras.Anim[11] = "Im Uhrzeigersinn drehend";
+PowaAuras.Anim[12] = "Gegen den Uhrzeigersinn drehend";
 
 PowaAuras.BeginAnimDisplay[0] = "[Nichts]";
 PowaAuras.BeginAnimDisplay[1] = "Reinzoomend";
@@ -26,7 +26,7 @@ PowaAuras.BeginAnimDisplay[8] = "Rechts";
 PowaAuras.BeginAnimDisplay[9] = "Unten rechts";
 PowaAuras.BeginAnimDisplay[10] = "Unten";
 PowaAuras.BeginAnimDisplay[11] = "Unten links";
-PowaAuras.BeginAnimDisplay[12] = "Hüpfen";
+PowaAuras.BeginAnimDisplay[12] = "HÃ¼pfen";
 
 PowaAuras.EndAnimDisplay[0] = "[Nichts]";
 PowaAuras.EndAnimDisplay[1] = "Wachsen";
@@ -40,12 +40,12 @@ PowaAuras.Sound[30] = NONE;
 
 PowaAuras:MergeTables(PowaAuras.Text, 
 {
-	welcome = "Gib /powa ein, um die Optionen zu öffnen.",
+	welcome = "Gib /powa ein, um die Optionen zu Ã¶ffnen.",
 
 	aucune = "Nichts",
 	aucun = "Nichts",
 	largeur = "Breite",
-	hauteur = "Höhe",
+	hauteur = "HÃ¶he",
 	mainHand = "Waffenhand",
 	offHand = "Schildhand",
 	bothHands = "beide",
@@ -65,7 +65,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		[PowaAuras.DebuffCatType.CC] = "CC",
 		[PowaAuras.DebuffCatType.Silence] = "Stille",
 		[PowaAuras.DebuffCatType.Snare] = "Fesseln",
-		[PowaAuras.DebuffCatType.Stun] = "Betäubung",
+		[PowaAuras.DebuffCatType.Stun] = "BetÃ¤ubung",
 		[PowaAuras.DebuffCatType.Root] = "Wurzeln",
 		[PowaAuras.DebuffCatType.Disarm] = "Entwaffnet",
 		[PowaAuras.DebuffCatType.PvE] = "PvE",
@@ -75,24 +75,24 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	{
 		RoleTank     = "Tank",
 		RoleHealer   = "Heiler",
-		RoleMeleDps  = "Nahkämpfer",
-		RoleRangeDps = "Fernkämpfer",
+		RoleMeleDps  = "NahkÃ¤mpfer",
+		RoleRangeDps = "FernkÃ¤mpfer",
 	},
 	
 	nomReasonRole =
 	{
 		RoleTank     = "Ist Tank",
 		RoleHealer   = "Ist Heiler",
-		RoleMeleDps  = "Ist Nahkämpfer",
-		RoleRangeDps = "Ist Fernkämpfer",
+		RoleMeleDps  = "Ist NahkÃ¤mpfer",
+		RoleRangeDps = "Ist FernkÃ¤mpfer",
 	},
 
 	nomReasonNotRole =
 	{
 		RoleTank     = "Ist kein Tank",
 		RoleHealer   = "Ist kein Heiler",
-		RoleMeleDps  = "Ist kein Nahkämpfer",
-		RoleRangeDps = "Ist kein Fernkämpfer",
+		RoleMeleDps  = "Ist kein NahkÃ¤mpfer",
+		RoleRangeDps = "Ist kein FernkÃ¤mpfer",
 	},
 	
 	AuraType =
@@ -126,16 +126,16 @@ PowaAuras:MergeTables(PowaAuras.Text,
 
 	Relative = 
 	{
-		NONE        = "Free", 
-		TOPLEFT     = "Top-Left", 
-		TOP         = "Top", 
-		TOPRIGHT    = "Top-Right", 
-		RIGHT       = "Right", 
-		BOTTOMRIGHT = "BottomRight", 
-		BOTTOM      = "Bottom", 
-		BOTTOMLEFT  = "Bottom-Left", 
-		LEFT        = "Left", 
-		CENTER      = "Center",
+		NONE        = "Frei", 
+		TOPLEFT     = "Oben links", 
+		TOP         = "Oben", 
+		TOPRIGHT    = "Oben rechts", 
+		RIGHT       = "Rechts", 
+		BOTTOMRIGHT = "Unten rechts", 
+		BOTTOM      = "Unten", 
+		BOTTOMLEFT  = "Unten links", 
+		LEFT        = "Links", 
+		CENTER      = "Mitte",
 	},
 	
 	Slots =
@@ -179,98 +179,100 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomHide = "Alle ausblenden",
 	nomEdit = "Editieren",
 	nomNew = "Neu",
-	nomDel = "Löschen",
+	nomDel = "LÃ¶schen",
 	nomImport = "Importieren",
 	nomExport = "Exportieren",
 	nomImportSet = "Set importieren", 
 	nomExportSet = "Set exportieren", 
-	aideImport = "Zum Einfügen des Aura-Strings drücke Strg-V und anschließend \'Akzeptieren\'",
-	aideExport = "Zum Kopieren und Weitergeben des Aura-Strings drücke Strg-C.",
-	aideImportSet = "Zum Einfügen des Aura-Set-Strings drücke Strg-V und anschließends \'Akzeptieren'\. Das wird alle Auras auf dieser Seite löschen.",
-	aideExportSet = "Zum Kopieren und Weitergeben aller Auren auf dieser Seite drücke Strg-C.",
-	aideDel = "Löscht den ausgewählten Effekt.(Halte STRG zum Löschen gedrückt)",
+	aideImport = "Zum EinfÃ¼gen des Aura-Strings drÃ¼cke Strg-V und anschlieÃŸend \'Akzeptieren\'",
+	aideExport = "Zum Kopieren und Weitergeben des Aura-Strings drÃ¼cke Strg-C.",
+	aideImportSet = "Zum EinfÃ¼gen des Aura-Set-Strings drÃ¼cke Strg-V und anschlieÃŸends \'Akzeptieren'\. Das wird alle Auras auf dieser Seite lÃ¶schen.",
+	aideExportSet = "Zum Kopieren und Weitergeben aller Auren auf dieser Seite drÃ¼cke Strg-C.",
+	aideDel = "LÃ¶scht den ausgewÃ¤hlten Effekt.(Halte STRG zum LÃ¶schen gedrÃ¼ckt)",
 	nomMove = "Verschieben",
 	nomCopy = "Kopieren",
 	nomPlayerEffects = "Charakter Effekte",
 	nomGlobalEffects = "Globale\nEffekte",
 	aideEffectTooltip = "(Shift-Klick um Effekt ein oder auszuschalten)",
-	aideEffectTooltip2 = "(Strg-Klick um Aktivierungsbedingungen anzuzeigen)",	
-	
+	aideEffectTooltip2 = "(Strg-Klick um Aktivierungsbedingungen anzuzeigen)",
+
 	aideItems = "Enter full name of Item or [xxx] for Id",
 	aideSlots = "Enter name of slot to track: Ammo, Back, Chest, Feet, Finger0, Finger1, Hands, Head, Legs, MainHand, Neck, Ranged, SecondaryHand, Shirt, Shoulder, Tabard, Trinket0, Trinket1, Waist, Wrist",
 	aideTracking = "Enter name of Tracking type e.g. fish",
 
 	-- editor
 	aideCustomText = "Enter text to display (%t=target name, %f=focus name, %v=display value, %u=unit name, %str=str, agl=agl, %sta=sta, %int=int, %sp1=spi, %sp=spell power, %ap=attack power, %df=defence)",
+
+	nomSoundStarting = "Start Sound:",
 	nomSound = "Sound abspielen:",
 	aideSound = "Spielt einen Sound am Anfang ab.",
-	nomSound2 = "More sounds to play",
-	aideSound = "Plays a sound at the beginning.",
-	aideSound2 = "Plays a sound at the beginning.",
+	nomSound2 = "Noch mehr Sounds zum abspielen:",
+	aideSound = "Spielt einen Sound am Anfang ab",
+	aideSound2 = "Spielt einen Sound am Anfang ab",
 	nomCustomSound = "ODER Sounddatei:",
-	aideCustomSound = "Dateiname der Sounddatei eingeben, die VOR dem Starten von WoW im Sounds Verzeichniss war. mp3 und wav werden unterstützt. Bsp.: 'cookie.mp3' ;)",
+	aideCustomSound = "Dateiname der Sounddatei eingeben, die VOR dem Starten von WoW im Sounds Verzeichniss war. mp3 und wav werden unterstÃ¼tzt. Bsp.: 'cookie.mp3' ;)",
 
-	nomSoundEnding = "Ending Sound:",
-	nomSoundEnd = "Sound to play",
-	nomSound2End = "More sounds to play",
-	aideSoundEnd = "Plays a sound at the end.",
-	aideSound2End = "Plays a sound at the end.",
-	nomCustomSoundEnd = "OR soundfile:",
-	aideCustomSoundEnd = "Enter a soundfile that is in the Sounds folder, BEFORE you started the game. mp3 and wav are supported. example: 'cookie.mp3' ;)",
+	nomSoundEnding = "End Sound:",
+	nomSoundEnd = "Sound abspielen:",
+	nomSound2End = "Noch mehr Sounds zum abspielen:",
+	aideSoundEnd = "Spielt einen Sound am Ende ab",
+	aideSound2End = "Spielt einen Sound am Ende ab",
+	nomCustomSoundEnd = "ODER Sounddatei:",
+	aideCustomSoundEnd = "Dateiname der Sounddatei eingeben, die VOR dem Starten von WoW im Sounds Verzeichniss war. mp3 und wav werden unterstÃ¼tzt. Bsp.: 'cookie.mp3' ;)",
 	nomTexture = "Grafik",
-	aideTexture = "Die Grafik die angezeigt werden soll. Du kannst ganz leicht Grafiken austauschen, indem du die Aura#.tga Dateien im Verzeichnis des Addons veränderst.",
+	aideTexture = "Die Grafik die angezeigt werden soll. Du kannst ganz leicht Grafiken austauschen, indem du die Aura#.tga Dateien im Verzeichnis des Addons verÃ¤nderst.",
 
 	nomAnim1 = "Hauptanimation",
 	nomAnim2 = "Zweitanimation",
 	aideAnim1 = "Animiere die Aura oder nicht.",
-	aideAnim2 = "Diese Animation wird mit weniger Stärke angezeigt als die Hauptanimation. Achtung vor zu viel Animationen auf dem Bildschirm.",
+	aideAnim2 = "Diese Animation wird mit weniger StÃ¤rke angezeigt als die Hauptanimation. Achtung vor zu viel Animationen auf dem Bildschirm.",
 
 	nomDeform = "Deformation",
-	aideDeform = "Strecke die Grafik in Höhe und Breite.",
+	aideDeform = "Strecke die Grafik in HÃ¶he und Breite.",
 
-	aideColor = "Klicken, um die Farbe der Grafik zu ändern.",
-	aideTimerColor = "Click here to change the color of the timer.",
-	aideStacksColor = "Click here to change the color of the stacks.",
-	aideFont = "Klicken, um die Schriftart zu wählen. Drücke OK, um die Auswahl anzuwenden.",
-	aideMultiID = "Gib hier andere Aura-IDs für kombinierte Checks ein. Mehrere IDs müssen mit einem '/' getrennt werden. Die Aura ID kann als [#] in der ersten Zeile des Aura Tooltips gefunden werden.",
+	aideColor = "Klicken, um die Farbe der Grafik zu Ã¤ndern.",
+	aideTimerColor = "Hier klicken um die Farbe der Timer zu Ã¤ndern.",
+	aideStacksColor = "Hier klicken um die Farbe der Stacks zu Ã¤ndern.",
+	aideFont = "Klicken, um die Schriftart zu wÃ¤hlen. DrÃ¼cke OK, um die Auswahl anzuwenden.",
+	aideMultiID = "Gib hier andere Aura-IDs fÃ¼r kombinierte Checks ein. Mehrere IDs mÃ¼ssen mit einem '/' getrennt werden. Die Aura ID kann als [#] in der ersten Zeile des Aura Tooltips gefunden werden.",
 	aideTooltipCheck = "Checke auch die Tooltips, die diesen Text enthalten.",
 
-	aideBuff = "Gib hier den Namen oder einen Teil vom Namen des Buffs ein, der die Aura ein und ausschalten soll. Mit einem Slash können mehrere Namen getrennt werden. (Bsp.: Super Buff/Power)",
-	aideBuff2 = "Gib hier den Namen oder einen Teil vom Namen des Debuffs ein, der die Aura ein und ausschalten soll. Mit einem Slash können mehrere Namen getrennt werden. (Bsp.: Dunkle Krankheit/Säuche)",
-	aideBuff3 = "Gib hier den Typ (Gift, Krankheit, Fluch, magie, CC, Stille, Betäubung, Fesseln, Wurzeln oder Nichts) des Debuff ein, der die Aura ein und ausschalten soll. Mit einem Slash können mehrere Typen getrennt werden. (Bsp.: Krankheit/Gift)",
+	aideBuff = "Gib hier den Namen oder einen Teil vom Namen des Buffs ein, der die Aura ein und ausschalten soll. Mit einem Slash kÃ¶nnen mehrere Namen getrennt werden. (Bsp.: Super Buff/Power)",
+	aideBuff2 = "Gib hier den Namen oder einen Teil vom Namen des Debuffs ein, der die Aura ein und ausschalten soll. Mit einem Slash kÃ¶nnen mehrere Namen getrennt werden. (Bsp.: Dunkle Krankheit/SÃ¤uche)",
+	aideBuff3 = "Gib hier den Typ (Gift, Krankheit, Fluch, magie, CC, Stille, BetÃ¤ubung, Fesseln, Wurzeln oder Nichts) des Debuff ein, der die Aura ein und ausschalten soll. Mit einem Slash kÃ¶nnen mehrere Typen getrennt werden. (Bsp.: Krankheit/Gift)",
 	aideBuff4 = "Gib hier den Namen der Area of Effect(AoE) ein, der die Aura ein oder ausschalten soll (wie z.B. ein Feuerregen. Der Name dieser AoE steht im Kampflog).",
-	aideBuff5 = "Gib hier den Namen oder einen Teil vom Namen der temporären Waffenverzauberung ein, die die Aura ein und ausschalten soll. Optional schreibe 'Waffenhand/' oder 'Schildhand' davor, um einen Slot festzulegen. (Bsp.: Waffenhand/Verkrüppelndes)",
+	aideBuff5 = "Gib hier den Namen oder einen Teil vom Namen der temporÃ¤ren Waffenverzauberung ein, die die Aura ein und ausschalten soll. Optional schreibe 'Waffenhand/' oder 'Schildhand' davor, um einen Slot festzulegen. (Bsp.: Waffenhand/VerkrÃ¼ppelndes)",
 	aideBuff6 = "Gib hier die Anzahl Kombopunkte ein, die die Aura ein oder auszuschalten (Bsp.: 1 oder 1/2/3 oder 0/4/5 usw...)",
 	aideBuff7 = "Gib hier einen Namen oder einen Teil vom Namen einer Aktion auf deinen Aktionsleisten ein. Der Effekt wird aktiv sein, wenn die Aktion benutzbar ist.",
 	aideBuff8 = "Gib hier den Namen oder einen Teil vom Namen eines Zaubers in deinem Zauberbuch ein. Du kannst eine Zauber-ID (Bsp.: [12345]) eingeben.", 
 	
 	aideSpells = "Gib hier den Namen eines Zaubers ein, der die Zauberalarm-Aura ein oder ausschaltet.",
-	aideStacks = "Gib hier den Operator und die Anzahl Stapel ein, die benötigt werden, um den Effekt ein- oder auszuschalten. Ein Operator wird benötigt. Bsp: '<5' '>3' '=11' '!5' '>=0' '<=6' '2-8'",
+	aideStacks = "Gib hier den Operator und die Anzahl Stapel ein, die benÃ¶tigt werden, um den Effekt ein- oder auszuschalten. Ein Operator wird benÃ¶tigt. Bsp: '<5' '>3' '=11' '!5' '>=0' '<=6' '2-8'",
 
-	aideStealableSpells = "Gib hier den Names des stehlbaren Zaubers ein, der die Aura ein oder ausschalten soll. (Benutze * für alle stehlbaren Zauber)",
-	aidePurgeableSpells = "Gib hier den Namen des reinigbaren Zaubers ein, der die Aura ein oder ausschalten soll. (Benutze * für alle reinigbaren Zauber)",
+	aideStealableSpells = "Gib hier den Names des stehlbaren Zaubers ein, der die Aura ein oder ausschalten soll. (Benutze * fÃ¼r alle stehlbaren Zauber)",
+	aidePurgeableSpells = "Gib hier den Namen des reinigbaren Zaubers ein, der die Aura ein oder ausschalten soll. (Benutze * fÃ¼r alle reinigbaren Zauber)",
 
 	aideTotems = "Enter here the Totem Name that will trigger the Aura or a number 1=Fire, 2=Earth, 3=Water, 4=Air (use * for any totem).", 
 
 	aideRunes = "Enter here the Runes that will trigger the Aura B=Blood, F=frost, U=Unholy, D=Death (Death runes will also count as the other types) ex: 'BF' 'BFU' 'DDD'", 
 
 	aideUnitn = "Gib hier den Namen des Spielers ein, welcher den Effekt aktivieren/deaktivieren muss. Funktioniert nur mit Spielern innerhalb des Schlachtzugs oder der Gruppe.",	
-	aideUnitn2 = "Nur für Schlachtzug/Gruppe", 
+	aideUnitn2 = "Nur fÃ¼r Schlachtzug/Gruppe", 
 
-	aideMaxTex = "Definiert die maximale Grafikanzahl, die im Editor zur Verfügung stehen. Wenn du Grafiken im Verzeichnis des Addons hinzufügst (mit den Namen AURA1.tga bis AURA50.tga), muss hier die letzte Zahl eingetragen werden.",
-	aideAddEffect = "Füge einen Effekt zum Bearbeiten hinzu.",
+	aideMaxTex = "Definiert die maximale Grafikanzahl, die im Editor zur VerfÃ¼gung stehen. Wenn du Grafiken im Verzeichnis des Addons hinzufÃ¼gst (mit den Namen AURA1.tga bis AURA50.tga), muss hier die letzte Zahl eingetragen werden.",
+	aideAddEffect = "FÃ¼ge einen Effekt zum Bearbeiten hinzu.",
 	aideWowTextures = "Aktivieren um die WoW-Grafiken anstatt der Grafiken im PowerAuras Verzeichnis zu verwenden.",
-	aideTextAura = "Aktivieren um Text einzugeben anstatt zu Grafiken zu wählen.",
+	aideTextAura = "Aktivieren um Text einzugeben anstatt zu Grafiken zu wÃ¤hlen.",
 	aideRealaura = "Echte Aura",
 	aideCustomTextures = "Aktivieren um die Grafiken im 'Custom' Unterverzeichnis zu verwenden. Trage den Namen der Textur unten ein (Bsp.: meineTextur.tga)",
-	aideRandomColor = "Aktivieren um dem Effekt bei jeder Aktivierung eine zufällige Farbe zu geben.",
+	aideRandomColor = "Aktivieren um dem Effekt bei jeder Aktivierung eine zufÃ¤llige Farbe zu geben.",
 
-	aideTexMode = "Deaktivieren um die Texturtransparenz zu verwenden. Standardmäßig sind die dunkleren Farben mehr transparent.", 
+	aideTexMode = "Deaktivieren um die Texturtransparenz zu verwenden. StandardmÃ¤ÃŸig sind die dunkleren Farben mehr transparent.", 
 
 	nomActivationBy = "Aktiv wenn:",
 
 	nomOwnTex = "Benutze eigene Grafiken",
-	aideOwnTex = "Benutze die Buff/Debuff/Fähigkeiten Grafik stattdessen.",
+	aideOwnTex = "Benutze die Buff/Debuff/FÃ¤higkeiten Grafik stattdessen.",
 	nomStacks = "Stapel",
 
 	nomUpdateSpeed = "Updatetempo",
@@ -282,7 +284,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomSymetrie = "Symmetrie",
 	nomAlpha = "Transparenz",
 	nomPos = "Position",
-	nomTaille = "Größe",
+	nomTaille = "GrÃ¶ÃŸe",
 
 	nomExact = "Exakter Name",
 	nomThreshold = "Schwellwert",
@@ -310,16 +312,16 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomCheckGroupAny = "Irgendeiner",
 	nomCheckOptunitn = "Charname",
 
-	aideTarget = "Aktivieren um nur feindliche Ziele zu überwachen.",
-	aideTargetFriend = "Aktivieren um nur freundliche Ziele zu überwachen.",
-	aideParty = "Aktivieren um nur Gruppenmitglieder zu überwachen.",
-	aideGroupOrSelf = "Aktivieren um Gruppen- oder Schlachtzugsmitglieder oder selbst zu überwachen.",
-	aideFocus = "Aktivieren um nur das Fokusziel zu überwachen.",
-	aideRaid = "Aktivieren um nur Schlachtzugsmitglieder zu überwachen.",
-	aideGroupAny = "Aktivieren um zu prüfen, ob 'irgendein' Gruppen/Schlachtzugsmitglied gebufft ist. Deaktivieren um zu prüfen, ob 'alle' gebufft sind.", 
-	aideOptunitn = "Aktivieren um nur einen bestimmten Char in der Gruppe bzw. im Schlachtzug zu überwachen.",
-	aideExact = "Aktivieren um den exakten Namen des Buffs/Debuff/Aktion zu überprüfen.",
-	aideStance = "Haltung, Aura oder Form auswählen, die die Aura aktivieren soll.",	
+	aideTarget = "Aktivieren um nur feindliche Ziele zu Ã¼berwachen.",
+	aideTargetFriend = "Aktivieren um nur freundliche Ziele zu Ã¼berwachen.",
+	aideParty = "Aktivieren um nur Gruppenmitglieder zu Ã¼berwachen.",
+	aideGroupOrSelf = "Aktivieren um Gruppen- oder Schlachtzugsmitglieder oder selbst zu Ã¼berwachen.",
+	aideFocus = "Aktivieren um nur das Fokusziel zu Ã¼berwachen.",
+	aideRaid = "Aktivieren um nur Schlachtzugsmitglieder zu Ã¼berwachen.",
+	aideGroupAny = "Aktivieren um zu prÃ¼fen, ob 'irgendein' Gruppen/Schlachtzugsmitglied gebufft ist. Deaktivieren um zu prÃ¼fen, ob 'alle' gebufft sind.", 
+	aideOptunitn = "Aktivieren um nur einen bestimmten Char in der Gruppe bzw. im Schlachtzug zu Ã¼berwachen.",
+	aideExact = "Aktivieren um den exakten Namen des Buffs/Debuff/Aktion zu Ã¼berprÃ¼fen.",
+	aideStance = "Haltung, Aura oder Form auswÃ¤hlen, die die Aura aktivieren soll.",	
 	aideGTFO = "Select which GTFO Alert will trigger the event.",
 	nomPowerType = "Power Type:",
 
@@ -329,37 +331,41 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomCheckShowTimer = "Zeigen",
 	nomTimerDuration = "Dauer",
 	aideTimerDuration = "Zeigt einen Timer um die Buff/Debuff Dauer auf dem Ziel zu simulieren (0 um zu daktivieren)",
-	aideShowTimer = "Aktivieren um den Timer anzuzeigen.",
-	aideSelectTimer = "Auswählen welcher Timer die Dauer anzeigen soll.",
-	aideSelectTimerBuff = "Auswählen welcher Timer die Dauer anzeigen soll (dieser ist für die Buffs des Spielers reserviert)",
-	aideSelectTimerDebuff = "Auswählen welcher Timer die Dauer anzeigen soll (dieser ist für die Debuffs des Spielers reserviert)",
+	aideShowTimer = "Aktivieren um den Timer fÃ¼r diesen Effekt anzuzeigen.",
+	aideSelectTimer = "AuswÃ¤hlen welcher Timer die Dauer anzeigen soll.",
+	aideSelectTimerBuff = "AuswÃ¤hlen welcher Timer die Dauer anzeigen soll (dieser ist fÃ¼r die Buffs des Spielers reserviert)",
+	aideSelectTimerDebuff = "AuswÃ¤hlen welcher Timer die Dauer anzeigen soll (dieser ist fÃ¼r die Debuffs des Spielers reserviert)",
 
 	nomCheckShowStacks = "Zeigen",
+	aideShowStacks = "Aktivieren um die Stacks fÃ¼r diesen Effekt anzuzeigen.",
 
 	nomCheckInverse = "Umkehren",
 	aideInverse = "Kehrt die Logik des Effekts um, sodass er nur angezeigt wird, wenn der Buff/Debuff nicht aktiv ist.",	
 
-	nomCheckIgnoreMaj = "Ignoriere Groß/Kleinschreibung",	
-	aideIgnoreMaj = "Aktivieren um die Groß/Kleinschreibung bei Buff- und Debuffnamen zu ignorieren.",
+	nomCheckIgnoreMaj = "Ignoriere GroÃŸ/Kleinschreibung",	
+	aideIgnoreMaj = "Aktivieren um die GroÃŸ/Kleinschreibung bei Buff- und Debuffnamen zu ignorieren.",
 
 	nomAuraDebug= "Debug",
 	aideAuraDebug = "Diese Aura debuggen",
 
 	nomDuration = "Animationsdauer",
-	aideDuration = "Nach dieser Zeit wird die Aura verschwinden (0 um zu daktivieren)",
+	aideDuration = "Nach dieser Zeit wird die Aura verschwinden (0 um zu deaktivieren)",
 
+	nomOldAnimations = "Alte Animationen";
+	aideOldAnimations = "Benutze die alten Animationen";
+	
 	nomCentiemes = "Zeige hundertstel",
 	nomDual = "Zeige zwei Timer",
-	nomHideLeadingZeros = "Verstecke führende Nullen",
+	nomHideLeadingZeros = "Verstecke fÃ¼hrende Nullen",
 	nomTransparent = "Verwende transparente Grafiken",
-	nomActivationTime = "Show Time since activation",
-	nomUseOwnColor = "Use own color:",
+	nomActivationTime = "Zeige Zeit seit aktivierung",
+	nomUseOwnColor = "Eigene Farbe benutzen:",
 	nomUpdatePing = "Animiere bei Wiederholung",
-	nomRelative = "Relative to Main Aura",
-	nomClose = "Schließen",
+	nomRelative = "Ausrichtung relativ zur Hauptaura",
+	nomClose = "SchlieÃŸen",
 	nomEffectEditor = "Effekt Editor",
 	nomAdvOptions = "Optionen",
-	nomMaxTex = "Maximale Anzahl an Grafiken verfügbar",
+	nomMaxTex = "Maximale Anzahl an Grafiken verfÃ¼gbar",
 	nomTabAnim = "Animation",
 	nomTabActiv = "Aktivierung",
 	nomTabSound = "Sound",
@@ -369,15 +375,15 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomCustomTextures = "Benutzerdefinierte Grafiken",
 	nomTextAura = "Text Aura",
 	nomRealaura = "Echte Aura",
-	nomRandomColor = "Zufällige Farbe",
-	nomTexMode = "Glühen",
+	nomRandomColor = "ZufÃ¤llige Farbe",
+	nomTexMode = "GlÃ¼hen",
 
 	nomTalentGroup1 = "Specc 1",
-	aideTalentGroup1 = "Zeige diesen Effekt nur, wenn du in deiner primären Talenzspezialisierung bist.",
+	aideTalentGroup1 = "Zeige diesen Effekt nur, wenn du in deiner primÃ¤ren Talenzspezialisierung bist.",
 	nomTalentGroup2 = "Specc 2",
-	aideTalentGroup2 = "Zeige diesen Effekt nur, wenn du in deiner sekundären Talenzspezialisierung bist.",
+	aideTalentGroup2 = "Zeige diesen Effekt nur, wenn du in deiner sekundÃ¤ren Talenzspezialisierung bist.",
 
-	nomReset = "Setzte Editorpositionen zurück",	
+	nomReset = "Setzte Editorpositionen zurÃ¼ck",	
 	nomPowaShowAuraBrowser = "Zeige Auraauswahl",
 	
 	nomDefaultTimerTexture = "Standard Timer Grafik",
@@ -428,8 +434,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		InstanceArena= "Only when in an Arena instance",
 		RoleTank     = "Nur wenn Tank",
 		RoleHealer   = "Nur wenn Heiler",
-		RoleMeleDps  = "Nur wenn Nahkämpfer",
-		RoleRangeDps = "Nur wenn Fernkämpfer",
+		RoleMeleDps  = "Nur wenn NahkÃ¤mpfer",
+		RoleRangeDps = "Nur wenn FernkÃ¤mpfer",
 	},
 	TernaryNo = {
 		combat = "Nur wenn nicht im Kampf",
@@ -450,8 +456,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		InstanceArena= "Only when Not in an Arena instance",
 		RoleTank     = "Nur wenn kein Tank",
 		RoleHealer   = "Nur wenn kein Heiler",
-		RoleMeleDps  = "Nur wenn kein Nahkämpfer",
-		RoleRangeDps = "Nur wenn kein Fernkämpfer",
+		RoleMeleDps  = "Nur wenn kein NahkÃ¤mpfer",
+		RoleRangeDps = "Nur wenn kein FernkÃ¤mpfer",
 	},
 	TernaryAide = {
 		combat = "Effekt beeinflusst durch Kampfstatus.",
@@ -479,12 +485,12 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomTimerInvertAura = "Kehre Aura um wenn Dauer unterhalb",
 	aidePowaTimerInvertAuraSlider = "Kehre die Aura um, wenn die Dauer weniger als dieses Limit ist (0 um zu deaktivieren)",
 	nomTimerHideAura = "Verstecke Aura und Timer wenn Dauer oberhalb",
-	aidePowaTimerHideAuraSlider = "Verstecke die Aura und den Timer, wenn die Dauer größer als dieses Limit ist (0 um zu deaktivieren)",
+	aidePowaTimerHideAuraSlider = "Verstecke die Aura und den Timer, wenn die Dauer grÃ¶ÃŸer als dieses Limit ist (0 um zu deaktivieren)",
 
 	aideTimerRounding = "Aktivieren um den Timer aufzurunden.",
 	nomTimerRounding = "Timer aufrunden",
 
-	nomIgnoreUseable = "Anzeige nur vom CD abhängig",
+	nomIgnoreUseable = "Anzeige nur vom CD abhÃ¤ngig",
 	aideIgnoreUseable = "Ignoriert, wenn der Zauber benutzbar ist (benutzt nur die Abklingzeit)",
 
 	-- Diagnostic reason text, these have substitutions (using $1, $2 etc) to allow for different sententance constructions
@@ -505,16 +511,16 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomReasonAllInGroupHaveBuff    = "Alle in $1 haben $2 $3",     --$1=GroupType $2=BuffType, $3=BuffName (e.g. "All in Raid have Buff Blessing of Kings")
 	nomReasonNoOneInGroupHasBuff   = "Keiner in $1 hat $2 $3",  --$1=GroupType $2=BuffType, $3=BuffName (e.g. "No one in Raid has Buff Blessing of Kings")
 
-	nomReasonBuffPresentTimerInvert = "der Buff läuft, Timer umgekehrt",
+	nomReasonBuffPresentTimerInvert = "der Buff lÃ¤uft, Timer umgekehrt",
 	nomReasonBuffPresentNotMine     = "nicht von mir gezaubert",
-	nomReasonBuffFound              = "der Buff läuft",
+	nomReasonBuffFound              = "der Buff lÃ¤uft",
 	nomReasonStacksMismatch         = "der Stapel = $1. $2 erwartet", --$1=Actual Stack count, $2=Expected Stack logic match (e.g. ">=0")
 
 	nomReasonAuraMissing = "die Aura fehlt",
 	nomReasonAuraOff     = "die Aura ist aus",
 	nomReasonAuraBad     = "die Aura ist fehlerhaft",
 	
-	nomReasonNotForTalentSpec = "die Aura nicht für diese Talentspezialisierung aktiviert wurde",
+	nomReasonNotForTalentSpec = "die Aura nicht fÃ¼r diese Talentspezialisierung aktiviert wurde",
 	
 	nomReasonPlayerDead     = "der Spieler tot ist",
 	nomReasonPlayerAlive    = "der Spieler am Leben ist",
