@@ -50,7 +50,7 @@ function PowaAuras:VARIABLES_LOADED(...)
 	if (self.SetupDone) then
 		self.Initialising = false;
 	end
-	self.VariablesLoaded = true;	
+	self.VariablesLoaded = true;
 end
 
 function PowaAuras:Setup()
