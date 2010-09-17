@@ -51,7 +51,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	bothHands = "beide",
 
 	Unknown	 = "Unbekannt",
-	
+
 	DebuffType =
 	{
 		Magic = "Magie",
@@ -75,24 +75,24 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	{
 		RoleTank     = "Tank",
 		RoleHealer   = "Heiler",
-		RoleMeleDps  = "Nahkampf DPS",
-		RoleRangeDps = "Fernkampf DPS",
+		RoleMeleDps  = "Nahkämpfer",
+		RoleRangeDps = "Fernkämpfer",
 	},
 	
 	nomReasonRole =
 	{
-		RoleTank     = "Is a Tank",
-		RoleHealer   = "Is a Healer",
-		RoleMeleDps  = "Is a Melee DPS",
-		RoleRangeDps = "Is a Ranged DPS",
+		RoleTank     = "Ist Tank",
+		RoleHealer   = "Ist Heiler",
+		RoleMeleDps  = "Ist Nahkämpfer",
+		RoleRangeDps = "Ist Fernkämpfer",
 	},
 
 	nomReasonNotRole =
 	{
-		RoleTank     = "Not a Tank",
-		RoleHealer   = "Not a Healer",
-		RoleMeleDps  = "Not a Melee DPS",
-		RoleRangeDps = "Not a Ranged DPS",
+		RoleTank     = "Ist kein Tank",
+		RoleHealer   = "Ist kein Heiler",
+		RoleMeleDps  = "Ist kein Nahkämpfer",
+		RoleRangeDps = "Ist kein Fernkämpfer",
 	},
 	
 	AuraType =
@@ -193,15 +193,15 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomCopy = "Kopieren",
 	nomPlayerEffects = "Charakter Effekte",
 	nomGlobalEffects = "Globale\nEffekte",
-	aideEffectTooltip = "(Shift-Klick um Effekt ein oder auszuschalten.)",
-	aideEffectTooltip2 = "(Ctrl-click to give reason for activation)",
-	
+	aideEffectTooltip = "(Shift-Klick um Effekt ein oder auszuschalten)",
+	aideEffectTooltip2 = "(Strg-Klick um Aktivierungsbedingungen anzuzeigen)",	
 	
 	aideItems = "Enter full name of Item or [xxx] for Id",
 	aideSlots = "Enter name of slot to track: Ammo, Back, Chest, Feet, Finger0, Finger1, Hands, Head, Legs, MainHand, Neck, Ranged, SecondaryHand, Shirt, Shoulder, Tabard, Trinket0, Trinket1, Waist, Wrist",
 	aideTracking = "Enter name of Tracking type e.g. fish",
 
 	-- editor
+	aideCustomText = "Enter text to display (%t=target name, %f=focus name, %v=display value, %u=unit name, %str=str, agl=agl, %sta=sta, %int=int, %sp1=spi, %sp=spell power, %ap=attack power, %df=defence)",
 	nomSound = "Sound abspielen:",
 	aideSound = "Spielt einen Sound am Anfang ab.",
 	nomSound2 = "More sounds to play",
@@ -321,6 +321,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideExact = "Aktivieren um den exakten Namen des Buffs/Debuff/Aktion zu überprüfen.",
 	aideStance = "Haltung, Aura oder Form auswählen, die die Aura aktivieren soll.",	
 	aideGTFO = "Select which GTFO Alert will trigger the event.",
+	nomPowerType = "Power Type:",
 
 	aideShowSpinAtBeginning= "Zeige am Ende der Anfangsanimation eine 360 Grad Drehung",
 	nomCheckShowSpinAtBeginning = "Zeige Drehung am Ende der Anfangsanimation",
@@ -425,6 +426,10 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		Instance25ManHeroic= "Only when in a 25-Man Heroic instance",
 		InstanceBg= "Only when in a Battleground",
 		InstanceArena= "Only when in an Arena instance",
+		RoleTank     = "Nur wenn Tank",
+		RoleHealer   = "Nur wenn Heiler",
+		RoleMeleDps  = "Nur wenn Nahkämpfer",
+		RoleRangeDps = "Nur wenn Fernkämpfer",
 	},
 	TernaryNo = {
 		combat = "Nur wenn nicht im Kampf",
@@ -443,6 +448,10 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		Instance25ManHeroic= "Only when Not in a 25-Man Heroic instance",
 		InstanceBg= "Only when Not in a Battleground",
 		InstanceArena= "Only when Not in an Arena instance",
+		RoleTank     = "Nur wenn kein Tank",
+		RoleHealer   = "Nur wenn kein Heiler",
+		RoleMeleDps  = "Nur wenn kein Nahkämpfer",
+		RoleRangeDps = "Nur wenn kein Fernkämpfer",
 	},
 	TernaryAide = {
 		combat = "Effekt beeinflusst durch Kampfstatus.",
@@ -461,6 +470,10 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		Instance25ManHeroic= "Effect modified by being in a 25-Man Heroic instance",
 		InstanceBg= "Effect modified by being in a Battleground",
 		InstanceArena= "Effect modified by being in an Arena instance",
+		RoleTank     = "Effekt beeinflusst durch Tanklasse",
+		RoleHealer   = "Effekt beeinflusst durch Heilklasse",
+		RoleMeleDps  = "Effekt beeinflusst durch Nahkampfklasse",
+		RoleRangeDps = "Effekt beeinflusst durch Fernkampfklasse",
 	},
 
 	nomTimerInvertAura = "Kehre Aura um wenn Dauer unterhalb",
