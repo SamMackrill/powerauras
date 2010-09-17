@@ -362,6 +362,9 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomDuration = "Anim. duration",
 	aideDuration = "After this time, this effect will disapear (0 to deactivate)",
 
+	nomOldAnimations = "Old Animations";
+	aideOldAnimations = "Use Old Animations";
+
 	nomCentiemes = "Show hundredth",
 	nomDual = "Show two timers",
 	nomHideLeadingZeros = "Hide Leading Zeros",
