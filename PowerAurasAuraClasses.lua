@@ -2004,6 +2004,7 @@ cPowaCombo.TooltipOptions = {r=1.0, g=1.0, b=0.0, showBuffName=true};
 function cPowaCombo:AddEffectAndEvents()
 	table.insert(PowaAuras.AurasByType[self.AuraType], self.id);
 	PowaAuras.Events.UNIT_COMBO_POINTS = true;
+	PowaAuras.Events.PLAYER_TARGET_CHANGED = true;
 end						  
 
 function cPowaCombo:CheckIfShouldShow(giveReason)
