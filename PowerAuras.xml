@@ -619,6 +619,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
              <OnValueChanged>PowaAuras:BarAuraTextureSliderChanged();</OnValueChanged>
             </Scripts>
           </Slider>
+		  
 		  <EditBox name="PowaBarAuraTextureEdit"
                    autoFocus="false"
                    inherits="InputBoxTemplate">
@@ -643,8 +644,10 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               </Layer>
             </Layers>
             <Scripts>
-              <OnLoad>self:SetMaxLetters(3)</OnLoad>
-              <OnEnterPressed>self:ClearFocus(); PowaAuras:TextAuraTextureChanged();</OnEnterPressed>
+				<OnLoad>self:SetMaxLetters(3)</OnLoad>
+				<OnEnterPressed>self:ClearFocus(); PowaAuras:TextAuraTextureChanged();</OnEnterPressed>
+				<OnEditFocusLost>PowaAuras:AurasTextChanged()</OnEditFocusLost>
+				<OnEscapePressed>PowaAuras:AurasTextCancel(); self:ClearFocus()</OnEscapePressed>
             </Scripts>
           </EditBox>
 		  
@@ -707,6 +710,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
 		          <OnLeave>GameTooltip:Hide();</OnLeave>
 		        </Scripts>          	
           </Button>
+		  
           <EditBox name="PowaBarCustomTexName"
                    autoFocus="false"
                    inherits="InputBoxTemplate">
@@ -731,11 +735,13 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               </Layer>
             </Layers>
             <Scripts>
-              <OnLoad>
-				self:SetMaxLetters(100);
-			  </OnLoad>
-              <OnEnterPressed>PowaAuras:CustomTextChanged() self:ClearFocus()</OnEnterPressed>
-            </Scripts>
+				<OnLoad>
+					self:SetMaxLetters(100);
+				</OnLoad>
+				<OnEnterPressed>PowaAuras:CustomTextChanged() self:ClearFocus()</OnEnterPressed>
+				<OnEditFocusLost>PowaAuras:CustomTextChanged()</OnEditFocusLost>
+				<OnEscapePressed>PowaAuras:RedisplayAura(PowaAuras.CurrentAuraId); self:ClearFocus()</OnEscapePressed>
+           </Scripts>
           </EditBox>
 
 
@@ -1034,7 +1040,9 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
             <Scripts>
               <OnLoad>self:SetMaxLetters(6)</OnLoad>
               <OnEnterPressed>self:ClearFocus() PowaAuras:TextCoordXChanged();</OnEnterPressed>
-            </Scripts>
+ 				<OnEditFocusLost>PowaAuras:TextCoordXChanged()</OnEditFocusLost>
+				<OnEscapePressed>PowaAuras:RedisplayAura(PowaAuras.CurrentAuraId); self:ClearFocus()</OnEscapePressed>
+           </Scripts>
           </EditBox>
 		  
           <Slider name="PowaBarAuraCoordSlider"
@@ -1068,6 +1076,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               </OnMouseUp>
             </Scripts>
           </Slider>
+		  
           <EditBox name="PowaBarAuraCoordYEdit"
                    autoFocus="false"
                    inherits="InputBoxTemplate">
@@ -1094,6 +1103,8 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
             <Scripts>
               <OnLoad>self:SetMaxLetters(6)</OnLoad>
               <OnEnterPressed>self:ClearFocus() PowaAuras:TextCoordYChanged();</OnEnterPressed>
+ 				<OnEditFocusLost>PowaAuras:TextCoordYChanged()</OnEditFocusLost>
+				<OnEscapePressed>PowaAuras:RedisplayAura(PowaAuras.CurrentAuraId); self:ClearFocus()</OnEscapePressed>
             </Scripts>
           </EditBox>
 		  
