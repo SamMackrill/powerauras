@@ -123,7 +123,20 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		[PowaAuras.BuffTypes.Tracking] = "Tracking",
 		[PowaAuras.BuffTypes.GTFO] = "GTFO Alert",
 	},
-
+	
+	PowerType =
+	{
+		[-1] = "Default",
+		[SPELL_POWER_RAGE] = "Rage",
+		[SPELL_POWER_FOCUS] = "Focus",
+		[SPELL_POWER_ENERGY] = "Energy",
+		[SPELL_POWER_HAPPINESS] = "Happiness",
+		[SPELL_POWER_RUNIC_POWER] = "Runic Power",
+		[SPELL_POWER_SOUL_SHARDS] = "Soul Shards",
+		[SPELL_POWER_ECLIPSE] = "Eclipse",
+		[SPELL_POWER_HOLY_POWER] = "Holy Power",
+	},
+	
 	Relative = 
 	{
 		NONE        = "Frei", 
@@ -207,7 +220,6 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomSound = "Sound abspielen:",
 	aideSound = "Spielt einen Sound am Anfang ab.",
 	nomSound2 = "Noch mehr Sounds zum abspielen:",
-	aideSound = "Spielt einen Sound am Anfang ab",
 	aideSound2 = "Spielt einen Sound am Anfang ab",
 	nomCustomSound = "ODER Sounddatei:",
 	aideCustomSound = "Dateiname der Sounddatei eingeben, die VOR dem Starten von WoW im Sounds Verzeichniss war. mp3 und wav werden unterstützt. Bsp.: 'cookie.mp3' ;)",
@@ -260,7 +272,6 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideUnitn2 = "Nur für Schlachtzug/Gruppe", 
 
 	aideMaxTex = "Definiert die maximale Grafikanzahl, die im Editor zur Verfügung stehen. Wenn du Grafiken im Verzeichnis des Addons hinzufügst (mit den Namen AURA1.tga bis AURA50.tga), muss hier die letzte Zahl eingetragen werden.",
-	aideAddEffect = "Füge einen Effekt zum Bearbeiten hinzu.",
 	aideWowTextures = "Aktivieren um die WoW-Grafiken anstatt der Grafiken im PowerAuras Verzeichnis zu verwenden.",
 	aideTextAura = "Aktivieren um Text einzugeben anstatt zu Grafiken zu wählen.",
 	aideRealaura = "Echte Aura",
@@ -292,6 +303,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomThreshInv = "</>",
 	nomStance = "Stance",
 	nomGTFO = "Alert Type",
+	nomPowerType = "Power Type:",
 
 	nomMine = "Von mir gezaubert",
 	aideMine = "Aktivieren um nur Buffs/Debuffs zu testen, die vom Spieler gezaubert wurden.",
@@ -299,6 +311,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideDispellable = "Aktivieren um nur entfernbare Buffs anzuzeigen", 
 	nomCanInterrupt = "Kann unterbrochen werden", 
 	aideCanInterrupt = "Aktivieren um nur unterbrechbare Zauber anzuzeigen",
+	nomOnMe = "Cast On Me",
+	aideOnMe = "Only show if being Cast On Me",
 
 	nomPlayerSpell = "Spieler wirkt Zauber",
 	aidePlayerSpell = "Aktivieren, falls der Spieler einen Zauber wirkt",
@@ -353,7 +367,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 
 	nomOldAnimations = "Alte Animationen";
 	aideOldAnimations = "Benutze die alten Animationen";
-	
+
 	nomCentiemes = "Zeige hundertstel",
 	nomDual = "Zeige zwei Timer",
 	nomHideLeadingZeros = "Verstecke führende Nullen",
@@ -489,9 +503,18 @@ PowaAuras:MergeTables(PowaAuras.Text,
 
 	aideTimerRounding = "Aktivieren um den Timer aufzurunden.",
 	nomTimerRounding = "Timer aufrunden",
+	
+	aideAllowInspections = "Allow Power Auras to Inspect players to determine roles, turning this off will sacrifice accuracy for speed",
+	nomAllowInspections = "Allow Inspections",
 
 	nomIgnoreUseable = "Anzeige nur vom CD abhängig",
 	aideIgnoreUseable = "Ignoriert, wenn der Zauber benutzbar ist (benutzt nur die Abklingzeit)",
+
+	nomIgnoreItemUseable = "Equipped Only",
+	aideIgnoreItemUseable = "Ignores if item is usable (just if equipped)",
+	
+	nomCarried = "Only if in bags",
+	aideCarried = "Ignores if item is usable (just if in a bag)",
 
 	-- Diagnostic reason text, these have substitutions (using $1, $2 etc) to allow for different sententance constructions
 	nomReasonShouldShow = "Sollte angezeigt werden, weil $1",
@@ -538,6 +561,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomReasonInRaid = "im Schlachtzug",
 	nomReasonNotInParty = "nicht in Gruppe",
 	nomReasonNotInRaid = "nicht im Schlachtzug",
+	nomReasonNotInGroup = "Not in Party/Raid",
 	nomReasonNoFocus = "kein Fokus",	
 	nomReasonNoCustomUnit = "benutzerdefinierte Einheit nicht in der Gruppe, im Schlachtzug oder mit Begleichtereinheit $1 gefunden werden konnte",
 	nomReasonPvPFlagNotSet = "PvP Status nicht aktiv",
@@ -580,13 +604,23 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomReasonSpellNotFound   = "Zauber $1 nicht gefunden wurde",
 	nomReasonSpellOnCooldown = "Spell $1 on Cooldown",
 	
+	nomReasonCastingOnMe	 = "$1 is casting $2 on me", --$1=CasterName $2=SpellName (e.g. "Rotface is casting Slime Spray on me")
+	nomReasonNotCastingOnMe	 = "No matching spell being cast on me",
+	
 	nomReasonItemUsable     = "Item $1 usable",
 	nomReasonItemNotUsable  = "Item $1 not usable",
 	nomReasonItemNotReady   = "Item $1 Not Ready, on cooldown, timer invert",
 	nomReasonItemNotEnabled = "Item $1 not enabled ",
 	nomReasonItemNotFound   = "Item $1 not found",
-	nomReasonItemOnCooldown = "Item $1 on Cooldown",	
+	nomReasonItemOnCooldown = "Item $1 on Cooldown",
 	
+	nomReasonItemEquipped    = "Item $1 equipped",
+	nomReasonItemNotEquipped = "Item $1 not equipped",
+						
+	nomReasonItemInBags      = "Item $1 in bags",
+	nomReasonItemNotInBags   = "Item $1 not in bags",
+	nomReasonItemNotOnPlayer = "Item $1 not carried",
+
 	nomReasonSlotUsable     = "$1 Slot usable",
 	nomReasonSlotNotUsable  = "$1 Slot not usable",
 	nomReasonSlotNotReady   = "$1 Slot Not Ready, on cooldown, timer invert",
@@ -645,16 +679,23 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomReasonTrackingMissing = "Tracking not set to $1",
 	nomTrackingSet = "Tracking set to $1",
 
+	nomNotInInstance = "Not in correct instance",
+
 	nomReasonStatic = "Static Aura",
+	
+	nomReasonUnknownName = "Unit name unknown",
+	nomReasonRoleUnknown = "Role unknown",
+	nomReasonRoleNoMatch = "No matching Role",
 
 	nomReasonGTFOAlerts = "GTFO alerts are never always on.",
 
 	ReasonStat = {
 		Health     = {MatchReason="$1 Gesundheit niedrig",          NoMatchReason="$1 Gesundheit nicht niedrig genug"},
 		Mana       = {MatchReason="$1 Mana niedrig",            NoMatchReason="$1 Mana nicht niedrig genug"},
-		RageEnergy = {MatchReason="$1 EnergieWutRunen niedrig", NoMatchReason="$1 EnergieWutRunen nicht niedrig genug"},
+		Power	   = {MatchReason="$1 EnergieWutRunen niedrig", NoMatchReason="$1 EnergieWutRunen nicht niedrig genug", NilReason = "$1 has wrong Power Type"},
 		Aggro      = {MatchReason="$1 hat Aggro",           NoMatchReason="$1 hat keine Aggro"},
 		PvP        = {MatchReason="$1 PvP Markierung gesetzt",        NoMatchReason="$1 PvP Markierung nicht gesetzt"},
+		SpellAlert = {MatchReason="$1 casting $2",        	NoMatchReason="$1 not casting $2"},
 	},
 
 });
