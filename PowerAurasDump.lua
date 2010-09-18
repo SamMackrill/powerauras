@@ -436,7 +436,7 @@ function PowaAuras:GetUnitInfo(unit)
     UnitInfo["PowerMax"] = {};
     UnitInfo.Power.Default = UnitPower(unit);
     UnitInfo.PowerMax.Default = UnitPowerMax(unit);
-	for powerType=0,6 do
+	for powerType=0,9 do
 		UnitInfo.Power[powerType] = UnitPower(unit, powerType);
 		UnitInfo.PowerMax[powerType] = UnitPowerMax(unit, powerType);
 	end
