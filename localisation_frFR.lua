@@ -50,6 +50,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	offHand = "gauche",
 	bothHands = "toutes",
 
+	Unknown	 = "unknown",
+
 	DebuffType =
 	{
 		Magic   = "Magie",
@@ -67,6 +69,30 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		[PowaAuras.DebuffCatType.Root] = "Root",
 		[PowaAuras.DebuffCatType.Disarm] = "Disarm",
 		[PowaAuras.DebuffCatType.PvE] = "PvE",
+	},
+	
+	Role =
+	{
+		RoleTank     = "Tank",
+		RoleHealer   = "Healer",
+		RoleMeleDps  = "Melee DPS",
+		RoleRangeDps = "Ranged DPS",
+	},
+	
+	nomReasonRole =
+	{
+		RoleTank     = "Is a Tank",
+		RoleHealer   = "Is a Healer",
+		RoleMeleDps  = "Is a Melee DPS",
+		RoleRangeDps = "Is a Ranged DPS",
+	},
+
+	nomReasonNotRole =
+	{
+		RoleTank     = "Not a Tank",
+		RoleHealer   = "Not a Healer",
+		RoleMeleDps  = "Not a Melee DPS",
+		RoleRangeDps = "Not a Ranged DPS",
 	},
 	
 	AuraType =
@@ -97,7 +123,20 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		[PowaAuras.BuffTypes.Tracking] = "Tracking",
 		[PowaAuras.BuffTypes.GTFO] = "GTFO Alert",
 	},
-
+	
+	PowerType =
+	{
+		[-1] = "Default",
+		[SPELL_POWER_RAGE] = "Rage",
+		[SPELL_POWER_FOCUS] = "Focus",
+		[SPELL_POWER_ENERGY] = "Energy",
+		[SPELL_POWER_HAPPINESS] = "Happiness",
+		[SPELL_POWER_RUNIC_POWER] = "Runic Power",
+		[SPELL_POWER_SOUL_SHARDS] = "Soul Shards",
+		[SPELL_POWER_ECLIPSE] = "Eclipse",
+		[SPELL_POWER_HOLY_POWER] = "Holy Power",
+	},
+	
 	Relative = 
 	{
 		NONE        = "Free", 
@@ -169,21 +208,21 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomGlobalEffects = "Effets\nglobaux",
 	aideEffectTooltip = "(Maj-click pour mettre cet effet sur ON ou OFF)",
 	aideEffectTooltip2 = "(Ctrl-click to give reason for activation)",
-	
-	
+
 	aideItems = "Enter full name of Item or [xxx] for Id",
 	aideSlots = "Enter name of slot to track: Ammo, Back, Chest, Feet, Finger0, Finger1, Hands, Head, Legs, MainHand, Neck, Ranged, SecondaryHand, Shirt, Shoulder, Tabard, Trinket0, Trinket1, Waist, Wrist",
 	aideTracking = "Enter name of Tracking type e.g. fish",
 
-
 	-- editor
+	aideCustomText = "Enter text to display (%t=target name, %f=focus name, %v=display value, %u=unit name, %str=str, agl=agl, %sta=sta, %int=int, %sp1=spi, %sp=spell power, %ap=attack power, %df=defence)",
+
 	nomSoundStarting = "Starting Sound:",
 	nomSound = "Sound to play",
 	nomSound2 = "More sounds to play",
 	aideSound = "Plays a sound at the beginning.",
 	aideSound2 = "Plays a sound at the beginning.",
 	nomCustomSound = "OR soundfile:",
-	aideCustomSound = "Enter a soundfile that is in the Sounds folder, BEFORE you started the game. mp3 and wav are supported. example: 'cookie.mp3' ;)",
+	aideCustomSound = "Enter a soundfile that is in the Sounds folder, BEFORE you started the game. mp3 and wav are supported. example: 'cookie.mp3'\nOr\nEnter the full path to play any WoW sound e.g. Sound\\Events\\GuldanCheers.wav",
 
 	nomSoundEnding = "Ending Sound:",
 	nomSoundEnd = "Sound to play",
@@ -191,8 +230,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideSoundEnd = "Plays a sound at the end.",
 	aideSound2End = "Plays a sound at the end.",
 	nomCustomSoundEnd = "OR soundfile:",
-	aideCustomSoundEnd = "Enter a soundfile that is in the Sounds folder, BEFORE you started the game. mp3 and wav are supported. example: 'cookie.mp3' ;)",
-
+	aideCustomSoundEnd = "Enter a soundfile that is in the Sounds folder, BEFORE you started the game. mp3 and wav are supported. example: 'cookie.mp3'\nOr\nEnter the full path to play any WoW sound e.g. Sound\\Events\\GuldanCheers.wav",
 	nomTexture = "Texture",
 	aideTexture = "La texture \195\160 afficher. Vous pouvez facilement remplacer les textures en changeant les fichier Aura#.tga du dossier de l'AddOn.",
 
@@ -209,7 +247,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideStacksColor = "Click here to change the color of the stacks.",
 	aideFont = "Click here to pick Font. Press OK to apply the selection.", --- untranslated
 	aideMultiID = "Enter here other Aura IDs to combine checks. Multiple IDs must be separated with '/'. Aura ID can be found as [#] on first line of Aura tooltip.", --- untranslated
-	aideTooltipCheck = "Also check the tooltip starts with this text", --- untranslated
+	aideTooltipCheck = "Also check the tooltip contains this text", --- untranslated
 
 	aideBuff = "Entrez ici le nom du buff, ou une partie du nom, qui doit activer/d\195\169sactiver l'effet. Vous pouvez entrer plusieurs noms s'ils sont s\195\169par\195\169 comme il convient (ex: Super Buff/Puissance)",
 	aideBuff2 = "Entrez ici le nom du d\195\169buff, ou une partie du nom, qui doit activer/d\195\169sactiver l'effet. Vous pouvez entrer plusieurs noms s'ils sont s\195\169par\195\169 comme il convient (ex: Maladie noire/Peste)",
@@ -234,7 +272,6 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideUnitn2 = "Only for raid/group.",
 
 	aideMaxTex = "Defini le maximum de textures disponibles dans l'Editeur d'Effets. Si vous rajoutez des textures en les mettant dans le dossier de l'AddOn (nomm\195\169es de AURA1.tga \195\160 AURA50.tga) c'est ici qu'il faudra le signaler.",
-	aideAddEffect = "Ajoute une page d'effet.",
 	aideWowTextures = "Cochez cette case pour utiliser les textures internes du jeu plut\195\180t que le dossier de l'addon pour cet effet.",
 	aideTextAura = "Check this to type text instead of texture.", -- untranslated
 	aideRealaura = "Reale Aura",
@@ -266,6 +303,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomThreshInv = "</>",
 	nomStance = "Stance",
 	nomGTFO = "Alert Type",
+	nomPowerType = "Power Type:",
 
 	nomMine = "Cast by me",
 	aideMine = "Check this to test only buffs/debuffs cast by the player",
@@ -273,6 +311,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideDispellable = "Check to show only buffs that are dispellable",
 	nomCanInterrupt = "Can be Interrupted",
 	aideCanInterrupt = "Check to show only for spells that can be Interrupted",
+	nomOnMe = "Cast On Me",
+	aideOnMe = "Only show if being Cast On Me",
 
 	nomPlayerSpell = "Player Casting",
 	aidePlayerSpell = "Check if Player is casting a spell",
@@ -297,6 +337,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideExact = "Check this to test the exact name of the buff/debuff.",
 	aideStance = "Select which Stance,Aura or Form trigger the event.",
 	aideGTFO = "Select which GTFO Alert will trigger the event.",
+	aidePowerType = "Select which type of resource to track",
 
 	aideShowSpinAtBeginning= "At the end of the begin animation show a 360 degree spin",
 	nomCheckShowSpinAtBeginning = "Show Spin after begin animation ends",
@@ -310,6 +351,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideSelectTimerDebuff = "Choisissez quel timer sera pris pour afficher la dur\195\169e (celui-ci est reserv\195\169 aux debuffs du joueur)",
 
 	nomCheckShowStacks = "Show",
+	aideShowStacks = "Activate this to show the stacks for this effect.",
 
 	nomCheckInverse = "Afficher si inactif",
 	aideInverse = "Cochez cette case pour afficher cet effet uniquement quand le buff/d\195\169buff n'est pas actif.",
@@ -322,6 +364,9 @@ PowaAuras:MergeTables(PowaAuras.Text,
 
 	nomDuration = "Dur\195\169e de l'Anim.",
 	aideDuration = "Pass\195\169 ce d\195\169lai, l'animation sera masqu\195\169e (0 pour d\195\169sactiver)",
+
+	nomOldAnimations = "Old Animations";
+	aideOldAnimations = "Use Old Animations";
 
 	nomCentiemes = "Afficher centiemes",
 	nomDual = "Afficher 2 dur\195\169es",
@@ -401,6 +446,10 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		Instance25ManHeroic= "Only when in a 25-Man Heroic instance",
 		InstanceBg= "Only when in a Battleground",
 		InstanceArena= "Only when in an Arena instance",
+		RoleTank     = "Only when a Tank",
+		RoleHealer   = "Only when a Healer",
+		RoleMeleDps  = "Only when a Melee DPS",
+		RoleRangeDps = "Only when a Ranged DPS",
 	},
 	TernaryNo = {
 		combat = "Only When Not in Combat",
@@ -419,6 +468,10 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		Instance25ManHeroic= "Only when Not in a 25-Man Heroic instance",
 		InstanceBg= "Only when Not in a Battleground",
 		InstanceArena= "Only when Not in an Arena instance",
+		RoleTank     = "Only when Not a Tank",
+		RoleHealer   = "Only when Not a Healer",
+		RoleMeleDps  = "Only when Not a Melee DPS",
+		RoleRangeDps = "Only when Not a Ranged DPS",
 	},
 	TernaryAide = {
 		combat = "Effect modified by Combat status.",
@@ -437,6 +490,10 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		Instance25ManHeroic= "Effect modified by being in a 25-Man Heroic instance",
 		InstanceBg= "Effect modified by being in a Battleground",
 		InstanceArena= "Effect modified by being in an Arena instance",
+		RoleTank     = "Effect modified by being a Tank",
+		RoleHealer   = "Effect modified by being a Healer",
+		RoleMeleDps  = "Effect modified by being a Melee DPS",
+		RoleRangeDps = "Effect modified by being a Ranged DPS",
 	},
 
 	nomTimerInvertAura = "Invert Aura When Time Below",
@@ -446,9 +503,18 @@ PowaAuras:MergeTables(PowaAuras.Text,
 
 	aideTimerRounding = "When checked will round the timer up",
 	nomTimerRounding = "Round Timer Up",
+	
+	aideAllowInspections = "Allow Power Auras to Inspect players to determine roles, turning this off will sacrifice accuracy for speed",
+	nomAllowInspections = "Allow Inspections",
 
 	nomIgnoreUseable = "Cooldown Only",
 	aideIgnoreUseable = "Ignores if spell is usable (just uses cooldown)",
+
+	nomIgnoreItemUseable = "Equipped Only",
+	aideIgnoreItemUseable = "Ignores if item is usable (just if equipped)",
+	
+	nomCarried = "Only if in bags",
+	aideCarried = "Ignores if item is usable (just if in a bag)",
 
 	-- Diagnostic reason text, these have substitutions (using $1, $2 etc) to allow for different sententance constructions
 	nomReasonShouldShow = "Should show because $1",
@@ -495,6 +561,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomReasonInRaid = "In Raid",
 	nomReasonNotInParty = "Not in Party",
 	nomReasonNotInRaid = "Not in Raid",
+	nomReasonNotInGroup = "Not in Party/Raid",
 	nomReasonNoFocus = "No focus",	
 	nomReasonNoCustomUnit = "Can't find custom unit not in party, raid or with pet unit=$1",
 	nomReasonPvPFlagNotSet = "PvP flag not set",
@@ -527,7 +594,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomReasonInBgInstance = "In Battleground Instance",		
 	nomReasonNotInArenaInstance = "Not in Arena Instance",
 	nomReasonInArenaInstance = "In Arena Instance",
-	
+
 	nomReasonInverted        = "$1 (inverted)", -- $1 is the reason, but the inverted flag is set so the logic is reversed
 	
 	nomReasonSpellUsable     = "Spell $1 usable",
@@ -537,13 +604,23 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomReasonSpellNotFound   = "Spell $1 not found",
 	nomReasonSpellOnCooldown = "Spell $1 on Cooldown",
 	
+	nomReasonCastingOnMe	 = "$1 is casting $2 on me", --$1=CasterName $2=SpellName (e.g. "Rotface is casting Slime Spray on me")
+	nomReasonNotCastingOnMe	 = "No matching spell being cast on me",
+	
 	nomReasonItemUsable     = "Item $1 usable",
 	nomReasonItemNotUsable  = "Item $1 not usable",
 	nomReasonItemNotReady   = "Item $1 Not Ready, on cooldown, timer invert",
 	nomReasonItemNotEnabled = "Item $1 not enabled ",
 	nomReasonItemNotFound   = "Item $1 not found",
-	nomReasonItemOnCooldown = "Item $1 on Cooldown",	
+	nomReasonItemOnCooldown = "Item $1 on Cooldown",
 	
+	nomReasonItemEquipped    = "Item $1 equipped",
+	nomReasonItemNotEquipped = "Item $1 not equipped",
+						
+	nomReasonItemInBags      = "Item $1 in bags",
+	nomReasonItemNotInBags   = "Item $1 not in bags",
+	nomReasonItemNotOnPlayer = "Item $1 not carried",
+
 	nomReasonSlotUsable     = "$1 Slot usable",
 	nomReasonSlotNotUsable  = "$1 Slot not usable",
 	nomReasonSlotNotReady   = "$1 Slot Not Ready, on cooldown, timer invert",
@@ -602,16 +679,23 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomReasonTrackingMissing = "Tracking not set to $1",
 	nomTrackingSet = "Tracking set to $1",
 
+	nomNotInInstance = "Not in correct instance",
+
 	nomReasonStatic = "Static Aura",
+	
+	nomReasonUnknownName = "Unit name unknown",
+	nomReasonRoleUnknown = "Role unknown",
+	nomReasonRoleNoMatch = "No matching Role",
 
 	nomReasonGTFOAlerts = "GTFO alerts are never always on.",
 
 	ReasonStat = {
 		Health     = {MatchReason="$1 Health low",          NoMatchReason="$1 Health not low enough"},
 		Mana       = {MatchReason="$1 Mana low",            NoMatchReason="$1 Mana not low enough"},
-		RageEnergy = {MatchReason="$1 EnergyRagePower low", NoMatchReason="$1 EnergyRagePower not low enough"},
+		Power	   = {MatchReason="$1 Power low", 			NoMatchReason="$1 Power not low enough", NilReason = "$1 has wrong Power Type"},
 		Aggro      = {MatchReason="$1 has aggro",           NoMatchReason="$1 does not have aggro"},
 		PvP        = {MatchReason="$1 PvP flag set",        NoMatchReason="$1 PvP flag not set"},
+		SpellAlert = {MatchReason="$1 casting $2",        	NoMatchReason="$1 not casting $2"},
 	},
 
 });
