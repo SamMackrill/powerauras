@@ -77,8 +77,9 @@ function PowaAuras:OnLoad(frame)
 
 	-- Remove Cata stuff from live
 	if (not PowaAuras.Cataclysm) then
-		PowaAuras.Text.PowerType[PowaAuras.PowerTypes.HolyPower] = nil;
-		PowaAuras.PowerTypes.HolyPower = nil;
+		PowaAuras.Text.PowerType[SPELL_POWER_SOUL_SHARDS] = nil;
+		PowaAuras.Text.PowerType[SPELL_POWER_ECLIPSE] = nil;
+		PowaAuras.Text.PowerType[SPELL_POWER_HOLY_POWER] = nil;
 	end
 	
 	--- Setting up the Import/Export static popups
@@ -908,7 +909,7 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 	elseif (aura.customtex == true) then
 		texture:SetTexture(self:CustomTexPath(aura.customname));
 	elseif (aura.textaura == true) then
-		texture:SetText(aura:GetAuraText());	  	
+		aura:UpdateText(texture);  	
 	else
 		texture:SetTexture("Interface\\Addons\\PowerAuras\\Auras\\Aura"..aura.texture..".tga");
 	end
@@ -1106,7 +1107,7 @@ function PowaAuras:ShowSecondaryAuraForFirstTime(aura)
 		secondaryFrame:SetFrameStrata("BACKGROUND");
 	end
 
-	if not aura.textaura == true then
+	if (aura.textaura ~= true) then
 		if (aura.symetrie == 1) then 
 			secondaryTexture:SetTexCoord(1, 0, 0, 1); --- inverse X
 		elseif (aura.symetrie == 2) then 
