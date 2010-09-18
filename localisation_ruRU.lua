@@ -50,6 +50,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	offHand = "левая",
 	bothHands = "Обе",
 
+	Unknown	 = "unknown",
+
 	DebuffType =
 	{
 		Magic = "Магия",
@@ -57,16 +59,40 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		Curse = "Проклятие",
 		Poison = "Яд",
 	},
-	
+
 	DebuffCatType =
 	{
-		[PowaAuras.DebuffCatType.CC] = "Контроль",
-		[PowaAuras.DebuffCatType.Silence] = "Молчание",
-		[PowaAuras.DebuffCatType.Snare] = "Ловушка",
-		[PowaAuras.DebuffCatType.Stun] = "Оглушение",
-		[PowaAuras.DebuffCatType.Root] = "Корни",
-		[PowaAuras.DebuffCatType.Disarm] = "Разоружение",
-		[PowaAuras.DebuffCatType.PvE] = "PvE",
+		[PowaAuras.DebuffCatType.CC]      = "CC",
+		[PowaAuras.DebuffCatType.Silence] = "Silence",
+		[PowaAuras.DebuffCatType.Snare]   = "Snare",
+		[PowaAuras.DebuffCatType.Stun]    = "Stun",
+		[PowaAuras.DebuffCatType.Root]    = "Root",
+		[PowaAuras.DebuffCatType.Disarm]  = "Disarm",
+		[PowaAuras.DebuffCatType.PvE]     = "PvE",
+	},
+	
+	Role =
+	{
+		RoleTank     = "Tank",
+		RoleHealer   = "Healer",
+		RoleMeleDps  = "Melee DPS",
+		RoleRangeDps = "Ranged DPS",
+	},
+	
+	nomReasonRole =
+	{
+		RoleTank     = "Is a Tank",
+		RoleHealer   = "Is a Healer",
+		RoleMeleDps  = "Is a Melee DPS",
+		RoleRangeDps = "Is a Ranged DPS",
+	},
+
+	nomReasonNotRole =
+	{
+		RoleTank     = "Not a Tank",
+		RoleHealer   = "Not a Healer",
+		RoleMeleDps  = "Not a Melee DPS",
+		RoleRangeDps = "Not a Ranged DPS",
 	},
 	
 	AuraType =
@@ -97,7 +123,20 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		[PowaAuras.BuffTypes.Tracking] = "Tracking",
 		[PowaAuras.BuffTypes.GTFO] = "Предупреждение GTFO",
 	},
-
+	
+	PowerType =
+	{
+		[-1] = "Default",
+		[SPELL_POWER_RAGE] = "Rage",
+		[SPELL_POWER_FOCUS] = "Focus",
+		[SPELL_POWER_ENERGY] = "Energy",
+		[SPELL_POWER_HAPPINESS] = "Happiness",
+		[SPELL_POWER_RUNIC_POWER] = "Runic Power",
+		[SPELL_POWER_SOUL_SHARDS] = "Soul Shards",
+		[SPELL_POWER_ECLIPSE] = "Eclipse",
+		[SPELL_POWER_HOLY_POWER] = "Holy Power",
+	},
+	
 	Relative = 
 	{
 		NONE        = "Free", 
@@ -140,6 +179,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomEnable = "Активировать Power Auras",
 	aideEnable = "Включить все эффекты Power Auras",
 
+
 	nomDebug = "Активировать сообщения отладки",
 	aideDebug = "Включить сообщения отладки",
 	ListePlayer = "Страница",
@@ -148,6 +188,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideCopy = "Копировать эффект сюда.",
 	nomRename = "Переименовать",
 	aideRename = "Переименовать выбранную страницу эффектов.",
+
 	nomTest = "Тест",
 	nomTestAll = "Тест всего",
 	nomHide = "Скрыть все",
@@ -158,15 +199,18 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomExport = "Экспорт",
 	nomImportSet = "Имп. набора", 
 	nomExportSet = "Эксп. набора", 
+
 	aideImport = "Нажмите Ctrl-V чтобы вставить строку-ауры и нажмите \'Принять\'.",
 	aideExport = "Нажмите Ctrl-C чтобы скопировать строку-ауры.",
 	aideImportSet = "Нажмите Ctrl-V чтобы вставить строку-набора-аур и нажмите \'Принять\', это сотрёт все ауры на этой странице.",
 	aideExportSet = "Нажмите Ctrl-C чтобы скопировать все ауры на этой странице.",
 	aideDel = "Удалить выбранный эффект (Чтобы кнопка заработала, удерживайте CTRL)",
+
 	nomMove = "Переместить",
 	nomCopy = "Копировать",
 	nomPlayerEffects = "Эффекты персонажа",
 	nomGlobalEffects = "Глобальные\nэффекты",
+
 	aideEffectTooltip = "([Shift-клик] - вкл/выкл эффект)",
 	aideEffectTooltip2 = "([Ctrl--клик] - задать причину для активации)",
 
@@ -175,8 +219,9 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideSlots = "Enter name of slot to track: Ammo, Back, Chest, Feet, Finger0, Finger1, Hands, Head, Legs, MainHand, Neck, Ranged, SecondaryHand, Shirt, Shoulder, Tabard, Trinket0, Trinket1, Waist, Wrist",
 	aideTracking = "Enter name of Tracking type e.g. fish",
 
-
 	-- editor
+	aideCustomText = "Enter text to display (%t=target name, %f=focus name, %v=display value, %u=unit name, %str=str, agl=agl, %sta=sta, %int=int, %sp1=spi, %sp=spell power, %ap=attack power, %df=defence)",
+
 	nomSoundStarting = "Starting Sound:",
 	nomSound = "Проигрываемый звук",
 	nomSound2 = "Еще звуки",
@@ -233,7 +278,6 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideUnitn2 = "Только в группе/рейде.",    
 
 	aideMaxTex = "Определите максимальное количество текстур доступных в Редакторе эффектов. Если добавить текстуры в папке модификации  (с именами AURA1.tga до AURA50.tga), здесь необходимо указать правильный номер.",
-	aideAddEffect = "Добавить эффект в редактор.",
 	aideWowTextures = "Отметив тут, для данного эффекта будут использоваться текстуру WoW, вместо текстур в папке Power Auras.",
 	aideTextAura = "Отметив тут, вы можете ввести используемый текст вместо текстуры.",
 	aideRealaura = "Реальная аура",
@@ -265,6 +309,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomThreshInv = "</>",
 	nomStance = "Стойка",
 	nomGTFO = "Тип тревоги",
+	nomPowerType = "Power Type:",
 
 	nomMine = "Применяемое мною",
 	aideMine = "Отметив это, будет происходить проверка только баффов/дебаффав применяемых игроком.",
@@ -272,6 +317,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideDispellable = "Отметив это, будут отображаться только те баффы, которые можно рассеить",
 	nomCanInterrupt = "Может быть прерван",
 	aideCanInterrupt = "Отметив это, будут отображаться только те заклинания которые могут быть прерваны",
+	nomOnMe = "Cast On Me",
+	aideOnMe = "Only show if being Cast On Me",
 
 	nomPlayerSpell = "Игрок применяет",
 	aidePlayerSpell = "Проверять, применяет ли игрок заклинание",
@@ -296,6 +343,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideExact = "Отметив это, будет происходить проверка точного названия баффа/дебаффа/действия.",	
 	aideStance = "Выберите, какая стойка, форма или аура вызовет событие.",
 	aideGTFO = "Выберите, какое предупреждение GTFO вызовет событие.",
+	aidePowerType = "Select which type of resource to track",
 
 	aideShowSpinAtBeginning= "В конце начать отображать анимацию с поворотом на 360 градусов",
 	nomCheckShowSpinAtBeginning = "Показать поворот после начала конца анимации", --- ???
@@ -309,6 +357,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideSelectTimerDebuff = "Выберите, который таймер будет отображать длительность (это предназначено для баффов игроков)",
 
 	nomCheckShowStacks = "Показать",
+	aideShowStacks = "Activate this to show the stacks for this effect.",
 
 	nomCheckInverse = "Инвертировать",
 	aideInverse = "Инвертировать логику отображение этого эффекта только когда бафф/дебафф неактивен.",	
@@ -321,6 +370,9 @@ PowaAuras:MergeTables(PowaAuras.Text,
 
 	nomDuration = "Длина анимации:",
 	aideDuration = "После истечения этого времени, данный эффект исчезнет (0 - дезактивировать)",
+
+	nomOldAnimations = "Old Animations";
+	aideOldAnimations = "Use Old Animations";
 
 	nomCentiemes = "Показывать сотую часть",
 	nomDual = "Показывать 2 таймера",
@@ -400,6 +452,10 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		Instance25ManHeroic= "Только когда в героическом подземелье на 25-чел",
 		InstanceBg= "Только когда на поле боя",
 		InstanceArena= "Только когда на арене",
+		RoleTank     = "Only when a Tank",
+		RoleHealer   = "Only when a Healer",
+		RoleMeleDps  = "Only when a Melee DPS",
+		RoleRangeDps = "Only when a Ranged DPS",
 	},
 	TernaryNo = {
 		combat = "Только когда НЕ в бою",
@@ -418,6 +474,10 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		Instance25ManHeroic= "Только когда НЕ в героическом подземелье на 25-чел",
 		InstanceBg= "Только когда НЕ на поле боя",
 		InstanceArena= "Только когда НЕ на арене",
+		RoleTank     = "Only when Not a Tank",
+		RoleHealer   = "Only when Not a Healer",
+		RoleMeleDps  = "Only when Not a Melee DPS",
+		RoleRangeDps = "Only when Not a Ranged DPS",
 	},
 	TernaryAide = {
 		combat = "Эффект изменен статусом боя.",
@@ -436,6 +496,10 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		Instance25ManHeroic= "Эффект изменен нахождением в героическом подземелье на 25-чел",
 		InstanceBg= "Эффект изменен нахождением на поле боя",
 		InstanceArena= "Эффект изменен нахождением на арене",
+		RoleTank     = "Effect modified by being a Tank",
+		RoleHealer   = "Effect modified by being a Healer",
+		RoleMeleDps  = "Effect modified by being a Melee DPS",
+		RoleRangeDps = "Effect modified by being a Ranged DPS",
 	},
 
 	nomTimerInvertAura = "Инвертировать ауру когда время ниже",
@@ -445,9 +509,18 @@ PowaAuras:MergeTables(PowaAuras.Text,
 
 	aideTimerRounding = "When checked will round the timer up",
 	nomTimerRounding = "Round Timer Up",
+	
+	aideAllowInspections = "Allow Power Auras to Inspect players to determine roles, turning this off will sacrifice accuracy for speed",
+	nomAllowInspections = "Allow Inspections",
 
 	nomIgnoreUseable = "Только восстановление",
 	aideIgnoreUseable = "Ignores if spell is usable (just uses cooldown)",
+
+	nomIgnoreItemUseable = "Equipped Only",
+	aideIgnoreItemUseable = "Ignores if item is usable (just if equipped)",
+	
+	nomCarried = "Only if in bags",
+	aideCarried = "Ignores if item is usable (just if in a bag)",
 
 	-- Diagnostic reason text, these have substitutions (using $1, $2 etc) to allow for different sententance constructions
 	nomReasonShouldShow = "Следует показать, потому что $1",
@@ -494,6 +567,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomReasonInRaid = "В рейде",
 	nomReasonNotInParty = "Не в группе",
 	nomReasonNotInRaid = "Не в рейде",
+	nomReasonNotInGroup = "Not in Party/Raid",
 	nomReasonNoFocus = "Нет фокуса",	
 	nomReasonNoCustomUnit = "Can't find custom unit not in party, raid or with pet unit=$1",
 	nomReasonPvPFlagNotSet = "Режим PvP не включен",
@@ -536,6 +610,9 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomReasonSpellNotFound   = "Заклинание $1 не найдено",
 	nomReasonSpellOnCooldown = "Заклинание $1 на восстановлении",
 	
+	nomReasonCastingOnMe	 = "$1 is casting $2 on me", --$1=CasterName $2=SpellName (e.g. "Rotface is casting Slime Spray on me")
+	nomReasonNotCastingOnMe	 = "No matching spell being cast on me",
+	
 	nomReasonItemUsable     = "Item $1 usable",
 	nomReasonItemNotUsable  = "Item $1 not usable",
 	nomReasonItemNotReady   = "Item $1 Not Ready, on cooldown, timer invert",
@@ -543,6 +620,13 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomReasonItemNotFound   = "Item $1 not found",
 	nomReasonItemOnCooldown = "Item $1 on Cooldown",	
 	
+	nomReasonItemEquipped    = "Item $1 equipped",
+	nomReasonItemNotEquipped = "Item $1 not equipped",
+						
+	nomReasonItemInBags      = "Item $1 in bags",
+	nomReasonItemNotInBags   = "Item $1 not in bags",
+	nomReasonItemNotOnPlayer = "Item $1 not carried",	
+
 	nomReasonSlotUsable     = "$1 Slot usable",
 	nomReasonSlotNotUsable  = "$1 Slot not usable",
 	nomReasonSlotNotReady   = "$1 Slot Not Ready, on cooldown, timer invert",
@@ -603,6 +687,12 @@ PowaAuras:MergeTables(PowaAuras.Text,
 
 	nomReasonStatic = "Статик аура",
 
+	nomReasonStatic = "Static Aura",
+	
+	nomReasonUnknownName = "Unit name unknown",
+	nomReasonRoleUnknown = "Role unknown",
+	nomReasonRoleNoMatch = "No matching Role",
+
 	nomReasonGTFOAlerts = "GTFO alerts are never always on.",
 
 	ReasonStat = {
@@ -611,6 +701,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		RageEnergy = {MatchReason="$1 Низкий уровень энергии", NoMatchReason="$1 Уровень энергия не достаточно низкий"},
 		Aggro      = {MatchReason="$1 присутствует угроза",           NoMatchReason="$1 без угрозы"},
 		PvP        = {MatchReason="$1 с меткой PvP",        NoMatchReason="$1 без метки PvP"},
+		SpellAlert = {MatchReason="$1 casting $2",        	NoMatchReason="$1 not casting $2"},
 	},
 
 });
