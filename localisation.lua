@@ -187,6 +187,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideCopy = "Copy the effect here.",
 	nomRename = "Rename",
 	aideRename = "Rename the selected effect's page.",
+
 	nomTest = "Test",
 	nomTestAll = "Test All",
 	nomHide = "Hide all",
@@ -197,15 +198,18 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomExport = "Export", 
 	nomImportSet = "Import Set", 
 	nomExportSet = "Export Set", 
+
 	aideImport = "Press Ctrl-V to paste the Aura-string and press \'Accept\'",
 	aideExport = "Press Ctrl-C to copy the Aura-string for sharing.",
 	aideImportSet = "Press Ctrl-V to paste the Aura-Set-string and press \'Accept\' this will erase all auras on this page",
 	aideExportSet = "Zum Kopieren und Weitergeben aller Auren auf dieser Seite drücke Strg-C.",
 	aideDel = "Löscht den ausgewählten Effekt.(Halte STRG zum Löschen gedrückt)",
+
 	nomMove = "Verschieben",
 	nomCopy = "Kopieren",
 	nomPlayerEffects = "Charakter Effekte",
 	nomGlobalEffects = "Globale\nEffekte",
+
 	aideEffectTooltip = "(Shift-Klick um Effekt ein oder auszuschalten)",
 	aideEffectTooltip2 = "(Strg-Klick um Aktivierungsbedingungen anzuzeigen)",
 
