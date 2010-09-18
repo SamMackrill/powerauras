@@ -701,14 +701,12 @@ function PowaAuras:UPDATE_SHAPESHIFT_FORMS(...)
 end
 
 function PowaAuras:GetStances()
+	if (self.playerclass=="WARLOCK") then -- Fix for Warlock metamorphosis
+		self.PowaStance[2] = select(2,GetShapeshiftFormInfo(1));
+		return;
+	end
 	for iForm=1, GetNumShapeshiftForms() do
-		-- Fix for warlock metamorphosis
-		if (self.playerclass=="WARLOCK") then
-			self.PowaStance[1] = "";
-			self.PowaStance[2] = select(2,GetShapeshiftFormInfo(1));
-		else
-			self.PowaStance[iForm] = select(2,GetShapeshiftFormInfo(iForm));
-		end
+		self.PowaStance[iForm] = select(2,GetShapeshiftFormInfo(iForm));
 	end
 end
 	
