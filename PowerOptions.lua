@@ -514,8 +514,13 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 			local newMultiids = "";
 			local sep = "";
 			for multiId in string.gmatch(importAuraSettings[k], "[^/]+") do
-				newMultiids = newMultiids .. sep .. tostring(offset + multiId);
-				sep = "/";
+				local multiIdNumber = tonumber(multiId);
+				--self:Message("multiId=", multiId, " multiIdNumber=", multiIdNumber, " offset=", offset);
+				if (multiIdNumber) then
+					newMultiids = newMultiids .. sep .. tostring(offset + multiIdNumber);
+					--self:Message("newMultiids=", newMultiids);
+					sep = "/";
+				end
 			end
 			aura[k] = newMultiids;
 		elseif (varType == "string" or varType == "boolean" or varType == "number" and k~="id") then
@@ -1906,14 +1911,10 @@ function PowaAuras.DropDownMenu_Initialize(owner)
 		UIDropDownMenu_SetSelectedValue(PowaDropDownAnim2, aura.anim2);
 	elseif (owner:GetName() == "PowaDropDownStanceButton" or owner:GetName() == "PowaDropDownStance") then
 		info = {func = PowaAuras.DropDownMenu_OnClickStance, owner = owner};	
-		for i = 0, #(PowaAuras.PowaStance) do
-			-- Fix for warlock metamorphosis
-			if (i == 1 and PowaAuras.playerclass == "WARLOCK") then
-			else
-				info.text = PowaAuras.PowaStance[i]; 
-				info.value = i;
-				UIDropDownMenu_AddButton(info);
-			end
+		for k, v in pairs(PowaAuras.PowaStance) do
+			info.text = v; 
+			info.value = k;
+			UIDropDownMenu_AddButton(info);
 		end		
 		UIDropDownMenu_SetSelectedValue(PowaDropDownStance, aura.stance);
 		UIDropDownMenu_SetWidth(PowaDropDownStance, 210, 1);

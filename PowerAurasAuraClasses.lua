@@ -107,7 +107,7 @@ cPowaAura = PowaClass(function(aura, id, base)
 	aura.gcd = false;
 	aura.stance = 10;
 	aura.GTFO = 0;
-	aura.PowerType = 0;
+	aura.PowerType = -1;
 	aura.multiids = "";
 	aura.tooltipCheck = "";
 	aura.UseOldAnimations = false;
@@ -315,6 +315,20 @@ function cPowaAura:Hide(skipEndAnimationStop)
 	end
 
 	self.Showing = false;
+end
+
+function cPowaAura:UpdateText(texture)
+	if (not self.textaura) then return; end
+	local newText = self:GetAuraText();
+	if (newText~=self.CurrentText) then
+		if (texture==nil) then
+			texture = self:GetTexture();
+		end
+		if (texture~=nil) then
+			texture:SetText(newText);
+		end
+		self.CurrentText = newText;
+	end
 end
 
 function cPowaAura:GetAuraText()
@@ -1219,6 +1233,7 @@ function cPowaBuffBase:IsPresent(unit, s, giveReason, textToCheck)
 	end
 	self.DisplayValue = auraName;
 	self.DisplayUnit = unit;
+	self:UpdateText();
 	if (giveReason) then return true, PowaAuras.Text.nomReasonBuffFound; end
 	return true;
 end	
@@ -2222,21 +2237,21 @@ function cPowaOwnSpell:ShowTimerDurationSlider()
 	return true;
 end
 
-cPowaAuraStats = PowaClass(cPowaAura);
+cPowaAuraStats = PowaClass(cPowaAura, {CanHaveStacks=true});
 cPowaAuraStats.OptionText={targetFriendText=PowaAuras.Text.nomCheckFriend, targetFriendTooltip=PowaAuras.Text.aideTargetFriend,};
 
 cPowaAuraStats.ShowOptions={["PowaBarThresholdSlider"]=1,
 						    ["PowaThresholdInvertButton"]=1};					 
 cPowaAuraStats.CheckBoxes={
 	["PowaTargetButton"]=1,
-   ["PowaPartyButton"]=1,
-   ["PowaFocusButton"]=1,
-   ["PowaRaidButton"]=1,
-   ["PowaGroupOrSelfButton"]=1,
-   ["PowaGroupAnyButton"]=1,
-   ["PowaOptunitnButton"]=1,
-   ["PowaInverseButton"]=1,
-   };
+	["PowaPartyButton"]=1,
+	["PowaFocusButton"]=1,
+	["PowaRaidButton"]=1,
+	["PowaGroupOrSelfButton"]=1,
+	["PowaGroupAnyButton"]=1,
+	["PowaOptunitnButton"]=1,
+	["PowaInverseButton"]=1,
+	};
 
 							  
 function cPowaAuraStats:AddEffectAndEvents()
@@ -2302,16 +2317,19 @@ function cPowaAuraStats:CheckUnit(unit)
 	local curValue = self:UnitValue(unit);
 	if (self.Stacks) then
 		self.Stacks:SetStackCount(curValue);
-	end	
-	
+	end
+	self.DisplayValue = curValue;
+	self.DisplayUnit = unit;
+	self:UpdateText();
+
 	local maxValue = self:UnitValueMax(unit);
-	if (curValue==nil or maxValue==nil) then return false; end
+	if (curValue==nil or maxValue==nil or maxValue==0) then return false; end
 
 	local curpercenthp = (curValue / maxValue) * 100;
 	
 	if (self.Debug) then
 		PowaAuras:ShowText("curValue=", curValue, " maxValue=", maxValue);
-		PowaAuras:ShowText("%=", curpercenthp, " threshold=",self.threshold);
+		PowaAuras:ShowText(curpercenthp, "% threshold=",self.threshold);
 	end
 	if self.thresholdinvert then 
 		thresholdvalidate = (curpercenthp > self.threshold);
@@ -2367,21 +2385,43 @@ cPowaPowerType.TooltipOptions = {r=1.0, g=0.4, b=0.0, showThreshold=true};
 cPowaPowerType.ShowOptions.PowaDropDownPowerType=1;
 
 function cPowaPowerType:UnitValue(unit)
-	PowaAuras:Debug("UnitValue for ", unit);
-	if (not self.PowerType or self.PowerType==0) then
-		return UnitPower(unit);
+	PowaAuras:Debug("UnitValue for ", unit, " type=",self.PowerType);
+	if (self.Debug) then
+		PowaAuras:ShowText("UnitValue for ", unit, " type=",self.PowerType);
 	end
-	return UnitPower(unit, self.PowerType);
+	local power;
+	if (not self.PowerType or self.PowerType==-1) then
+		power = UnitPower(unit);
+	else
+		power = UnitPower(unit, self.PowerType);
+	end
+	if (self.Debug) then
+		PowaAuras:ShowText("power=", power);
+	end
+	return power;
 end
+
 function cPowaPowerType:UnitValueMax(unit)
 	PowaAuras:Debug("UnitValueMax for ", unit);
-	if (not self.PowerType or self.PowerType==0) then
-		return UnitPowerMax(unit);
+	if (self.Debug) then
+		PowaAuras:ShowText("UnitValueMax for ", unit, " type=",self.PowerType);
 	end
-	return UnitPowerMax(unit, self.PowerType);
+	local power;
+	if (not self.PowerType or self.PowerType==-1) then
+		maxpower = UnitPowerMax(unit);
+	else
+		maxpower = UnitPowerMax(unit, self.PowerType);
+	end
+	if (self.Debug) then
+		PowaAuras:ShowText("maxpower=", maxpower);
+	end
+	return maxpower;
+
 end
 
 function cPowaPowerType:IsCorrectPowerType(unit)
+	if (self.PowerType==SPELL_POWER_HOLY_POWER  and PowaAuras.playerclass == "PALADIN") then return true; end
+	if (self.PowerType==SPELL_POWER_RUNIC_POWER and PowaAuras.playerclass == "DEATHKNIGHT") then return true; end
 	local unitPowerType = UnitPowerType(unit);
 	if (self.Debug) then
 		PowaAuras:ShowText("cPowaPowerType IsCorrectPowerType powerType=", unitPowerType, " expected=", self.PowerType);
@@ -2389,7 +2429,7 @@ function cPowaPowerType:IsCorrectPowerType(unit)
 	if (not unitPowerType) then
 		return false;
 	end
-	if (not self.PowerType or self.PowerType==0) then
+	if (not self.PowerType or self.PowerType==-1) then
 		return (unitPowerType > 0);
 	end
 	return (unitPowerType==self.PowerType);
@@ -2627,6 +2667,7 @@ function cPowaSpellAlert:CheckSpellName(unit, spellname, spellicon, endtime, spe
 		self:SetIcon(spellicon);
 		self.DisplayValue = spellname;
 		self.DisplayUnit = unit;
+		self:UpdateText();
 		if (PowaAuras.ExtraUnitEvent[unit]) then
 			PowaAuras.Pending[self.id] = GetTime() + 1; -- Instant spells have no complete event
 		end
@@ -2872,7 +2913,7 @@ function cPowaPet:CheckIfShouldShow(giveReason)
 
 	if(UnitExists("pet")) then
 		if (PowaAuras.playerclass == "MAGE") then
-			--Get time left for Water Elemental?
+			--TODO: Get time left for Water Elemental?
 		end
 		if (not giveReason) then return true; end
 		return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonPetExists);

@@ -265,17 +265,6 @@ PowaAuras = {
 		Tracking=24,
 		GTFO=50,
 	};
-	
-	PowerTypes =
-	{
-		Any=0,
-		Rage=1,
-		Focus=2,
-		Energy=3,
-		Happiness=4,
-		RunicPower=6,
-		HolyPower=10,
-	};
 
 	AnimationBeginTypes =
 	{
@@ -653,6 +642,17 @@ else
 		HUNTER = 1978,       -- Serpent Sting I (only from level 4)
 		DEATHKNIGHT = 45902, -- Blood Strike I
 	};
+	-- Power Types
+	SPELL_POWER_MANA = 0;
+	SPELL_POWER_RAGE = 1;
+	SPELL_POWER_FOCUS = 2;
+	SPELL_POWER_ENERGY = 3;
+	SPELL_POWER_HAPPINESS = 4;
+	SPELL_POWER_RUNES = 5;
+	SPELL_POWER_RUNIC_POWER = 6;
+	SPELL_POWER_SOUL_SHARDS = 7;
+	SPELL_POWER_ECLIPSE = 8;
+	SPELL_POWER_HOLY_POWER = 9;
 end
 
 PowaAuras.TalentChangeSpells = {
