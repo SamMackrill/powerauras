@@ -690,6 +690,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomReasonUnknownName = "Unit name unknown",
 	nomReasonRoleUnknown = "Role unknown",
 	nomReasonRoleNoMatch = "No matching Role",
+	
+	nomUnknownSpellId = "PowerAuras: Aura $1 references an unknown spellId: ", -- $1=SpellID
 
 	nomReasonGTFOAlerts = "GTFO alerts are never always on.",
 
