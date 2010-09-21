@@ -283,7 +283,6 @@ end
 
 function cPowaAura:Hide(skipEndAnimationStop)	
 	--PowaAuras:UnitTestInfo("Aura.Hide ", self.id);
-	--PowaAuras:ShowText("cPowaAura:Hide ", self.id);
 	
 	if (self.BeginAnimation and self.BeginAnimation:IsPlaying()) then
 		self.BeginAnimation:Stop();
@@ -780,7 +779,7 @@ function cPowaAura:MatchSpell(spellName, spellTexture, textToFind)
 				spellName, textureMatch = self:GetSpellNameFromMatch(pword);
 			end
 			if (spellName==nil) then
-				PowaAuras:ShowText("aura "..self.id.." references an unknown spellId: ", pword);
+				PowaAuras:ShowText(PowaAuras:InsertText(PowaAuras.Text.nomUnknownSpellId, pword));
 			end
 			--PowaAuras:ShowText("textureMatch=", textureMatch);
 			if (spellName and (not textureMatch or textureMatch==spellTexture)) then
