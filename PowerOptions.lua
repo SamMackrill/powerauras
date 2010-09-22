@@ -20,7 +20,9 @@ function PowaAuras:UpdateMainOption()
 	PowaDebugButton:SetChecked(PowaMisc.debug==true);
 	PowaTimerRoundingButton:SetChecked(PowaMisc.TimerRoundUp==true);
 	PowaAllowInspectionsButton:SetChecked(PowaMisc.AllowInspections==true);
-	
+	self:ShowText("Update Setting PowaBarTextureCount to: ", PowaMisc.MaxTextures);
+	PowaBarTextureCount:SetText(PowaMisc.MaxTextures);
+
 	-- affiche les icones
 	for i = 1, 24 do
 		local k = ((self.MainOptionPage-1)*24) + i;
@@ -1231,7 +1233,7 @@ function PowaAuras:InitPage()
 		PowaBarCustomTexName:Hide();
 		PowaBarAurasText:Hide();
 		PowaFontsButton:Hide();
-		if (#self.WowTextures > self.maxtextures) then
+		if (#self.WowTextures > PowaMisc.MaxTextures) then
 			PowaBarAuraTextureSlider:SetMinMaxValues(1,#self.WowTextures);
 			PowaBarAuraTextureSlider:SetValue(aura.texture);
 		else
@@ -1260,14 +1262,14 @@ function PowaAuras:InitPage()
 		PowaBarCustomTexName:Hide();
 		PowaBarAurasText:Hide();
 		PowaFontsButton:Hide();
-		if (#self.WowTextures < self.maxtextures) then
-			PowaBarAuraTextureSlider:SetMinMaxValues(1,self.maxtextures);
+		if (#self.WowTextures < PowaMisc.MaxTextures) then
+			PowaBarAuraTextureSlider:SetMinMaxValues(1,PowaMisc.MaxTextures);
 			PowaBarAuraTextureSlider:SetValue(aura.texture);
 		else
 			PowaBarAuraTextureSlider:SetValue(aura.texture);
-			PowaBarAuraTextureSlider:SetMinMaxValues(1,self.maxtextures);
+			PowaBarAuraTextureSlider:SetMinMaxValues(1,PowaMisc.MaxTextures);
 		end
-		PowaBarAuraTextureSliderHigh:SetText(self.maxtextures);
+		PowaBarAuraTextureSliderHigh:SetText(PowaMisc.MaxTextures);
 		CheckTexture = AuraTexture:SetTexture("Interface\\Addons\\PowerAuras\\Auras\\Aura"..aura.texture..".tga");
 	end
 
@@ -1569,6 +1571,16 @@ function PowaAuras:AurasTextChanged()
 	self:RedisplayAura(self.CurrentAuraId);
 end
 
+function PowaAuras:TextureCountChanged(control)
+	PowaMisc.MaxTextures = tonumber(control:GetText());
+	PowaBarAuraTextureSlider:SetMinMaxValues(1, PowaMisc.MaxTextures);
+	PowaBarAuraTextureSliderHigh:SetText(PowaMisc.MaxTextures);
+end
+
+function PowaAuras:TextureCountCancel(control)
+	control:SetText(PowaMisc.MaxTextures);
+end
+
 function PowaAuras:CustomSoundTextChanged(force)
 	local oldCustomSound = PowaBarCustomSound:GetText();
 	local aura = self.Auras[self.CurrentAuraId];
@@ -1737,9 +1749,9 @@ function PowaAuras:WowTexturesChecked()
 		PowaFontsButton:Hide();
 	else
 		self.Auras[auraId].wowtex = false;
-		PowaBarAuraTextureSlider:SetMinMaxValues(1,self.maxtextures);
+		PowaBarAuraTextureSlider:SetMinMaxValues(1,PowaMisc.MaxTextures);
 		PowaBarAuraTextureSlider:SetValue(1);
-		PowaBarAuraTextureSliderHigh:SetText(self.maxtextures);
+		PowaBarAuraTextureSliderHigh:SetText(PowaMisc.MaxTextures);
 	end
 	PowaAuras:BarAuraTextureSliderChanged();
 	self:RedisplayAura(self.CurrentAuraId);
@@ -2807,6 +2819,7 @@ function PowaAuras.OptionsOK()
 end
 
 function PowaAuras.OptionsCancel()
+	self:DisplayText("OptionsCancel PowaOptionsCpuFrame2_OnShow");
 	PowaOptionsCpuFrame2_OnShow();
 	PowaAuras.ModTest = false;
 	PowaAuras.DoCheck.All = true;
@@ -2817,6 +2830,7 @@ function PowaAuras:OptionsDefault()
 	PowaMisc.AnimationLimit = 0;
 	PowaMisc.Disabled = false;
 	PowaMisc.debug = false;
+	self:DisplayText("OptionsDefault PowaOptionsCpuFrame2_OnShow");
 	PowaOptionsCpuFrame2_OnShow();
 end
 
@@ -2834,6 +2848,7 @@ function PowaOptionsCpuFrame2_OnShow(hide)
 	--PowaAuras:ShowText("AnimationLimit=", PowaMisc.AnimationLimit);
 	--PowaAuras:ShowText("Disabled=", PowaMisc.Disabled ~= false);
 	--PowaAuras:ShowText("debug=", PowaMisc.debug);
+	--PowaAuras:ShowText("MaxTextures=", PowaMisc.MaxTextures);
 	PowaOptionsUpdateSlider2:SetValue(100-200*PowaMisc.OnUpdateLimit); 
 	PowaOptionsAnimationsSlider2:SetValue(PowaMisc.AnimationFps);
 	PowaOptionsTimerUpdateSlider2:SetValue(100-1000*PowaMisc.AnimationLimit);
@@ -2842,6 +2857,8 @@ function PowaOptionsCpuFrame2_OnShow(hide)
 	PowaDebugButton:SetChecked(PowaMisc.debug);
 	PowaTimerRoundingButton:SetChecked(PowaMisc.TimerRoundUp);
 	PowaAllowInspectionsButton:SetChecked(PowaMisc.AllowInspections);
+	PowaAuras:ShowText("OnShow Setting PowaBarTextureCount to: ", PowaMisc.MaxTextures);
+	PowaBarTextureCount:SetText(PowaMisc.MaxTextures);
 	UIDropDownMenu_SetSelectedValue(PowaDropDownDefaultTimerTexture, PowaMisc.DefaultTimerTexture);
 	UIDropDownMenu_SetSelectedValue(PowaDropDownDefaultStacksTexture, PowaMisc.DefaultStacksTexture);
 end
