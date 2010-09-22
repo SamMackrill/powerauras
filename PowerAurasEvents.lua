@@ -19,6 +19,7 @@ function PowaAuras:VARIABLES_LOADED(...)
 		PowaMisc.Version = self.Version;
 	end
 	
+	self:DisplayText("VARIABLES_LOADED PowaOptionsCpuFrame2_OnShow");
 	PowaOptionsCpuFrame2_OnShow();
 
 	if (TestPA==nil) then
@@ -36,9 +37,8 @@ function PowaAuras:VARIABLES_LOADED(...)
 		getglobal("PowaOptionsList"..i+5):SetText(PowaGlobalListe[i]);
 	end
 	
-	self.maxtextures = 145;	
-	PowaBarAuraTextureSlider:SetMinMaxValues(1, self.maxtextures);
-	PowaBarAuraTextureSliderHigh:SetText(self.maxtextures);
+	PowaBarAuraTextureSlider:SetMinMaxValues(1, PowaMisc.MaxTextures);
+	PowaBarAuraTextureSliderHigh:SetText(PowaMisc.MaxTextures);
 	
 	self:FindAllChildren();
 	self:CreateEffectLists();
