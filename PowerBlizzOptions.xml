@@ -9,9 +9,6 @@
             <OnLoad>
                 PowaOptionsCpuFrame2_OnLoad(self);
             </OnLoad>
-            <OnShow>
-                PowaOptionsCpuFrame2_OnShow();
-            </OnShow>
         </Scripts>
 
 		<Frames>
@@ -42,6 +39,7 @@
 				</Scripts>
 			</CheckButton>
 			
+			<!-- Debug PA Checkbox -->
 			<CheckButton name="PowaDebugButton" inherits="PowaCheckTemplate">
 				<Size>
 					<AbsDimension x="25" y="25"/>
@@ -65,35 +63,92 @@
 						PowaAuras:DebugChecked();
 					</OnClick>
 				</Scripts>
-			</CheckButton>		
+			</CheckButton>
+
+		  <EditBox name="PowaBarTextureCount"
+                   autoFocus="false"
+                   inherits="InputBoxTemplate">
+            <Size>
+              <AbsDimension x="50"
+                            y="16" />
+            </Size>
+            <Anchors>
+              <Anchor point="LEFT"
+                      relativeTo="PowaDebugButtonText"
+                      relativePoint="RIGHT">
+                <Offset>
+                  <AbsDimension x="150"
+                                y="0" />
+                </Offset>
+              </Anchor>
+            </Anchors>
+            <Layers>
+              <Layer level="OVERLAY">
+                <FontString inherits="ChatFontNormal"
+                            bytes="6" />
+              </Layer>
+            </Layers>
+            <Scripts>
+                <OnLoad>PowaBarTextureCountText:SetText(PowaAuras.Text.nomTextureCount); self:SetMaxLetters(3) self.aide = PowaAuras.Text.aideTextureCount;</OnLoad>
+				<OnEnterPressed>self:ClearFocus(); PowaAuras:TextureCountChanged(self);</OnEnterPressed>
+				<OnEditFocusLost>PowaAuras:TextureCountChanged(self)</OnEditFocusLost>
+				<OnEscapePressed>PowaAuras:TextureCountCancel(self); self:ClearFocus()</OnEscapePressed>
+                <OnEnter>GameTooltip:SetOwner(self, "ANCHOR_RIGHT"); GameTooltip:SetText(self.aide, nil, nil, nil, nil, 1);</OnEnter>
+                <OnLeave>GameTooltip:Hide();</OnLeave>			
+            </Scripts>
+               <Layers>
+                  <Layer level="OVERLAY">
+                    <FontString name="$parentText"
+                                inherits="GameFontNormalSmall"
+                                justifyH="RIGHT">
+                      <Size>
+                        <AbsDimension x="220"
+                                      y="20" />
+                      </Size>
+                      <Anchors>
+                        <Anchor point="RIGHT"
+                                relativeTo="$parent"
+                                relativePoint="LEFT">
+                          <Offset>
+                            <AbsDimension x="-10"
+                                          y="0" />
+                          </Offset>
+                        </Anchor>
+                      </Anchors>
+                    </FontString>
+                  </Layer>
+                </Layers>
+			</EditBox>			
 		
-		  <Slider name="PowaOptionsUpdateSlider2"
+			<!-- Frequency auras are checked for updates -->
+			<Slider name="PowaOptionsUpdateSlider2"
 				  inherits="PowaBarSliderTemplate">
-			<Size>
-			  <AbsDimension x="360"
-							y="16" />
-			</Size>
-			<Anchors>
-			  <Anchor point="TOPLEFT"
-					  relativeTo="PowaDebugButton"
-					  relativePoint="BOTTOMLEFT">
-				<Offset>
-				  <AbsDimension x="0"
-								y="-20" />
-				</Offset>
-			  </Anchor>
-			</Anchors>
-			<Scripts>
-			  <OnLoad>
-				self:SetMinMaxValues(0,100); self:SetValue(100-200*PowaMisc.OnUpdateLimit); self:SetValueStep(1); 
-				PowaOptionsUpdateSlider2Text:SetText(PowaAuras.Text.nomUpdateSpeed.." : "..self:GetValue().."%");
-				PowaOptionsUpdateSlider2Low:SetText("0%"); 
-				PowaOptionsUpdateSlider2High:SetText("100%");
-			  </OnLoad>
-			  <OnValueChanged>PowaAuras:PowaOptionsUpdateSliderChanged2(self);</OnValueChanged>
-			</Scripts>
-		  </Slider>
+				<Size>
+				  <AbsDimension x="360"
+								y="16" />
+				</Size>
+				<Anchors>
+				  <Anchor point="TOPLEFT"
+						  relativeTo="PowaDebugButton"
+						  relativePoint="BOTTOMLEFT">
+					<Offset>
+					  <AbsDimension x="0"
+									y="-20" />
+					</Offset>
+				  </Anchor>
+				</Anchors>
+				<Scripts>
+				  <OnLoad>
+					self:SetMinMaxValues(0,100); self:SetValue(100-200*PowaMisc.OnUpdateLimit); self:SetValueStep(1); 
+					PowaOptionsUpdateSlider2Text:SetText(PowaAuras.Text.nomUpdateSpeed.." : "..self:GetValue().."%");
+					PowaOptionsUpdateSlider2Low:SetText("0%"); 
+					PowaOptionsUpdateSlider2High:SetText("100%");
+				  </OnLoad>
+				  <OnValueChanged>PowaAuras:PowaOptionsUpdateSliderChanged2(self);</OnValueChanged>
+				</Scripts>
+			</Slider>
 		  
+			<!-- FPS for animations -->
 		  <Slider name="PowaOptionsAnimationsSlider2"
 				  inherits="PowaBarSliderTemplate">
 			<Size>
@@ -121,6 +176,7 @@
 			</Scripts>
 		  </Slider>
 
+			<!-- Frequency timers are updated -->
 		  <Slider name="PowaOptionsTimerUpdateSlider2"
 				  inherits="PowaBarSliderTemplate">
 			<Size>
@@ -301,7 +357,7 @@
 						PowaAuras:TimerRoundingChecked(self);
 					</OnClick>
 				</Scripts>
-			</CheckButton>		
+			</CheckButton>
 
 			<CheckButton name="PowaAllowInspectionsButton" inherits="PowaCheckTemplate">
 				<Size>
