@@ -2955,7 +2955,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Scripts>
                 <Layers>
                   <Layer level="OVERLAY">
-                    <FontString name="PowaBarCustomSoundText"
+                    <FontString name="$parentText"
                                 inherits="GameFontNormalSmall"
                                 justifyH="LEFT">
                       <Size>
@@ -2964,7 +2964,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                       </Size>
                       <Anchors>
                         <Anchor point="BOTTOMLEFT"
-                                relativeTo="PowaBarCustomSound"
+                                relativeTo="$parent"
                                 relativePoint="TOPLEFT">
                           <Offset>
                             <AbsDimension x="0"
