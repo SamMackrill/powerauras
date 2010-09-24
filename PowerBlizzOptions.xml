@@ -65,61 +65,6 @@
 				</Scripts>
 			</CheckButton>
 
-		  <EditBox name="PowaBarTextureCount"
-                   autoFocus="false"
-                   inherits="InputBoxTemplate">
-            <Size>
-              <AbsDimension x="50"
-                            y="16" />
-            </Size>
-            <Anchors>
-              <Anchor point="LEFT"
-                      relativeTo="PowaDebugButtonText"
-                      relativePoint="RIGHT">
-                <Offset>
-                  <AbsDimension x="150"
-                                y="0" />
-                </Offset>
-              </Anchor>
-            </Anchors>
-            <Layers>
-              <Layer level="OVERLAY">
-                <FontString inherits="ChatFontNormal"
-                            bytes="6" />
-              </Layer>
-            </Layers>
-            <Scripts>
-                <OnLoad>PowaBarTextureCountText:SetText(PowaAuras.Text.nomTextureCount); self:SetMaxLetters(3) self.aide = PowaAuras.Text.aideTextureCount;</OnLoad>
-				<OnEnterPressed>self:ClearFocus(); PowaAuras:TextureCountChanged(self);</OnEnterPressed>
-				<OnEditFocusLost>PowaAuras:TextureCountChanged(self)</OnEditFocusLost>
-				<OnEscapePressed>PowaAuras:TextureCountCancel(self); self:ClearFocus()</OnEscapePressed>
-                <OnEnter>GameTooltip:SetOwner(self, "ANCHOR_RIGHT"); GameTooltip:SetText(self.aide, nil, nil, nil, nil, 1);</OnEnter>
-                <OnLeave>GameTooltip:Hide();</OnLeave>			
-            </Scripts>
-               <Layers>
-                  <Layer level="OVERLAY">
-                    <FontString name="$parentText"
-                                inherits="GameFontNormalSmall"
-                                justifyH="RIGHT">
-                      <Size>
-                        <AbsDimension x="220"
-                                      y="20" />
-                      </Size>
-                      <Anchors>
-                        <Anchor point="RIGHT"
-                                relativeTo="$parent"
-                                relativePoint="LEFT">
-                          <Offset>
-                            <AbsDimension x="-10"
-                                          y="0" />
-                          </Offset>
-                        </Anchor>
-                      </Anchors>
-                    </FontString>
-                  </Layer>
-                </Layers>
-			</EditBox>			
-		
 			<!-- Frequency auras are checked for updates -->
 			<Slider name="PowaOptionsUpdateSlider2"
 				  inherits="PowaBarSliderTemplate">
@@ -203,14 +148,45 @@
 			  <OnValueChanged>PowaAuras:PowaOptionsTimerUpdateSliderChanged2(self);</OnValueChanged>
 			</Scripts>
 		  </Slider>
-		  
+
+			<!-- Number of Aura Textures -->
+		  <Slider name="PowaOptionsTextureCount"
+				  inherits="PowaBarSliderTemplate">
+			<Size>
+			  <AbsDimension x="360"
+							y="16" />
+			</Size>
+			<Anchors>
+			  <Anchor point="TOPLEFT"
+					  relativeTo="PowaOptionsTimerUpdateSlider2"
+					  relativePoint="BOTTOMLEFT">
+				<Offset>
+				  <AbsDimension x="0"
+								y="-20" />
+				</Offset>
+			  </Anchor>
+			</Anchors>
+			<Scripts>
+			  <OnLoad>
+				self:SetMinMaxValues(10,200);
+				self:SetValue(PowaMisc.MaxTextures);
+				self:SetValueStep(1);
+				self.aide = aideTextureCount;
+				PowaOptionsTextureCountText:SetText(PowaAuras.Text.nomTextureCount.." : "..self:GetValue());
+				PowaOptionsTextureCountLow:SetText("10"); 
+				PowaOptionsTextureCountHigh:SetText("200");
+			  </OnLoad>
+			  <OnValueChanged>PowaAuras:PowaOptionsMaxTexturesSliderChanged(self);</OnValueChanged>
+ 			</Scripts>
+		  </Slider>
+	  
 		  <Button name="PowaShowAuraBrowserButton" inherits="OptionsButtonTemplate" text="Show Browser">
 			<Size>
 			  <AbsDimension x="160"
 							y="22" />
 			</Size>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="PowaOptionsTimerUpdateSlider2" relativePoint="BOTTOMLEFT">
+					<Anchor point="TOPLEFT" relativeTo="PowaOptionsTextureCount" relativePoint="BOTTOMLEFT">
 						<Offset>
 							<AbsDimension x="0" y="-20"/>
 						</Offset>
