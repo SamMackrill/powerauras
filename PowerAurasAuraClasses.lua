@@ -779,7 +779,7 @@ function cPowaAura:MatchSpell(spellName, spellTexture, textToFind)
 				spellName, textureMatch = self:GetSpellNameFromMatch(pword);
 			end
 			if (spellName==nil) then
-				PowaAuras:ShowText(PowaAuras:InsertText(PowaAuras.Text.nomUnknownSpellId, pword));
+				PowaAuras:ShowText(PowaAuras:InsertText(PowaAuras.Text.nomUnknownSpellId, pword)); -- OK
 			end
 			--PowaAuras:ShowText("textureMatch=", textureMatch);
 			if (spellName and (not textureMatch or textureMatch==spellTexture)) then
