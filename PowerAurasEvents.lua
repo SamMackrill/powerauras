@@ -19,7 +19,6 @@ function PowaAuras:VARIABLES_LOADED(...)
 		PowaMisc.Version = self.Version;
 	end
 	
-	self:DisplayText("VARIABLES_LOADED PowaOptionsCpuFrame2_OnShow");
 	PowaOptionsCpuFrame2_OnShow();
 
 	if (TestPA==nil) then
