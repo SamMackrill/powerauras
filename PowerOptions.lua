@@ -15,15 +15,13 @@ function PowaAuras:UpdateMainOption()
 	PowaMainTestButton:SetText(self.Text.nomTest);
 	PowaEditButton:SetText(self.Text.nomEdit);
 	PowaOptionsRename:SetText(self.Text.nomRename);
-	--self:ShowText("Setting Enabled button to: ", PowaMisc.Disabled~=true);
 	PowaEnableButton:SetChecked(PowaMisc.Disabled~=true);
 	PowaDebugButton:SetChecked(PowaMisc.debug==true);
 	PowaTimerRoundingButton:SetChecked(PowaMisc.TimerRoundUp==true);
 	PowaAllowInspectionsButton:SetChecked(PowaMisc.AllowInspections==true);
-	self:ShowText("Update Setting PowaBarTextureCount to: ", PowaMisc.MaxTextures);
-	PowaBarTextureCount:SetText(PowaMisc.MaxTextures);
+	PowaOptionsTextureCount:SetValue(PowaMisc.MaxTextures);
 
-	-- affiche les icones
+	-- attach the icons
 	for i = 1, 24 do
 		local k = ((self.MainOptionPage-1)*24) + i;
 		--self:Message("icon ", k);
@@ -2844,14 +2842,11 @@ function PowaOptionsCpuFrame2_OnShow(hide)
 	PowaOptionsUpdateSlider2:SetValue(100-200*PowaMisc.OnUpdateLimit); 
 	PowaOptionsAnimationsSlider2:SetValue(PowaMisc.AnimationFps);
 	PowaOptionsTimerUpdateSlider2:SetValue(100-1000*PowaMisc.AnimationLimit);
-	PowaAuras:ShowText("OnShow Setting PowaBarTextureCount to: ", PowaMisc.MaxTextures);
 	PowaOptionsTextureCount:SetValue(PowaMisc.MaxTextures);
-	--PowaAuras:ShowText("Setting Enabled button to: ", PowaMisc.Disabled~=true);
 	PowaEnableButton:SetChecked(PowaMisc.Disabled ~= true);
 	PowaDebugButton:SetChecked(PowaMisc.debug);
 	PowaTimerRoundingButton:SetChecked(PowaMisc.TimerRoundUp);
 	PowaAllowInspectionsButton:SetChecked(PowaMisc.AllowInspections);
-	PowaBarTextureCount:SetText(PowaMisc.MaxTextures);
 	UIDropDownMenu_SetSelectedValue(PowaDropDownDefaultTimerTexture, PowaMisc.DefaultTimerTexture);
 	UIDropDownMenu_SetSelectedValue(PowaDropDownDefaultStacksTexture, PowaMisc.DefaultStacksTexture);
 end
@@ -2869,7 +2864,7 @@ function PowaAuras:PowaOptionsTimerUpdateSliderChanged2(control)
 end
 
 function PowaAuras:PowaOptionsMaxTexturesSliderChanged(control)
-	PowaOptionsTimerUpdateSlider2Text:SetText(PowaAuras.Text.nomTextureCount.." : "..self:GetValue());
+	PowaOptionsTextureCountText:SetText(self.Text.nomTextureCount.." : "..control:GetValue());
 end
 
 function PowaAuras.DropDownDefaultTimerMenu_Initialize(owner)
