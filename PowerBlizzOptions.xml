@@ -151,9 +151,9 @@
 
 			<!-- Number of Aura Textures -->
 		  <Slider name="PowaOptionsTextureCount"
-				  inherits="PowaBarSliderTemplate">
+				  inherits="PowaBarSliderTemplateWithButtons">
 			<Size>
-			  <AbsDimension x="360"
+			  <AbsDimension x="335"
 							y="16" />
 			</Size>
 			<Anchors>
@@ -161,7 +161,7 @@
 					  relativeTo="PowaOptionsTimerUpdateSlider2"
 					  relativePoint="BOTTOMLEFT">
 				<Offset>
-				  <AbsDimension x="0"
+				  <AbsDimension x="25"
 								y="-20" />
 				</Offset>
 			  </Anchor>
