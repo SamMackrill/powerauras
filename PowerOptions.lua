@@ -407,6 +407,7 @@ function PowaAuras:OptionNewEffect()
 	self.CurrentAuraPage = self.MainOptionPage;
 	local aura = self:AuraFactory(self.BuffTypes.Buff, i, {buffname = "???", off = false});
 	--self:Message("Timer.enabled=", aura.Timer.enabled)
+	aura:Init();
 	self.Auras[i] = aura;
 	-- effet global ?
 	if (i > 120) then
@@ -596,6 +597,8 @@ function PowaAuras:CreateNewAuraFromImport(auraId, importString, updateLink)
 		return;
 	end
 	self.Auras[auraId] = self:ImportAura(importString, auraId, updateLink);
+	self.Auras[auraId]:Init();
+
 	if (auraId > 120) then
 		PowaGlobalSet[auraId] = self.Auras[auraId];
 	end				
@@ -798,6 +801,7 @@ end
 
 function PowaAuras:DoCopyEffect(idFrom, idTo, isMove)
 	self.Auras[idTo] = self:AuraFactory(self.Auras[idFrom].bufftype, idTo, self.Auras[idFrom]);
+	self.Auras[idTo]:Init();
 	
 	if (self.Auras[idFrom].Timer) then
 		self.Auras[idTo].Timer = cPowaTimer(self.Auras[idTo], self.Auras[idFrom].Timer);
@@ -1305,9 +1309,10 @@ function PowaAuras:SetThresholdSlider(aura)
 	if (not aura.MaxRange) then return; end
 	--PowaAuras:ShowText("======SetThresholdSlider=========");
 	--PowaAuras:ShowText("Threshold=", aura.threshold);
-	--PowaAuras:ShowText("MaxRange=", aura.MaxRange..aura.RangeType);	
+	--PowaAuras:ShowText("MaxRange=", aura.MaxRange..aura.RangeType);
+	local curThreshold = aura.threshold;
 	PowaBarThresholdSlider:SetMinMaxValues(0,aura.MaxRange);
-	PowaBarThresholdSlider:SetValue(aura.threshold);
+	PowaBarThresholdSlider:SetValue(curThreshold);
 	PowaBarThresholdSliderLow:SetText("0"..aura.RangeType); 
 	PowaBarThresholdSliderHigh:SetText(aura.MaxRange..aura.RangeType);
 end
@@ -1469,7 +1474,7 @@ function PowaAuras:BarThresholdSliderChanged()
 	--PowaAuras:ShowText("sliderValue=", sliderValue);
 	local aura = self.Auras[self.CurrentAuraId];
 	--PowaAuras:ShowText("Old Threshold=", aura.threshold);
-	--PowaAuras:ShowText("MaxRange=", aura.MaxRange);
+	--PowaAuras:ShowText("MaxRange=", aura.MaxRange..aura.RangeType);	
 	PowaBarThresholdSliderText:SetText(self.Text.nomThreshold.." : "..sliderValue..aura.RangeType);
 	aura.threshold = sliderValue;
 	--PowaAuras:ShowText("New Threshold=", aura.threshold);
@@ -2221,8 +2226,7 @@ function PowaAuras.DropDownMenu_OnClickPowerType(self)
 		--PowaAuras:ShowText("PowerType changed to ", self.value);
 		aura.PowerType = self.value;
 		aura.icon = "";
-		aura.MaxRange = PowaAuras.PowerRanges[aura.PowerType];
-		aura.RangeType = PowaAuras.RangeType[aura.PowerType];
+		aura:Init();
 		--PowaAuras:ShowText("MaxRange=", aura.MaxRange);
 		--PowaAuras:ShowText("RangeType=", aura.RangeType);
 	end
@@ -2825,7 +2829,6 @@ function PowaAuras.OptionsOK()
 				PowaAuras.StacksFrames[auraId].texture:SetTexture(aura.Stacks:GetTexture());
 			end
 		end
-		PowaAuras.StacksFrames = {};
 	end
 	PowaAuras.ModTest = false;
 	PowaAuras.DoCheck.All = true;
