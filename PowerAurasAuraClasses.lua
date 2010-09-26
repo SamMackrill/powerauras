@@ -196,9 +196,13 @@ function cPowaAura:HideShowTabs()
 	end
 end
 
+function cPowaAura:DisplayType()
+	return self.OptionText.typeText;
+end
+
 cPowaAura.TooltipOptions = {r=1.0, g=1.0, b=1.0};
 function cPowaAura:AddExtraTooltipInfo(tooltip)
-	tooltip:SetText("|cffFFFFFF["..self.id.."] |r"..self.OptionText.typeText, self.TooltipOptions.r, self.TooltipOptions.g, self.TooltipOptions.b, 1);
+	tooltip:SetText("|cffFFFFFF["..self.id.."] |r"..self:DisplayType(), self.TooltipOptions.r, self.TooltipOptions.g, self.TooltipOptions.b, 1);
 	if (self.TooltipOptions.showBuffName and self.buffname ~= "???") then
 		tooltip:AddLine(self.buffname, nil, nil, nil, nil, 1);
 	end
@@ -2302,11 +2306,13 @@ function cPowaAuraStats:AddEffectAndEvents()
 		end
 	end
 	
-	if (self.PowerType) then
-		self.MaxRange = PowaAuras.PowerRanges[self.PowerType];
-		self.RangeType = PowaAuras.RangeType[self.PowerType];
-	end
 
+end
+
+function cPowaAuraStats:Init()
+	if (not self.PowerType) then return; end
+	self.MaxRange = PowaAuras.PowerRanges[self.PowerType];
+	self.RangeType = PowaAuras.RangeType[self.PowerType];
 end
 
 function cPowaAuraStats:CheckUnit(unit)
@@ -2402,6 +2408,13 @@ cPowaPowerType.ShowOptions={
 	["PowaThresholdInvertButton"]=1,
 	["PowaDropDownPowerType"]=1,
 };
+
+function cPowaPowerType:DisplayType()
+	if (self.PowerType==-1) then
+		return self.OptionText.typeText;
+	end
+	return PowaAuras.Text.PowerType[self.PowerType];
+end
 
 function cPowaPowerType:UnitValue(unit)
 	PowaAuras:Debug("UnitValue for ", unit, " type=",self.PowerType);

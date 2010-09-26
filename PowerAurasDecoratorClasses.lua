@@ -122,6 +122,7 @@ function cPowaStacks:SetStackCount(count)
 		self.Showing = false;
 		return;
 	end
+	if (count>99) then count = 99; end;
 	if (self.lastShownValue==count and self.Showing) then
 		--PowaAuras:Message("Stacks disabled");
 		return;
@@ -161,6 +162,7 @@ cPowaTimer = PowaClass(function(timer, aura, base)
 	timer.HideLeadingZeros = false;
 	timer.UpdatePing = false;
 	timer.ShowActivation = false;
+	timer.Seconds99 = false;
 	timer.InvertAuraBelow = 0;
 	timer.Texture = "Default";
 	timer.Relative = "NONE";
@@ -218,7 +220,7 @@ function cPowaTimer:GetTexture()
 	--PowaAuras:ShowText("Timer texture: ", texture);
 	return texture;
 end
--->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TIMERS
+
 function cPowaTimer:Update(elapsed)
 	--PowaAuras:UnitTestInfo("Timer.Update ",self.id);
 	local aura = PowaAuras.Auras[self.id];
@@ -286,25 +288,23 @@ function cPowaTimer:Update(elapsed)
 
 		PowaAuras:CreateTimerFrameIfMissing(self.id, self.UpdatePing);
 	
+		local split = 60;
+		if (self.Seconds99) then
+			split = 100;
+		end
 		if (PowaAuras.DebugCycle) then
 			PowaAuras:Message("cents=",self.cents); --OK
 		end
-		local incLarge = 0;
 		if (self.cents) then
 			local small;
-			if (newvalue > 60.00) then 
-				small = math.fmod(newvalue,60); 
+			if (newvalue > split) then 
+				small = math.fmod(newvalue,60);  -- Seconds (large = minutes)
 			else
-				small = (newvalue - math.floor(newvalue)) * 100;
+				small = (newvalue - math.floor(newvalue)) * 100; -- hundredths of a second (large = seconds)
 			end
 			if (PowaMisc.TimerRoundUp) then
 				small = math.ceil(small);
 			end
-			
-			--if (small==60) then
-			--	incLarge=1;
-			--	small = 0;
-			--end
 
 			if (PowaAuras.DebugCycle) then
 				PowaAuras:Message("small=",small); --OK
@@ -316,7 +316,7 @@ function cPowaTimer:Update(elapsed)
 		end	
 
 		local large = newvalue;
-		if (newvalue > 60.00) then 
+		if (newvalue > split) then 
 			large = newvalue / 60;		
 		end
 		large = math.min (99.00, large);
@@ -325,7 +325,6 @@ function cPowaTimer:Update(elapsed)
 		else
 			large = math.floor(large);		
 		end
-		large = large + incLarge;
 
 		if (PowaAuras.DebugCycle) then
 			PowaAuras:Message("large=",large); --OK

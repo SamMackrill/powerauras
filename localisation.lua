@@ -318,6 +318,11 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideDispellable = "Check to show only buffs that are dispellable",
 	nomCanInterrupt = "Can be Interrupted",
 	aideCanInterrupt = "Check to show only for spells that can be Interrupted",
+	nomIgnoreUseable = "Cooldown Only",
+	aideIgnoreUseable = "Ignores if spell is usable (just uses cooldown)",
+	nomIgnoreItemUseable = "Equipped Only",
+	aideIgnoreItemUseable = "Ignores if item is usable (just if equipped)",
+	
 	nomOnMe = "Cast On Me",
 	aideOnMe = "Only show if being Cast On Me",
 
@@ -380,6 +385,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomHideLeadingZeros = "Hide Leading Zeros",
 	nomTransparent = "Use transparent textures",
 	nomActivationTime = "Show Time since activation",
+	nomTimer99 = "When below 100 show only seconds",
 	nomUseOwnColor = "Use own color:",
 	nomUpdatePing = "Animate on refresh",
 	nomRelative = "Relative to Main Aura",
@@ -513,12 +519,6 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	
 	aideAllowInspections = "Allow Power Auras to Inspect players to determine roles, turning this off will sacrifice accuracy for speed",
 	nomAllowInspections = "Allow Inspections",
-
-	nomIgnoreUseable = "Cooldown Only",
-	aideIgnoreUseable = "Ignores if spell is usable (just uses cooldown)",
-
-	nomIgnoreItemUseable = "Equipped Only",
-	aideIgnoreItemUseable = "Ignores if item is usable (just if equipped)",
 	
 	nomCarried = "Only if in bags",
 	aideCarried = "Ignores if item is usable (just if in a bag)",
@@ -543,7 +543,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 
 	nomReasonBuffPresentTimerInvert = "Buff present, timer invert",
 	nomReasonBuffPresentNotMine     = "Not cast by me",
-	nomReasonBuffFound               = "Buff present",
+	nomReasonBuffFound              = "Buff present",
 	nomReasonStacksMismatch         = "Stacks = $1 expecting $2", --$1=Actual Stack count, $2=Expected Stack logic match (e.g. ">=0")
 
 	nomReasonAuraMissing = "Aura missing",
