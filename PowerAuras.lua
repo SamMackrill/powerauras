@@ -127,9 +127,8 @@ function PowaAuras:LoadAuras()
 		if (k>0 and k <121 and not self.Auras[k]) then
 			--self:UnitTestDebug("is_a=",v.is_a);
 			if (v.is_a == nil or not v:is_a(cPowaAura)) then
-				--self:ShowText("load aura ", k, " isResting=", v.isResting);
+				--self:ShowText("load aura ", k, " bufftype=",v.bufftype);
 				self.Auras[k] = self:AuraFactory(v.bufftype, k, v);
-				--self:ShowText("loaded isResting=", self.Auras[k].isResting);
 				--self:UnitTestDebug("Out=",self.Auras[k].buffname);
 			end
 		end

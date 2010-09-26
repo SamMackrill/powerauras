@@ -999,8 +999,10 @@ end
 function PowaAuras:ShowOptions(optionsToShow)
 	for k,v in pairs(self.OptionHideables) do
 		if (optionsToShow and optionsToShow[v]) then
+			--self:ShowText(" Show:", v);
 			getglobal(v):Show();
 		else
+			--self:ShowText(" Hide:", v);
 			getglobal(v):Hide();
 		end
 	end
@@ -1140,9 +1142,10 @@ function PowaAuras:InitPage()
 
 	
 	PowaTimerDurationSlider:SetValue(aura.timerduration);
-	PowaBarThresholdSlider:SetValue(aura.threshold);
+	
+	self:SetThresholdSlider(aura);
 
-	-- dual specs
+	-- Dual specs
 	self:EnableCheckBox("PowaTalentGroup1Button");
 	self:EnableCheckBox("PowaTalentGroup2Button");
 	PowaTalentGroup1Button:SetChecked(aura.spec1);
@@ -1297,6 +1300,18 @@ function PowaAuras:InitPage()
 
 	PowaHeader:SetText(self.Text.nomEffectEditor);
 end
+
+function PowaAuras:SetThresholdSlider(aura)
+	if (not aura.MaxRange) then return; end
+	--PowaAuras:ShowText("======SetThresholdSlider=========");
+	--PowaAuras:ShowText("Threshold=", aura.threshold);
+	--PowaAuras:ShowText("MaxRange=", aura.MaxRange..aura.RangeType);	
+	PowaBarThresholdSlider:SetMinMaxValues(0,aura.MaxRange);
+	PowaBarThresholdSlider:SetValue(aura.threshold);
+	PowaBarThresholdSliderLow:SetText("0"..aura.RangeType); 
+	PowaBarThresholdSliderHigh:SetText(aura.MaxRange..aura.RangeType);
+end
+
 --================
 -- Sliders Changed
 --================
@@ -1417,44 +1432,47 @@ end
 function PowaAuras:BarAuraSymSliderChanged()
 	if (self.Initialising) then return; end
 
-	local SliderValue = PowaBarAuraSymSlider:GetValue();
+	local sliderValue = PowaBarAuraSymSlider:GetValue();
 
-	if (SliderValue == 0) then
+	if (sliderValue == 0) then
 		PowaBarAuraSymSliderText:SetText(self.Text.nomSymetrie.." : "..self.Text.aucune);
 		AuraTexture:SetTexCoord(0, 1, 0, 1);
-	elseif (SliderValue == 1) then
+	elseif (sliderValue == 1) then
 		PowaBarAuraSymSliderText:SetText(self.Text.nomSymetrie.." : X");
 		AuraTexture:SetTexCoord(1, 0, 0, 1);
-	elseif (SliderValue == 2) then
+	elseif (sliderValue == 2) then
 		PowaBarAuraSymSliderText:SetText(self.Text.nomSymetrie.." : Y");
 		AuraTexture:SetTexCoord(0, 1, 1, 0);
-	elseif (SliderValue == 3) then
+	elseif (sliderValue == 3) then
 		PowaBarAuraSymSliderText:SetText(self.Text.nomSymetrie.." : XY");
 		AuraTexture:SetTexCoord(1, 0, 1, 0);
 	end
 	
-	self.Auras[self.CurrentAuraId].symetrie = SliderValue;
+	self.Auras[self.CurrentAuraId].symetrie = sliderValue;
 	self:RedisplayAura(self.CurrentAuraId);
 end
 
 function PowaAuras:BarAuraDeformSliderChanged()
 	if (self.Initialising) then return; end
-	local SliderValue = PowaBarAuraDeformSlider:GetValue();
+	local sliderValue = PowaBarAuraDeformSlider:GetValue();
 
-	PowaBarAuraDeformSliderText:SetText(self.Text.nomDeform.." : "..format("%.2f", SliderValue));
+	PowaBarAuraDeformSliderText:SetText(self.Text.nomDeform.." : "..format("%.2f", sliderValue));
 
-	self.Auras[self.CurrentAuraId].torsion = SliderValue;
+	self.Auras[self.CurrentAuraId].torsion = sliderValue;
 	self:RedisplayAura(self.CurrentAuraId);
 end
 
 function PowaAuras:BarThresholdSliderChanged()
 	if (self.Initialising) then return; end
-	local SliderValue = PowaBarThresholdSlider:GetValue();
-	local auraId = self.CurrentAuraId;
-
-	PowaBarThresholdSliderText:SetText(self.Text.nomThreshold.." : "..SliderValue.."%");
-
-	self.Auras[auraId].threshold = SliderValue;
+	--PowaAuras:ShowText("======BarThresholdSliderChanged======");
+	local sliderValue = PowaBarThresholdSlider:GetValue();
+	--PowaAuras:ShowText("sliderValue=", sliderValue);
+	local aura = self.Auras[self.CurrentAuraId];
+	--PowaAuras:ShowText("Old Threshold=", aura.threshold);
+	--PowaAuras:ShowText("MaxRange=", aura.MaxRange);
+	PowaBarThresholdSliderText:SetText(self.Text.nomThreshold.." : "..sliderValue..aura.RangeType);
+	aura.threshold = sliderValue;
+	--PowaAuras:ShowText("New Threshold=", aura.threshold);
 end
 
 --=============
@@ -2058,6 +2076,7 @@ function PowaAuras.DropDownMenu_OnClickBuffType(self)
 	UIDropDownMenu_SetSelectedValue(self.owner, self.value);
 
 	aura = PowaAuras:AuraFactory(self.value, PowaAuras.CurrentAuraId, PowaAuras.Auras[PowaAuras.CurrentAuraId]);
+		
 	aura.icon= "";
 	PowaAuras.Auras[PowaAuras.CurrentAuraId] = aura
 	if (PowaAuras.CurrentAuraId > 120) then
@@ -2196,11 +2215,16 @@ end
 
 function PowaAuras.DropDownMenu_OnClickPowerType(self)
 	UIDropDownMenu_SetSelectedValue(self.owner, self.value);
-	local auraId = PowaAuras.CurrentAuraId;
+	local aura = PowaAuras.Auras[PowaAuras.CurrentAuraId];
 
-	if (PowaAuras.Auras[auraId].PowerType ~= self.value) then
-		PowaAuras.Auras[auraId].PowerType = self.value;
-		PowaAuras.Auras[auraId].icon = "";
+	if (aura.PowerType ~= self.value) then
+		--PowaAuras:ShowText("PowerType changed to ", self.value);
+		aura.PowerType = self.value;
+		aura.icon = "";
+		aura.MaxRange = PowaAuras.PowerRanges[aura.PowerType];
+		aura.RangeType = PowaAuras.RangeType[aura.PowerType];
+		--PowaAuras:ShowText("MaxRange=", aura.MaxRange);
+		--PowaAuras:ShowText("RangeType=", aura.RangeType);
 	end
 	PowaAuras:InitPage();
 end
