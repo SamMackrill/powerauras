@@ -3515,7 +3515,29 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   <OnClick>PowaAuras:TimerChecked(self, "ShowActivation");</OnClick>
                 </Scripts>
               </CheckButton>			  
-
+			  
+              <CheckButton name="PowaBuffTimer99"
+                           inherits="PowaCheckTemplate">
+                <Size>
+                  <AbsDimension x="25"
+                                y="25" />
+                </Size>
+                <Anchors>
+                 <Anchor point="TOP"
+                          relativeTo="PowaBuffTimerActivationTime"
+                          relativePoint="BOTTOM">
+                    <Offset>
+                      <AbsDimension x="0"
+                                    y="4" />
+                    </Offset>
+                  </Anchor>
+                </Anchors>
+                <Scripts>
+                  <OnLoad>getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomTimer99);</OnLoad>
+                  <OnClick>PowaAuras:TimerChecked(self, "Seconds99");</OnClick>
+                </Scripts>
+              </CheckButton>
+		
 			  <CheckButton name="PowaBuffTimerUseOwnColorButton"
                            inherits="PowaCheckTemplate">
                 <Size>
