@@ -1550,9 +1550,9 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               </Frame>
 			  
               <Slider name="PowaBarThresholdSlider"
-                      inherits="PowaBarSliderTemplate">
+                      inherits="PowaBarSliderTemplateWithButtons">
                 <Size>
-                  <AbsDimension x="245"
+                  <AbsDimension x="220"
                                 y="16" />
                 </Size>
                 <Anchors>
@@ -1560,7 +1560,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                           relativeTo="PowaBarBuffName"
                           relativePoint="BOTTOMLEFT">
                     <Offset>
-                      <AbsDimension x="0"
+                      <AbsDimension x="25"
                                     y="18" />
                     </Offset>
                   </Anchor>
@@ -1568,7 +1568,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 <Scripts>
                   <OnLoad>
                   	self:SetMinMaxValues(0,100); self:SetValue(50); self:SetValueStep(1); 
-                  	getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomThreshold.." : 50");
+                  	getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomThreshold.." : 50%");
                   	getglobal(self:GetName().."Low"):SetText("0%"); 
                   	getglobal(self:GetName().."High"):SetText("100%");
                   </OnLoad>
@@ -1577,18 +1577,18 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               </Slider>
 			  
               <CheckButton name="PowaThresholdInvertButton"
-              						 inherits="PowaCheckTemplate">
+						   inherits="PowaCheckTemplate">
               	<Size>
               		<AbsDimension x="25"
-              									y="25" />
+              					  y="25" />
               	</Size>
               	<Anchors>
               		<Anchor point="TOPLEFT"
-              						relativeTo="PowaBarThresholdSlider"
-              						relativePoint="TOPRIGHT">
+              				relativeTo="PowaBarThresholdSlider"
+              				relativePoint="TOPRIGHT">
               			<Offset>
               				<AbsDimension x="2"
-              											y="3" />
+              							  y="3" />
               			</Offset>
               		</Anchor>
               	</Anchors>

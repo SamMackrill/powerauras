@@ -651,7 +651,36 @@ else
 	SPELL_POWER_SOUL_SHARDS = 7;
 	SPELL_POWER_ECLIPSE = 8;
 	SPELL_POWER_HOLY_POWER = 9;
+
 end
+
+PowaAuras.PowerRanges = {
+	[-1] = 100,
+	[SPELL_POWER_MANA] = 100,
+	[SPELL_POWER_RAGE] = 100,
+	[SPELL_POWER_FOCUS] = 100,
+	[SPELL_POWER_ENERGY] = 100,
+	[SPELL_POWER_HAPPINESS] = 100,
+	[SPELL_POWER_RUNES] = 100,
+	[SPELL_POWER_RUNIC_POWER] = 100,
+	[SPELL_POWER_SOUL_SHARDS] = 100,
+	[SPELL_POWER_ECLIPSE] = 100,
+	[SPELL_POWER_HOLY_POWER] = 3,
+};
+
+PowaAuras.RangeType = {
+	[-1] = "%",
+	[SPELL_POWER_MANA] = "%",
+	[SPELL_POWER_RAGE] = "%",
+	[SPELL_POWER_FOCUS] = "%",
+	[SPELL_POWER_ENERGY] = "%",
+	[SPELL_POWER_HAPPINESS] = "%",
+	[SPELL_POWER_RUNES] = "%",
+	[SPELL_POWER_RUNIC_POWER] = "%",
+	[SPELL_POWER_SOUL_SHARDS] = "%",
+	[SPELL_POWER_ECLIPSE] = "%",
+	[SPELL_POWER_HOLY_POWER] = "",
+};
 
 PowaAuras.TalentChangeSpells = {
 	[PowaAuras.Spells.ACTIVATE_FIRST_TALENT]  = true,
@@ -849,7 +878,7 @@ function PowaAuras:DisplayTable(t, indent)
 	if (indent == nil) then
 		indent = "";
 	else
-		indent = indent + "  ";
+		indent = indent .. "  ";
 	end
 	
 	for i,v in pairs(t) do
@@ -977,7 +1006,6 @@ function PowaAuras:MatchString(textToSearch, textToFind, ingoreCase)
 end
 	
 -- PowaAura Classes
--- class.lua
 -- Compatible with Lua 5.1 (not 5.0).
 function PowaClass(base,ctor)
 	local c = {}     -- a new class instance
