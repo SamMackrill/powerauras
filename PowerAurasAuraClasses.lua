@@ -2351,7 +2351,7 @@ function cPowaAuraStats:CheckUnit(unit)
 	if self.thresholdinvert then 
 		thresholdvalidate = (curValue >= self.threshold);
 	else
-		thresholdvalidate = (curValue < self.threshold);
+		thresholdvalidate = (curValue <= self.threshold);
 	end
 
 	
