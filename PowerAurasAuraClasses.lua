@@ -2454,6 +2454,7 @@ end
 function cPowaPowerType:IsCorrectPowerType(unit)
 	if (self.PowerType==SPELL_POWER_HOLY_POWER  and PowaAuras.playerclass == "PALADIN") then return true; end
 	if (self.PowerType==SPELL_POWER_RUNIC_POWER and PowaAuras.playerclass == "DEATHKNIGHT") then return true; end
+	if (self.PowerType==SPELL_POWER_SOUL_SHARDS and PowaAuras.playerclass == "WARLOCK") then return true; end
 	local unitPowerType = UnitPowerType(unit);
 	if (self.Debug) then
 		PowaAuras:ShowText("cPowaPowerType IsCorrectPowerType powerType=", unitPowerType, " expected=", self.PowerType);
