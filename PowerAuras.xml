@@ -21,7 +21,7 @@
 		</OnUpdate>
     </Scripts>
   </Frame>
-  
+
   <!-- Tootips -->
   <GameTooltip name="PowaAuras_Tooltip"
                frameStrata="TOOLTIP"
