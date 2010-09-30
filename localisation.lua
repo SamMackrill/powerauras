@@ -379,7 +379,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 
 	nomOldAnimations = "Old Animations";
 	aideOldAnimations = "Use Old Animations";
-	
+
 	nomCentiemes = "Show hundredth",
 	nomDual = "Show two timers",
 	nomHideLeadingZeros = "Hide Leading Zeros",

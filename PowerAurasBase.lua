@@ -870,6 +870,29 @@ function PowaAuras:DisplayText(...)
 	self:Message(...);
 end
 
+function PowaAuras:DisplayTable(t, indent)
+	if (not t or type(t)~="table") then
+		return "No table";
+	end
+	
+	if (indent == nil) then
+		indent = "";
+	else
+		indent = indent .. "  ";
+	end
+	
+	for i,v in pairs(t) do
+		if (type(v)~="function") then
+			if (type(v)~="table") then
+				self:Message(indent..tostring(i).." = "..tostring(v))
+			else
+				self:Message(indent..tostring(i))
+				self:DisplayTable(v, indent);
+			end
+		end
+	end
+
+end
 -->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 -- This function will print a Message to the GUI screen (not the chat window) then fade.
 -->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -906,6 +929,7 @@ function PowaAuras:TableSize(t)
 	end
 	return size;
 end
+
 function PowaAuras:CopyTable(t, lookup_table, original)
 	if (type(t)~="table") then
 		return t;
