@@ -63,7 +63,7 @@ cPowaAura.ExportSettings = {
 	off = false,
 	
 	bufftype = PowaAuras.BuffTypes.Buff,
-	buffname = "",
+	buffname = "???",
 	
 	texmode = 1,
 	wowtex = false,
@@ -869,7 +869,7 @@ function cPowaAura:CreateAuraString(keepLink)
 		if (k == "multiids" and not keepLink) then
 			v = "";
 		end
-		if (k == "icon" and string.find(v, PowaAuras.IconSource, 1, true)==1) then
+		if (k == "icon" and string.find(string.lower(v), string.lower(PowaAuras.IconSource), 1, true)==1) then
 			v = string.sub(v, string.len(PowaAuras.IconSource)+1);
 		end
 		tempstr = tempstr..PowaAuras:GetSettingForExport("", k, v, default);
