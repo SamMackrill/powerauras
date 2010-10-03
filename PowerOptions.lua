@@ -40,7 +40,6 @@ function PowaAuras:UpdateMainOption()
 			else
 				getglobal("PowaIcone"..i):SetNormalTexture(aura.icon);	
 			end	
-			-- off ou ON
 			if (aura.buffname ~= "" and aura.buffname ~= " " and aura.off) then
 				getglobal("PowaIcone"..i):SetText("OFF");
 			else
@@ -405,7 +404,7 @@ function PowaAuras:OptionNewEffect()
 	--self:Message("New Effect slot=", i)
 	self.CurrentAuraId = i;
 	self.CurrentAuraPage = self.MainOptionPage;
-	local aura = self:AuraFactory(self.BuffTypes.Buff, i, {buffname = "???", off = false});
+	local aura = self:AuraFactory(self.BuffTypes.Buff, i);
 	--self:Message("Timer.enabled=", aura.Timer.enabled)
 	aura:Init();
 	self.Auras[i] = aura;
@@ -437,9 +436,7 @@ function PowaAuras:OptionNewEffect()
 
 end
 
-
 function PowaAuras:ExtractImportValue(valueType, value)
-	self:Message("ExtractImportValue valueType=",valueType," value=",value);
 	if (string.sub(valueType,1,2) == "st") then
 		return value;
 	elseif string.sub(valueType,1,2) == "bo" then
@@ -471,7 +468,8 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 
 	local aura = cPowaAura(auraId);
 
-	local temptbl = {strsplit(";", string.gsub(aurastring,";%s*",";"))};
+	local trimmed = string.gsub(aurastring,";%s*",";");
+	local settings = {strsplit(";", trimmed)};
 	local importAuraSettings = {};
 	local importTimerSettings = {};
 	local importStacksSettings = {};
@@ -481,7 +479,7 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 	local hasTypePrefix = string.find(aurastring,"Version:st", 1, true)
 
 	if (hasTypePrefix) then
-		for _, val in ipairs(temptbl) do
+		for _, val in ipairs(settings) do
 			local key, var = strsplit(":", val);
 			--self:Message("key ",key,"=", var);
 			local varType = string.sub(var,1,2);
@@ -504,23 +502,22 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 			end
 		end
 	else
-		for _, val in ipairs(temptbl) do
+		for _, val in ipairs(settings) do
 			local key, var = strsplit(":", val);
 			oldSpellAlertLogic = false;
-			self:Message("key ",key,"=", var);
 			if (key=="Version") then
 			elseif (string.sub(key,1,6) == "timer.") then
 				key = string.sub(key,7);
-				self:Message("val=", val);
-				self:Message(key,"=", var);
-				if (cPowaTimer.ExportSettings[key]) then
-					self:Message("cPowaTimer.ExportSettings[key]=",cPowaTimer.ExportSettings[key]," type=", type(cPowaTimer.ExportSettings[key]));
+				--self:Message("val=", val);
+				--self:Message(key,"=", var);
+				if (cPowaTimer.ExportSettings[key]~=nil) then
+					--self:Message("cPowaTimer.ExportSettings[key]=",cPowaTimer.ExportSettings[key]," type=", type(cPowaTimer.ExportSettings[key]));
 					importTimerSettings[key] = self:ExtractImportValue(type(cPowaTimer.ExportSettings[key]), var);
 					hasTimerSettings = true;
 				end
 			elseif (string.sub(key,1,7) == "stacks.") then
 				key = string.sub(key,8);
-				if (cPowaStacks.ExportSettings[key]) then
+				if (cPowaStacks.ExportSettings[key]~=nil) then
 					importStacksSettings[key] = self:ExtractImportValue(type(cPowaStacks.ExportSettings[key]), var);
 					hasStacksSettings = true;
 				end
@@ -533,54 +530,56 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 	end
 	
 	for k, v in pairs(aura) do
-		local varType = type(v);
-		if (k=="combat") then
-			if (importAuraSettings[k]==0) then
-				aura[k] = 0;
-			elseif (importAuraSettings[k]==1) then
-				aura[k] = true;
-			elseif (importAuraSettings[k]==2) then
-				aura[k] = false;
-			else
-				aura[k] = importAuraSettings[k];
-			end
-		elseif (k=="isResting") then
-			if (importAuraSettings.ignoreResting==true) then
-				aura[k] = true;
-			elseif (importAuraSettings.ignoreResting==true) then
-				aura[k] = 0;
-			else
-				aura[k] = importAuraSettings[k];
-			end
-		elseif (k=="inRaid") then
-			if (importAuraSettings.isinraid==true) then
-				aura[k] = true;
-			elseif (importAuraSettings.isinraid==false) then
-				aura[k] = 0;
-			else
-				aura[k] = importAuraSettings[k];
-			end	
-		elseif (k=="multiids" and offset) then
-			local newMultiids = "";
-			local sep = "";
-			for multiId in string.gmatch(importAuraSettings[k], "[^/]+") do
-				local multiIdNumber = tonumber(multiId);
-				--self:Message("multiId=", multiId, " multiIdNumber=", multiIdNumber, " offset=", offset);
-				if (multiIdNumber) then
-					newMultiids = newMultiids .. sep .. tostring(offset + multiIdNumber);
-					--self:Message("newMultiids=", newMultiids);
-					sep = "/";
+		if (importAuraSettings[k]~=nil) then
+			local varType = type(v);
+			if (k=="combat") then
+				if (importAuraSettings[k]==0) then
+					aura[k] = 0;
+				elseif (importAuraSettings[k]==1) then
+					aura[k] = true;
+				elseif (importAuraSettings[k]==2) then
+					aura[k] = false;
+				else
+					aura[k] = importAuraSettings[k];
 				end
-			end
-			aura[k] = newMultiids;
-		elseif (k=="icon" and importAuraSettings[k]) then
-			if (string.find(importAuraSettings[k], PowaAuras.IconSource, 1, true)==1) then
+			elseif (k=="isResting") then
+				if (importAuraSettings.ignoreResting==true) then
+					aura[k] = true;
+				elseif (importAuraSettings.ignoreResting==true) then
+					aura[k] = 0;
+				else
+					aura[k] = importAuraSettings[k];
+				end
+			elseif (k=="inRaid") then
+				if (importAuraSettings.isinraid==true) then
+					aura[k] = true;
+				elseif (importAuraSettings.isinraid==false) then
+					aura[k] = 0;
+				else
+					aura[k] = importAuraSettings[k];
+				end	
+			elseif (k=="multiids" and offset) then
+				local newMultiids = "";
+				local sep = "";
+				for multiId in string.gmatch(importAuraSettings[k], "[^/]+") do
+					local multiIdNumber = tonumber(multiId);
+					--self:Message("multiId=", multiId, " multiIdNumber=", multiIdNumber, " offset=", offset);
+					if (multiIdNumber) then
+						newMultiids = newMultiids .. sep .. tostring(offset + multiIdNumber);
+						--self:Message("newMultiids=", newMultiids);
+						sep = "/";
+					end
+				end
+				aura[k] = newMultiids;
+			elseif (k=="icon") then
+				if (string.find(string.lower(importAuraSettings[k]), string.lower(PowaAuras.IconSource), 1, true)==1) then
+					aura[k] = importAuraSettings[k];
+				else
+					aura[k] = PowaAuras.IconSource..importAuraSettings[k];
+				end
+			elseif (varType == "string" or varType == "boolean" or varType == "number" and k~="id") then
 				aura[k] = importAuraSettings[k];
-			else
-				aura[k] = PowaAuras.IconSource..importAuraSettings[k];
 			end
-		elseif (varType == "string" or varType == "boolean" or varType == "number" and k~="id" and importAuraSettings[k]~=nil) then
-			aura[k] = importAuraSettings[k];
 		end
 	end	
 	
