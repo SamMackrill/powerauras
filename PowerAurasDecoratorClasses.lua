@@ -35,7 +35,7 @@ cPowaStacks.ExportSettings = {
 function cPowaStacks:CreateAuraString()
 	local tempstr = "";
 	for k, default in pairs (self.ExportSettings) do
-		tempstr = tempstr..PowaAuras:GetSettingForExport(k, self[k], default);
+		tempstr = tempstr..PowaAuras:GetSettingForExport("stacks.", k, self[k], default);
 	end
 	return tempstr;
 end
@@ -182,7 +182,7 @@ end);
 -- This is the set of values that will be exported with their default values
 -- Be very careful if you change this as it may break many old exports
 cPowaTimer.ExportSettings = {
-	enabled = false;
+	enabled = false,
 	x = 0,
 	y = 0,
 	a = 1.0,
@@ -205,7 +205,7 @@ cPowaTimer.ExportSettings = {
 function cPowaTimer:CreateAuraString()
 	local tempstr = "";
 	for k, default in pairs (self.ExportSettings) do
-		tempstr = tempstr..PowaAuras:GetSettingForExport(k, self[k], default);
+		tempstr = tempstr..PowaAuras:GetSettingForExport("timer.", k, self[k], default);
 	end
 	return tempstr;
 end

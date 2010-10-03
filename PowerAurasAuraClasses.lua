@@ -872,7 +872,7 @@ function cPowaAura:CreateAuraString(keepLink)
 		if (k == "icon" and string.find(v, PowaAuras.IconSource, 1, true)==1) then
 			v = string.sub(v, string.len(PowaAuras.IconSource)+1);
 		end
-		tempstr = tempstr..PowaAuras:GetSettingForExport(k, v, default);
+		tempstr = tempstr..PowaAuras:GetSettingForExport("", k, v, default);
 	end
 	if (self.Timer and self.Timer.enabled) then
 		tempstr = tempstr..self.Timer:CreateAuraString();
