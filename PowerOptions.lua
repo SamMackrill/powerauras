@@ -439,6 +439,7 @@ end
 
 
 function PowaAuras:ExtractImportValue(valueType, value)
+	self:Message("ExtractImportValue valueType=",valueType," value=",value);
 	if (string.sub(valueType,1,2) == "st") then
 		return value;
 	elseif string.sub(valueType,1,2) == "bo" then
@@ -506,11 +507,12 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 		for _, val in ipairs(temptbl) do
 			local key, var = strsplit(":", val);
 			oldSpellAlertLogic = false;
+			self:Message("key ",key,"=", var);
 			if (key=="Version") then
 			elseif (string.sub(key,1,6) == "timer.") then
 				key = string.sub(key,7);
 				self:Message("val=", val);
-				self:Message("key ",key,"=", var);
+				self:Message(key,"=", var);
 				if (cPowaTimer.ExportSettings[key]) then
 					self:Message("cPowaTimer.ExportSettings[key]=",cPowaTimer.ExportSettings[key]," type=", type(cPowaTimer.ExportSettings[key]));
 					importTimerSettings[key] = self:ExtractImportValue(type(cPowaTimer.ExportSettings[key]), var);
