@@ -10,8 +10,15 @@ function PowaAuras:VARIABLES_LOADED(...)
 	for k in pairs(PowaMisc) do
 		if (PowaAuras.PowaMiscDefault[k]==nil) then PowaMisc[k] = nil; end
 	end
+	
+	local _, _, major, minor, build, revision = string.find(self.Version, self.VersionPattern);
+	self.VersionParts = {Major=tonumber(major), Minor=tonumber(minor), Build=tonumber(build), Revision=revision};
+	 _, _, major, minor, build, revision = string.find(PowaMisc.Version, self.VersionPattern);
+	self.PreviousVersionParts = {Major=tonumber(major), Minor=tonumber(minor), Build=tonumber(build), Revision=revision};
+	
+	self.VersionUpgraded = self:VersionGreater(self.VersionParts, self.PreviousVersionParts);
 
-	if (self.Version~=PowaMisc.Version or PowaAuras.Cataclysm) then
+	if (self.VersionUpgraded or PowaAuras.Cataclysm) then
 		self:DisplayText(self.Colors.Purple.."<Power Auras Classic>|r "..self.Colors.Gold..self.Version.."|r - "..self.Text.welcome);
 		if (PowaAuras.Cataclysm) then
 			self:DisplayText(self.Colors.Orange.."Cataclysm");

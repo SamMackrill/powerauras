@@ -4,135 +4,35 @@
 
 cPowaAura = PowaClass(function(aura, id, base)
 	--PowaAuras:ShowText("cPowaAura constructor id=", id, " base=", base);
-	aura.off = false;
-	aura.Debug = nil;
-	
-	aura.bufftype = PowaAuras.BuffTypes.Buff;
-	aura.buffname = "";
-	
-	aura.texmode = 1;
-	aura.wowtex = false;
-	aura.customtex = false;
-	aura.textaura = false;
-	aura.owntex = false;
-	aura.realaura = 1;
-	aura.texture = 1;
-	aura.customname = "";
-	aura.aurastext = "";
-	aura.aurastextfont = 1;
-	aura.icon = "";
-	aura.strata = "LOW";
 
-	aura.timerduration = 0;
+	for k, v in pairs (cPowaAura.ExportSettings) do
+		if (base and base[k] ~= nil) then
+			aura[k] = base[k];
+		else
+			aura[k] = v;
+		end
+	end
 	
-	-- Sound Settings
-	aura.sound = 0;
-	aura.customsound = "";	
-	aura.soundend = 0;
-	aura.customsoundend = "";	
-	
-	-- Animation Settings
-	aura.begin = 0;
-	aura.anim1 = 1;
-	aura.anim2 = 0;
-	aura.speed = 1.00;
-	aura.finish = 1;
-	aura.isSecondary = false;
-	aura.beginSpin = false;
-
-	aura.duration = 0;
-	
-	-- Appearance Settings
-	aura.alpha = 0.75;
-	aura.size = 0.75;
-	aura.torsion = 1;
-	aura.symetrie = 0;
-	aura.x = 0;
-	aura.y = -30;
-	aura.randomcolor = false;
-	aura.r = 1.0;
-	aura.g = 1.0;
-	aura.b = 1.0;
-	
-	aura.inverse = false;
-	aura.ignoremaj = true;
-	aura.exact = false;
-	aura.Extra = false;
-
-	aura.stacks = 0;
-	aura.stacksLower = 0;
-	aura.stacksOperator = PowaAuras.DefaultOperator;
-
-	aura.threshold = 50;
-	aura.thresholdinvert = false;
-
-	aura.mine = false;
-
-	aura.focus = false;
-	aura.target = false;
-	aura.targetfriend = false;
-	aura.raid = false;
-	aura.groupOrSelf = false;
-	aura.party = false;
-
-	aura.groupany = true;
-	aura.optunitn = false;
-	aura.unitn = "";
-
-	aura.inRaid = 0;
-	aura.inParty = 0;
-	aura.ismounted = false;
-	aura.isResting = false;
-	aura.inVehicle = false;	
-	aura.combat = 0;
-	aura.isAlive = true;
-	aura.PvP = 0;
-	
-	aura.Instance5Man = 0;
-	aura.Instance5ManHeroic = 0;
-	aura.Instance10Man = 0;
-	aura.Instance10ManHeroic = 0;
-	aura.Instance25Man = 0;
-	aura.Instance25ManHeroic = 0;
-	aura.InstanceBg = 0;
-	aura.InstanceArena = 0;
-	
-	aura.RoleTank     = 0;
-	aura.RoleHealer   = 0;
-	aura.RoleMeleDps  = 0;
-	aura.RoleRangeDps = 0;
-	
-	aura.spec1 = true;
-	aura.spec2 = true;
-	aura.gcd = false;
-	aura.stance = 10;
-	aura.GTFO = 0;
-	aura.PowerType = -1;
-	aura.multiids = "";
-	aura.tooltipCheck = "";
-	aura.UseOldAnimations = false;
-
 	if (base) then
-		for k, v in pairs (aura) do
-			local varType = type(v);
-			if (varType == "string"
-			 or varType == "boolean"
-			 or varType == "number"
-			 or k=="ShowOptions"
-			 or k=="CheckBoxes"
-			 or k=="OptionText"
-			 or k=="OptionTernary") then
-				if (base[k] ~= nil) then
-					aura[k] = base[k];
-				end
-			end
+		if (base.ShowOptions ~= nil) then
+			aura.ShowOptions = base.ShowOptions;
+		end
+		if (base.CheckBoxes ~= nil) then
+			aura.CheckBoxes = base.CheckBoxes;
+		end
+		if (base.OptionText ~= nil) then
+			aura.OptionText = base.OptionText;
+		end
+		if (base.OptionTernary ~= nil) then
+			aura.OptionTernary = base.OptionTernary;
 		end
 	end
 
+	aura.id = id;
 	aura.Showing = false;
 	aura.Active = false;
 	aura.HideRequest = false;
-	aura.id = id;
+	aura.Debug = nil;
 	
 	if (aura.minDuration) then
 		aura.duration = math.max(aura.duration, aura.minDuration);
@@ -157,6 +57,117 @@ cPowaAura = PowaClass(function(aura, id, base)
 	
 end);
 
+-- This is the set of values that will be exported with their default values
+-- Be very careful if you change this as it may break many old exports
+cPowaAura.ExportSettings = {
+	off = false,
+	
+	bufftype = PowaAuras.BuffTypes.Buff,
+	buffname = "",
+	
+	texmode = 1,
+	wowtex = false,
+	customtex = false,
+	textaura = false,
+	owntex = false,
+	realaura = 1,
+	texture = 1,
+	customname = "",
+	aurastext = "",
+	aurastextfont = 1,
+	icon = "",
+	strata = "LOW",
+
+	timerduration = 0,
+	
+	-- Sound Settings
+	sound = 0,
+	customsound = "",	
+	soundend = 0,
+	customsoundend = "",	
+	
+	-- Animation Settings
+	begin = 0,
+	anim1 = 1,
+	anim2 = 0,
+	speed = 1.00,
+	finish = 1,
+	isSecondary = false,
+	beginSpin = false,
+
+	duration = 0,
+	
+	-- Appearance Settings
+	alpha = 0.75,
+	size = 0.75,
+	torsion = 1,
+	symetrie = 0,
+	x = 0,
+	y = -30,
+	randomcolor = false,
+	r = 1.0,
+	g = 1.0,
+	b = 1.0,
+	
+	inverse = false,
+	ignoremaj = true,
+	exact = false,
+	Extra = false,
+
+	stacks = 0,
+	stacksLower = 0,
+	stacksOperator = PowaAuras.DefaultOperator,
+
+	threshold = 50,
+	thresholdinvert = false,
+
+	mine = false,
+
+	focus = false,
+	target = false,
+	targetfriend = false,
+	raid = false,
+	groupOrSelf = false,
+	party = false,
+
+	groupany = true,
+	optunitn = false,
+	unitn = "",
+
+	inRaid = 0,
+	inParty = 0,
+	ismounted = false,
+	isResting = false,
+	inVehicle = false,	
+	combat = 0,
+	isAlive = true,
+	PvP = 0,
+	
+	Instance5Man = 0,
+	Instance5ManHeroic = 0,
+	Instance10Man = 0,
+	Instance10ManHeroic = 0,
+	Instance25Man = 0,
+	Instance25ManHeroic = 0,
+	InstanceBg = 0,
+	InstanceArena = 0,
+	
+	RoleTank     = 0,
+	RoleHealer   = 0,
+	RoleMeleDps  = 0,
+	RoleRangeDps = 0,
+	
+	spec1 = true,
+	spec2 = true,
+	gcd = false,
+	stance = 10,
+	GTFO = 0,
+	PowerType = -1,
+	multiids = "",
+	tooltipCheck = "",
+	UseOldAnimations = false,
+}
+	
 function cPowaAura:Init()
 end
 
@@ -850,51 +861,21 @@ function cPowaAura:MatchText(textToSearch, textToFind)
 end
 
 function cPowaAura:CreateAuraString(keepLink)
-	local tempstr = "Version:st"..PowaMisc.Version.."; ";
+	local tempstr = "Version:"..PowaMisc.Version.."; ";
 	local varpref = "";
-	for k, v in pairs (self) do
-		--- multi condition checks not supported for export.
-		if ((k == "multiids" and not keepLink) or k=="Debug") then
+	for k, default in pairs (self.ExportSettings) do
+		local v = self[k];
+		--- multi condition checks not supported for single export.
+		if (k == "multiids" and not keepLink) then
 			v = "";
 		end
-		local varType = type(v);
-		if (varType == "string" or varType == "boolean" or varType == "number") then
-			tempstr = tempstr..k..":"..string.sub(varType,1,2)
-			if (varType == "string") then
-				tempstr = tempstr..v;
-			else
-				tempstr = tempstr..tostring(v);
-			end
-			tempstr = tempstr.."; ";
-		end
+		tempstr = tempstr..PowaAuras:GetSettingForExport(k, v, default);
 	end
 	if (self.Timer and self.Timer.enabled) then
-		for k, v in pairs (self.Timer) do
-			local varType = type(v);
-			if (varType == "string" or varType == "boolean" or varType == "number") then
-				tempstr = tempstr.."timer."..k..":"..string.sub(varType,1,2);
-				if (varType == "string") then
-					tempstr = tempstr..v;
-				else
-					tempstr = tempstr..tostring(v);
-				end
-				tempstr = tempstr.."; ";
-			end
-		end
+		tempstr = tempstr..self.Timer:CreateAuraString();
 	end
 	if (self.Stacks and self.Stacks.enabled) then
-		for k, v in pairs (self.Stacks) do
-			local varType = type(v);
-			if (varType == "string" or varType == "boolean" or varType == "number") then
-				tempstr = tempstr.."stacks."..k..":"..string.sub(varType,1,2);
-				if (varType == "string") then
-					tempstr = tempstr..v;
-				else
-					tempstr = tempstr..tostring(v);
-				end
-				tempstr = tempstr.."; ";
-			end
-		end
+		tempstr = tempstr..self.Stacks:CreateAuraString();
 	end
 
 	if tempstr and tempstr ~= "" then
@@ -3599,9 +3580,6 @@ function PowaAuras:AuraFactory(auraType, id, base)
 		base.Debug = nil;
 		return class(id, base);
 	end
-	self:Message("AuraFactory unknown "..tostring(auraType).." id="..tostring(id)); --OK
+	self:Message("AuraFactory unknown type ("..tostring(auraType)..") id="..tostring(id)); --OK
 	return nil;
 end
-
-
-

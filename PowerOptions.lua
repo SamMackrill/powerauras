@@ -439,18 +439,28 @@ end
 
 
 function PowaAuras:ExtractImportValue(valueType, value)
-	if valueType == "st" then
+	if (string.sub(valueType,1,2) == "st") then
 		return value;
-	elseif valueType == "bo" then
+	elseif string.sub(valueType,1,2) == "bo" then
 		if value == "false" then
 			return false;
 		elseif value == "true" then
 			return true;
 		end
-	elseif valueType == "nu" then
+	elseif string.sub(valueType,1,2) == "nu" then
 		return tonumber(value);
 	end
 	return nil;
+end
+
+function PowaAuras:VersionGreater(v1, v2)
+	if (v1.Major>v2.Major) then return true; end
+	if (v1.Major<v2.Major) then return false; end
+	if (v1.Minor>v2.Minor) then return true; end
+	if (v1.Minor<v2.Minor) then return false; end
+	if (v1.Build>v2.Build) then return true; end
+	if (v1.Build<v2.Build) then return false; end
+	return v1.Revision>v2.Revision;
 end
 
 function PowaAuras:ImportAura(aurastring, auraId, offset)
@@ -460,28 +470,66 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 
 	local aura = cPowaAura(auraId);
 
-	local aurastring = string.gsub(aurastring,";%s*",";");
-	local temptbl = {strsplit(";", aurastring)};
+	local temptbl = {strsplit(";", string.gsub(aurastring,";%s*",";"))};
 	local importAuraSettings = {};
 	local importTimerSettings = {};
 	local importStacksSettings = {};
 	local hasTimerSettings = false;
 	local hasStacksSettings = false;
+	local oldSpellAlertLogic = true;
+	local hasTypePrefix = string.find(aurastring,"Version:st", 1, true)
+	self:Message("hasTypePrefix=",hasTypePrefix);
 
-	for i, val in ipairs(temptbl) do
-		local key, var = strsplit(":", val);
-		local varpref = string.sub(var,1,2);
-		var = string.sub(var,3);
-		if (string.sub(key,1,6) == "timer.") then
-			importTimerSettings[key] = self:ExtractImportValue(varpref, var);
-			hasTimerSettings = true;
-		elseif (string.sub(key,1,7) == "stacks.") then
-			importStacksSettings[key] = self:ExtractImportValue(varpref, var);
-			hasStacksSettings = true;
-		else
-		    importAuraSettings[key] = self:ExtractImportValue(varpref, var);
+	if (hasTypePrefix) then
+		for _, val in ipairs(temptbl) do
+			local key, var = strsplit(":", val);
+			--self:Message("key ",key,"=", var);
+			local varType = string.sub(var,1,2);
+			var = string.sub(var,3);
+			if (key=="Version") then
+				--self:Message("key ",key,"=", var);
+				local _, _, major, minor, build, revision = string.find(var, self.VersionPattern);
+				if (self:VersionGreater({Major=tonumber(major), Minor=tonumber(minor), Build=tonumber(build), Revision=revision},
+										{Major=3, Minor=0, Build=0, Revision="J"})) then
+					oldSpellAlertLogic = false;
+				end
+			elseif (string.sub(key,1,6) == "timer.") then
+				importTimerSettings[string.sub(key,7)] = self:ExtractImportValue(varType, var);
+				hasTimerSettings = true;
+			elseif (string.sub(key,1,7) == "stacks.") then
+				importStacksSettings[string.sub(key,8)] = self:ExtractImportValue(varType, var);
+				hasStacksSettings = true;
+			else
+				importAuraSettings[key] = self:ExtractImportValue(varType, var);
+			end
 		end
- 	end
+	else
+		for _, val in ipairs(temptbl) do
+			local key, var = strsplit(":", val);
+			oldSpellAlertLogic = false;
+			if (key=="Version") then
+			elseif (string.sub(key,1,6) == "timer.") then
+				key = string.sub(key,7);
+				self:Message("val=", val);
+				self:Message("key ",key,"=", var);
+				if (cPowaTimer.ExportSettings[key]) then
+					self:Message("cPowaTimer.ExportSettings[key]=",cPowaTimer.ExportSettings[key]," type=", type(cPowaTimer.ExportSettings[key]));
+					importTimerSettings[key] = self:ExtractImportValue(type(cPowaTimer.ExportSettings[key]), var);
+					hasTimerSettings = true;
+				end
+			elseif (string.sub(key,1,7) == "stacks.") then
+				key = string.sub(key,8);
+				if (cPowaStacks.ExportSettings[key]) then
+					importStacksSettings[key] = self:ExtractImportValue(type(cPowaStacks.ExportSettings[key]), var);
+					hasStacksSettings = true;
+				end
+			else
+				if (cPowaAura.ExportSettings[key]) then
+					importAuraSettings[key] = self:ExtractImportValue(type(cPowaAura.ExportSettings[key]), var);
+				end
+			end
+		end	
+	end
 	
 	for k, v in pairs(aura) do
 		local varType = type(v);
@@ -524,7 +572,7 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 				end
 			end
 			aura[k] = newMultiids;
-		elseif (varType == "string" or varType == "boolean" or varType == "number" and k~="id") then
+		elseif (varType == "string" or varType == "boolean" or varType == "number" and k~="id" and importAuraSettings[k]~=nil) then
 			aura[k] = importAuraSettings[k];
 		end
 	end	
@@ -538,7 +586,7 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 			aura.buffname = newBuffName
 		end
 	elseif (aura.bufftype==self.BuffTypes.SpellAlert) then
-		if (importAuraSettings.RoleTank==nil) then
+		if (oldSpellAlertLogic) then
 			if (aura.target) then
 				aura.groupOrSelf = true;
 			elseif (aura.targetfriend) then
@@ -551,40 +599,12 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 		aura.Timer = cPowaTimer(aura);
 	end
 	
-	--self:Message("hasTimerSettings=", hasTimerSettings);
 	if (hasTimerSettings) then
-		--self:CreateTimerFrameIfMissing(aura.id)
-		if (aura.Timer==nil) then
-			aura.Timer = cPowaTimer(aura);
-		end
-		for k in pairs(aura.Timer) do
-			aura.Timer[k] = importTimerSettings["timer."..k];
-		end
+		aura.Timer = cPowaTimer(aura, importTimerSettings);
 	end
 	if (hasStacksSettings) then
-		--self:CreateTimerFrameIfMissing(aura.id)
-		if (aura.Stacks==nil) then
-			aura.Stacks = cPowaStacks(aura);
-		end
-		for k in pairs(aura.Stacks) do
-			aura.Stacks[k] = importStacksSettings["stacks."..k];
-		end
+		aura.Stacks = cPowaStacks(aura, importStacksSettings);
 	end
-	
-	-- Rescale if required
-	if (importAuraSettings.RoleTank==nil) then
-		local rescaleRatio = UIParent:GetHeight() / 768;
-		if (aura.Timer) then
-			aura.Timer.x = aura.Timer.x * rescaleRatio;
-			aura.Timer.y = aura.Timer.y * rescaleRatio;
-			aura.Timer.h = aura.Timer.h * rescaleRatio;
-		end	
-		if (aura.Stacks) then
-			aura.Stacks.x = aura.Stacks.x * rescaleRatio;
-			aura.Stacks.y = aura.Stacks.y * rescaleRatio;
-			aura.Stacks.h = aura.Stacks.h * rescaleRatio;
-		end				
-	end	
 	
 	--self:Message("new Aura created from import");
 	--aura:Display();
