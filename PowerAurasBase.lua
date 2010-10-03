@@ -1,6 +1,8 @@
 PowaAuras = {
 	Version = GetAddOnMetadata("PowerAuras", "Version");
 	
+	VersionPattern = "(%d+)%.(%d+)%.(%d+)(%a*)";
+	
 	CurrentAuraId = 1;
 	NextCheck = 0.2; 
 	Tstep = 0.09765625;
@@ -1004,7 +1006,37 @@ function PowaAuras:MatchString(textToSearch, textToFind, ingoreCase)
 	end
 	return string.find(textToSearch, textToFind, 1, true)
 end
-	
+
+function PowaAuras:Different(o1, o2)
+	local t1 = type(t1);
+	local t2 = type(t2);
+	if (t1~=t2 or t1 == "string" or t2 == "string") then
+		return tostring(o1)~=tostring(o1);
+	end
+	if (t1=="number") then
+		return math.abs(o1-o2) > 1e-9;
+	end
+	return o1 ~= o2;
+end
+
+function PowaAuras:GetSettingForExport(k, v, default);
+	tempstr = "";
+	if (self:Different(v, default)) then
+		local varType = type(v);
+		tempstr = tempstr..k..":";
+		if (varType == "string") then
+			tempstr = tempstr..v;
+		elseif(varType == "number") then
+			local round = math.floor(v * 10000 + 0.5) / 10000;
+			tempstr = tempstr..tostring(round);
+		else
+			tempstr = tempstr..tostring(v);
+		end
+		tempstr = tempstr.."; ";
+	end
+	return tempstr;
+end
+
 -- PowaAura Classes
 -- Compatible with Lua 5.1 (not 5.0).
 function PowaClass(base,ctor)
