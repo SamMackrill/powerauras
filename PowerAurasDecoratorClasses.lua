@@ -1,35 +1,44 @@
 
 cPowaStacks = PowaClass(function(stacker, aura, base)
-	stacker.enabled = false;
-	stacker.x = 0;
-	stacker.y = 0;
-	stacker.a = 1.0;
-	stacker.h = 1.0;
-	stacker.Transparent = false;
-	stacker.HideLeadingZeros = false;
-	stacker.UpdatePing = false;
-	stacker.Texture = "Default";
-	stacker.Relative = "NONE";
-	stacker.UseOwnColor = false;
-	stacker.r = 1.0;
-	stacker.g = 1.0;
-	stacker.b = 1.0;
-	--PowaAuras:ShowText("cPowaTimer");
-	if (base) then
-		for k, v in pairs (stacker) do
-			--PowaAuras:ShowText("  base."..tostring(k).."="..tostring(base[k]));
-			local varType = type(v);
-			if (varType == "string" or varType == "boolean" or varType == "number") then
-				if (base[k] ~= nil) then
-					stacker[k] = base[k];
-				end
-			end
+	
+	for k, v in pairs (cPowaStacks.ExportSettings) do
+		if (base and base[k] ~= nil) then
+			stacker[k] = base[k];
+		else
+			stacker[k] = v;
 		end
 	end
+	
 	stacker.Showing = false;
 	stacker.id = aura.id;
 end);
 
+-- This is the set of values that will be exported with their default values
+-- Be very careful if you change this as it may break old exports, adding new values is safe
+cPowaStacks.ExportSettings = {
+	enabled = false,
+	x = 0,
+	y = 0,
+	a = 1.0,
+	h = 1.0,
+	Transparent = false,
+	HideLeadingZeros = false,
+	UpdatePing = false,
+	Texture = "Default",
+	Relative = "NONE",
+	UseOwnColor = false,
+	r = 1.0,
+	g = 1.0,
+	b = 1.0,
+}
+
+function cPowaStacks:CreateAuraString()
+	local tempstr = "";
+	for k, default in pairs (self.ExportSettings) do
+		tempstr = tempstr..PowaAuras:GetSettingForExport(k, self[k], default);
+	end
+	return tempstr;
+end
 
 function cPowaStacks:IsRelative()
 	return (self.Relative and self.Relative~="NONE");
@@ -152,36 +161,15 @@ end
 --===== Timer =====
 
 cPowaTimer = PowaClass(function(timer, aura, base)
-	timer.enabled = false;
-	timer.x = 0;
-	timer.y = 0;
-	timer.a = 1.0;
-	timer.h = 1.0;
-	timer.cents = true;
-	timer.Transparent = false;
-	timer.HideLeadingZeros = false;
-	timer.UpdatePing = false;
-	timer.ShowActivation = false;
-	timer.Seconds99 = false;
-	timer.InvertAuraBelow = 0;
-	timer.Texture = "Default";
-	timer.Relative = "NONE";
-	timer.UseOwnColor = false;
-	timer.r = 1.0;
-	timer.g = 1.0;
-	timer.b = 1.0;
-	--PowaAuras:ShowText("cPowaTimer");
-	if (base) then
-		for k, v in pairs (timer) do
-			--PowaAuras:Message("  base."..tostring(k).."="..tostring(base[k]));
-			local varType = type(v);
-			if (varType == "string" or varType == "boolean" or varType == "number") then
-				if (base[k] ~= nil) then
-					timer[k] = base[k];
-				end
-			end
+
+	for k, v in pairs (cPowaTimer.ExportSettings) do
+		if (base and base[k] ~= nil) then
+			timer[k] = base[k];
+		else
+			timer[k] = v;
 		end
 	end
+	
 	timer.Showing = false;
 	timer.id = aura.id;
 	timer:SetShowOnAuraHide(aura);
@@ -191,6 +179,36 @@ cPowaTimer = PowaClass(function(timer, aura, base)
 	--end
 end);
 
+-- This is the set of values that will be exported with their default values
+-- Be very careful if you change this as it may break many old exports
+cPowaTimer.ExportSettings = {
+	enabled = false;
+	x = 0,
+	y = 0,
+	a = 1.0,
+	h = 1.0,
+	cents = true,
+	Transparent = false,
+	HideLeadingZeros = false,
+	UpdatePing = false,
+	ShowActivation = false,
+	Seconds99 = false,
+	InvertAuraBelow = 0,
+	Texture = "Default",
+	Relative = "NONE",
+	UseOwnColor = false,
+	r = 1.0,
+	g = 1.0,
+	b = 1.0,
+}
+
+function cPowaTimer:CreateAuraString()
+	local tempstr = "";
+	for k, default in pairs (self.ExportSettings) do
+		tempstr = tempstr..PowaAuras:GetSettingForExport(k, self[k], default);
+	end
+	return tempstr;
+end
 
 function cPowaTimer:SetShowOnAuraHide(aura)
 	--PowaAuras:Message("CTR Timer id=", aura.id);
