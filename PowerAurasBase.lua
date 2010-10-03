@@ -1021,22 +1021,19 @@ function PowaAuras:Different(o1, o2)
 	return o1 ~= o2;
 end
 
-function PowaAuras:GetSettingForExport(k, v, default)
-	tempstr = "";
-	if (self:Different(v, default)) then
-		local varType = type(v);
-		tempstr = tempstr..k..":";
-		if (varType == "string") then
-			tempstr = tempstr..v;
-		elseif(varType == "number") then
-			local round = math.floor(v * 10000 + 0.5) / 10000;
-			tempstr = tempstr..tostring(round);
-		else
-			tempstr = tempstr..tostring(v);
-		end
-		tempstr = tempstr.."; ";
+function PowaAuras:GetSettingForExport(prefix, k, v, default)
+	if (not self:Different(v, default)) then return ""; end
+	local varType = type(v);
+	local setting = prefix..k..":";
+	if (varType == "string") then
+		setting = setting..v;
+	elseif(varType == "number") then
+		local round = math.floor(v * 10000 + 0.5) / 10000;
+		setting = setting..tostring(round);
+	else
+		setting = setting..tostring(v);
 	end
-	return tempstr;
+	return setting.."; ";
 end
 
 -- PowaAura Classes
