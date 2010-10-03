@@ -478,7 +478,6 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 	local hasStacksSettings = false;
 	local oldSpellAlertLogic = true;
 	local hasTypePrefix = string.find(aurastring,"Version:st", 1, true)
-	self:Message("hasTypePrefix=",hasTypePrefix);
 
 	if (hasTypePrefix) then
 		for _, val in ipairs(temptbl) do
@@ -572,6 +571,12 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 				end
 			end
 			aura[k] = newMultiids;
+		elseif (k=="icon" and importAuraSettings[k]) then
+			if (string.find(importAuraSettings[k], PowaAuras.IconSource, 1, true)==1) then
+				aura[k] = importAuraSettings[k];
+			else
+				aura[k] = PowaAuras.IconSource..importAuraSettings[k];
+			end
 		elseif (varType == "string" or varType == "boolean" or varType == "number" and k~="id" and importAuraSettings[k]~=nil) then
 			aura[k] = importAuraSettings[k];
 		end

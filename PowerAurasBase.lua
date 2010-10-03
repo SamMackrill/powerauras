@@ -3,6 +3,8 @@ PowaAuras = {
 	
 	VersionPattern = "(%d+)%.(%d+)%.(%d+)(%a*)";
 	
+	IconSource = "Interface\\Icons\\";
+	
 	CurrentAuraId = 1;
 	NextCheck = 0.2; 
 	Tstep = 0.09765625;
@@ -1019,7 +1021,7 @@ function PowaAuras:Different(o1, o2)
 	return o1 ~= o2;
 end
 
-function PowaAuras:GetSettingForExport(k, v, default);
+function PowaAuras:GetSettingForExport(k, v, default)
 	tempstr = "";
 	if (self:Different(v, default)) then
 		local varType = type(v);
