@@ -2016,18 +2016,19 @@ function cPowaCombo:CheckIfShouldShow(giveReason)
 		return nil, PowaAuras.Text.nomReasonNoUseCombo;
 	end
 	PowaAuras:Debug("Check Combos");
-	local nCombo = tostring(GetComboPoints("player"));
+	local nCombo = GetComboPoints("player");
+	local combo = tostring(nCombo);
 	--PowaAuras:UnitTestDebug("nCombo=", nCombo, " self.buffname=", self.buffname);
-	if self:MatchText(nCombo, self.buffname) then
+	if self:MatchText(combo, self.buffname) then
 		self:SetIcon("Interface\\icons\\inv_sword_48");
 		if (self.Stacks) then
 			self.Stacks:SetStackCount(nCombo);
 		end			
 		if (not giveReason) then return true; end
-		return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonComboMatch, nCombo, self.buffname);
+		return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonComboMatch, combo, self.buffname);
 	end
 	if (not giveReason) then return false; end
-	return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonNoComboMatch, nCombo, self.buffname);
+	return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonNoComboMatch, combo, self.buffname);
 end
 
 ---=== ACTION READY ===--
@@ -2654,7 +2655,9 @@ function cPowaSpellAlert:CheckUnit(unit)
 	end
 	
 	if (self.mine and notInterruptible) then
-		PowaAuras:ShowText(unit, " is casting ", spellname, " but can't interrupt it");
+		if (self.Debug) then
+			PowaAuras:ShowText(unit, " is casting ", spellname, " but can't interrupt it");
+		end
 		return false;
 	end
 	
