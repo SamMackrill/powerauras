@@ -110,8 +110,8 @@ function cPowaStacks:ShowValue(aura, newvalue)
 end
 
 function cPowaStacks:SetStackCount(count)
-	--PowaAuras:UnitTestInfo("SetStackCount ",self.id);
-	--PowaAuras:Message("SetStackCount ",self.id);
+	--PowaAuras:UnitTestInfo("SetStackCount Id=",self.id," Count=",count);
+	--PowaAuras:Message("SetStackCount Id=",self.id," Count=",count);
 	local aura = PowaAuras.Auras[self.id];
 	if (aura == nil) then
 		--PowaAuras:UnitTestInfo("Stacks aura missing");
