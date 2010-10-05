@@ -11,19 +11,20 @@ cPowaAura = PowaClass(function(aura, id, base)
 		else
 			aura[k] = v;
 		end
+		--PowaAuras:ShowText(k," =", aura[k]);
 	end
 	
 	if (base) then
-		if (base.ShowOptions ~= nil) then
+		if (base.ShowOptions == nil) then
 			aura.ShowOptions = base.ShowOptions;
 		end
-		if (base.CheckBoxes ~= nil) then
+		if (base.CheckBoxes == nil) then
 			aura.CheckBoxes = base.CheckBoxes;
 		end
-		if (base.OptionText ~= nil) then
+		if (base.OptionText == nil) then
 			aura.OptionText = base.OptionText;
 		end
-		if (base.OptionTernary ~= nil) then
+		if (base.OptionTernary == nil) then
 			aura.OptionTernary = base.OptionTernary;
 		end
 	end
@@ -592,7 +593,7 @@ end
 
 function cPowaAura:CheckInstanceType(giveReason)
 	if (self.Debug) then
-		PowaAuras:ShowText("Instance ", PowaAuras.Instance);
+		PowaAuras:DisplayText("Instance ", PowaAuras.Instance);
 	end
 	local show, reason, now, noShowReason;
 	local showTotal = true;
@@ -641,7 +642,7 @@ end
 function cPowaAura:ShouldShowForInstanceType(instanceType, giveReason)
 	local flag = "Instance"..instanceType;
 	if (self.Debug) then
-		PowaAuras:ShowText(PowaAuras.Instance, "  ", instanceType, "  ", flag, "=", self[flag]);
+		PowaAuras:DisplayText(PowaAuras.Instance, "  ", instanceType, "  ", flag, "=", self[flag]);
 	end
 	if (self[flag]==0) then return; end
 	
@@ -794,7 +795,7 @@ function cPowaAura:MatchSpell(spellName, spellTexture, textToFind)
 				spellName, textureMatch = self:GetSpellNameFromMatch(pword);
 			end
 			if (spellName==nil) then
-				PowaAuras:ShowText(PowaAuras:InsertText(PowaAuras.Text.nomUnknownSpellId, pword)); -- OK
+				PowaAuras:DisplayText(PowaAuras:InsertText(PowaAuras.Text.nomUnknownSpellId, pword)); -- OK
 			end
 			--PowaAuras:ShowText("textureMatch=", textureMatch);
 			if (spellName and (not textureMatch or textureMatch==spellTexture)) then
@@ -946,7 +947,7 @@ function cPowaAura:CheckAllUnits(giveReason)
 				result = self:CheckUnit(groupUnit);
 				if result then
 					if (not giveReason) then return true; end
-					return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, groupUnit, self.buffname);
+					return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, groupUnit, self.buffname, self:DisplayType());
 				end
 			end
 		elseif unit == "raid" then
@@ -955,7 +956,7 @@ function cPowaAura:CheckAllUnits(giveReason)
 				result = self:CheckUnit(groupUnit);
 				if result then
 					if (not giveReason) then return true; end
-					return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, groupUnit, self.buffname);
+					return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, groupUnit, self.buffname, self:DisplayType());
 				end
 			end
 		elseif unit == "groupOrSelf" then
@@ -965,7 +966,7 @@ function cPowaAura:CheckAllUnits(giveReason)
 					result = self:CheckUnit(groupUnit);
 					if result then
 						if (not giveReason) then return true; end
-						return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, groupUnit, self.buffname);
+						return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, groupUnit, self.buffname, self:DisplayType());
 					end
 				end
 			elseif (numpm>0) then
@@ -974,7 +975,7 @@ function cPowaAura:CheckAllUnits(giveReason)
 					result = self:CheckUnit(groupUnit);
 					if result then
 						if (not giveReason) then return true; end
-						return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, groupUnit, self.buffname);
+						return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, groupUnit, self.buffname, self:DisplayType());
 					end
 				end
 				local playerUnit = postfix;
@@ -982,7 +983,7 @@ function cPowaAura:CheckAllUnits(giveReason)
 				result = self:CheckUnit(playerUnit);
 				if result then
 					if (not giveReason) then return true; end
-					return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, playerUnit, self.buffname);
+					return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, playerUnit, self.buffname, self:DisplayType());
 				end
 			else
 				local playerUnit = postfix;
@@ -990,7 +991,7 @@ function cPowaAura:CheckAllUnits(giveReason)
 				result = self:CheckUnit(playerUnit);
 				if result then
 					if (not giveReason) then return true; end
-					return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, playerUnit, self.buffname);
+					return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, playerUnit, self.buffname, self:DisplayType());
 				end	
 			end
 		end
@@ -999,7 +1000,7 @@ function cPowaAura:CheckAllUnits(giveReason)
 				result = self:CheckUnit(unit);
 				if result then
 					if (not giveReason) then return true; end
-					return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, unit, self.buffname);
+					return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, unit, self.buffname, self:DisplayType());
 				end
 			end
 		end
@@ -1007,15 +1008,15 @@ function cPowaAura:CheckAllUnits(giveReason)
 		result = self:CheckUnit(unit..postfix);
 		if result then
 			if (not giveReason) then return true; end
-			return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, unit..postfix, self.buffname);
+			return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, unit..postfix, self.buffname, self:DisplayType());
 		end
 	end
 
 	if (not giveReason) then return false; end
 	if (result==nil and PowaAuras.Text.ReasonStat[self.ValueName].NilReason) then
-		return false, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].NilReason, unit..postfix, self.buffname);
+		return false, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].NilReason, unit..postfix, self.buffname, self:DisplayType());
 	end
-	return false, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].NoMatchReason, unit..postfix, self.buffname);
+	return false, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].NoMatchReason, unit..postfix, self.buffname, self:DisplayType());
 end
 
 function cPowaAura:CheckStacks(count)
@@ -1282,7 +1283,7 @@ function cPowaBuffBase:CheckAllAuraSlots(target, giveReason)
 	--PowaAuras:UnitTestDebug("CheckAllAuraSlots for ", target);
 	--PowaAuras.BuffUnitCount = PowaAuras.BuffUnitCount + 1;
 	if (self.Debug) then
-		PowaAuras:ShowText("CheckAllAuraSlots for ", target, " reason=", giveReason);
+		PowaAuras:DisplayText("CheckAllAuraSlots for ", target, " reason=", giveReason);
 	end
 
 	local present, reason;
@@ -1300,7 +1301,7 @@ function cPowaBuffBase:CheckAllAuraSlots(target, giveReason)
 	local startFrom = 1;
 	if (self.CurrentSlot and self.CurrentMatch) then
 		if (self.Debug) then
-			PowaAuras:ShowText("buff for current slot (", self.CurrentSlot, ")");
+			PowaAuras:DisplayText("buff for current slot (", self.CurrentSlot, ")");
 		end
 		present, reason = self:IsPresent(target, self.CurrentSlot, giveReason, self.CurrentMatch);
 		if (present) then
@@ -1316,7 +1317,7 @@ function cPowaBuffBase:CheckAllAuraSlots(target, giveReason)
 	for pword in string.gmatch(self.buffname, "[^/]+") do
 		for i = startFrom - 1, 1, -1 do
 			if (self.Debug) then
-				PowaAuras:ShowText("Buff for slot down (", i, ") ", pword);
+				PowaAuras:DisplayText("Buff for slot down (", i, ") ", pword);
 			end
 			present, reason = self:IsPresent(target, i, giveReason, pword);
 			if (present) then
@@ -1330,7 +1331,7 @@ function cPowaBuffBase:CheckAllAuraSlots(target, giveReason)
 		end
 		for i = startFrom, 40 do
 			if (self.Debug) then
-				PowaAuras:ShowText("Buff for slot up (", i, ") ", pword);
+				PowaAuras:DisplayText("Buff for slot up (", i, ") ", pword);
 			end
 			present, reason = self:IsPresent(target, i, giveReason, pword);
 			if (present==nil) then
@@ -1360,7 +1361,7 @@ end
 function cPowaBuffBase:CheckSingleUnit(group, unit, giveReason)
 	if (not unit) then return; end
 	if (self.Debug) then
-		PowaAuras:ShowText("CheckSingleUnit ", unit);
+		PowaAuras:DisplayText("CheckSingleUnit ", unit);
 	end
 	local present, reason = self:CheckAllAuraSlots(unit, giveReason);
 	if (present) then
@@ -1368,7 +1369,7 @@ function cPowaBuffBase:CheckSingleUnit(group, unit, giveReason)
 			--PowaAuras:UnitTestDebug("CheckGroup("..group..") Present!");
 			self.CurrentUnit = unit;
 			if (self.Debug) then
-				PowaAuras:ShowText("CurrentUnit=", self.CurrentUnit);
+				PowaAuras:DisplayText("CurrentUnit=", self.CurrentUnit);
 				self.Debug = false;
 			end
 			if (not giveReason) then return true; end
@@ -1382,12 +1383,12 @@ end
 
 function cPowaBuffBase:CheckGroup(group, count, giveReason)
 	if (self.Debug) then
-		PowaAuras:ShowText("CheckGroup ", group, " ", count, " ", self.CurrentUnit);
+		PowaAuras:DisplayText("CheckGroup ", group, " ", count, " ", self.CurrentUnit);
 	end
 	local show, reason = self:CheckSingleUnit(group, self.CurrentUnit, giveReason);
 	if (show ~= nil) then
 		if (self.Debug) then
-			PowaAuras:ShowText("buff for existing unit (", self.CurrentUnit, ") found");
+			PowaAuras:DisplayText("buff for existing unit (", self.CurrentUnit, ") found");
 		end
 		return show, reason;
 	end
@@ -1396,7 +1397,7 @@ function cPowaBuffBase:CheckGroup(group, count, giveReason)
 		--PowaAuras.BuffUnitSetCount = PowaAuras.BuffUnitSetCount + 1;
 		for unit in pairs(PowaAuras.ChangedUnits.Buffs) do
 			if (self.Debug) then
-				PowaAuras:ShowText("Detected buff change in unit ", unit);
+				PowaAuras:DisplayText("Detected buff change in unit ", unit);
 			end
 			if (unit~=self.CurrentUnit and string.find(unit, group, 1, true)) then
 				--PowaAuras:ShowText("Checking buff for changed unit (", unit, ")");
@@ -1429,12 +1430,12 @@ function cPowaBuffBase:CheckIfShouldShow(giveReason)
 	--PowaAuras:UnitTestInfo("CheckIfShouldShow ",self.buffAuraType," aura");
 	PowaAuras:Debug("Check " .. self.buffAuraType .. " aura");
 	if (self.Debug) then
-		PowaAuras:ShowText("Check " .. self.buffAuraType .. " aura ", self.Id);
+		PowaAuras:DisplayText("Check " .. self.buffAuraType .. " aura ", self.Id);
 	end
 	--- targets
 	if (self.target or self.targetfriend) then
 		if (self.Debug) then
-			PowaAuras:ShowText("TARGET ",self.target,"  ",self.targetfriend);
+			PowaAuras:DisplayText("TARGET ",self.target,"  ",self.targetfriend);
 		end
 		--PowaAuras:UnitTestDebug("on target or friendlytarget");
 		return self:CheckAllAuraSlots("target", giveReason);
@@ -1442,7 +1443,7 @@ function cPowaBuffBase:CheckIfShouldShow(giveReason)
 	--- focus buff    
 	if self.focus then
 		if (self.Debug) then
-			PowaAuras:ShowText("FOCUS ",self.focus);
+			PowaAuras:DisplayText("FOCUS ",self.focus);
 		end
 		--PowaAuras:UnitTestDebug("on focus");
 		return self:CheckAllAuraSlots("focus", giveReason);
@@ -1450,7 +1451,7 @@ function cPowaBuffBase:CheckIfShouldShow(giveReason)
 	--- unit buff    
 	if self.optunitn then
 		if (self.Debug) then
-			PowaAuras:ShowText("NAMEDUNIT ",self.unitn);
+			PowaAuras:DisplayText("NAMEDUNIT ",self.unitn);
 		end
 		--PowaAuras:UnitTestDebug("on unit "..self.unitn);
 		return self:CheckAllAuraSlots(self.unitn, giveReason);
@@ -1460,7 +1461,7 @@ function cPowaBuffBase:CheckIfShouldShow(giveReason)
 	--- raid buff
 	if self.raid then
 		if (self.Debug) then
-			PowaAuras:ShowText("RAID ", self.raid);
+			PowaAuras:DisplayText("RAID ", self.raid);
 		end
 		--PowaAuras:UnitTestDebug("on raid size=", numrm);
 		return self:CheckGroup("raid", numrm, giveReason);
@@ -1468,7 +1469,7 @@ function cPowaBuffBase:CheckIfShouldShow(giveReason)
 	--- partybuff    
 	if self.party then
 		if (self.Debug) then
-			PowaAuras:ShowText("PARTY ", self.party);
+			PowaAuras:DisplayText("PARTY ", self.party);
 		end
 		--PowaAuras:UnitTestDebug("on party size=", numpm);
 		return self:CheckGroup("party", numpm, giveReason);
@@ -1476,7 +1477,7 @@ function cPowaBuffBase:CheckIfShouldShow(giveReason)
 	
 	if (self.groupOrSelf) then --- Group or Self Buff
 		if (self.Debug) then
-			PowaAuras:ShowText("GROUPORSELF ", numrm, " ", numpm);
+			PowaAuras:DisplayText("GROUPORSELF ", numrm, " ", numpm);
 		end
 		--PowaAuras:UnitTestDebug("on Group or Self");
 		if (numrm>0) then
@@ -1503,7 +1504,7 @@ function cPowaBuffBase:CheckIfShouldShow(giveReason)
 			
 	--- player buff    
 	if (self.Debug) then
-		PowaAuras:ShowText("on player");
+		PowaAuras:DisplayText("on player");
 	end
 	PowaAuras:Debug("on player");
 	return self:CheckAllAuraSlots("player", giveReason);
@@ -2322,7 +2323,7 @@ function cPowaAuraStats:CheckUnit(unit)
 	if (curValue==nil or maxValue==nil or maxValue==0) then return false; end
 
 	if (self.Debug) then
-		PowaAuras:ShowText("curValue=", curValue, " maxValue=", maxValue);
+		PowaAuras:DisplayText("curValue=", curValue, " maxValue=", maxValue);
 	end
 
 	if (self.RangeType=="%") then
@@ -2330,7 +2331,7 @@ function cPowaAuraStats:CheckUnit(unit)
 	end
 	
 	if (self.Debug) then
-		PowaAuras:ShowText(curValue..self.RangeType, "% threshold=",self.threshold);
+		PowaAuras:DisplayText(curValue..self.RangeType, "% threshold=",self.threshold);
 	end
 
 	if self.thresholdinvert then 
@@ -2404,7 +2405,7 @@ end
 function cPowaPowerType:UnitValue(unit)
 	PowaAuras:Debug("UnitValue for ", unit, " type=",self.PowerType);
 	if (self.Debug) then
-		PowaAuras:ShowText("UnitValue for ", unit, " type=",self.PowerType);
+		PowaAuras:DisplayText("UnitValue for ", unit, " type=",self.PowerType);
 	end
 	local power;
 	if (not self.PowerType or self.PowerType==-1) then
@@ -2413,7 +2414,7 @@ function cPowaPowerType:UnitValue(unit)
 		power = UnitPower(unit, self.PowerType);
 	end
 	if (self.Debug) then
-		PowaAuras:ShowText("power=", power);
+		PowaAuras:DisplayText("power=", power);
 	end
 	return power;
 end
@@ -2421,7 +2422,7 @@ end
 function cPowaPowerType:UnitValueMax(unit)
 	PowaAuras:Debug("UnitValueMax for ", unit);
 	if (self.Debug) then
-		PowaAuras:ShowText("UnitValueMax for ", unit, " type=",self.PowerType);
+		PowaAuras:DisplayText("UnitValueMax for ", unit, " type=",self.PowerType);
 	end
 	local power;
 	if (not self.PowerType or self.PowerType==-1) then
@@ -2430,19 +2431,19 @@ function cPowaPowerType:UnitValueMax(unit)
 		maxpower = UnitPowerMax(unit, self.PowerType);
 	end
 	if (self.Debug) then
-		PowaAuras:ShowText("maxpower=", maxpower);
+		PowaAuras:DisplayText("maxpower=", maxpower);
 	end
 	return maxpower;
-
 end
 
 function cPowaPowerType:IsCorrectPowerType(unit)
 	if (self.PowerType==SPELL_POWER_HOLY_POWER  and PowaAuras.playerclass == "PALADIN") then return true; end
 	if (self.PowerType==SPELL_POWER_RUNIC_POWER and PowaAuras.playerclass == "DEATHKNIGHT") then return true; end
 	if (self.PowerType==SPELL_POWER_SOUL_SHARDS and PowaAuras.playerclass == "WARLOCK") then return true; end
+	if (self.PowerType==SPELL_POWER_HAPPINESS and PowaAuras.playerclass == "HUNTER") then return true; end
 	local unitPowerType = UnitPowerType(unit);
 	if (self.Debug) then
-		PowaAuras:ShowText("cPowaPowerType IsCorrectPowerType powerType=", unitPowerType, " expected=", self.PowerType);
+		PowaAuras:DisplayText("cPowaPowerType IsCorrectPowerType powerType=", unitPowerType, " expected=", self.PowerType);
 	end
 	if (not unitPowerType) then
 		return false;
@@ -2608,13 +2609,13 @@ function cPowaSpellAlert:CheckUnit(unit)
 	self.DisplayValue = nil;
 	self.DisplayUnit = nil;
 	if (self.Debug) then
-		PowaAuras:ShowText("Spell Alert CheckUnit ", unit);
+		PowaAuras:DisplayText("Spell Alert CheckUnit ", unit);
 	end
 	--PowaAuras:UnitTestDebug("Spell Alert CheckUnit ", unit);
 	local isCorrectTarget, targetType = self:CorrectTargetType(unit);
 	if (not isCorrectTarget) then
 		if (self.Debug) then
-			PowaAuras:ShowText("Incorrect target type ", targetType);
+			PowaAuras:DisplayText("Incorrect target type ", targetType);
 		end
 		--PowaAuras:UnitTestDebug("Incorrect target type ", targetType);
 		return false;
@@ -2623,7 +2624,7 @@ function cPowaSpellAlert:CheckUnit(unit)
 	if (self.Extra) then -- Cast on me check
 		if (not UnitIsUnit(unit.."target","player")) then
 			if (self.Debug) then
-				PowaAuras:ShowText(unit, " is not casting on me");
+				PowaAuras:DisplayText(unit, " is not casting on me");
 			end
 			--PowaAuras:UnitTestDebug(unit, " is not casting on me");
 			return false;
@@ -2643,20 +2644,20 @@ function cPowaSpellAlert:CheckUnit(unit)
 	--PowaAuras:UnitTestDebug("spellname ", spellname);
 	if not spellname then -- not casting
 		if (self.Debug) then
-			PowaAuras:ShowText(unit, " is not casting");
+			PowaAuras:DisplayText(unit, " is not casting");
 		end
 		--PowaAuras:UnitTestDebug(unit, " is not casting");
 		return false;
 	end
 	
 	if (self.Debug) then
-		PowaAuras:ShowText(unit, " is casting ", spellname);
-		PowaAuras:ShowText(" mine= ", self.mine, " notInterruptible =", notInterruptible );
+		PowaAuras:DisplayText(unit, " is casting ", spellname);
+		PowaAuras:DisplayText(" mine= ", self.mine, " notInterruptible =", notInterruptible );
 	end
 	
 	if (self.mine and notInterruptible) then
 		if (self.Debug) then
-			PowaAuras:ShowText(unit, " is casting ", spellname, " but can't interrupt it");
+			PowaAuras:DisplayText(unit, " is casting ", spellname, " but can't interrupt it");
 		end
 		return false;
 	end
@@ -2675,7 +2676,7 @@ function cPowaSpellAlert:CheckSpellName(unit, spellname, spellicon, endtime, spe
 			end
 		end
 		if (self.Debug) then
-			PowaAuras:ShowText(unit, " is casting ", spellname, " ", spellicon);
+			PowaAuras:DisplayText(unit, " is casting ", spellname, " ", spellicon);
 		end
 		if (spellicon==nil) then
 			if (spellId~=nil) then
@@ -2701,19 +2702,19 @@ end
 function cPowaSpellAlert:CheckIfShouldShow(giveReason)
 	--PowaAuras:UnitTestDebug("Check for spell being cast ", self.buffname, self.target, self.focus, self.targetfriend, self.Extra);
 	if (self.Debug) then
-		PowaAuras:ShowText("Check for spell being cast ", self.buffname);
+		PowaAuras:DisplayText("Check for spell being cast ", self.buffname);
 	end
 	if (self.Extra) then
 		for casterName,info in pairs(PowaAuras.CastOnMe) do
 			if (self.Debug) then
-				PowaAuras:ShowText(casterName, " casting ", info.SpellName, " hostile=",info.Hostile);
+				PowaAuras:DisplayText(casterName, " casting ", info.SpellName, " hostile=",info.Hostile);
 			end
 			if (self.target and info.Hostile>0)
 			or (self.targetfriendly and not info.Hostile==0)
 			or (self.focus and info.SourceGUID==UnitGUID("focus"))
 			or (not self.target and not self.targetfriendly and not self.focus) then
 				if (self.Debug) then
-					PowaAuras:ShowText(" correct source, checking spell", info.SpellName);
+					PowaAuras:DisplayText(" correct source, checking spell", info.SpellName);
 				end
 				if self:CheckSpellName(casterName, info.SpellName, nil, nil, info.SpellId) then
 					if (self.duration==0) then
@@ -2914,7 +2915,7 @@ function cPowaPet:AddEffectAndEvents()
 	PowaAuras.Events.UNIT_PET = true;
 	if (self.playerclass=="DEATHKNIGHT" and not self.MasterOfGhouls) then -- temporary Ghoul is a totem!
 		if (self.DebugEvents) then
-			self:ShowText("Ghoul (temp version)");
+			self:DisplayText("Ghoul (temp version)");
 		end
 		PowaAuras.Events.PLAYER_TOTEM_UPDATE = true;
 	end	
@@ -3310,7 +3311,6 @@ cPowaItems.ShowOptions={["PowaBarTooltipCheck"]=1, ["PowaBarBuffStacks"]=1};
 cPowaItems.CheckBoxes={["PowaInverseButton"]=1,["PowaOwntexButton"]=1,};
 cPowaItems.TooltipOptions = {r=0.8, g=0.8, b=0.0};
 
-
 function cPowaItems:AddEffectAndEvents()
 	table.insert(PowaAuras.AurasByType[self.AuraType], self.id);
 	PowaAuras.Events.BAG_UPDATE = true;
@@ -3578,7 +3578,7 @@ PowaAuras.AuraClasses = {
 function PowaAuras:AuraFactory(auraType, id, base)
 	local class = self.AuraClasses[auraType];
 	if (class) then
-		--self:Message("AuraFactory "..tostring(auraType).." id="..tostring(id).." type="..tostring(PowaAuras.Text.AuraType[auraType]));
+		--self:ShowText("AuraFactory "..tostring(auraType).." id="..tostring(id).." type="..tostring(PowaAuras.Text.AuraType[auraType]));
 		if (base == nil) then
 			base = {};
 		end
