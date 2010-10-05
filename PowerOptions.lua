@@ -984,41 +984,42 @@ function PowaAuras:UpdateStacksOptions()
 end
 
 
-function PowaAuras:SetOptionText(optionsText)
-	--self:ShowText("typeText=", optionsText.typeText);
-	PowaDropDownBuffTypeText:SetText(optionsText.typeText);
-	if (optionsText.buffNameTooltip) then
+function PowaAuras:SetOptionText(aura)
+	--self:ShowText("bufftype=", aura.bufftype);
+	--self:ShowText("typeText=", aura.OptionText.typeText);
+	PowaDropDownBuffTypeText:SetText(aura.OptionText.typeText);
+	if (aura.OptionText.buffNameTooltip) then
 		PowaBarBuffName:Show();
-		PowaBarBuffName.aide = optionsText.buffNameTooltip;
+		PowaBarBuffName.aide = aura.OptionText.buffNameTooltip;
 	else
 		self:DisableTextfield("PowaBarBuffName");
 	end
-	if (optionsText.exactTooltip) then
+	if (aura.OptionText.exactTooltip) then
 		self:EnableCheckBox("PowaExactButton");
-		PowaExactButton.aide = optionsText.exactTooltip;
+		PowaExactButton.aide = aura.OptionText.exactTooltip;
 	else
 		self:DisableCheckBox("PowaExactButton");
 	end
-	if (optionsText.mineText) then
+	if (aura.OptionText.mineText) then
 		self:EnableCheckBox("PowaMineButton");
-		PowaMineButtonText:SetText(optionsText.mineText);
-		PowaMineButton.tooltipText = optionsText.mineTooltip; 
+		PowaMineButtonText:SetText(aura.OptionText.mineText);
+		PowaMineButton.tooltipText = aura.OptionText.mineTooltip; 
 	else
 		PowaMineButton:SetChecked(false);
 		self:DisableCheckBox("PowaMineButton");
 	end
-	if (optionsText.extraText) then
+	if (aura.OptionText.extraText) then
 		self:ShowCheckBox("PowaExtraButton");
-		PowaExtraButtonText:SetText(optionsText.extraText);
-		PowaExtraButton.tooltipText = optionsText.extraTooltip; 
+		PowaExtraButtonText:SetText(aura.OptionText.extraText);
+		PowaExtraButton.tooltipText = aura.OptionText.extraTooltip; 
 	else
 		PowaExtraButton:SetChecked(false);
 		self:HideCheckBox("PowaExtraButton");
 	end
-	if (optionsText.targetFriendText) then
+	if (aura.OptionText.targetFriendText) then
 		self:EnableCheckBox("PowaTargetFriendButton");
-		PowaTargetFriendButtonText:SetText(optionsText.targetFriendText);
-		PowaTargetFriendButton.tooltipText = optionsText.targetFriendTooltip; 
+		PowaTargetFriendButtonText:SetText(aura.OptionText.targetFriendText);
+		PowaTargetFriendButton.tooltipText = aura.OptionText.targetFriendTooltip; 
 	else
 		PowaTargetFriendButton:SetChecked(false);
 		self:DisableCheckBox("PowaTargetFriendButton");
@@ -1068,8 +1069,9 @@ end
 function PowaAuras:SetupOptionsForAuraType(aura)
 	--self:ShowText("aura=", aura);
 
-	self:SetOptionText(aura.OptionText);
+	self:SetOptionText(aura);
 	self:ShowOptions(aura.ShowOptions);
+
 	self:EnableCheckBoxes(aura.CheckBoxes);
 	self:EnableTernary(aura.Ternary);
 
@@ -1086,13 +1088,15 @@ function PowaAuras:SetupOptionsForAuraType(aura)
 	end
 end
 
-function PowaAuras:InitPage()
+function PowaAuras:InitPage(aura)
 
 	--self:ShowText("InitPage ", self.CurrentAuraId);
 
 	local CheckTexture = 0;
-    local aura = self.Auras[self.CurrentAuraId];
-	--self:Message("aura ", aura);
+	if (aura==nil) then
+		aura = self.Auras[self.CurrentAuraId];
+	end
+	
 	self:UpdateTimerOptions();
 
 	PowaDropDownAnim1Text:SetText(self.Anim[aura.anim1]);
@@ -1120,7 +1124,7 @@ function PowaAuras:InitPage()
 	PowaBarCustomSound.aide = self.Text.aideCustomSound;
 	PowaBarCustomSoundEnd.aide = self.Text.aideCustomSoundEnd;
 	PowaBarBuffStacks.aide = self.Text.aideStacks;
-
+	
 	PowaOwntexButton:SetChecked(aura.owntex);
 	PowaWowTextureButton:SetChecked(aura.wowtex);
 	PowaCustomTextureButton:SetChecked(aura.customtex);
@@ -1169,7 +1173,6 @@ function PowaAuras:InitPage()
 
 	self:TernarySetState(PowaBgInstanceButton, aura.InstanceBg);
 	self:TernarySetState(PowaArenaInstanceButton, aura.InstanceArena);
-
 	
 	PowaTimerDurationSlider:SetValue(aura.timerduration);
 	
@@ -1183,7 +1186,6 @@ function PowaAuras:InitPage()
 	
 	self:EnableCheckBox("PowaAuraDebugButton");
 	PowaAuraDebugButton:SetChecked(aura.Debug);
-	
 	
 	aura:HideShowTabs();
 	self:SetupOptionsForAuraType(aura);
@@ -2102,11 +2104,11 @@ function PowaAuras:FillDropdownSorted(t, info)
 end
 
 function PowaAuras.DropDownMenu_OnClickBuffType(self)
-	--PowaAuras:Message("DropDownMenu_OnClickBuffType bufftype ", self.value, " for aura ", PowaAuras.CurrentAuraId, " ", self.owner);
+	PowaAuras:Message("DropDownMenu_OnClickBuffType bufftype ", self.value, " for aura ", PowaAuras.CurrentAuraId, " ", self.owner);
 
 	UIDropDownMenu_SetSelectedValue(self.owner, self.value);
 
-	aura = PowaAuras:AuraFactory(self.value, PowaAuras.CurrentAuraId, PowaAuras.Auras[PowaAuras.CurrentAuraId]);
+	local aura = PowaAuras:AuraFactory(self.value, PowaAuras.CurrentAuraId, PowaAuras.Auras[PowaAuras.CurrentAuraId]);
 		
 	aura.icon= "";
 	PowaAuras.Auras[PowaAuras.CurrentAuraId] = aura
@@ -2124,7 +2126,8 @@ function PowaAuras.DropDownMenu_OnClickBuffType(self)
 		aura.owntex = false;
 	end
 
-	PowaAuras:InitPage();
+	PowaAuras:Message(">>> bufftype=", aura.bufftype);
+	PowaAuras:InitPage(aura);
 end
 
 
@@ -2235,13 +2238,13 @@ end
 
 function PowaAuras.DropDownMenu_OnClickGTFO(self)
 	UIDropDownMenu_SetSelectedValue(self.owner, self.value);
-	local auraId = PowaAuras.CurrentAuraId;
+	local aura = PowaAuras.Auras[PowaAuras.CurrentAuraId];
 
-	if (PowaAuras.Auras[auraId].GTFO ~= self.value) then
-		PowaAuras.Auras[auraId].GTFO = self.value;
-		PowaAuras.Auras[auraId].icon = "";
+	if (aura.GTFO ~= self.value) then
+		aura.GTFO = self.value;
+		aura.icon = "";
 	end
-	PowaAuras:InitPage();
+	PowaAuras:InitPage(aura);
 end
 
 function PowaAuras.DropDownMenu_OnClickPowerType(self)
@@ -2433,7 +2436,7 @@ function PowaAuras:EditorShow()
 		--if (aura.Timer and aura.Timer.enabled) then
 		--	self:CreateTimerFrameIfMissing(aura.id);
 		--end
-		self:InitPage();
+		self:InitPage(aura);
 		PowaBarConfigFrame:Show();
 		PlaySound("TalentScreenOpen");
 	end

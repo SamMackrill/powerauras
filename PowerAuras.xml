@@ -12,7 +12,7 @@
 		</OnLoad>
 		<OnEvent>
 			if (PowaAuras.DebugEvents) then
-				PowaAuras:ShowText("Event:", event);
+				PowaAuras:DisplayText("Event:", event);
 			end
 			PowaAuras[event](PowaAuras, ...);
 		</OnEvent>
