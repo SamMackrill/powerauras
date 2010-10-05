@@ -300,7 +300,7 @@ function PowaAuras:SpellcastEvent(unit)
 	if (self.ModTest == false) then
 		--- spell alert handling
 		if (self.DebugEvents) then
-			self:ShowText("SpellcastEvent: ", unit);
+			self:DisplayText("SpellcastEvent: ", unit);
 		end
 		if unit and not UnitIsDead(unit) then
 			if UnitIsUnit(unit, "player") then
@@ -341,7 +341,7 @@ function PowaAuras:UNIT_SPELLCAST_SUCCEEDED(...)
 			self.DoCheck.All = true;
 		end
 		if (self.DebugEvents) then
-			self:ShowText("UNIT_SPELLCAST_SUCCEEDED ",unit, " ", spell);
+			self:DisplayText("UNIT_SPELLCAST_SUCCEEDED ",unit, " ", spell);
 		end
 		--- druid shapeshift special case
 		if (unit == "player") then
@@ -412,7 +412,7 @@ function PowaAuras:RUNE_TYPE_UPDATE(...)
 	local runeId = ...;
 	if (self.ModTest == false) then
 		if (self.DebugEvents) then
-			self:ShowText("PLAYER_TOTEM_UPDATE slot=", slot);
+			self:DisplayText("PLAYER_TOTEM_UPDATE slot=", slot);
 		end
 		self.DoCheck.Runes = true;
 	end
@@ -468,7 +468,7 @@ end
 function PowaAuras:UNIT_AURA(...)
 	local unit = select(1, ...);
 	if (self.DebugEvents) then
-		self:ShowText("UNIT_AURA ", unit);
+		self:DisplayText("UNIT_AURA ", unit);
 	end
 	self:BuffsChanged(unit);
 end
@@ -476,7 +476,7 @@ end
 function PowaAuras:UNIT_AURASTATE(...)
 	local unit = select(1, ...);
 	if (self.DebugEvents) then
-		self:ShowText("UNIT_AURASTATE ", unit);
+		self:DisplayText("UNIT_AURASTATE ", unit);
 	end
 	self:BuffsChanged(unit);
 end
@@ -543,7 +543,7 @@ function PowaAuras:ZONE_CHANGED_NEW_AREA()
 	self.Instance = instanceType;
 	if (self.ModTest == false) then
 		if (self.DebugEvents) then
-			self:ShowText("ZONE_CHANGED_NEW_AREA ", self.InInstance, " - ", self.InstanceType);
+			self:DisplayText("ZONE_CHANGED_NEW_AREA ", self.InInstance, " - ", self.InstanceType);
 		end
 		self.DoCheck.All = true;
 	end
@@ -569,13 +569,13 @@ function PowaAuras:PLAYER_TOTEM_UPDATE(...)
 	local slot = ...;
 	if (self.ModTest == false) then
 		if (self.DebugEvents) then
-			self:ShowText("PLAYER_TOTEM_UPDATE slot=", slot, " class=", self.playerclass);
+			self:DisplayText("PLAYER_TOTEM_UPDATE slot=", slot, " class=", self.playerclass);
 		end
 		if (self.playerclass=="SHAMAN") then
 			self.DoCheck.Totems = true;
 		elseif (self.playerclass=="DEATHKNIGHT" and not self.MasterOfGhouls) then
 			if (self.DebugEvents) then
-				self:ShowText("Ghoul (temp version)");
+				self:DisplayText("Ghoul (temp version)");
 			end
 			self.DoCheck.Pet = true;
 		end
@@ -603,7 +603,7 @@ end
 function PowaAuras:UNIT_FACTION(...) --- GetPVPTimer() returns the time until unflag in ms
 	local unit = ...;
 	if (self.DebugEvents) then
-		self:ShowText("UNIT_FACTION unit = ",unit);
+		self:DisplayText("UNIT_FACTION unit = ",unit);
 	end
 	if (unit == "player") then
 		local flag = UnitIsPVP("player");
@@ -662,7 +662,7 @@ function PowaAuras:COMBAT_LOG_EVENT_UNFILTERED(...)
 		
 		if (destGUID==UnitGUID("player") and spellName) then
 			if (self.DebugEvents) then
-				self:ShowText("COMBAT_LOG_EVENT_UNFILTERED", "-  On Me! ", event);
+				self:DisplayText("COMBAT_LOG_EVENT_UNFILTERED", "-  On Me! ", event);
 			end
 			if (PowaAuras.StringStarts(event,"SPELL_") and sourceName) then
 				self.CastOnMe[sourceName] = {SpellName=spellName, SpellId=spellId, SourceGUID=sourceGUID, Hostile=bit.band(sourceFlags, COMBATLOG_OBJECT_REACTION_HOSTILE)};
@@ -744,13 +744,13 @@ function PowaAuras:UNIT_INVENTORY_CHANGED(...)
 		local unit = ...;
 		if (unit=="player") then
 			if (self.DebugEvents) then
-				self:ShowText("UNIT_INVENTORY_CHANGED ", unit);
+				self:DisplayText("UNIT_INVENTORY_CHANGED ", unit);
 			end
 			self.DoCheck.Items = true;
 			self.DoCheck.Slots = true;
 			for _, auraId in pairs(self.AurasByType.Enchants) do
 				if (self.DebugEvents) then
-					self:ShowText("Pending set for Enchants ", auraId);
+					self:DisplayText("Pending set for Enchants ", auraId);
 				end
 				self.Pending[auraId] = GetTime() + 0.25; -- Allow time for client to update or timer will be wrong
 			end
@@ -782,7 +782,7 @@ function PowaAuras:UNIT_THREAT_SITUATION_UPDATE(...)
 	if (self.ModTest == false) then
 		local unit = ...;
 		if (self.DebugEvents) then
-			self:ShowText("UNIT_THREAT_SITUATION_UPDATE ", unit);
+			self:DisplayText("UNIT_THREAT_SITUATION_UPDATE ", unit);
 		end
 		if unit == "player" then
 			self.DoCheck.Aggro = true;

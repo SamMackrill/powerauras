@@ -342,7 +342,7 @@ PowaAuras = {
 		PartyPower = {},
 		RaidPower = {},
 		FocusPower = {},
-		UnitPower = {},
+		NamedUnitPower = {},
 
 		Combo = {},
 		Aoe = {},
