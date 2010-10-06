@@ -1235,6 +1235,8 @@ function PowaAuras:InitPage(aura)
 
 	PowaBarCustomSound:SetText(aura.customsound);
 	PowaAuras:CustomSoundTextChanged(true);	
+	PowaBarCustomSoundEnd:SetText(aura.customsoundend);
+	PowaAuras:CustomSoundEndTextChanged(true);	
 	
 	PowaBarUnitn:SetText(aura.unitn);
 	
