@@ -887,15 +887,15 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 			else 
 				pathToSound = "Interface\\AddOns\\PowerAuras\\Sounds\\"..aura.customsound;
 			end
-			self:ShowText("Playing custom sound ",pathToSound);		
+			--self:ShowText("Playing custom sound ",pathToSound);		
 			PlaySoundFile(pathToSound);
 		elseif (aura.sound > 0) then
 			if (PowaAuras.Sound[aura.sound]~=nil and string.len(PowaAuras.Sound[aura.sound])>0) then
 				if (string.find(PowaAuras.Sound[aura.sound], "%.")) then
-					self:ShowText("Playing sound Interface\\AddOns\\PowerAuras\\Sounds\\",PowaAuras.Sound[aura.sound]);		
+					--self:ShowText("Playing sound Interface\\AddOns\\PowerAuras\\Sounds\\",PowaAuras.Sound[aura.sound]);		
 					PlaySoundFile("Interface\\AddOns\\PowerAuras\\Sounds\\"..PowaAuras.Sound[aura.sound]);
 				else
-					self:ShowText("Playing WoW sound ",PowaAuras.Sound[aura.sound]);		
+					--self:ShowText("Playing WoW sound ",PowaAuras.Sound[aura.sound]);		
 					PlaySound(PowaAuras.Sound[aura.sound]);
 				end
 			end
