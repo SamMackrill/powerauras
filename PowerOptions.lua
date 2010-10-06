@@ -1637,8 +1637,8 @@ function PowaAuras:CustomSoundTextChanged(force)
 				pathToSound = aura.customsound;
 			else 
 				pathToSound = "Interface\\AddOns\\PowerAuras\\Sounds\\"..aura.customsound;
-				--self:ShowText("Playing sound "..pathToSound);
 			end
+			self:ShowText("Playing sound "..pathToSound);
 			local played = PlaySoundFile(pathToSound);
 			--self:ShowText("played = "..played);
 			if (not played) then
@@ -2194,8 +2194,10 @@ function PowaAuras.DropDownMenu_OnClickSound(self)
 	end
 
 	if (string.find(PowaAuras.Sound[self.value], "%.")) then
+		PowaAuras:ShowText("Playing sound Interface\\AddOns\\PowerAuras\\Sounds\\"..PowaAuras.Sound[self.value]);
 		PlaySoundFile("Interface\\AddOns\\PowerAuras\\Sounds\\"..PowaAuras.Sound[self.value]);
 	else
+		PowaAuras:ShowText("Playing WoW sound "..PowaAuras.Sound[self.value]);
 		PlaySound(PowaAuras.Sound[self.value]);
 	end
 end;
@@ -2219,10 +2221,13 @@ function PowaAuras.DropDownMenu_OnClickSoundEnd(self)
 	end
 
 	if (string.find(PowaAuras.Sound[self.value], "%.")) then
+		PowaAuras:ShowText("Playing sound Interface\\AddOns\\PowerAuras\\Sounds\\"..PowaAuras.Sound[self.value]);
 		PlaySoundFile("Interface\\AddOns\\PowerAuras\\Sounds\\"..PowaAuras.Sound[self.value]);
 	else
+		PowaAuras:ShowText("Playing WoW sound "..PowaAuras.Sound[self.value]);
 		PlaySound(PowaAuras.Sound[self.value]);
 	end
+
 end
 
 function PowaAuras.DropDownMenu_OnClickStance(self)
