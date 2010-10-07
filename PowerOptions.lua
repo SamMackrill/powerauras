@@ -1290,6 +1290,7 @@ function PowaAuras:InitPage(aura)
 		PowaBarCustomTexName:Hide();
 		PowaBarAurasText:Show();
 		PowaFontsButton:Show();
+		self:ShowMessage("InitPage: set aurastext to ", aura.aurastext);
 		PowaBarAurasText:SetText(aura.aurastext);
 		CheckTexture = AuraTexture:SetTexture("Interface\\Icons\\INV_Scroll_02");  --- Driizt: check if need to test as well
 	else
@@ -1611,14 +1612,15 @@ function PowaAuras:CustomTextChanged()
 end
 
 function PowaAuras:AurasTextCancel()
-	local auraId = self.CurrentAuraId;
-	PowaBarAurasText:SetText(self.Auras[auraId].aurastext);
+	local aura = self.Auras[self.CurrentAuraId];
+	self:ShowMessage("AurasTextCancel: set aurastext to ", aura.aurastext);
+	PowaBarAurasText:SetText(aura.aurastext);
 end
 
 function PowaAuras:AurasTextChanged()
-	local auraId = self.CurrentAuraId;
-	self.Auras[auraId].aurastext = PowaBarAurasText:GetText();
-	--self:Message("aura text changed to ", self.Auras[auraId].aurastext);
+	local aura = self.Auras[self.CurrentAuraId];
+	aura.aurastext = PowaBarAurasText:GetText();
+	self:ShowMessage("AurasTextChanged: aura text changed to ", aura.aurastext);
 	self:RedisplayAura(self.CurrentAuraId);
 end
 
@@ -1823,22 +1825,23 @@ function PowaAuras:CustomTexturesChecked()
 end
 
 function PowaAuras:TextAuraChecked()
-	local auraId = self.CurrentAuraId;
+	local aura = self.Auras[self.CurrentAuraId];
 	if (PowaTextAuraButton:GetChecked()) then
-		self.Auras[auraId].textaura = true;
-		self.Auras[auraId].owntex = false;
-		self.Auras[auraId].wowtex = false;
-		self.Auras[auraId].customtex = false;
+		aura.textaura = true;
+		aura.owntex = false;
+		aura.wowtex = false;
+		aura.customtex = false;
 		PowaBarAuraTextureSlider:Hide();
 		PowaBarAurasText:Show();
 		PowaFontsButton:Show();
-		PowaBarAurasText:SetText(self.Auras[auraId].aurastext);
+		self:ShowMessage("TextAuraChecked: aura text changed to ", aura.aurastext);
+		PowaBarAurasText:SetText(aura.aurastext);
 		PowaOwntexButton:SetChecked(false);
 		PowaWowTextureButton:SetChecked(false);
 		PowaCustomTextureButton:SetChecked(false);
 		PowaBarCustomTexName:Hide();
 	else
-		self.Auras[auraId].textaura = false;
+		aura.textaura = false;
 		PowaBarAuraTextureSlider:Show();
 		PowaBarAurasText:Hide();
 		PowaFontsButton:Hide();
@@ -1852,11 +1855,11 @@ end
 --=====================================
 
 function PowaAuras:TargetChecked()
-	local auraId = self.CurrentAuraId;
+	local aura = self.Auras[self.CurrentAuraId];
 	if (PowaTargetButton:GetChecked()) then
-		self.Auras[auraId].target = true;
+		aura.target = true;
 	else
-		self.Auras[auraId].target = false;
+		aura.target = false;
 	end
 	self:InitPage();
 end
