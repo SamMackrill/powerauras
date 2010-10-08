@@ -1290,7 +1290,7 @@ function PowaAuras:InitPage(aura)
 		PowaBarCustomTexName:Hide();
 		PowaBarAurasText:Show();
 		PowaFontsButton:Show();
-		self:ShowMessage("InitPage: set aurastext to ", aura.aurastext);
+		--self:ShowText("InitPage: set aurastext to ", aura.aurastext);
 		PowaBarAurasText:SetText(aura.aurastext);
 		CheckTexture = AuraTexture:SetTexture("Interface\\Icons\\INV_Scroll_02");  --- Driizt: check if need to test as well
 	else
@@ -1613,14 +1613,14 @@ end
 
 function PowaAuras:AurasTextCancel()
 	local aura = self.Auras[self.CurrentAuraId];
-	self:ShowMessage("AurasTextCancel: set aurastext to ", aura.aurastext);
+	--self:ShowText("AurasTextCancel: set aurastext to ", aura.aurastext);
 	PowaBarAurasText:SetText(aura.aurastext);
 end
 
 function PowaAuras:AurasTextChanged()
 	local aura = self.Auras[self.CurrentAuraId];
 	aura.aurastext = PowaBarAurasText:GetText();
-	self:ShowMessage("AurasTextChanged: aura text changed to ", aura.aurastext);
+	--self:ShowText("AurasTextChanged: aura text changed to ", aura.aurastext);
 	self:RedisplayAura(self.CurrentAuraId);
 end
 
@@ -1834,7 +1834,7 @@ function PowaAuras:TextAuraChecked()
 		PowaBarAuraTextureSlider:Hide();
 		PowaBarAurasText:Show();
 		PowaFontsButton:Show();
-		self:ShowMessage("TextAuraChecked: aura text changed to ", aura.aurastext);
+		--self:ShowText("TextAuraChecked: aura text changed to ", aura.aurastext);
 		PowaBarAurasText:SetText(aura.aurastext);
 		PowaOwntexButton:SetChecked(false);
 		PowaWowTextureButton:SetChecked(false);
