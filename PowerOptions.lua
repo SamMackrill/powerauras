@@ -522,7 +522,7 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 					hasStacksSettings = true;
 				end
 			else
-				if (cPowaAura.ExportSettings[key]) then
+				if (cPowaAura.ExportSettings[key]~= nil) then
 					importAuraSettings[key] = self:ExtractImportValue(type(cPowaAura.ExportSettings[key]), var);
 				end
 			end
@@ -1827,6 +1827,7 @@ end
 function PowaAuras:TextAuraChecked()
 	local aura = self.Auras[self.CurrentAuraId];
 	if (PowaTextAuraButton:GetChecked()) then
+		--self:ShowText("TextAuraChecked: set");
 		aura.textaura = true;
 		aura.owntex = false;
 		aura.wowtex = false;
@@ -1841,6 +1842,7 @@ function PowaAuras:TextAuraChecked()
 		PowaCustomTextureButton:SetChecked(false);
 		PowaBarCustomTexName:Hide();
 	else
+		--self:ShowText("TextAuraChecked: unset");
 		aura.textaura = false;
 		PowaBarAuraTextureSlider:Show();
 		PowaBarAurasText:Hide();
