@@ -2109,7 +2109,7 @@ function PowaAuras:FillDropdownSorted(t, info)
 end
 
 function PowaAuras.DropDownMenu_OnClickBuffType(self)
-	PowaAuras:Message("DropDownMenu_OnClickBuffType bufftype ", self.value, " for aura ", PowaAuras.CurrentAuraId, " ", self.owner);
+	--PowaAuras:Message("DropDownMenu_OnClickBuffType bufftype ", self.value, " for aura ", PowaAuras.CurrentAuraId, " ", self.owner);
 
 	UIDropDownMenu_SetSelectedValue(self.owner, self.value);
 
@@ -2131,7 +2131,7 @@ function PowaAuras.DropDownMenu_OnClickBuffType(self)
 		aura.owntex = false;
 	end
 
-	PowaAuras:Message(">>> bufftype=", aura.bufftype);
+	--PowaAuras:Message(">>> bufftype=", aura.bufftype);
 	PowaAuras:InitPage(aura);
 end
 

@@ -34,6 +34,7 @@ cPowaAura = PowaClass(function(aura, id, base)
 	aura.Active = false;
 	aura.HideRequest = false;
 	aura.Debug = nil;
+	aura.CurrentText = nil;
 	
 	if (aura.minDuration) then
 		aura.duration = math.max(aura.duration, aura.minDuration);
@@ -335,7 +336,7 @@ end
 function cPowaAura:UpdateText(texture)
 	if (not self.textaura) then return; end
 	local newText = self:GetAuraText();
-	if (newText~=self.CurrentText) then
+	if (newText~=self.CurrentText or texture==nil) then
 		if (texture==nil) then
 			texture = self:GetTexture();
 		end
@@ -2727,8 +2728,8 @@ function cPowaSpellAlert:CheckIfShouldShow(giveReason)
 				end
 			end
 		end
-		if (not giveReason) then return false; end
-		return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonNotCastingOnMe);
+		--if (not giveReason) then return false; end
+		--return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonNotCastingOnMe);
 	end
 	return self:CheckAllUnits(giveReason);
 end
