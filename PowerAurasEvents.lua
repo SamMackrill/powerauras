@@ -271,7 +271,7 @@ end
 function PowaAuras:CheckPower(unit, resourceType)
 	if (resourceType=="MANA") then
 		self:SetCheckResource("Mana", unit);
-	elseif (resourceType=="RAGE" or resourceType=="ENERGY" or resourceType=="RUNIC_POWER" or resourceType=="HOLY_POWER") then
+	else
 		self:SetCheckResource("Power", unit);
 	end
 end
