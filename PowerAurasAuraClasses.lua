@@ -2438,10 +2438,13 @@ function cPowaPowerType:UnitValueMax(unit)
 end
 
 function cPowaPowerType:IsCorrectPowerType(unit)
-	if (self.PowerType==SPELL_POWER_HOLY_POWER  and PowaAuras.playerclass == "PALADIN") then return true; end
-	if (self.PowerType==SPELL_POWER_RUNIC_POWER and PowaAuras.playerclass == "DEATHKNIGHT") then return true; end
-	if (self.PowerType==SPELL_POWER_SOUL_SHARDS and PowaAuras.playerclass == "WARLOCK") then return true; end
-	if (self.PowerType==SPELL_POWER_HAPPINESS and PowaAuras.playerclass == "HUNTER") then return true; end
+	-- Check for correct secondary resource
+	if (self.PowerType==SPELL_POWER_HOLY_POWER  and PowaAuras.playerclass == "PALADIN")
+	or (self.PowerType==SPELL_POWER_RUNIC_POWER and PowaAuras.playerclass == "DEATHKNIGHT") 
+	or (self.PowerType==SPELL_POWER_SOUL_SHARDS and PowaAuras.playerclass == "WARLOCK") 
+	or (self.PowerType==SPELL_POWER_HAPPINESS   and PowaAuras.playerclass == "HUNTER") 
+	or (self.PowerType==SPELL_POWER_ECLIPSE     and PowaAuras.playerclass == "DRUID") then return true; end
+	
 	local unitPowerType = UnitPowerType(unit);
 	if (self.Debug) then
 		PowaAuras:DisplayText("cPowaPowerType IsCorrectPowerType powerType=", unitPowerType, " expected=", self.PowerType);
