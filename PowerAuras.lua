@@ -81,6 +81,7 @@ function PowaAuras:OnLoad(frame)
 		PowaAuras.Text.PowerType[SPELL_POWER_SOUL_SHARDS] = nil;
 		PowaAuras.Text.PowerType[SPELL_POWER_ECLIPSE] = nil;
 		PowaAuras.Text.PowerType[SPELL_POWER_HOLY_POWER] = nil;
+		PowaAuras.Text.PowerType[SPELL_POWER_FOCUS] = nil;
 	end
 	
 	--- Setting up the Import/Export static popups
