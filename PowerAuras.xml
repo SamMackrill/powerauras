@@ -913,9 +913,9 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
           </Slider>
 		  
           <Slider name="PowaBarAuraSizeSlider"
-                  inherits="PowaBarSliderTemplate">
+                  inherits="PowaBarSliderTemplateWithButtons">
             <Size>
-              <AbsDimension x="428"
+              <AbsDimension x="398"
                             y="16" />
             </Size>
             <Anchors>
@@ -950,7 +950,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                       relativeTo="PowaBarAuraSizeSlider"
                       relativePoint="BOTTOMLEFT">
                 <Offset>
-                  <AbsDimension x="30"
+                  <AbsDimension x="0"
                                 y="-18" />
                 </Offset>
               </Anchor>
@@ -3659,7 +3659,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
 	         <Slider name="PowaTimerInvertAuraSlider"
                       inherits="PowaBarSliderTemplateWithButtons">
                 <Size>
-                  <AbsDimension x="260"
+                  <AbsDimension x="398"
                                 y="16" />
                 </Size>
                 <Anchors>
@@ -3675,12 +3675,12 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 <Scripts>
                   <OnLoad>
                   	self.aide = PowaAuras.Text.aidePowaTimerInvertAuraSlider;
-					self:SetMinMaxValues(0,300);
+					self:SetMinMaxValues(0,600);
 					self:SetValue(0);
 					self:SetValueStep(0.25);
                   	getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomTimerInvertAura.." : 0"); 
                   	getglobal(self:GetName().."Low"):SetText("0");
-                  	getglobal(self:GetName().."High"):SetText("300");
+                  	getglobal(self:GetName().."High"):SetText("600");
                   </OnLoad>
                   <OnValueChanged>PowaAuras:PowaTimerInvertAuraSliderChanged(self);</OnValueChanged>
                 </Scripts>
