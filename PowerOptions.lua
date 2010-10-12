@@ -1237,7 +1237,11 @@ function PowaAuras:InitPage(aura)
 	
 	PowaBarUnitn:SetText(aura.unitn);
 	
-	PowaBarBuffStacks:SetText(aura:StacksText());	
+	PowaBarBuffStacks:SetText(aura:StacksText());
+	
+	PowaAuras:UpdateStacksOptions(); 
+	PowaAuras:UpdateTimerOptions(); 
+
     
 	if (aura.optunitn == true) then
 		self:EnableTextfield("PowaBarUnitn");
