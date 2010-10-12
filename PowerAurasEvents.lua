@@ -737,6 +737,7 @@ function PowaAuras:UPDATE_SHAPESHIFT_FORM(...)
 	if (self.ModTest) then return; end
 	self.DoCheck.Stance = true;
 	self.DoCheck.Actions = true;
+	self.DoCheck.Combo = true;
 end
 
 function PowaAuras:UNIT_INVENTORY_CHANGED(...)
