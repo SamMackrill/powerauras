@@ -15,6 +15,8 @@ end);
 
 -- This is the set of values that will be exported with their default values
 -- Be very careful if you change this as it may break old exports, adding new values is safe
+-- Stings must always be set as at least an empty string
+-- Numbers an booleans can be set interchangable (e.g. for tri-states)
 cPowaStacks.ExportSettings = {
 	enabled = false,
 	x = 0,
@@ -181,6 +183,8 @@ end);
 
 -- This is the set of values that will be exported with their default values
 -- Be very careful if you change this as it may break many old exports
+-- Stings must always be set as at least an empty string
+-- Numbers an booleans can be set interchangable (e.g. for tri-states)
 cPowaTimer.ExportSettings = {
 	enabled = false,
 	x = 0,
