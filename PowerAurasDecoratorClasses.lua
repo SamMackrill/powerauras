@@ -113,16 +113,21 @@ end
 
 function cPowaStacks:SetStackCount(count)
 	--PowaAuras:UnitTestInfo("SetStackCount Id=",self.id," Count=",count);
-	--PowaAuras:Message("SetStackCount Id=",self.id," Count=",count);
 	local aura = PowaAuras.Auras[self.id];
 	if (aura == nil) then
 		--PowaAuras:UnitTestInfo("Stacks aura missing");
 		--PowaAuras:Message("Stacks aura missing");
 		return;
 	end
+	if (aura.Debug) then
+		PowaAuras:DisplayText("SetStackCount Id=",self.id," Count=",count);
+	end
+
 	if (self.enabled==false) then 
 		--PowaAuras:UnitTestInfo("Stacks disabled");
-		--PowaAuras:Message("Stacks disabled");
+		if (aura.Debug) then
+			PowaAuras:DisplayText("Stacks disabled");
+		end
 		return;
 	end
 	if (not count or count==0) then
@@ -133,9 +138,12 @@ function cPowaStacks:SetStackCount(count)
 		self.Showing = false;
 		return;
 	end
+	
 	if (count>99) then count = 99; end;
 	if (self.lastShownValue==count and self.Showing) then
-		--PowaAuras:Message("Stacks disabled");
+		if (aura.Debug) then
+			PowaAuras:DisplayText("Stacks unchanged");
+		end
 		return;
 	end
 	self.lastShownValue=count;
