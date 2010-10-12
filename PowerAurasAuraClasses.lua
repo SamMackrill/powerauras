@@ -2351,8 +2351,12 @@ function cPowaAuraStats:CheckUnit(unit)
 		curValue = (curValue / maxValue) * 100;
 	end
 	
+	if (self.Stacks) then
+		self.Stacks:SetStackCount(curValue);
+	end	
+				
 	if (self.Debug) then
-		PowaAuras:DisplayText(curValue..self.RangeType, "% threshold=",self.threshold);
+		PowaAuras:DisplayText(curValue..self.RangeType, " threshold=",self.threshold);
 	end
 
 	if self.thresholdinvert then 
@@ -2431,6 +2435,10 @@ function cPowaPowerType:UnitValue(unit)
 	local power;
 	if (not self.PowerType or self.PowerType==-1) then
 		power = UnitPower(unit);
+	elseif (self.PowerType==SPELL_POWER_LUNAR_ECLIPSE) then
+		power = math.max(-UnitPower(unit, SPELL_POWER_ECLIPSE), 0);
+	elseif (self.PowerType==SPELL_POWER_SOLAR_ECLIPSE) then
+		power = math.max(UnitPower(unit, SPELL_POWER_ECLIPSE));
 	else
 		power = UnitPower(unit, self.PowerType);
 	end
@@ -2448,6 +2456,8 @@ function cPowaPowerType:UnitValueMax(unit)
 	local power;
 	if (not self.PowerType or self.PowerType==-1) then
 		maxpower = UnitPowerMax(unit);
+	elseif (self.PowerType==SPELL_POWER_LUNAR_ECLIPSE or self.PowerType==SPELL_POWER_SOLAR_ECLIPSE) then
+		maxpower = 100;
 	else
 		maxpower = UnitPowerMax(unit, self.PowerType);
 	end
@@ -2463,7 +2473,7 @@ function cPowaPowerType:IsCorrectPowerType(unit)
 	or (self.PowerType==SPELL_POWER_RUNIC_POWER and PowaAuras.playerclass == "DEATHKNIGHT") 
 	or (self.PowerType==SPELL_POWER_SOUL_SHARDS and PowaAuras.playerclass == "WARLOCK") 
 	or (self.PowerType==SPELL_POWER_HAPPINESS   and PowaAuras.playerclass == "HUNTER") 
-	or (self.PowerType==SPELL_POWER_ECLIPSE     and PowaAuras.playerclass == "DRUID") then return true; end
+	or ((self.PowerType==SPELL_POWER_LUNAR_ECLIPSE or self.PowerType==SPELL_POWER_SOLAR_ECLIPSE)     and PowaAuras.playerclass == "DRUID") then return true; end
 	
 	local unitPowerType = UnitPowerType(unit);
 	if (self.Debug) then
