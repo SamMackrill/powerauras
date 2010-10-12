@@ -656,6 +656,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomReasonNoEnchant = "No enchant found on weapons for $1", -- $1=Enchant match
 
 	nomReasonNoUseCombo = "You do not use combo points",
+	nomReasonNoUseComboInForm = "You don't use combo points in this form",
 	nomReasonComboMatch = "Combo points $1 match $2",-- $1=Combo Points, $2=Combo Match
 	nomReasonNoComboMatch = "Combo points $1 no match with $2",-- $1=Combo Points, $2=Combo Match
 
