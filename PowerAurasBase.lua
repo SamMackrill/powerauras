@@ -682,7 +682,7 @@ PowaAuras.RangeType = {
 	[SPELL_POWER_RUNES] = "%",
 	[SPELL_POWER_RUNIC_POWER] = "%",
 	[SPELL_POWER_SOUL_SHARDS] = "",
-	[SPELL_POWER_ECLIPSE] = "%",
+	[SPELL_POWER_ECLIPSE] = "",
 	[SPELL_POWER_HOLY_POWER] = "",
 };
 

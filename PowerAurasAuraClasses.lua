@@ -2010,13 +2010,31 @@ function cPowaCombo:AddEffectAndEvents()
 	table.insert(PowaAuras.AurasByType[self.AuraType], self.id);
 	PowaAuras.Events.UNIT_COMBO_POINTS = true;
 	PowaAuras.Events.PLAYER_TARGET_CHANGED = true;
+	if (PowaAuras.playerclass=="DRUID") then
+		PowaAuras.Events.UPDATE_SHAPESHIFT_FORM = true;
+	end
 end						  
 
 function cPowaCombo:CheckIfShouldShow(giveReason)
-	if (not(PowaAuras.playerclass == "ROGUE" or (PowaAuras.playerclass=="DRUID" and GetShapeshiftForm()==3))) then
+	if (PowaAuras.playerclass ~= "ROGUE" and PowaAuras.playerclass~="DRUID") then
 		if (not giveReason) then return nil; end
 		return nil, PowaAuras.Text.nomReasonNoUseCombo;
 	end
+	
+	if (PowaAuras.playerclass=="DRUID") then
+		local form = GetShapeshiftForm();
+		if (form==0) then
+			if (not giveReason) then return nil; end
+			return nil, PowaAuras.Text.nomReasonNoUseComboInForm;
+		end
+		local icon = GetShapeshiftFormInfo(form);
+		PowaAuras:ShowText("playerclass=",PowaAuras.playerclass, " GetShapeshiftForm=",form, " icon=",icon);
+		if (icon ~= "Interface\\Icons\\Spell_Nature_WispSplode") then
+			if (not giveReason) then return nil; end
+			return nil, PowaAuras.Text.nomReasonNoUseComboInForm;
+		end
+	end
+
 	PowaAuras:Debug("Check Combos");
 	local nCombo = GetComboPoints("player");
 	local combo = tostring(nCombo);
