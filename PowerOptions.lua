@@ -439,16 +439,13 @@ end
 function PowaAuras:ExtractImportValue(valueType, value)
 	if (string.sub(valueType,1,2) == "st") then
 		return value;
-	elseif string.sub(valueType,1,2) == "bo" then
-		if value == "false" then
-			return false;
-		elseif value == "true" then
-			return true;
-		end
-	elseif string.sub(valueType,1,2) == "nu" then
-		return tonumber(value);
 	end
-	return nil;
+	if value == "false" then
+		return false;
+	elseif value == "true" then
+		return true;
+	end
+	return tonumber(value);
 end
 
 function PowaAuras:VersionGreater(v1, v2)
