@@ -483,8 +483,8 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 			var = string.sub(var,3);
 			if (key=="Version") then
 				--self:Message("key ",key,"=", var);
-				local _, _, major, minor, build, revision = string.find(var, self.VersionPattern);
-				if (self:VersionGreater({Major=tonumber(major), Minor=tonumber(minor), Build=tonumber(build), Revision=revision},
+				local _, _, major, minor = string.find(var, self.VersionPattern);
+				if (self:VersionGreater({Major=tonumber(major), Minor=tonumber(minor), Build=0, Revision=""},
 										{Major=3, Minor=0, Build=0, Revision="J"})) then
 					oldSpellAlertLogic = false;
 				end
