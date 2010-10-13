@@ -76,15 +76,6 @@ end
 
 function PowaAuras:OnLoad(frame)
 
-	-- Remove Cata stuff from live
-	if (not PowaAuras.Cataclysm) then
-		PowaAuras.Text.PowerType[SPELL_POWER_SOUL_SHARDS] = nil;
-		PowaAuras.Text.PowerType[SPELL_POWER_SOLAR_ECLIPSE] = nil;
-		PowaAuras.Text.PowerType[SPELL_POWER_LUNAR_ECLIPSE] = nil;
-		PowaAuras.Text.PowerType[SPELL_POWER_HOLY_POWER] = nil;
-		PowaAuras.Text.PowerType[SPELL_POWER_FOCUS] = nil;
-	end
-	
 	--- Setting up the Import/Export static popups
 	self:SetupStaticPopups();
 
