@@ -1,7 +1,7 @@
 PowaAuras = {
 	Version = GetAddOnMetadata("PowerAuras", "Version");
 	
-	VersionPattern = "(%d+)%.(%d+)%.(%d+)(%a*)";
+	VersionPattern = "(%d+)%.(%d+)";
 	
 	IconSource = "Interface\\Icons\\";
 	
@@ -615,48 +615,20 @@ PowaAuras = {
 	
 };
 
-PowaAuras.Cataclysm = (select(4,GetBuildInfo()) == 40000) ;
-
 -- Use these spells to detect GCD
-if (PowaAuras.Cataclysm) then
-	PowaAuras.GCDSpells = {
-			PALADIN = 635,       -- Holy Light [OK]
-			PRIEST = 21562,      -- Power Word: Fortitude
-			SHAMAN = 8017,       -- Rockbiter
-			WARRIOR = 772,       -- Rend (only from level 4) [OK]
-			DRUID = 5176,        -- Wrath
-			MAGE = 7302,         -- Frost Armor
-			WARLOCK = 1454,      -- Life Tap (only from level 6)
-			ROGUE = 1752,        -- Sinister Strike
-			HUNTER = 1978,       -- Serpent Sting (only from level 4)
-			DEATHKNIGHT = 45902, -- Blood Strike
-		};
-else
-	PowaAuras.GCDSpells = {
-		PALADIN = 635,       -- Holy Light I [OK]
-		PRIEST = 1243,       -- Power Word: Fortitude I
-		SHAMAN = 8017,       -- Rockbiter I
-		WARRIOR = 772,       -- Rend I (only from level 4) [OK]
-		DRUID = 5176,        -- Wrath I
-		MAGE = 168,          -- Frost Armor I
-		WARLOCK = 687,       -- Demon Skin I
-		ROGUE = 1752,        -- Sinister Strike I
-		HUNTER = 1978,       -- Serpent Sting I (only from level 4)
-		DEATHKNIGHT = 45902, -- Blood Strike I
+PowaAuras.GCDSpells = {
+		PALADIN = 635,       -- Holy Light [OK]
+		PRIEST = 21562,      -- Power Word: Fortitude
+		SHAMAN = 8017,       -- Rockbiter
+		WARRIOR = 772,       -- Rend (only from level 4) [OK]
+		DRUID = 5176,        -- Wrath
+		MAGE = 7302,         -- Frost Armor
+		WARLOCK = 1454,      -- Life Tap (only from level 6)
+		ROGUE = 1752,        -- Sinister Strike
+		HUNTER = 1978,       -- Serpent Sting (only from level 4)
+		DEATHKNIGHT = 45902, -- Blood Strike
 	};
-	-- Power Types
-	SPELL_POWER_MANA = 0;
-	SPELL_POWER_RAGE = 1;
-	SPELL_POWER_FOCUS = 2;
-	SPELL_POWER_ENERGY = 3;
-	SPELL_POWER_HAPPINESS = 4;
-	SPELL_POWER_RUNES = 5;
-	SPELL_POWER_RUNIC_POWER = 6;
-	SPELL_POWER_SOUL_SHARDS = 7;
-	SPELL_POWER_ECLIPSE = 8;
-	SPELL_POWER_HOLY_POWER = 9;
 
-end
 
 SPELL_POWER_LUNAR_ECLIPSE = 108;
 SPELL_POWER_SOLAR_ECLIPSE = 208;
