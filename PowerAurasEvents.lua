@@ -11,6 +11,12 @@ function PowaAuras:VARIABLES_LOADED(...)
 		if (PowaAuras.PowaMiscDefault[k]==nil) then PowaMisc[k] = nil; end
 	end
 	
+	if (PowaMisc.OverrideMaxTextures) then
+		self.MaxTextures = PowaMisc.UserSetMaxTextures;
+	else
+		self.MaxTextures = PowaAuras.TextureCount;
+	end
+	
 	local _, _, major, minor = string.find(self.Version, self.VersionPattern);
 	self.VersionParts = {Major=tonumber(major), Minor=tonumber(minor), Build=0, Revision=""};
 	 _, _, major, minor = string.find(PowaMisc.Version, self.VersionPattern);
@@ -40,8 +46,8 @@ function PowaAuras:VARIABLES_LOADED(...)
 		getglobal("PowaOptionsList"..i+5):SetText(PowaGlobalListe[i]);
 	end
 	
-	PowaBarAuraTextureSlider:SetMinMaxValues(1, PowaMisc.MaxTextures);
-	PowaBarAuraTextureSliderHigh:SetText(PowaMisc.MaxTextures);
+	PowaBarAuraTextureSlider:SetMinMaxValues(1, self.MaxTextures);
+	PowaBarAuraTextureSliderHigh:SetText(self.MaxTextures);
 	
 	self:FindAllChildren();
 	self:CreateEffectLists();
@@ -222,37 +228,10 @@ function PowaAuras:UNIT_MANA(...)
 	local unit = ...;
 	self:SetCheckResource("Mana", unit);
 end
-
--- Power type changes
 	
 function PowaAuras:UNIT_MAXMANA(...)
 	local unit = ...;
 	self:SetCheckResource("Mana", unit);
-end
-
-function PowaAuras:UNIT_RAGE(...)
-	local unit = ...;
-	self:SetCheckResource("Power", unit);
-end
-
-function PowaAuras:UNIT_ENERGY(...)
-	local unit = ...;
-	self:SetCheckResource("Power", unit);
-end
-
-function PowaAuras:UNIT_MAXENERGY(...)
-	local unit = ...;
-	self:SetCheckResource("Power", unit);
-end
-
-function PowaAuras:UNIT_RUNIC_POWER(...)
-	local unit = ...;
-	self:SetCheckResource("Power", unit);
-end
-
-function PowaAuras:UNIT_MAXRUNIC_POWER(...)
-	local unit = ...;
-	self:SetCheckResource("Power", unit);
 end
 
 function PowaAuras:UNIT_POWER(...)
