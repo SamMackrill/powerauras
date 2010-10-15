@@ -2300,11 +2300,8 @@ function cPowaAuraStats:AddEffectAndEvents()
 			PowaAuras.Events.UNIT_MANA = true;
 			PowaAuras.Events.UNIT_MAXMANA = true;
 		elseif (self.ValueName=="Power") then
-			PowaAuras.Events.UNIT_RAGE = true;
-			PowaAuras.Events.UNIT_ENERGY = true;
-			PowaAuras.Events.UNIT_MAXENERGY = true;
-			PowaAuras.Events.UNIT_RUNIC_POWER = true;
-			PowaAuras.Events.UNIT_MAXRUNIC_POWER = true;
+			PowaAuras.Events.UNIT_POWER = true;
+			PowaAuras.Events.UNIT_MAXPOWER = true;
 		end
 	end
 	
