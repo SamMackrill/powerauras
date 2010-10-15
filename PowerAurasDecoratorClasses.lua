@@ -119,17 +119,19 @@ function cPowaStacks:SetStackCount(count)
 		--PowaAuras:Message("Stacks aura missing");
 		return;
 	end
+
+	if (self.enabled==false) then 
+		--PowaAuras:UnitTestInfo("Stacks disabled");
+		--if (aura.Debug) then
+		--	PowaAuras:DisplayText("Stacks disabled");
+		--end
+		return;
+	end
+
 	if (aura.Debug) then
 		PowaAuras:DisplayText("SetStackCount Id=",self.id," Count=",count);
 	end
 
-	if (self.enabled==false) then 
-		--PowaAuras:UnitTestInfo("Stacks disabled");
-		if (aura.Debug) then
-			PowaAuras:DisplayText("Stacks disabled");
-		end
-		return;
-	end
 	if (not count or count==0) then
 		local frame = PowaAuras.StacksFrames[self.id];
 		if (frame and frame:IsVisible()) then

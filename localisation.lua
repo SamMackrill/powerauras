@@ -185,6 +185,9 @@ PowaAuras:MergeTables(PowaAuras.Text,
     nomTextureCount = "Max Textures",
 	aideTextureCount = "Change this if you add your own textures",
 	
+	aideOverrideTextureCount = "Override the number of textures",
+	nomOverrideTextureCount= "Set this if you are adding your own textures",
+
 	ListePlayer = "Page",
 	ListeGlobal = "Global",
 	aideMove = "Move the effect here.",
