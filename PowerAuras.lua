@@ -17,7 +17,8 @@ PowaMisc =
 		AllowInspections = true,
 		AnimationFps = 30,
 		UseGTFO = nil,
-		MaxTextures = 145,
+		UserSetMaxTextures = PowaAuras.TextureCount,
+		OverrideMaxTextures = false,
 	};
 
 PowaAuras.PowaMiscDefault = PowaAuras:CopyTable(PowaMisc);
