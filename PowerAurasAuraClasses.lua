@@ -2030,7 +2030,7 @@ function cPowaCombo:CheckIfShouldShow(giveReason)
 			return nil, PowaAuras.Text.nomReasonNoUseComboInForm;
 		end
 		local icon = GetShapeshiftFormInfo(form);
-		PowaAuras:ShowText("playerclass=",PowaAuras.playerclass, " GetShapeshiftForm=",form, " icon=",icon);
+		--PowaAuras:ShowText("playerclass=",PowaAuras.playerclass, " GetShapeshiftForm=",form, " icon=",icon);
 		if (icon ~= "Interface\\Icons\\Spell_Nature_WispSplode") then
 			if (not giveReason) then return nil; end
 			return nil, PowaAuras.Text.nomReasonNoUseComboInForm;
