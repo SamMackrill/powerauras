@@ -1,6 +1,8 @@
 -->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 --      << Power Auras >>
 -->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+--
+-- Use this regex to find debug spam before a release!
 -- ^\s*[^-\s][^-\s].*:ShowText\(.*$
 
 -- Exposed for Saving
