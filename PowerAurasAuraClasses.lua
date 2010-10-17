@@ -3403,7 +3403,7 @@ function cPowaItems:CheckIfShouldShow(giveReason)
 			if (self.Debug) then
 				PowaAuras:Message("Looking for item=",item); --OK
 			end
-			local itemName, _, _, _, _, _, _, _, _, itemTexture = GetItemInfo(item);
+			local itemName, itemLink, _, _, _, _, _, _, _, itemTexture = GetItemInfo(item);
 			if (self.Debug) then
 				PowaAuras:Message("itemName=",itemName," itemStackCount=",itemStackCount," itemTexture=",itemTexture); --OK
 			end
@@ -3455,13 +3455,20 @@ function cPowaItems:CheckIfShouldShow(giveReason)
 					return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonItemNotOnPlayer, itemName);
 				end
 			
-				local cdstart, cdduration, enabled = GetItemCooldown(item);
-				--PowaAuras:UnitTestDebug("cdstart= ",cdstart," duration= ",cdduration," enabled= ",enabled);
+				local _, _, itemId = string.find(itemLink,"item:(%d+):(%d+):(%d+):(%d+)");
 				if (self.Debug) then
-					PowaAuras:Message("cdstart= ",cdstart," duration= ",cdduration," enabled= ",enabled); --OK
+					PowaAuras:Message("itemLink= ",itemLink," itemName= ",itemName," itemId= ",itemId); --OK
+				end
+				local cdstart, cdduration, enabled;
+				if (itemId) then
+					cdstart, cdduration, enabled = GetItemCooldown(tonumber(itemId));
+					--PowaAuras:UnitTestDebug("cdstart= ",cdstart," duration= ",cdduration," enabled= ",enabled);
+					if (self.Debug) then
+						PowaAuras:Message("cdstart= ",cdstart," duration= ",cdduration," enabled= ",enabled); --OK
+					end
 				end
 
-				if (enabled) then
+				if (itemId and enabled) then
 			
 					if (cdstart == 0) then
 						if (self.Debug) then
@@ -3492,7 +3499,7 @@ function cPowaItems:CheckIfShouldShow(giveReason)
 		
 				else
 					if (giveReason) then
-						reason = PowaAuras:InsertText(PowaAuras.Text.nomReasonItemDisabled, itemName);
+						reason = PowaAuras:InsertText(PowaAuras.Text.nomReasonItemNotEnabled, itemName);
 					end
 				end
 			else
