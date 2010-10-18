@@ -731,7 +731,7 @@ function cPowaAura:SetTexture(texture)
 	PowaAuras.Textures[self.id] = texture;
 end
 
-function cPowaAura:GetSpellNameFromMatch(spellMatch)
+function cPowaAura:GetSpellFromMatch(spellMatch)
 	local _, _,spellId = string.find(spellMatch, "%[(%d+)%]");
 	if (spellId) then
 		spellId = tonumber(spellId);
@@ -797,16 +797,16 @@ function cPowaAura:MatchSpell(spellName, spellTexture, spellId, textToFind)
 				 spellName = pword;
 			else
 				textToSearch = spellName;
-				spellName, textureMatch, spellIdMatch = self:GetSpellNameFromMatch(pword);
+				spellName, textureMatch, spellIdMatch = self:GetSpellFromMatch(pword);
 			end
 			if (spellName==nil) then
 				PowaAuras:DisplayText(PowaAuras:InsertText(PowaAuras.Text.nomUnknownSpellId, pword)); -- OK
 			end
-			if (spellIdMatch and spellId and spellIdMatch==spellId) then
+			if (spellIdMatch and spellId) then
 				if (self.Debug) then
-					PowaAuras:Message("Spell Ids match (", spellIdMatch, ")"); --OK
+					PowaAuras:Message("Check Spell Ids match spell=", spellId, " looking for Id=", spellIdMatch, " found=", (spellIdMatch==spellId)); --OK
 				end
-				return true;
+				return (spellIdMatch==spellId);
 			end
 			--PowaAuras:ShowText("textureMatch=", textureMatch);
 			if (spellName and (not textureMatch or textureMatch==spellTexture)) then
@@ -1194,14 +1194,17 @@ function cPowaBuffBase:IsPresent(unit, s, giveReason, textToCheck)
 	self.DisplayUnit = nil;
 	PowaAuras:Debug("IsPresent on ",unit,"  buffid ",s," type", self.buffAuraType);
 	--PowaAuras.BuffSlotCount = PowaAuras.BuffSlotCount + 1;
+	if (self.Debug) then
+		PowaAuras:DisplayText("IsPresent on ",unit,"  buffid ",s," type", self.buffAuraType);
+	end
 
-	local auraName, _, auraTexture, count, _, _, expirationTime, caster = UnitAura(unit, s, self.buffAuraType);
+	local auraName, _, auraTexture, count, _, _, expirationTime, caster, _, _, auraId  = UnitAura(unit, s, self.buffAuraType);
 	
 	if (auraName == nil) then return nil; end
 
 	PowaAuras:Debug("Aura=",auraName," count=",count," expirationTime=", expirationTime," caster=",caster);
 
-	if (not self:CompareAura(unit, s, auraName, auraTexture, textToCheck)) then
+	if (not self:CompareAura(unit, s, auraName, auraTexture, auraId, textToCheck)) then
 		PowaAuras:Debug("CompareAura not found");
 		return false;
 	end
@@ -1326,9 +1329,12 @@ function cPowaBuffBase:CheckAllAuraSlots(target, giveReason)
 	end
 	if (not startFrom) then startFrom = 1; end
 	for pword in string.gmatch(self.buffname, "[^/]+") do
+		if (self.Debug) then
+			PowaAuras:DisplayText("Check Auras for ", pword);
+		end
 		for i = startFrom - 1, 1, -1 do
 			if (self.Debug) then
-				PowaAuras:DisplayText("Buff for slot down (", i, ") ", pword);
+				PowaAuras:DisplayText("  down (", i, ") ");
 			end
 			present, reason = self:IsPresent(target, i, giveReason, pword);
 			if (present) then
@@ -1342,7 +1348,7 @@ function cPowaBuffBase:CheckAllAuraSlots(target, giveReason)
 		end
 		for i = startFrom, 40 do
 			if (self.Debug) then
-				PowaAuras:DisplayText("Buff for slot up (", i, ") ", pword);
+				PowaAuras:DisplayText("  up (", i, ") ");
 			end
 			present, reason = self:IsPresent(target, i, giveReason, pword);
 			if (present==nil) then
@@ -2196,7 +2202,7 @@ function cPowaOwnSpell:CheckIfShouldShow(giveReason)
 	--PowaAuras:ShowText("====OWN SPELL====");
 	--PowaAuras:ShowText("Spell=", self.buffname);
 	for pword in string.gmatch(self.buffname, "[^/]+") do
-		local spellName, spellIcon = self:GetSpellNameFromMatch(pword);
+		local spellName, spellIcon, spellId = self:GetSpellFromMatch(pword);
 		if (self:IconIsRequired()) then
 			if (not spellIcon) then
 				_, _, spellIcon = GetSpellInfo(spellName);
