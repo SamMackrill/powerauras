@@ -782,7 +782,7 @@ function cPowaAura:MatchSpell(spellName, spellTexture, spellId, textToFind)
 		return true;
 	end
 	if (self.Debug) then
-		PowaAuras:Message("  MatchSpell spellName   =",spellName); --OK
+		PowaAuras:Message("  MatchSpell spellName   =",spellName, " ID=", spellId); --OK
 		--PowaAuras:Message("             spellTexture=",spellTexture); --OK
 		PowaAuras:Message("             textToFind  =",textToFind); --OK
 	end
