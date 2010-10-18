@@ -733,9 +733,10 @@ end
 
 function cPowaAura:GetSpellNameFromMatch(spellMatch)
 	local _, _,spellId = string.find(spellMatch, "%[(%d+)%]");
-	if (spellId) then		
-		local spellName, rank, spellIcon = GetSpellInfo(tonumber(spellId));
-		return spellName, spellIcon;
+	if (spellId) then
+		spellId = tonumber(spellId);
+		local spellName, rank, spellIcon = GetSpellInfo(spellId);
+		return spellName, spellIcon, spellId;
 	end
 	return spellMatch;
 end
@@ -773,7 +774,7 @@ function cPowaAura:Trim(s)
     return (string.gsub(s, "^%s*(.-)%s*$", "%1"));
 end
 
-function cPowaAura:MatchSpell(spellName, spellTexture, textToFind)
+function cPowaAura:MatchSpell(spellName, spellTexture, spellId, textToFind)
 	if (spellName==nil or textToFind==nil) then
 		return false;
 	end
@@ -790,15 +791,22 @@ function cPowaAura:MatchSpell(spellName, spellTexture, textToFind)
 		if (string.len(pword)>0) then
 			local textToSearch;
 			local textureMatch;
+			local spellIdMatch;
 			if string.find(pword, "_") then
 				 _, _,textToSearch = string.find(spellTexture, "([%w_]*)$")
 				 spellName = pword;
 			else
 				textToSearch = spellName;
-				spellName, textureMatch = self:GetSpellNameFromMatch(pword);
+				spellName, textureMatch, spellIdMatch = self:GetSpellNameFromMatch(pword);
 			end
 			if (spellName==nil) then
 				PowaAuras:DisplayText(PowaAuras:InsertText(PowaAuras.Text.nomUnknownSpellId, pword)); -- OK
+			end
+			if (spellIdMatch and spellId and spellIdMatch==spellId) then
+				if (self.Debug) then
+					PowaAuras:Message("Spell Ids match (", spellIdMatch, ")"); --OK
+				end
+				return true;
 			end
 			--PowaAuras:ShowText("textureMatch=", textureMatch);
 			if (spellName and (not textureMatch or textureMatch==spellTexture)) then
@@ -1264,11 +1272,11 @@ function cPowaBuffBase:CheckTooltip(text, target, index)
 	return false;
 end
 
-function cPowaBuffBase:CompareAura(target, z, auraName, auraTexture, textToCheck)
+function cPowaBuffBase:CompareAura(target, z, auraName, auraTexture, auraId, textToCheck)
 	
 	PowaAuras:Debug("CompareAura",z," ",auraName, auraTexture);
 	
-	if self:MatchSpell(auraName, auraTexture, textToCheck) then
+	if self:MatchSpell(auraName, auraTexture, auraId, textToCheck) then
 		--PowaAuras:UnitTestDebug("Aura match found! ", self.id);
 		if (not self:CheckTooltip(self.tooltipCheck, target, z)) then
 			--PowaAuras:UnitTestDebug("Tooltip no match found!");
@@ -1674,13 +1682,13 @@ function cPowaStealableSpell:CheckUnit(unit)
 
 		for i = 1, 40 do
 		
-			local auraName, _, auraTexture, count, typeDebuff, _, expirationTime, _, isStealable = UnitAura(unit, i);
+			local auraName, _, auraTexture, count, typeDebuff, _, expirationTime, _, isStealable, _, auraId = UnitAura(unit, i);
 			
 			if (auraName == nil) then return nil; end
 
 			--PowaAuras:ShowText("Aura=",auraName," count=",count," expirationTime=", expirationTime," isStealable=",isStealable);
 
-			if (isStealable and self:CompareAura(unit, s, auraName, auraTexture, pword)) then
+			if (isStealable and self:CompareAura(unit, s, auraName, auraTexture, auraId, pword)) then
 				if (self.Stacks) then
 					self.Stacks:SetStackCount(count);
 				end			
@@ -1774,13 +1782,13 @@ function cPowaPurgeableSpell:CheckUnit(unit)
 
 		for i = 1, 40 do
 		
-			local auraName, _, auraTexture, count, typeDebuff, _, expirationTime = UnitAura(unit, i, "CANCELABLE");
+			local auraName, _, auraTexture, count, typeDebuff, _, expirationTime, _, _, _, auraId = UnitAura(unit, i, "CANCELABLE");
 			
 			if (auraName == nil) then return nil; end
 
 			--PowaAuras:ShowText(i," C Aura=",auraName," count=",count," expirationTime=", expirationTime);
 
-			if (auraName and self:CompareAura(unit, s, auraName, auraTexture, pword)) then
+			if (auraName and self:CompareAura(unit, s, auraName, auraTexture, auraId, pword)) then
 				if (self.Stacks) then
 					self.Stacks:SetStackCount(count);
 				end			
@@ -1857,7 +1865,7 @@ function cPowaAoE:CheckIfShouldShow(giveReason)
 
 	for spellId, spell in pairs (PowaAuras.AoeAuraAdded) do
 		--PowaAuras:ShowText("checking AoE "..spell.." ("..spellId..")");
-		if self:MatchSpell(spell, PowaAuras.AoeAuraTexture[spellId], self.buffname) then
+		if self:MatchSpell(spell, PowaAuras.AoeAuraTexture[spellId], spellId, self.buffname) then
 			--PowaAuras:ShowText("Found! Showing=", self.Showing, " Active=", self.Active);
 			self:SetIcon("Interface\\icons\\Spell_fire_meteorstorm");
 			if (self.duration>0) then
@@ -2688,7 +2696,7 @@ end
 
 function cPowaSpellAlert:CheckSpellName(unit, spellname, spellicon, endtime, spellId)	
 	
-	if self:MatchSpell(spellname, spellicon, self.buffname, true) then
+	if self:MatchSpell(spellname, spellicon, spellId, self.buffname, true) then
 		if (self.Timer and endtime~=nil) then
 			self.Timer:SetDurationInfo(GetTime() + endtime/1000);
 			self:CheckTimerInvert();
