@@ -2296,13 +2296,8 @@ function cPowaAuraStats:AddEffectAndEvents()
 		PowaAuras.Events.UNIT_HEALTH = true;
 		PowaAuras.Events.UNIT_MAXHEALTH = true;
 	else
-		if (self.ValueName=="Mana") then
-			PowaAuras.Events.UNIT_MANA = true;
-			PowaAuras.Events.UNIT_MAXMANA = true;
-		elseif (self.ValueName=="Power") then
-			PowaAuras.Events.UNIT_POWER = true;
-			PowaAuras.Events.UNIT_MAXPOWER = true;
-		end
+		PowaAuras.Events.UNIT_POWER = true;
+		PowaAuras.Events.UNIT_MAXPOWER = true;
 	end
 	
 

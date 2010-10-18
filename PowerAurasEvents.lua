@@ -223,16 +223,6 @@ function PowaAuras:UNIT_MAXHEALTH(...)
 	local unit = ...;
 	self:SetCheckResource("Health", unit);
 end
-		
-function PowaAuras:UNIT_MANA(...)
-	local unit = ...;
-	self:SetCheckResource("Mana", unit);
-end
-	
-function PowaAuras:UNIT_MAXMANA(...)
-	local unit = ...;
-	self:SetCheckResource("Mana", unit);
-end
 
 function PowaAuras:UNIT_POWER(...)
 	local unit, resourceType = ...;
