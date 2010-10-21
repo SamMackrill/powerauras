@@ -363,6 +363,14 @@ function cPowaAura:GetAuraText()
 	text = self:SubstituteInText(text , "%%sp", function() return self:SpellPower() end, PowaAuras.Text.Unknown);
 	text = self:SubstituteInText(text , "%%ap", function() return UnitAttackPower("player") end, PowaAuras.Text.Unknown);
 	text = self:SubstituteInText(text , "%%df", function() return UnitDefence("player") end, PowaAuras.Text.Unknown);
+	text = self:SubstituteInText(text , "%%u2", 
+function()
+	if (self.DisplayUnit2==nil) then return nil; end
+	local name = UnitName(self.DisplayUnit2);
+	if (name~=nil) then return name; end
+	return self.DisplayUnit2;
+end
+, PowaAuras.Text.Unknown);
 	text = self:SubstituteInText(text , "%%u", 
 function()
 	if (self.DisplayUnit==nil) then return nil; end
@@ -669,6 +677,11 @@ end
 function cPowaAura:ShouldShow(giveReason, reverse)
 	--PowaAuras:UnitTestInfo("ShouldShow", self.id);
 	--PowaAuras:ShowText("ShouldShow", self.id);
+
+	self.DisplayValue = nil;
+	self.DisplayUnit = nil;
+	self.DisplayUnit2 = nil;
+	
 	if (PowaMisc.Disabled) then
 		return false,  PowaAuras.Text.nomReasonDisabled;
 	end
@@ -1189,9 +1202,6 @@ end
 
 
 function cPowaBuffBase:IsPresent(unit, s, giveReason, textToCheck)
-
-	self.DisplayValue = nil;
-	self.DisplayUnit = nil;
 	PowaAuras:Debug("IsPresent on ",unit,"  buffid ",s," type", self.buffAuraType);
 	--PowaAuras.BuffSlotCount = PowaAuras.BuffSlotCount + 1;
 	if (self.Debug) then
@@ -1652,20 +1662,87 @@ function cPowaTypeDebuff:IsPresent(target, z)
 	return false;
 end
 
-
-cPowaStealableSpell = PowaClass(cPowaBuffBase, {buffAuraType = "HARMFUL", AuraType="Stealable Spell Type", target=true, CanHaveTimer=true, CanHaveTimerOnInverse=false, CanHaveStacks=true, CanHaveInvertTime=true});
-cPowaStealableSpell.OptionText={buffNameTooltip=PowaAuras.Text.aideStealableSpells, exactTooltip=PowaAuras.Text.aideExact, typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.StealableSpell]};
-cPowaStealableSpell.ShowOptions = {["PowaBarTooltipCheck"]=1};						 
-cPowaStealableSpell.CheckBoxes={["PowaTargetButton"]=1,
+	
+cPowaSpecialSpellBase = PowaClass(cPowaBuffBase, {buffAuraType = "HARMFUL", target=true, CanHaveTimer=true, CanHaveTimerOnInverse=false, CanHaveStacks=true, CanHaveInvertTime=true});
+cPowaSpecialSpellBase.ShowOptions = {["PowaBarTooltipCheck"]=1};						 
+cPowaSpecialSpellBase.CheckBoxes={
+							["PowaTargetButton"]=1,
 							["PowaFocusButton"]=1,
 							["PowaInverseButton"]=1,
 							["PowaIngoreCaseButton"]=1,
 							["PowaOwntexButton"]=1,
 							};
+
+function cPowaSpecialSpellBase:CheckIfShouldShow(giveReason)
+	PowaAuras:Debug("Check if target/focus is casting ", self.buffname);
+
+	if self.target or self.focus then
+		-- Check self target/focus first
+		if (self:CheckUnit("target", "player")) then
+			if (not giveReason) then return true; end
+			return true, PowaAuras:InsertText(PowaAuras.Text["nomReason"..self.AuraType.."Present"], PowaAuras.Text.nomCheckTarget, self.buffname);
+		end
+		
+		if (self:CheckUnit("focus", "player")) then
+			if (not giveReason) then return true; end
+			return true, PowaAuras:InsertText(PowaAuras.Text["nomReason"..self.AuraType.."Present"], PowaAuras.Text.nomCheckFocus, self.buffname);
+		end
+	
+		if (not giveReason) then return false; end
+		return false, PowaAuras:InsertText(PowaAuras.Text["nomReasonNo"..self.AuraType.."Present"], self.buffname);
+	end
+	
+	if (#PowaAuras.ChangedUnits.Targets>0) then
+		if (self.Debug) then
+			PowaAuras:Message(self.AuraType, " CheckIfShouldShow TargetCount=", #PowaAuras.ChangedUnits.Targets);
+		end	
+		for unit, targetOf in pairs (PowaAuras.ChangedUnits.Targets) do
+			if (self:CheckUnit(unit, targetOf)) then
+				if (not giveReason) then return true; end
+				return true, PowaAuras:InsertText(PowaAuras.Text["nomReason"..self.AuraType.."Present"], unit, self.buffname);
+			end
+		end
+		return nil;
+	end
+
+	--- Scan all raid targets
+	local numrm = GetNumRaidMembers();
+	if numrm > 0 then
+		for i=1, numrm do
+			if (self:CheckUnit("raid"..i.."target", "raid"..i)) then
+				if (not giveReason) then return true; end
+				return true, PowaAuras:InsertText(PowaAuras.Text["nomReasonRaidTarget"..self.AuraType.."Present"], i, self.buffname);
+			end
+		end
+	else
+		if (self:CheckUnit("target", "player")) then
+			if (not giveReason) then return true; end
+			return true, PowaAuras:InsertText(PowaAuras.Text["nomReason"..self.AuraType.."Present"], PowaAuras.Text.nomCheckTarget, self.buffname);
+		end
+
+	    -- Scan party targets
+		local numpm = GetNumPartyMembers();
+		if numpm > 0 then
+			for i=1, numpm do
+				if (self:CheckUnit("party"..i.."target", "party"..i)) then
+					if (not giveReason) then return true; end
+					return true, PowaAuras:InsertText(PowaAuras.Text["nomReasonPartyTarget"..self.AuraType.."Present"], i, self.buffname);
+				end
+			end
+		end
+	end
+	if (not giveReason) then return false; end
+	return false, PowaAuras:InsertText(PowaAuras.Text["nomReasonNo"..self.AuraType.."Present"], self.buffname);
+end
+
+cPowaStealableSpell = PowaClass(cPowaSpecialSpellBase, {AuraType="Stealable"});
+cPowaStealableSpell.OptionText={buffNameTooltip=PowaAuras.Text.aideStealableSpells, exactTooltip=PowaAuras.Text.aideExact, typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.StealableSpell]};
 												  
 cPowaStealableSpell.TooltipOptions = {r=0.8, g=0.8, b=0.2, showBuffName=true};
 
 function cPowaStealableSpell:AddEffectAndEvents()
+	PowaAuras.Events.UNIT_AURA = true;
+	PowaAuras.Events.UNIT_AURASTATE = true;
 	if not self.target and not self.focus then --- any enemy casts
 		table.insert(PowaAuras.AurasByType.StealableSpells, self.id);
 	end
@@ -1714,60 +1791,19 @@ function cPowaStealableSpell:CheckUnit(unit)
 	return false;
 end	
 
-function cPowaStealableSpell:CheckIfShouldShow(giveReason)
-	PowaAuras:Debug("Check if target/focus is casting ", self.buffname);
-	
-	-- Check self target/focus first
-	if (self:CheckUnit("target")) then
-		if (not giveReason) then return true; end
-		return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonStealablePresent, PowaAuras.Text.nomCheckTarget, self.buffname);
-	end
-	if (self:CheckUnit("focus")) then
-		if (not giveReason) then return true; end
-		return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonStealablePresent, PowaAuras.Text.nomCheckFocus, self.buffname);
-	end	
-
-	--- Scan raid targets
-	local numrm = GetNumRaidMembers();
-	if numrm > 0 then
-		for i=1, numrm do
-			if (self:CheckUnit("raid"..i.."target")) then
-				if (not giveReason) then return true; end
-				return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonRaidTargetStealablePresent, i, self.buffname);
-			end
-		end
-	else
-	    -- Scan party targets
-		local numpm = GetNumPartyMembers();
-		if numpm > 0 then
-			for i=1, numpm do
-				if (self:CheckUnit("party"..i.."target")) then
-					if (not giveReason) then return true; end
-					return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonPartyTargetStealablePresent, i, self.buffname);
-				end
-			end
-		end
-	end
-	if (not giveReason) then return false; end
-	return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonNoStealablePresent, self.buffname);
-end
-
-cPowaPurgeableSpell = PowaClass(cPowaBuffBase, {buffAuraType = "HARMFUL", AuraType="Purgeable Spell Type", target=true, CanHaveTimer=true, CanHaveTimerOnInverse=false, CanHaveStacks=true, CanHaveInvertTime=true});
+cPowaPurgeableSpell = PowaClass(cPowaSpecialSpellBase, {AuraType="Purgeable"});
 cPowaPurgeableSpell.OptionText={buffNameTooltip=PowaAuras.Text.aidePurgeableSpells, exactTooltip=PowaAuras.Text.aideExact, typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.PurgeableSpell]};
-cPowaPurgeableSpell.ShowOptions = {["PowaBarTooltipCheck"]=1};						 
-cPowaPurgeableSpell.CheckBoxes={
-							["PowaTargetButton"]=1,
-							["PowaFocusButton"]=1,
-							["PowaInverseButton"]=1,
-							["PowaIngoreCaseButton"]=1,
-							["PowaOwntexButton"]=1,
-							};
 												  
 cPowaPurgeableSpell.TooltipOptions = {r=0.2, g=0.8, b=0.2, showBuffName=true};
 
 function cPowaPurgeableSpell:AddEffectAndEvents()
+	PowaAuras.Events.UNIT_AURA = true;
+	PowaAuras.Events.UNIT_AURASTATE = true;
 	if not self.target and not self.focus then --- any enemy casts
 		table.insert(PowaAuras.AurasByType.PurgeableSpells, self.id);
+		PowaAuras.Events.PLAYER_TARGET_CHANGED = true;
+		PowaAuras.Events.UNIT_TARGET = true;
+		return;
 	end
 	if self.target then --- target casts
 		table.insert(PowaAuras.AurasByType.PurgeableTargetSpells, self.id);
@@ -1779,17 +1815,28 @@ function cPowaPurgeableSpell:AddEffectAndEvents()
 	end
 end
 
-function cPowaPurgeableSpell:CheckUnit(unit)
+function cPowaPurgeableSpell:CheckUnit(unit, targetOf)
 	if (not self:CorrectTargetType(unit)) then
 		return false;
 	end
 	
+	if (self.Debug) then
+		PowaAuras:Message("cPowaPurgeableSpell CheckUnit=", unit);
+	end	
+	
 	for pword in string.gmatch(self.buffname, "[^/]+") do
 
+		if (self.Debug) then
+			PowaAuras:Message("Match=", pword );
+		end	
 		for i = 1, 40 do
 		
 			local auraName, _, auraTexture, count, typeDebuff, _, expirationTime, _, _, _, auraId = UnitAura(unit, i, "CANCELABLE");
 			
+			if (self.Debug) then
+				PowaAuras:Message("Slot=", i, " auraName=", auraName, " (", auraId, ")" );
+			end	
+		
 			if (auraName == nil) then return nil; end
 
 			--PowaAuras:ShowText(i," C Aura=",auraName," count=",count," expirationTime=", expirationTime);
@@ -1797,7 +1844,10 @@ function cPowaPurgeableSpell:CheckUnit(unit)
 			if (auraName and self:CompareAura(unit, s, auraName, auraTexture, auraId, pword)) then
 				if (self.Stacks) then
 					self.Stacks:SetStackCount(count);
-				end			
+				end
+				self.DisplayValue = auraName;
+				self.DisplayUnit = unit;
+				self.DisplayUnit2 = targetOf;
 				PowaAuras:Debug("CompareAura not found");
 				if (self.Timer) then
 					self.Timer:SetDurationInfo(expirationTime);
@@ -1816,43 +1866,6 @@ function cPowaPurgeableSpell:CheckUnit(unit)
 	return false;
 end	
 
-function cPowaPurgeableSpell:CheckIfShouldShow(giveReason)
-	PowaAuras:Debug("Check if target/focus is casting ", self.buffname);
-	
-	-- Check self target/focus first
-	if (self:CheckUnit("target")) then
-		if (not giveReason) then return true; end
-		return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonPurgeablePresent, PowaAuras.Text.nomCheckTarget, self.buffname);
-	end
-	if (self:CheckUnit("focus")) then
-		if (not giveReason) then return true; end
-		return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonPurgeablePresent, PowaAuras.Text.nomCheckFocus, self.buffname);
-	end	
-
-	--- Scan raid targets
-	local numrm = GetNumRaidMembers();
-	if numrm > 0 then
-		for i=1, numrm do
-			if (self:CheckUnit("raid"..i.."target")) then
-				if (not giveReason) then return true; end
-				return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonRaidTargetPurgeablePresent, i, self.buffname);
-			end
-		end
-	else
-	    -- Scan party targets
-		local numpm = GetNumPartyMembers();
-		if numpm > 0 then
-			for i=1, numpm do
-				if (self:CheckUnit("party"..i.."target")) then
-					if (not giveReason) then return true; end
-					return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonPartyTargetPurgeablePresent, i, self.buffname);
-				end
-			end
-		end
-	end
-	if (not giveReason) then return false; end
-	return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonNoPurgeablePresent, self.buffname);
-end
 
 -- This is not really AoE it is periodic damage, could be a DoT or a ground effect damage
 cPowaAoE = PowaClass(cPowaAura, {AuraType = "Aoe"});
@@ -2641,8 +2654,6 @@ function cPowaSpellAlert:AddEffectAndEvents()
 end
 
 function cPowaSpellAlert:CheckUnit(unit)
-	self.DisplayValue = nil;
-	self.DisplayUnit = nil;
 	if (self.Debug) then
 		PowaAuras:DisplayText("Spell Alert CheckUnit ", unit);
 	end
