@@ -65,6 +65,8 @@ PowaAuras = {
 	Pending = {}; --- Workaround for 'silent' cooldown end (no event fired)
 	Cascade = {}; -- Dependant auras that need checking
 
+	UsedInMultis = {};
+
 	PowaStance = {[0] = "Humanoid"};
 	
 	PowaGTFO = {[0] = "High Damage", [1] = "Low Damage", [2] = "Fail Alert"};

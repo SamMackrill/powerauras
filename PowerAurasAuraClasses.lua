@@ -2205,13 +2205,13 @@ end
 function cPowaOwnSpell:CheckIfShouldShow(giveReason)
 	--PowaAuras:UnitTestDebug("Check Spell:", self.buffname);
 	if (self.Debug) then
-		PowaAuras:ShowText("====OWN SPELL====");
-		PowaAuras:ShowText("Spell=", self.buffname);
+		PowaAuras:Message("====OWN SPELL====");
+		PowaAuras:Message("Spell=", self.buffname);
 	end
 	for pword in string.gmatch(self.buffname, "[^/]+") do
 		local spellName, spellIcon, spellId = self:GetSpellFromMatch(pword);
 		if (self.Debug) then
-			PowaAuras:ShowText("spellName= ",spellName," spellIcon= ",spellIcon," spellId= ",spellId);
+			PowaAuras:Message("spellName= ",spellName," spellIcon= ",spellIcon," spellId= ",spellId);
 		end
 		if (self:IconIsRequired()) then
 			if (not spellIcon) then
@@ -2227,7 +2227,7 @@ function cPowaOwnSpell:CheckIfShouldShow(giveReason)
 		end
 		--PowaAuras:UnitTestDebug("cdstart= ",cdstart," duration= ",cdduration," enabled= ",enabled);
 		if (self.Debug) then
-			PowaAuras:ShowText("cdstart= ",cdstart," duration= ",cdduration," enabled= ",enabled);
+			PowaAuras:Message("cdstart= ",cdstart," duration= ",cdduration," enabled= ",enabled);
 		end
 		if (enabled~=1) then
 			if (not giveReason) then return false; end
@@ -2237,12 +2237,12 @@ function cPowaOwnSpell:CheckIfShouldShow(giveReason)
 		local globalCD = not self.CooldownOver and (cdduration > 0.2 and cdduration < 1.7) and PowaAuras.InGCD==true;
 		--PowaAuras:UnitTestDebug("globalCD= ", globalCD);
 		if (self.Debug) then
-			PowaAuras:ShowText("globalCD=",globalCD);
+			PowaAuras:Message("globalCD=",globalCD);
 		end
 		
 		if (globalCD) then
 			if (self.Debug) then
-				--PowaAuras:ShowText("GCD no change");
+				--PowaAuras:Message("GCD no change");
 			end
 			PowaAuras.Pending[self.id] = cdstart + cdduration;
 			if (not giveReason) then return -1; end
@@ -2251,7 +2251,7 @@ function cPowaOwnSpell:CheckIfShouldShow(giveReason)
 		
 		if (cdstart == 0 or self.CooldownOver) then
 			if (self.Debug) then
-				PowaAuras:ShowText("SHOW!!");
+				PowaAuras:Message("SHOW!!");
 			end
 			if (not giveReason) then return true; end
 			return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonSpellUsable, spellName);
@@ -2268,7 +2268,7 @@ function cPowaOwnSpell:CheckIfShouldShow(giveReason)
 			self:CheckTimerInvert();
 			if (self.ForceTimeInvert) then
 				if (self.Debug) then
-					PowaAuras:ShowText("SHOW2!!");
+					PowaAuras:Message("SHOW2!!");
 				end
 				if (not giveReason) then return true; end
 				return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonSpellNotReady, spellName);
@@ -2280,7 +2280,7 @@ function cPowaOwnSpell:CheckIfShouldShow(giveReason)
 		end
 	end
 	if (self.Debug) then
-		PowaAuras:ShowText("HIDE!!");
+		PowaAuras:Message("HIDE!!");
 	end
 	if (not giveReason) then return false; end
 	return false, reason
