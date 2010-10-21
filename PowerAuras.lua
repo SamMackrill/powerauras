@@ -714,6 +714,7 @@ function PowaAuras:NewCheckBuffs()
 	
 	wipe(self.AoeAuraAdded);
 	wipe(self.ChangedUnits.Buffs);
+	wipe(self.ChangedUnits.Targets);
 	wipe(self.ExtraUnitEvent);
 	wipe(self.CastOnMe);
 

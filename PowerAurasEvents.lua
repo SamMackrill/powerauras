@@ -487,6 +487,27 @@ function PowaAuras:PLAYER_TARGET_CHANGED(...)
 		self.DoCheck.Combo = true;
 	end
 end
+
+ 
+function PowaAuras:UNIT_TARGET(...)
+	local unit = select(1, ...);
+	local target = unit.."target";
+	if (self.DebugEvents) then
+		self:DisplayText("UNIT_TARGET ", unit);
+	end
+	if (self.ModTest == false) then
+		for existingTarget in pairs (PowaAuras.ChangedUnits.Targets) do
+			if (UnitIsUnit(target, existingTarget)) then
+				return;
+			end
+		end
+		self.ChangedUnits.Targets[target] = unit;
+		if (UnitCanAttack(target, "player")) then
+			self.DoCheck.StealableSpells = true;
+			self.DoCheck.PurgeableSpells = true;
+		end
+	end
+end
 	 
 function PowaAuras:PLAYER_REGEN_DISABLED(...)
 	self.WeAreInCombat = true;

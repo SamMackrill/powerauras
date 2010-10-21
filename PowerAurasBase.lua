@@ -147,6 +147,7 @@ PowaAuras = {
 	ChangedUnits =
 	{
 		Buffs = {},
+		Targets = {};
 	};
 
 	InspectedRoles = {};
