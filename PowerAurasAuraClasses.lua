@@ -1735,38 +1735,46 @@ function cPowaSpecialSpellBase:CheckIfShouldShow(giveReason)
 	return false, PowaAuras:InsertText(PowaAuras.Text["nomReasonNo"..self.AuraType.."Present"], self.buffname);
 end
 
+function cPowaSpecialSpellBase:AddEffectAndEvents()
+	PowaAuras.Events.UNIT_AURA = true;
+	PowaAuras.Events.UNIT_AURASTATE = true;
+	if not self.target and not self.focus then --- any enemy casts
+		table.insert(PowaAuras.AurasByType[self.AuraType.."Spells"], self.id);
+		PowaAuras.Events.UNIT_TARGET = true;
+	end
+	if self.target then --- target casts
+		table.insert(PowaAuras.AurasByType[self.AuraType.."TargetSpells"], self.id);
+		PowaAuras.Events.PLAYER_TARGET_CHANGED = true;
+	end
+	if self.focus then --- focus casts
+		table.insert(PowaAuras.AurasByType[self.AuraType.."FocusSpells"], self.id);
+		PowaAuras.Events.PLAYER_FOCUS_CHANGED = true;
+	end
+end
+
 cPowaStealableSpell = PowaClass(cPowaSpecialSpellBase, {AuraType="Stealable"});
 cPowaStealableSpell.OptionText={buffNameTooltip=PowaAuras.Text.aideStealableSpells, exactTooltip=PowaAuras.Text.aideExact, typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.StealableSpell]};
 												  
 cPowaStealableSpell.TooltipOptions = {r=0.8, g=0.8, b=0.2, showBuffName=true};
 
-function cPowaStealableSpell:AddEffectAndEvents()
-	PowaAuras.Events.UNIT_AURA = true;
-	PowaAuras.Events.UNIT_AURASTATE = true;
-	if not self.target and not self.focus then --- any enemy casts
-		table.insert(PowaAuras.AurasByType.StealableSpells, self.id);
-	end
-	if self.target then --- target casts
-		table.insert(PowaAuras.AurasByType.StealableTargetSpells, self.id);
-		PowaAuras.Events.PLAYER_TARGET_CHANGED = true;
-	end
-	if self.focus then --- focus casts
-		table.insert(PowaAuras.AurasByType.StealableFocusSpells, self.id);
-		PowaAuras.Events.PLAYER_FOCUS_CHANGED = true;
-	end
-end
-
-function cPowaStealableSpell:CheckUnit(unit)
+function cPowaStealableSpell:CheckUnit(unit, targetOf)
 	if (not self:CorrectTargetType(unit)) then
 		return false;
 	end
 	
 	for pword in string.gmatch(self.buffname, "[^/]+") do
 
+		if (self.Debug) then
+			PowaAuras:Message("Match=", pword );
+		end	
 		for i = 1, 40 do
 		
 			local auraName, _, auraTexture, count, typeDebuff, _, expirationTime, _, isStealable, _, auraId = UnitAura(unit, i);
-			
+
+			if (self.Debug) then
+				PowaAuras:Message("Slot=", i, " auraName=", auraName, " (", auraId, ")" );
+			end	
+					
 			if (auraName == nil) then return nil; end
 
 			--PowaAuras:ShowText("Aura=",auraName," count=",count," expirationTime=", expirationTime," isStealable=",isStealable);
@@ -1775,6 +1783,9 @@ function cPowaStealableSpell:CheckUnit(unit)
 				if (self.Stacks) then
 					self.Stacks:SetStackCount(count);
 				end			
+				self.DisplayValue = auraName;
+				self.DisplayUnit = unit;
+				self.DisplayUnit2 = targetOf;
 				if (self.Timer) then
 					self.Timer:SetDurationInfo(expirationTime);
 					self:CheckTimerInvert();
@@ -1795,25 +1806,6 @@ cPowaPurgeableSpell = PowaClass(cPowaSpecialSpellBase, {AuraType="Purgeable"});
 cPowaPurgeableSpell.OptionText={buffNameTooltip=PowaAuras.Text.aidePurgeableSpells, exactTooltip=PowaAuras.Text.aideExact, typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.PurgeableSpell]};
 												  
 cPowaPurgeableSpell.TooltipOptions = {r=0.2, g=0.8, b=0.2, showBuffName=true};
-
-function cPowaPurgeableSpell:AddEffectAndEvents()
-	PowaAuras.Events.UNIT_AURA = true;
-	PowaAuras.Events.UNIT_AURASTATE = true;
-	if not self.target and not self.focus then --- any enemy casts
-		table.insert(PowaAuras.AurasByType.PurgeableSpells, self.id);
-		PowaAuras.Events.PLAYER_TARGET_CHANGED = true;
-		PowaAuras.Events.UNIT_TARGET = true;
-		return;
-	end
-	if self.target then --- target casts
-		table.insert(PowaAuras.AurasByType.PurgeableTargetSpells, self.id);
-		PowaAuras.Events.PLAYER_TARGET_CHANGED = true;
-	end
-	if self.focus then --- focus casts
-		table.insert(PowaAuras.AurasByType.PurgeableFocusSpells, self.id);
-		PowaAuras.Events.PLAYER_FOCUS_CHANGED = true;
-	end
-end
 
 function cPowaPurgeableSpell:CheckUnit(unit, targetOf)
 	if (not self:CorrectTargetType(unit)) then
