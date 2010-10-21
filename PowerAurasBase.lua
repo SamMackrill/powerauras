@@ -619,17 +619,17 @@ PowaAuras = {
 	
 };
 
--- Use these spells to detect GCD
+-- Use these spells to detect GCD, ideally these should be spells classes have from the beginning
 PowaAuras.GCDSpells = {
-		PALADIN = 635,       -- Holy Light [OK]
-		PRIEST = 21562,      -- Power Word: Fortitude
-		SHAMAN = 8017,       -- Rockbiter
-		WARRIOR = 772,       -- Rend (only from level 4) [OK]
+		PALADIN = 635,       -- Holy Light
+		PRIEST = 585,        -- Smite
+		SHAMAN = 403,        -- Lightning Bolt
+		WARRIOR = 88161,     -- Strike
 		DRUID = 5176,        -- Wrath
-		MAGE = 7302,         -- Frost Armor
-		WARLOCK = 1454,      -- Life Tap (only from level 6)
+		MAGE = 133,          -- Fireball
+		WARLOCK = 686,       -- Shadow Bolt
 		ROGUE = 1752,        -- Sinister Strike
-		HUNTER = 1978,       -- Serpent Sting (only from level 4)
+		HUNTER = 982,        -- Revive Pet
 		DEATHKNIGHT = 45902, -- Blood Strike
 	};
 
