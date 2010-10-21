@@ -129,6 +129,8 @@ function PowaAuras:LoadAuras()
 			end
 		end
 	end
+	
+	self:DiscoverLinkedAuras();
 
 	--self:Message("backwards combatiblity");
 	--self.Auras[0] = cPowaAura(0, {off=true});
@@ -145,6 +147,28 @@ function PowaAuras:LoadAuras()
 	
 end
 
+function PowaAuras:DiscoverLinkedAuras()
+	for _, aura in pairs(self.Auras) do
+		self:DiscoverLinksForAura(aura, true);
+	end
+	--for id in pairs(self.UsedInMultis) do
+	--	self:ShowText("UsedInMultis ",id);
+	--end
+end
+
+function PowaAuras:DiscoverLinksForAura(aura, ignoreOff)
+	--self:ShowText("DiscoverLinksForAura ",aura.id, " multiids=",aura.multiids, " ignoreOff=",ignoreOff);
+	if (not aura or (ignoreOff and aura.off) or not aura.multiids or aura.multiids=="" or self.UsedInMultis[aura.id]) then return end
+	for pword in string.gmatch(aura.multiids, "[^/]+") do
+		if (string.sub(pword, 1, 1) == "!") then
+			pword = string.sub(pword, 2);
+		end
+		local id = tonumber(pword);
+		self.UsedInMultis[id] = true;
+		self:DiscoverLinksForAura(self.Auras[id], false);
+	end
+end
+	
 function PowaAuras:UpdateOldAuras()
 	--self:Message("Saved varaible convertion: PowaTimer #", #PowaTimer);
 	-- Copy old timer info (should be once only)
@@ -408,9 +432,9 @@ function PowaAuras:CreateEffectLists()
 	end
 	
 	self.Events = self:CopyTable(self.AlwaysEvents);
-	for _, aura in pairs(self.Auras) do
+	for id, aura in pairs(self.Auras) do
 		--print("Aura", aura.id);
-		if (not aura.off) then
+		if (not aura.off or self.UsedInMultis[id]) then
 			aura:AddEffectAndEvents();
 		end
 	end 
