@@ -164,8 +164,10 @@ function PowaAuras:DiscoverLinksForAura(aura, ignoreOff)
 			pword = string.sub(pword, 2);
 		end
 		local id = tonumber(pword);
-		self.UsedInMultis[id] = true;
-		self:DiscoverLinksForAura(self.Auras[id], false);
+		if (id) then
+			self.UsedInMultis[id] = true;
+			self:DiscoverLinksForAura(self.Auras[id], false);
+		end
 	end
 end
 	
