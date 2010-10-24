@@ -69,7 +69,7 @@
 			<Slider name="PowaOptionsUpdateSlider2"
 				  inherits="PowaBarSliderTemplate">
 				<Size>
-				  <AbsDimension x="460"
+				  <AbsDimension x="360"
 								y="16" />
 				</Size>
 				<Anchors>
@@ -97,7 +97,7 @@
 		  <Slider name="PowaOptionsAnimationsSlider2"
 				  inherits="PowaBarSliderTemplate">
 			<Size>
-			  <AbsDimension x="460"
+			  <AbsDimension x="360"
 							y="16" />
 			</Size>
 			<Anchors>
@@ -125,7 +125,7 @@
 		  <Slider name="PowaOptionsTimerUpdateSlider2"
 				  inherits="PowaBarSliderTemplate">
 			<Size>
-			  <AbsDimension x="460"
+			  <AbsDimension x="360"
 							y="16" />
 			</Size>
 			<Anchors>
@@ -181,7 +181,7 @@
 		  <Slider name="PowaOptionsTextureCount"
 				  inherits="PowaBarSliderTemplateWithButtons">
 			<Size>
-			  <AbsDimension x="435"
+			  <AbsDimension x="335"
 							y="16" />
 			</Size>
 			<Anchors>

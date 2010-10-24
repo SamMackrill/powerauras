@@ -584,10 +584,40 @@ end
 
 function PowaAuras:UNIT_EXITED_VEHICLE(...)
 	local unit = ...;
+	if (self.DebugEvents) then
+		self:DisplayText("UNIT_EXITED_VEHICLE unit = ",unit);
+	end
 	self:VehicleCheck(unit, false)
 end
+
+function PowaAuras:PLAYER_FLAGS_CHANGED(...)
+	local unit = ...;
+	if (self.DebugEvents) then
+		self:DisplayText("PLAYER_FLAGS_CHANGED unit = ",unit);
+	end
+	if (self.ModTest == false) then
+		if (UnitIsUnit(unit,"player")) then
+			self.DoCheck.PvP = true;
+		end
+		if (UnitIsUnit(unit,"target")) then
+			self.DoCheck.TargetPvP = true;
+		end
+		for i=1,GetNumPartyMembers() do
+			if (UnitIsUnit(unit,"party"..i)) then
+				self.DoCheck.PartyPvP = true;
+				break;
+			end
+		end
+		for i=1, GetNumRaidMembers() do
+			if (UnitIsUnit(unit,"raid"..i)) then
+				self.DoCheck.RaidPvP = true;
+				break;
+			end
+		end
+	end
+end
 	
-function PowaAuras:UNIT_FACTION(...) --- GetPVPTimer() returns the time until unflag in ms
+function PowaAuras:UNIT_FACTION(...)
 	local unit = ...;
 	if (self.DebugEvents) then
 		self:DisplayText("UNIT_FACTION unit = ",unit);
@@ -650,6 +680,9 @@ function PowaAuras:COMBAT_LOG_EVENT_UNFILTERED(...)
 		if (destGUID==UnitGUID("player") and spellName) then
 			if (self.DebugEvents) then
 				self:DisplayText("COMBAT_LOG_EVENT_UNFILTERED", "-  On Me! ", event);
+			end
+			if (event == "SPELL_ENERGIZE") then
+				-- can check Holy Power refresh
 			end
 			if (PowaAuras.StringStarts(event,"SPELL_") and sourceName) then
 				self.CastOnMe[sourceName] = {SpellName=spellName, SpellId=spellId, SourceGUID=sourceGUID, Hostile=bit.band(sourceFlags, COMBATLOG_OBJECT_REACTION_HOSTILE)};
