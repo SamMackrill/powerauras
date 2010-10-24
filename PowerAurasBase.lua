@@ -15,7 +15,7 @@ PowaAuras = {
 	ExportWidth = 500;
 	TextureCount = 186;
 	
-	DebugEvents = false;
+	DebugEvents = true;
 	
 	-- Internal counters
 	DebugTimer = 0;
@@ -667,6 +667,23 @@ PowaAuras.RangeType = {
 	[SPELL_POWER_SOLAR_ECLIPSE] = "%",
 	[SPELL_POWER_HOLY_POWER] = "",
 };
+
+
+PowaAuras.PowerTypeIcon = {
+	[-1] = "inv_battery_02",
+	[SPELL_POWER_MANA] = "inv_elemental_primal_mana",
+	[SPELL_POWER_RAGE] = "ability_warrior_rampage",
+	[SPELL_POWER_FOCUS] = "ability_hunter_mastermarksman",
+	[SPELL_POWER_ENERGY] = "inv_battery_02",
+	[SPELL_POWER_HAPPINESS] = "inv_misc_celebrationcake_01",
+	[SPELL_POWER_RUNES] = "spell_deathknight_runetap",
+	[SPELL_POWER_RUNIC_POWER] = "spell_arcane_arcane01",
+	[SPELL_POWER_SOUL_SHARDS] = "inv_misc_gem_amethyst_02",
+	[SPELL_POWER_LUNAR_ECLIPSE] = "ability_druid_eclipse",
+	[SPELL_POWER_SOLAR_ECLIPSE] = "ability_druid_eclipseorange",
+	[SPELL_POWER_HOLY_POWER] = "spell_holy_lightsgrace",
+};
+
 
 PowaAuras.TalentChangeSpells = {
 	[PowaAuras.Spells.ACTIVATE_FIRST_TALENT]  = true,

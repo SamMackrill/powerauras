@@ -225,7 +225,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideTracking = "Enter name of Tracking type e.g. fish",
 
 	-- editor
-	aideCustomText = "Enter text to display (%t=target name, %f=focus name, %v=display value, %u=unit name, %str=str, agl=agl, %sta=sta, %int=int, %sp1=spi, %sp=spell power, %ap=attack power, %df=defence)",
+	aideCustomText = "Enter text to display (%t=target name, %f=focus name, %v=display value, %u=unit name, %str=str, %agl=agl, %sta=sta, %int=int, %spi=spi, %sp=spell power, %ap=attack power, %df=defence)",
 
 	nomSoundStarting = "Starting Sound:",
 	nomSound = "Sound to play",

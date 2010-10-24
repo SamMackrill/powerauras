@@ -11,7 +11,7 @@
 			PowaAuras:OnLoad(self)
 		</OnLoad>
 		<OnEvent>
-			if (PowaAuras.DebugEvents) then
+			if (PowaAuras.DebugEvents and event~="COMBAT_LOG_EVENT_UNFILTERED") then
 				PowaAuras:DisplayText("Event:", event);
 			end
 			PowaAuras[event](PowaAuras, ...);

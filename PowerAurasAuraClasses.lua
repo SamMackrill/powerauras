@@ -2341,7 +2341,7 @@ function cPowaAuraStats:AddEffectAndEvents()
 		PowaAuras.Events.UNIT_MAXPOWER = true;
 	end
 	
-
+	self:SetFixedIcon();
 end
 
 function cPowaAuraStats:Init()
@@ -2395,7 +2395,6 @@ function cPowaAuraStats:CheckUnit(unit)
 
 	
 	if (thresholdvalidate) then
-		self:SetIcon("Interface\\icons\\Spell_fire_meteorstorm");
 		return true;
 	end
 	return false;
@@ -2419,6 +2418,10 @@ end
 function cPowaHealth:UnitValueMax(unit)
 	return UnitHealthMax(unit);
 end
+function cPowaHealth:SetFixedIcon()
+	self.icon = nil;
+	self:SetIcon("Interface\\icons\\inv_alchemy_elixir_05");
+end
 
 --====== Mana ======
 cPowaMana = PowaClass(cPowaAuraStats, {ValueName = "Mana"});
@@ -2437,6 +2440,10 @@ function cPowaMana:UnitValueMax(unit)
 	PowaAuras:Debug("Mana UnitValueMax for ", unit);
 	return UnitPowerMax(unit, 0);
 end
+function cPowaMana:SetFixedIcon()
+	self.icon = nil;
+	self:SetIcon("Interface\\icons\\inv_alchemy_elixir_02");
+end
 
 --====== Power ======
 cPowaPowerType = PowaClass(cPowaMana, {ValueName = "Power"});
@@ -2447,6 +2454,11 @@ cPowaPowerType.ShowOptions={
 	["PowaThresholdInvertButton"]=1,
 	["PowaDropDownPowerType"]=1,
 };
+
+function cPowaPowerType:SetFixedIcon()
+	self.icon = nil;
+	self:SetIcon("Interface\\icons\\"..PowaAuras.PowerTypeIcon[self.PowerType]);
+end
 
 function cPowaPowerType:DisplayType()
 	if (self.PowerType==-1) then
@@ -2573,6 +2585,8 @@ function cPowaPvP:AddEffectAndEvents()
 	and not self.focus
   and not self.optunitn then --- self pvp flag
 		table.insert(PowaAuras.AurasByType.PvP, self.id);
+		PowaAuras.Events.PLAYER_FLAGS_CHANGED = true;
+		self.CanHaveTimer = true;
 	end
 	if (self.target or self.targetfriend) then --- target flag
 		table.insert(PowaAuras.AurasByType.TargetPvP, self.id);
@@ -2583,13 +2597,37 @@ function cPowaPvP:AddEffectAndEvents()
 	if self.raid then --- raid pvp flagged
 		table.insert(PowaAuras.AurasByType.RaidPvP, self.id);
 	end
+	PowaAuras.Events.UNIT_FACTION = true;
+	self:SetIcon("Interface\\icons\\achievement_arena_2v2_7");
 end
 
 function cPowaPvP:CheckUnit(unit)
 	if (not self:CorrectTargetType(unit)) then
 		return false;
 	end
-	return UnitIsPVP(unit);
+	local isPvP = UnitIsPVP(unit);
+	if (not isPvP) then
+		if (self.Debug) then
+			PowaAuras:DisplayText(unit.." PvP flag is off");
+		end
+		return false;
+	end
+	if (self.Debug) then
+		PowaAuras:DisplayText(unit.." PvP flag is on");
+	end
+	if (self.Timer and UnitIsUnit("player", unit)) then
+		local duration = GetPVPTimer();
+		if (self.Debug) then
+			PowaAuras:DisplayText("PvP flag is on time left =", GetPVPTimer());
+		end
+		PowaAuras.Pending[self.id] = GetTime() + 1; -- Timer seems not to be ready immediately		
+		if (duration~=nil and duration>-1 and duration~=301000) then
+			self.Timer:SetDurationInfo(GetTime() + duration/1000);
+		else
+			self.Timer:SetDurationInfo(0);
+		end
+	end
+	return true;
 end
 
 function cPowaPvP:CheckIfShouldShow(giveReason)
