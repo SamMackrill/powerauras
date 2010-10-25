@@ -1403,6 +1403,8 @@ function cPowaBuffBase:CheckSingleUnit(group, unit, giveReason)
 			return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonOneInGroupHasBuff, unit, self.OptionText.typeText, self.buffname);
 		end
 	elseif (self.groupany==false) then
+		self.DisplayValue = self.buffname;
+		self.DisplayUnit = unit;
 		if (not giveReason) then return false; end
 		return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonNotAllInGroupHaveBuff, group, self.OptionText.typeText, self.buffname);
 	end
