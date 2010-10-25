@@ -15,7 +15,7 @@ PowaAuras = {
 	ExportWidth = 500;
 	TextureCount = 186;
 	
-	DebugEvents = true;
+	DebugEvents = false;
 	
 	-- Internal counters
 	DebugTimer = 0;
