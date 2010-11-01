@@ -326,6 +326,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideIgnoreUseable = "Ignores if spell is usable (just uses cooldown)",
 	nomIgnoreItemUseable = "Equipped Only",
 	aideIgnoreItemUseable = "Ignores if item is usable (just if equipped)",
+	nomCheckPet = "Pet",
+	aideCheckPet = "Check to Monitor only Pet Spells",
 	
 	nomOnMe = "Cast On Me",
 	aideOnMe = "Only show if being Cast On Me",
@@ -564,6 +566,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomReasonTargetAlive    = "Target is Alive",
 	nomReasonTargetFriendly = "Target is Friendly",
 	nomReasonTargetNotFriendly = "Target not Friendly",
+
+	nomReasonNoPet = "Player has no Pet",
 	
 	nomReasonNotInCombat = "Not in combat",
 	nomReasonInCombat = "In combat",
