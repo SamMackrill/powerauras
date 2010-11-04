@@ -2054,17 +2054,26 @@ end
 
 function cPowaCombo:CheckIfShouldShow(giveReason)
 	if (PowaAuras.playerclass ~= "ROGUE" and PowaAuras.playerclass~="DRUID") then
+		if (self.Debug) then
+			PowaAuras:Message("cPowaCombo CheckIfShouldShow Class=",PowaAuras.playerclass); --OK
+		end
 		if (not giveReason) then return nil; end
 		return nil, PowaAuras.Text.nomReasonNoUseCombo;
 	end
 	
 	if (PowaAuras.playerclass=="DRUID") then
 		local form = GetShapeshiftForm();
+		if (self.Debug) then
+			PowaAuras:Message("form=",form); --OK
+		end
 		if (form==0) then
 			if (not giveReason) then return nil; end
 			return nil, PowaAuras.Text.nomReasonNoUseComboInForm;
 		end
 		local icon = GetShapeshiftFormInfo(form);
+		if (self.Debug) then
+			PowaAuras:Message("icon=",icon); --OK
+		end
 		--PowaAuras:ShowText("playerclass=",PowaAuras.playerclass, " GetShapeshiftForm=",form, " icon=",icon);
 		if (icon ~= "Interface\\Icons\\Spell_Nature_WispSplode") then
 			if (not giveReason) then return nil; end
@@ -2777,7 +2786,7 @@ function cPowaSpellAlert:CheckUnit(unit)
 		PowaAuras:DisplayText(" mine= ", self.mine, " notInterruptible =", notInterruptible );
 	end
 	
-	if (self.mine and notInterruptible) then
+	if (self.mine and (notInterruptible or endtime==nil)) then
 		if (self.Debug) then
 			PowaAuras:DisplayText(unit, " is casting ", spellname, " but can't interrupt it");
 		end
