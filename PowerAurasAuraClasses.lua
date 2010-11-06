@@ -2245,18 +2245,19 @@ function cPowaOwnSpell:CheckIfShouldShow(giveReason)
 			end
 			self:SetIcon(spellIcon);
 		end
-		local bookType;
-		if (self.targetfriend) then
-			bookType = BOOKTYPE_PET;
-		end
-		if (self.Debug) then
-			PowaAuras:Message("bookType= ",bookType);
-		end
 		local cdstart, cdduration, enabled;
-		if (spellId) then
-			cdstart, cdduration, enabled = GetSpellCooldown(spellId, bookType);
+		if (self.targetfriend) then
+			if (spellId) then
+				cdstart, cdduration, enabled = GetSpellCooldown(spellId, BOOKTYPE_PET);
+			else
+				cdstart, cdduration, enabled = GetSpellCooldown(spellName, BOOKTYPE_PET);
+			end
 		else
-			cdstart, cdduration, enabled = GetSpellCooldown(spellName, bookType);
+			if (spellId) then
+				cdstart, cdduration, enabled = GetSpellCooldown(spellId);
+			else
+				cdstart, cdduration, enabled = GetSpellCooldown(spellName);
+			end
 		end
 		--PowaAuras:UnitTestDebug("cdstart= ",cdstart," duration= ",cdduration," enabled= ",enabled);
 		if (self.Debug) then
