@@ -2297,7 +2297,7 @@ function cPowaOwnSpell:CheckIfShouldShow(giveReason)
 		if (giveReason) then
 			local reason = PowaAuras:InsertText(PowaAuras.Text.nomReasonSpellNotFound, self.buffname);
 		end
-		if (self.Timer) then
+		if (self.Timer and self.Timer.enabled) then
 			self.Timer:SetDurationInfo(PowaAuras.Pending[self.id]);
 			self:CheckTimerInvert();
 			if (self.ForceTimeInvert) then
