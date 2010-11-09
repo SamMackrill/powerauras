@@ -430,7 +430,7 @@ function cPowaAura:SetIcon(texturePath)
 	if (texturePath ~= self.icon) then
 		if (self.owntex) then
 			local texture = self:GetTexture();
-			if (texture) then
+			if (texture and texture.SetTexture) then
 				texture:SetTexture(texturePath);
 			end
 		end
@@ -2822,7 +2822,10 @@ function cPowaSpellAlert:CheckSpellName(unit, spellname, spellicon, endtime, spe
 		self.DisplayUnit = unit;
 		self:UpdateText();
 		if (PowaAuras.ExtraUnitEvent[unit]) then
-			PowaAuras.Pending[self.id] = GetTime() + 1; -- Instant spells have no complete event
+			if (self.Debug) then
+				PowaAuras:DisplayText("Set to Hide in=", self.duration or 1, "s");
+			end
+			PowaAuras.Pending[self.id] =  GetTime() + (self.duration or 1); -- Instant spells may have no complete event
 		end
 		return true;
 	end
@@ -2835,7 +2838,13 @@ function cPowaSpellAlert:CheckIfShouldShow(giveReason)
 	--PowaAuras:UnitTestDebug("Check for spell being cast ", self.buffname, self.target, self.focus, self.targetfriend, self.Extra);
 	if (self.Debug) then
 		PowaAuras:DisplayText("Check for spell being cast ", self.buffname);
+		PowaAuras:DisplayText("Active=", self.Active, " Pending=", PowaAuras.Pending[self.id]);
 	end
+	if (self.Active and PowaAuras.Pending[self.id] and PowaAuras.Pending[self.id] > GetTime()) then
+		if (not giveReason) then return true; end
+		return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonAnimationDuration, casterName, info.SpellName);
+	end
+	
 	if (self.Extra) then
 		for casterName,info in pairs(PowaAuras.CastOnMe) do
 			if (self.Debug) then
