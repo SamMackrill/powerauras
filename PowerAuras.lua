@@ -650,13 +650,9 @@ function PowaAuras:OnUpdate(elapsed)
 		end
 	
 		--self:UnitTestInfo("DoCheck update");
-		for k ,v in pairs(self.DoCheck) do
-			--self:ShowText("DoCheck "..k.." = " .. tostring(v)  );
-			if (v) then
-				--self:ShowText("DoCheck ", k);
-				self:NewCheckBuffs();
-				break;
-			end
+		if (self.DoCheck.CheckIt or self.DoCheck.All) then
+			self:NewCheckBuffs();
+			self.DoCheck.CheckIt = false;
 		end
 
 		--self:UnitTestInfo("Check Cascade auras");

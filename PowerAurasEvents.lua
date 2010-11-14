@@ -175,6 +175,7 @@ function PowaAuras:PARTY_MEMBERS_CHANGED(...)
 		self.DoCheck.GroupOrSelfBuffs = true;
 		self.DoCheck.PartyHealth = true;
 		self.DoCheck.PartyMana = true;
+		self.DoCheck.CheckIt = true;
 	end
 	local partyCount = GetNumPartyMembers();
 	self.WeAreInParty = (partyCount > 0);
@@ -187,7 +188,8 @@ function PowaAuras:RAID_ROSTER_UPDATE(...)
 		self.DoCheck.RaidBuffs = true;
 		self.DoCheck.GroupOrSelfBuffs = true;
 		self.DoCheck.RaidHealth = true;
-		self.DoCheck.RaidMana = true;	
+		self.DoCheck.RaidMana = true;
+		self.DoCheck.CheckIt = true;
 	end
 	local raidCount = GetNumRaidMembers();
 	self.WeAreInRaid = (raidCount > 0);
@@ -259,6 +261,7 @@ function PowaAuras:SetCheckResource(resourceType, unitType)
 		elseif (unitType == "player") then
 			self.DoCheck[resourceType] = true;	
 		end
+		self.DoCheck.CheckIt = true;
 	end
 end
 
@@ -291,6 +294,7 @@ function PowaAuras:SpellcastEvent(unit)
 					self.DoCheck.GroupOrSelfSpells = true;
 				end
 			end
+			self.DoCheck.CheckIt = true;
 		end
 	end
 end
@@ -317,10 +321,12 @@ function PowaAuras:UNIT_SPELLCAST_SUCCEEDED(...)
 			  or (spell == self.Spells.DRUID_SHIFT_MOONKIN) ) then
 				self.DoCheck.Mana = true;
 				self.DoCheck.Power = true;
+				self.DoCheck.CheckIt = true;
 			end			
 			for _, auraId in pairs(self.AurasByType.OwnSpells) do	
 				--self:ShowText("Pending set for OwnSpells ", auraId);
 				self.DoCheck.OwnSpells = true;
+				self.DoCheck.CheckIt = true;
 				self.Pending[auraId] = GetTime() + 0.5; -- Allow 0.5 sec for client to update or time may be wrong
 			end
 		end
@@ -371,6 +377,7 @@ end
 function PowaAuras:RUNE_POWER_UPDATE(...)
 	if (self.ModTest == false) then
 		self.DoCheck.Runes = true;
+		self.DoCheck.CheckIt = true;
 	end
 end
 
@@ -381,6 +388,7 @@ function PowaAuras:RUNE_TYPE_UPDATE(...)
 			self:DisplayText("PLAYER_TOTEM_UPDATE slot=", slot);
 		end
 		self.DoCheck.Runes = true;
+		self.DoCheck.CheckIt = true;
 	end
 end
 	
@@ -393,6 +401,7 @@ function PowaAuras:PLAYER_FOCUS_CHANGED(...)
 		self.DoCheck.FocusSpells = true;
 		self.DoCheck.StealableFocusSpells = true;
 		self.DoCheck.PurgeableFocusSpells = true;
+		self.DoCheck.CheckIt = true;
 	end
 end
 
@@ -428,6 +437,7 @@ function PowaAuras:BuffsChanged(unit)
 			self.DoCheck.StealableSpells = true;
 			self.DoCheck.PurgeableSpells = true;
 		end
+		self.DoCheck.CheckIt = true;
 	end
 end
 
@@ -485,6 +495,7 @@ function PowaAuras:PLAYER_TARGET_CHANGED(...)
 		self.DoCheck.StealableTargetSpells = true;
 		self.DoCheck.PurgeableTargetSpells = true;
 		self.DoCheck.Combo = true;
+		self.DoCheck.CheckIt = true;
 	end
 end
 
@@ -505,6 +516,7 @@ function PowaAuras:UNIT_TARGET(...)
 		if (UnitCanAttack(target, "player")) then
 			self.DoCheck.StealableSpells = true;
 			self.DoCheck.PurgeableSpells = true;
+			self.DoCheck.CheckIt = true;
 		end
 	end
 end
@@ -541,6 +553,7 @@ function PowaAuras:UNIT_COMBO_POINTS(...)
 	if (unit ~= "player") then return; end
 	if (self.ModTest == false) then
 		self.DoCheck.Combo = true;
+		self.DoCheck.CheckIt = true;
 	end
 end
 
@@ -549,6 +562,7 @@ function PowaAuras:UNIT_PET(...)
 	if (unit ~= "player") then return; end
 	if (self.ModTest == false) then
 		self.DoCheck.Pet = true;
+		self.DoCheck.CheckIt = true;
 	end
 end
 
@@ -584,40 +598,10 @@ end
 
 function PowaAuras:UNIT_EXITED_VEHICLE(...)
 	local unit = ...;
-	if (self.DebugEvents) then
-		self:DisplayText("UNIT_EXITED_VEHICLE unit = ",unit);
-	end
 	self:VehicleCheck(unit, false)
 end
-
-function PowaAuras:PLAYER_FLAGS_CHANGED(...)
-	local unit = ...;
-	if (self.DebugEvents) then
-		self:DisplayText("PLAYER_FLAGS_CHANGED unit = ",unit);
-	end
-	if (self.ModTest == false) then
-		if (UnitIsUnit(unit,"player")) then
-			self.DoCheck.PvP = true;
-		end
-		if (UnitIsUnit(unit,"target")) then
-			self.DoCheck.TargetPvP = true;
-		end
-		for i=1,GetNumPartyMembers() do
-			if (UnitIsUnit(unit,"party"..i)) then
-				self.DoCheck.PartyPvP = true;
-				break;
-			end
-		end
-		for i=1, GetNumRaidMembers() do
-			if (UnitIsUnit(unit,"raid"..i)) then
-				self.DoCheck.RaidPvP = true;
-				break;
-			end
-		end
-	end
-end
 	
-function PowaAuras:UNIT_FACTION(...)
+function PowaAuras:UNIT_FACTION(...) --- GetPVPTimer() returns the time until unflag in ms
 	local unit = ...;
 	if (self.DebugEvents) then
 		self:DisplayText("UNIT_FACTION unit = ",unit);
@@ -650,6 +634,7 @@ function PowaAuras:UNIT_FACTION(...)
 				break;
 			end
 		end
+		self.DoCheck.CheckIt = true;
 	end
 end
 	
@@ -681,12 +666,10 @@ function PowaAuras:COMBAT_LOG_EVENT_UNFILTERED(...)
 			if (self.DebugEvents) then
 				self:DisplayText("COMBAT_LOG_EVENT_UNFILTERED", "-  On Me! ", event);
 			end
-			if (event == "SPELL_ENERGIZE") then
-				-- can check Holy Power refresh
-			end
 			if (PowaAuras.StringStarts(event,"SPELL_") and sourceName) then
 				self.CastOnMe[sourceName] = {SpellName=spellName, SpellId=spellId, SourceGUID=sourceGUID, Hostile=bit.band(sourceFlags, COMBATLOG_OBJECT_REACTION_HOSTILE)};
 				self.DoCheck.Spells = true; --- scan party/raid targets for casting
+				self.DoCheck.CheckIt = true;
 				--if self.CastOnMe[sourceName].Hostile > 0 then
 				--	self:ShowText(self.Colors.Red, spellName, " cast on me by ", sourceName);
 				--else
@@ -698,6 +681,7 @@ function PowaAuras:COMBAT_LOG_EVENT_UNFILTERED(...)
 				if  (spellId ~= "FALLING") then
 					self.AoeAuraAdded[0] = spellId;
 					self.DoCheck.Aoe = true;
+					self.DoCheck.CheckIt = true;
 				end
 			elseif ((event=="SPELL_PERIODIC_DAMAGE"
 				  or event=="SPELL_DAMAGE"
@@ -708,6 +692,7 @@ function PowaAuras:COMBAT_LOG_EVENT_UNFILTERED(...)
 					self.AoeAuraTexture[spellId] = select(3, GetSpellInfo(spellId));
 				end
 				self.DoCheck.Aoe = true;
+				self.DoCheck.CheckIt = true;
 			end
 		end
 	end
@@ -717,6 +702,7 @@ function PowaAuras:ACTIONBAR_SLOT_CHANGED(...)
 	local actionIndex = ...;
 	self:MemorizeActions(actionIndex);
 	self.DoCheck.Actions = true;
+	self.DoCheck.CheckIt = true;
 end
 	
 function PowaAuras:UPDATE_SHAPESHIFT_FORMS(...)
@@ -724,6 +710,7 @@ function PowaAuras:UPDATE_SHAPESHIFT_FORMS(...)
 	if (self.ModTest) then return; end
 	
 	self.DoCheck.Stance = true;
+	self.DoCheck.CheckIt = true;
 end
 
 function PowaAuras:GetStances()
@@ -740,17 +727,20 @@ function PowaAuras:ACTIONBAR_UPDATE_COOLDOWN(...)
 	if (self.ModTest) then return; end
 	self.DoCheck.Actions = true;
 	self.DoCheck.Stance = true;
+	self.DoCheck.CheckIt = true;
 end
 		
 function PowaAuras:ACTIONBAR_UPDATE_USABLE(...)
 	if (self.ModTest) then return; end
 	self.DoCheck.Actions = true;
 	self.DoCheck.Stance = true;
+	self.DoCheck.CheckIt = true;
 end
 	
 function PowaAuras:SPELL_UPDATE_COOLDOWN(...)
 	if (self.ModTest) then return; end
 	self.DoCheck.OwnSpells = true;
+	self.DoCheck.CheckIt = true;
 end
 		
 function PowaAuras:UPDATE_SHAPESHIFT_FORM(...)
@@ -758,6 +748,7 @@ function PowaAuras:UPDATE_SHAPESHIFT_FORM(...)
 	self.DoCheck.Stance = true;
 	self.DoCheck.Actions = true;
 	self.DoCheck.Combo = true;
+	self.DoCheck.CheckIt = true;
 end
 
 function PowaAuras:UNIT_INVENTORY_CHANGED(...)
@@ -775,6 +766,7 @@ function PowaAuras:UNIT_INVENTORY_CHANGED(...)
 				end
 				self.Pending[auraId] = GetTime() + 0.25; -- Allow time for client to update or timer will be wrong
 			end
+			self.DoCheck.CheckIt = true;
 		end			
 	end  
 end
@@ -783,6 +775,7 @@ function PowaAuras:BAG_UPDATE_COOLDOWN()
 	if (self.ModTest == false) then
 		self.DoCheck.Items = true;
 		self.DoCheck.Slots = true;
+		self.DoCheck.CheckIt = true;
 	end
 end
 
@@ -790,12 +783,14 @@ function PowaAuras:BAG_UPDATE()
 	if (self.ModTest == false) then
 		self.DoCheck.Items = true;
 		self.DoCheck.Slots = true;
+		self.DoCheck.CheckIt = true;
 	end
 end
 
 function PowaAuras:MINIMAP_UPDATE_TRACKING()
 	if (self.ModTest == false) then
 		self.DoCheck.Tracking = true;
+		self.DoCheck.CheckIt = true;
 	end
 end
 
@@ -807,15 +802,18 @@ function PowaAuras:UNIT_THREAT_SITUATION_UPDATE(...)
 		end
 		if unit == "player" then
 			self.DoCheck.Aggro = true;
+			self.DoCheck.CheckIt = true;
 			return;
 		end
 
 		if UnitInParty(unit) then
 			self.DoCheck.PartyAggro = true;
+			self.DoCheck.CheckIt = true;
 		end
 
 		if UnitInRaid(unit) then
 			self.DoCheck.RaidAggro = true;
+			self.DoCheck.CheckIt = true;
 		end
 	end
 end
