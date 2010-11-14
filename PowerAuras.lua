@@ -693,11 +693,13 @@ function PowaAuras:OnUpdate(elapsed)
 
 	-- Update each aura (timers and stacks)
 	--self:UnitTestInfo("Aura updates");
-	for _, aura in pairs(self.Auras) do
+	for i = 1, #self.Auras do
+		local aura = self.Auras[i];
 		if (self:UpdateAura(aura, elapsed)) then
 			self:UpdateTimer(aura, timerElapsed, skipTimerUpdate);
 		end
 	end	
+
 	for _, aura in pairs(self.SecondaryAuras) do
 		self:UpdateAura(aura, elapsed);
 	end	
