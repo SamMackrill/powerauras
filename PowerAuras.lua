@@ -714,7 +714,8 @@ function PowaAuras:NewCheckBuffs()
 	--if (self.DoCheck.All) then
 	--	self:ShowText("self.DoCheck.All");
 	--end
-	for auraType in pairs(self.AurasByType) do
+	for i = 1, #self.AurasByTypeList do
+		local auraType = self.AurasByTypeList[i];
 		--self:ShowText("Check auraType ",auraType);
 		if ((self.DoCheck[auraType] or self.DoCheck.All) and #self.AurasByType[auraType]>0) then
 			--self:ShowText("Checking auraType ",auraType, " #", #self.AurasByType[auraType]);
