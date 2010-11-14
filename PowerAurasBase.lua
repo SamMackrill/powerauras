@@ -241,6 +241,9 @@ PowaAuras = {
 		Tracking = false,
 		
 		GTFO = false,
+
+		-- true if any type should be checked
+		CheckIt = false,
 	};
 
 	BuffTypes =
