@@ -1213,8 +1213,14 @@ function cPowaBuffBase:IsPresent(unit, s, giveReason, textToCheck)
 		PowaAuras:DisplayText("IsPresent on ",unit,"  buffid ",s," type ", self.buffAuraType);
 	end
 
-	local auraName, _, auraTexture, count, _, _, expirationTime, caster, _, _, auraId  = UnitAura(unit, s, self.buffAuraType);
-	
+	local auraName, _, auraTexture, count, _, _, expirationTime, caster, _, _, auraId;
+	if (self.exact) then
+		-- TODO - exact check should be moved to CheckAllAuraSlots()
+		auraName, _, auraTexture, count, _, _, expirationTime, caster, _, _, auraId = UnitAura(unit, textToCheck, nil, self.buffAuraType);
+	else
+		auraName, _, auraTexture, count, _, _, expirationTime, caster, _, _, auraId = UnitAura(unit, s, self.buffAuraType);
+	end
+
 	if (auraName == nil) then return nil; end
 
 	PowaAuras:Debug("Aura=",auraName," count=",count," expirationTime=", expirationTime," caster=",caster);
@@ -1244,7 +1250,7 @@ function cPowaBuffBase:IsPresent(unit, s, giveReason, textToCheck)
 		self.Stacks:SetStackCount(count);
 	end			
 	--PowaAuras:ShowText("Present!");
-	if (self.Timer) then
+	if (self.Timer and self.Timer.enabled) then
 		self.Timer:SetDurationInfo(expirationTime);
 		self:CheckTimerInvert();
 		if (self.ForceTimeInvert) then
