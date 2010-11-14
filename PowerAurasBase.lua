@@ -318,86 +318,12 @@ PowaAuras = {
 		SpinClockwise=11,
 		SpinAntiClockwise=12,		
 	};
+		
+	-- aura name -> auras array
+	AurasByType = {};
 	
-		
-	AurasByType =
-	{
-		Buffs = {},
-		TargetBuffs = {},
-		PartyBuffs = {},
-		RaidBuffs = {},
-		GroupOrSelfBuffs = {},
-		UnitBuffs = {},
-		FocusBuffs = {},
-		
-		Health = {},
-		TargetHealth = {},
-		FocusHealth = {},
-		PartyHealth = {},
-		RaidHealth = {},
-		NamedUnitHealth = {},
-
-		Mana = {},
-		TargetMana = {},
-		FocusMana = {},
-		PartyMana = {},
-		RaidMana = {},
-		NamedUnitMana = {},
-
-		Power = {},
-		TargetPower = {},
-		PartyPower = {},
-		RaidPower = {},
-		FocusPower = {},
-		NamedUnitPower = {},
-
-		Combo = {},
-		Aoe = {},
-
-		Stance = {},
-		Actions = {},
-		Enchants = {},
-
-		PvP = {},
-		PartyPvP = {},
-		RaidPvP = {},
-		TargetPvP = {},
-		
-		Aggro = {},
-		PartyAggro = {},
-		RaidAggro = {},
-		
-		Spells = {},
-		TargetSpells = {},
-		FocusSpells = {},
-		PlayerSpells = {},
-		PartySpells = {},
-		RaidSpells = {},
-		GroupOrSelfSpells = {};
-		
-		StealableSpells = {},
-		StealableTargetSpells = {},
-		StealableFocusSpells = {},
-		
-		PurgeableSpells = {},
-		PurgeableTargetSpells = {},
-		PurgeableFocusSpells = {},
-
-		OwnSpells = {},
-		
-		Static = {},
-		
-		Totems = {},		
-		Pet = {},	
-		Runes = {},
-		Slots = {},
-		Items = {},
-		Tracking = {},
-		
-		GTFOHigh = {},
-		GTFOLow = {},
-		GTFOFail = {},
-	};
+	-- index -> aura name
+	AurasByTypeList = {};
 	
 	DebuffCatType =
 	{
@@ -621,6 +547,89 @@ PowaAuras = {
 	};
 	
 };
+
+function PowaAuras:RegisterAuraType(auraType)
+	self.AurasByType[auraType] = {};
+	self.AurasByTypeList[#self.AurasByTypeList + 1] = auraType;
+end
+
+PowaAuras:RegisterAuraType('Buffs');
+PowaAuras:RegisterAuraType('TargetBuffs');
+PowaAuras:RegisterAuraType('PartyBuffs');
+PowaAuras:RegisterAuraType('RaidBuffs');
+PowaAuras:RegisterAuraType('GroupOrSelfBuffs');
+PowaAuras:RegisterAuraType('UnitBuffs');
+PowaAuras:RegisterAuraType('FocusBuffs');
+		
+PowaAuras:RegisterAuraType('Health');
+PowaAuras:RegisterAuraType('TargetHealth');
+PowaAuras:RegisterAuraType('FocusHealth');
+PowaAuras:RegisterAuraType('PartyHealth');
+PowaAuras:RegisterAuraType('RaidHealth');
+PowaAuras:RegisterAuraType('NamedUnitHealth');
+
+PowaAuras:RegisterAuraType('Mana');
+PowaAuras:RegisterAuraType('TargetMana');
+PowaAuras:RegisterAuraType('FocusMana');
+PowaAuras:RegisterAuraType('PartyMana');
+PowaAuras:RegisterAuraType('RaidMana');
+PowaAuras:RegisterAuraType('NamedUnitMana');
+
+PowaAuras:RegisterAuraType('Power');
+PowaAuras:RegisterAuraType('TargetPower');
+PowaAuras:RegisterAuraType('PartyPower');
+PowaAuras:RegisterAuraType('RaidPower');
+PowaAuras:RegisterAuraType('FocusPower');
+PowaAuras:RegisterAuraType('NamedUnitPower');
+
+PowaAuras:RegisterAuraType('Combo');
+PowaAuras:RegisterAuraType('Aoe');
+
+PowaAuras:RegisterAuraType('Stance');
+PowaAuras:RegisterAuraType('Actions');
+PowaAuras:RegisterAuraType('Enchants');
+
+PowaAuras:RegisterAuraType('PvP');
+PowaAuras:RegisterAuraType('PartyPvP');
+PowaAuras:RegisterAuraType('RaidPvP');
+PowaAuras:RegisterAuraType('TargetPvP');
+		
+PowaAuras:RegisterAuraType('Aggro');
+PowaAuras:RegisterAuraType('PartyAggro');
+PowaAuras:RegisterAuraType('RaidAggro');
+		
+PowaAuras:RegisterAuraType('Spells');
+PowaAuras:RegisterAuraType('TargetSpells');
+PowaAuras:RegisterAuraType('FocusSpells');
+PowaAuras:RegisterAuraType('PlayerSpells');
+PowaAuras:RegisterAuraType('PartySpells');
+PowaAuras:RegisterAuraType('RaidSpells');
+PowaAuras:RegisterAuraType('GroupOrSelfSpells');
+		
+PowaAuras:RegisterAuraType('StealableSpells');
+PowaAuras:RegisterAuraType('StealableTargetSpells');
+PowaAuras:RegisterAuraType('StealableFocusSpells');
+		
+PowaAuras:RegisterAuraType('PurgeableSpells');
+PowaAuras:RegisterAuraType('PurgeableTargetSpells');
+PowaAuras:RegisterAuraType('PurgeableFocusSpells');
+
+PowaAuras:RegisterAuraType('OwnSpells');
+		
+PowaAuras:RegisterAuraType('Static');
+		
+PowaAuras:RegisterAuraType('Totems');		
+PowaAuras:RegisterAuraType('Pet');	
+PowaAuras:RegisterAuraType('Runes');
+PowaAuras:RegisterAuraType('Slots');
+PowaAuras:RegisterAuraType('Items');
+PowaAuras:RegisterAuraType('Tracking');
+		
+PowaAuras:RegisterAuraType('GTFOHigh');
+PowaAuras:RegisterAuraType('GTFOLow');
+PowaAuras:RegisterAuraType('GTFOFail');
+
+
 
 -- Use these spells to detect GCD, ideally these should be spells classes have from the beginning
 PowaAuras.GCDSpells = {
