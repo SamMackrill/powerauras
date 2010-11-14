@@ -1338,7 +1338,7 @@ function PowaAuras:UpdateTimer(aura, timerElapsed, skipTimerUpdate)
 	--	--PowaAuras:UnitTestInfo("UpdateTimer ",self.id, " ", aura.Timer, " skip=",skipTimerUpdate);
 	--end
 	
-	if (not aura.Timer or skipTimerUpdate) then
+	if (not aura.Timer or not aura.Timer.enabled or skipTimerUpdate) then
 		return;
 	end
 	
