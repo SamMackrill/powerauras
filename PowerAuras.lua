@@ -130,6 +130,10 @@ function PowaAuras:LoadAuras()
 		end
 	end
 	
+	if (self.DebugAura) then
+		self.Auras[self.DebugAura].Debug = true;
+	end
+	
 	self:DiscoverLinkedAuras();
 
 	--self:Message("backwards combatiblity");
