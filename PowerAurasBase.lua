@@ -551,7 +551,7 @@ PowaAuras = {
 
 function PowaAuras:RegisterAuraType(auraType)
 	self.AurasByType[auraType] = {};
-	self.AurasByTypeList[#self.AurasByTypeList + 1] = auraType;
+	table.insert(self.AurasByTypeList, auraType);
 end
 
 PowaAuras:RegisterAuraType('Buffs');
@@ -646,7 +646,7 @@ PowaAuras.GCDSpells = {
 		DEATHKNIGHT = 45902, -- Blood Strike
 	};
 
-
+-- Invented so we can distinquish them two types
 SPELL_POWER_LUNAR_ECLIPSE = 108;
 SPELL_POWER_SOLAR_ECLIPSE = 208;
 
