@@ -338,14 +338,21 @@ end
 function cPowaAura:UpdateText(texture)
 	if (not self.textaura) then return; end
 	local newText = self:GetAuraText();
+	if (self.Debug) then
+		PowaAuras:Message("CurrentText=", self.CurrentText);
+		PowaAuras:Message("newText    =", newText);
+	end
 	if (newText~=self.CurrentText or texture==nil) then
 		if (texture==nil) then
 			texture = self:GetTexture();
 		end
+		if (self.Debug) then
+			PowaAuras:Message("texture=", texture);
+		end
 		if (texture~=nil) then
 			texture:SetText(newText);
+			self.CurrentText = newText;
 		end
-		self.CurrentText = newText;
 	end
 end
 
@@ -358,7 +365,7 @@ function cPowaAura:GetAuraText()
 	text = self:SubstituteInText(text , "%%str", function() return UnitStat("player", 1) end, PowaAuras.Text.Unknown);
 	text = self:SubstituteInText(text , "%%agl", function() return UnitStat("player", 2) end, PowaAuras.Text.Unknown);
 	text = self:SubstituteInText(text , "%%sta", function() return UnitStat("player", 3) end, PowaAuras.Text.Unknown);
-	text = self:SubstituteInText(text , "%int", function() return UnitStat("player", 4) end, PowaAuras.Text.Unknown);
+	text = self:SubstituteInText(text , "%%int", function() return UnitStat("player", 4) end, PowaAuras.Text.Unknown);
 	text = self:SubstituteInText(text , "%%spi", function() return UnitStat("player", 5) end, PowaAuras.Text.Unknown);
 	text = self:SubstituteInText(text , "%%sp", function() return self:SpellPower() end, PowaAuras.Text.Unknown);
 	text = self:SubstituteInText(text , "%%ap", function() return UnitAttackPower("player") end, PowaAuras.Text.Unknown);
@@ -699,7 +706,9 @@ function cPowaAura:ShouldShow(giveReason, reverse)
 	--PowaAuras.AuraCheckShowCount = PowaAuras.AuraCheckShowCount + 1;
 	self.InactiveDueToState = false;
 	local result, reason = self:CheckIfShouldShow(giveReason);
-	--PowaAuras:ShowText("ShouldShow result=",result, " inv=", self.inverse, " rev=", reverse);
+	if (self.Debug) then
+		PowaAuras:DisplayText("ShouldShow result=",result, " inv=", self.inverse, " rev=", reverse);
+	end
 	if (result==-1) then
 		return result, reason;
 	end
@@ -949,7 +958,7 @@ function cPowaAura:CorrectTargetType(unit)
 	if (self.target and self.targetfriend) then return true, "Either Target OK"; end
 	if (self.target) then
 		if (UnitCanAttack(unit, "player")) then return true, "Enemy"; end
-		return false, "Friendly";
+		return false, "Not Attackable";
 	end
 	if (UnitIsFriend(unit, "player")) then return true, "Friendly"; end
 	return false, "Enemy";
@@ -1404,7 +1413,6 @@ function cPowaBuffBase:CheckSingleUnit(group, unit, giveReason)
 			self.CurrentUnit = unit;
 			if (self.Debug) then
 				PowaAuras:DisplayText("CurrentUnit=", self.CurrentUnit);
-				self.Debug = false;
 			end
 			if (not giveReason) then return true; end
 			return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonOneInGroupHasBuff, unit, self.OptionText.typeText, self.buffname);
@@ -1685,16 +1693,18 @@ cPowaSpecialSpellBase.CheckBoxes={
 							};
 
 function cPowaSpecialSpellBase:CheckIfShouldShow(giveReason)
-	PowaAuras:Debug("Check if target/focus is casting ", self.buffname);
-
+	PowaAuras:Debug("Check if target/focus for ", self.buffname);
+	if (self.Debug) then
+		PowaAuras:DisplayText("CheckIfShouldShow buffname=",self.buffname, " target=", self.target, " focus=", self.focus);
+	end
 	if self.target or self.focus then
 		-- Check self target/focus first
-		if (self:CheckUnit("target", "player")) then
+		if (self.target and self:CheckUnit("target", "player")) then
 			if (not giveReason) then return true; end
 			return true, PowaAuras:InsertText(PowaAuras.Text["nomReason"..self.AuraType.."Present"], PowaAuras.Text.nomCheckTarget, self.buffname);
 		end
 		
-		if (self:CheckUnit("focus", "player")) then
+		if (self.focus and self:CheckUnit("focus", "player")) then
 			if (not giveReason) then return true; end
 			return true, PowaAuras:InsertText(PowaAuras.Text["nomReason"..self.AuraType.."Present"], PowaAuras.Text.nomCheckFocus, self.buffname);
 		end
@@ -1769,7 +1779,11 @@ cPowaStealableSpell.OptionText={buffNameTooltip=PowaAuras.Text.aideStealableSpel
 cPowaStealableSpell.TooltipOptions = {r=0.8, g=0.8, b=0.2, showBuffName=true};
 
 function cPowaStealableSpell:CheckUnit(unit, targetOf)
-	if (not self:CorrectTargetType(unit)) then
+	local show, reason = self:CorrectTargetType(unit)
+	if (not show) then	
+		if (self.Debug) then
+			PowaAuras:Message("cPowaStealableSpell CheckUnit=", unit, " won't show because unit ", reason);
+		end	
 		return false;
 	end
 	
@@ -1797,7 +1811,9 @@ function cPowaStealableSpell:CheckUnit(unit, targetOf)
 					self.Stacks:SetStackCount(count);
 				end			
 				self.DisplayValue = auraName;
+				self.DisplayUnit = unit;
 				self.DisplayUnit2 = targetOf;
+				self:UpdateText();
 				if (self.Timer) then
 					self.Timer:SetDurationInfo(expirationTime);
 					self:CheckTimerInvert();
@@ -1812,6 +1828,7 @@ function cPowaStealableSpell:CheckUnit(unit, targetOf)
 	
 	--PowaAuras:UnitTestDebug(unit, "  has stealable spell ", spellname, " no match");
 	self.DisplayValue = self.buffname;
+	self:UpdateText();
 	return false;
 end	
 
@@ -1821,8 +1838,12 @@ cPowaPurgeableSpell.OptionText={buffNameTooltip=PowaAuras.Text.aidePurgeableSpel
 cPowaPurgeableSpell.TooltipOptions = {r=0.2, g=0.8, b=0.2, showBuffName=true};
 
 function cPowaPurgeableSpell:CheckUnit(unit, targetOf)
-	if (not self:CorrectTargetType(unit)) then
-		return false;
+	local show, reason = self:CorrectTargetType(unit)
+	if (not show) then	
+		if (self.Debug) then
+			PowaAuras:Message("cPowaPurgeableSpell CheckUnit=", unit, " won't show because unit ", reason);
+		end	
+		--return false;
 	end
 	
 	if (self.Debug) then
@@ -1838,38 +1859,42 @@ function cPowaPurgeableSpell:CheckUnit(unit, targetOf)
 		end	
 		for i = 1, 40 do
 		
-			local auraName, _, auraTexture, count, typeDebuff, _, expirationTime, _, _, _, auraId = UnitAura(unit, i, "CANCELABLE");
+			local auraName, _, auraTexture, count, typeDebuff, _, expirationTime, _, _, _, auraId = UnitAura(unit, i, "HELPFUL");
 			
 			if (self.Debug) then
-				PowaAuras:Message("Slot=", i, " auraName=", auraName, " (", auraId, ")" );
-			end	
+				PowaAuras:Message("Slot=", i, " auraName=", auraName, " typeDebuff=", typeDebuff, " (", auraId, ")" );
+			end			
 		
 			if (auraName == nil) then return nil; end
 
-			--PowaAuras:ShowText(i," C Aura=",auraName," count=",count," expirationTime=", expirationTime);
+			if (typeDebuff=="Magic") then
+				--PowaAuras:ShowText(i," C Aura=",auraName," count=",count," expirationTime=", expirationTime);
 
-			if (auraName and self:CompareAura(unit, s, auraName, auraTexture, auraId, pword)) then
-				if (self.Stacks) then
-					self.Stacks:SetStackCount(count);
-				end
-				self.DisplayValue = auraName;
-				self.DisplayUnit2 = targetOf;
-				PowaAuras:Debug("CompareAura not found");
-				if (self.Timer) then
-					self.Timer:SetDurationInfo(expirationTime);
-					self:CheckTimerInvert();
-					if (self.ForceTimeInvert) then
-						return false;
+				if (auraName and self:CompareAura(unit, s, auraName, auraTexture, auraId, pword)) then
+					if (self.Stacks) then
+						self.Stacks:SetStackCount(count);
 					end
+					self.DisplayValue = auraName;
+					self.DisplayUnit = unit;
+					self.DisplayUnit2 = targetOf;
+					self:UpdateText();
+					PowaAuras:Debug("CompareAura not found");
+					if (self.Timer) then
+						self.Timer:SetDurationInfo(expirationTime);
+						self:CheckTimerInvert();
+						if (self.ForceTimeInvert) then
+							return false;
+						end
+					end
+					return true;
 				end
-				return true;
-			end	
+			end
 		end
 		
 	end
 		
 	--PowaAuras:UnitTestDebug(unit, " has Purgeable spell ", spellname, " no match");
-	self.DisplayValue = self.buffname;
+	self.DisplayValue = nil;
 	self.DisplayUnit2 = nil;
 	return false;
 end	
@@ -2513,6 +2538,8 @@ function cPowaPowerType:UnitValue(unit)
 		power = math.max(-UnitPower(unit, SPELL_POWER_ECLIPSE), 0);
 	elseif (self.PowerType==SPELL_POWER_SOLAR_ECLIPSE) then
 		power = math.max(UnitPower(unit, SPELL_POWER_ECLIPSE));
+	elseif (self.PowerType==SPELL_POWER_HAPPINESS) then
+		power = GetPetHappiness() or 0;
 	else
 		power = UnitPower(unit, self.PowerType);
 	end
@@ -2532,6 +2559,8 @@ function cPowaPowerType:UnitValueMax(unit)
 		maxpower = UnitPowerMax(unit);
 	elseif (self.PowerType==SPELL_POWER_LUNAR_ECLIPSE or self.PowerType==SPELL_POWER_SOLAR_ECLIPSE) then
 		maxpower = 100;
+	elseif (self.PowerType==SPELL_POWER_HAPPINESS) then
+		maxpower = 3;
 	else
 		maxpower = UnitPowerMax(unit, self.PowerType);
 	end

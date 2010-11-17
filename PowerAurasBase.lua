@@ -16,6 +16,7 @@ PowaAuras = {
 	TextureCount = 186;
 	
 	DebugEvents = false;
+	DebugAura = 3;
 	
 	-- Internal counters
 	DebugTimer = 0;
@@ -644,7 +645,7 @@ PowaAuras.PowerRanges = {
 	[SPELL_POWER_RAGE] = 100,
 	[SPELL_POWER_FOCUS] = 100,
 	[SPELL_POWER_ENERGY] = 100,
-	[SPELL_POWER_HAPPINESS] = 100,
+	[SPELL_POWER_HAPPINESS] = 3,
 	[SPELL_POWER_RUNES] = 100,
 	[SPELL_POWER_RUNIC_POWER] = 100,
 	[SPELL_POWER_SOUL_SHARDS] = 3,
@@ -659,7 +660,7 @@ PowaAuras.RangeType = {
 	[SPELL_POWER_RAGE] = "%",
 	[SPELL_POWER_FOCUS] = "%",
 	[SPELL_POWER_ENERGY] = "%",
-	[SPELL_POWER_HAPPINESS] = "%",
+	[SPELL_POWER_HAPPINESS] = "",
 	[SPELL_POWER_RUNES] = "%",
 	[SPELL_POWER_RUNIC_POWER] = "%",
 	[SPELL_POWER_SOUL_SHARDS] = "",
