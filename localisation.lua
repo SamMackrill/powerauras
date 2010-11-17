@@ -622,6 +622,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomReasonCastingOnMe	 = "$1 is casting $2 on me", --$1=CasterName $2=SpellName (e.g. "Rotface is casting Slime Spray on me")
 	nomReasonNotCastingOnMe	 = "No matching spell being cast on me",
 	
+	nomReasonAnimationDuration  = "Still within custom duration",
+	
 	nomReasonItemUsable     = "Item $1 usable",
 	nomReasonItemNotUsable  = "Item $1 not usable",
 	nomReasonItemNotReady   = "Item $1 Not Ready, on cooldown, timer invert",
