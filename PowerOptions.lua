@@ -78,7 +78,7 @@ function PowaAuras:IconeClick(owner, button)
 		return;
 	end
 	local aura = self.Auras[auraId];
-	if (self.Auras[auraId] == nil or aura.buffname == "" or aura.buffname == " ") then -- ne fait rien si bouton vide
+	if (aura == nil or aura.buffname == "" or aura.buffname == " ") then -- ne fait rien si bouton vide
 		return;
 	end
 	if IsShiftKeyDown() then -- Toggle ON ou OFF
@@ -297,7 +297,7 @@ function PowaAuras:TriageIcones(nPage)
 				self:ReindexAura(i, a);
 			end
 			if (i>a) then
-				self.Auras[i] = nil;
+				self:DeleteAura(self.Auras[i]);
 			end
 			a = a + 1;
 		end
@@ -355,7 +355,7 @@ function PowaAuras:DeleteAura(aura)
 	if (aura.id > 120) then
 		PowaGlobalSet[aura.id] = nil;
 	end
-
+	self:CalculateAuraSequence();
 end
 
 function PowaAuras:OptionDeleteEffect(auraId)
@@ -413,6 +413,8 @@ function PowaAuras:OptionNewEffect()
 		PowaGlobalSet[i] = aura;
 	end
 	
+	self:CalculateAuraSequence();
+
 	aura.Active = true;
 	aura:CreateFrames();
 	
@@ -437,18 +439,16 @@ function PowaAuras:OptionNewEffect()
 end
 
 function PowaAuras:ExtractImportValue(valueType, value)
+	--self:Message("valueType=", valueType," value=", value);
 	if (string.sub(valueType,1,2) == "st") then
 		return value;
-	elseif string.sub(valueType,1,2) == "bo" then
-		if value == "false" then
-			return false;
-		elseif value == "true" then
-			return true;
-		end
-	elseif string.sub(valueType,1,2) == "nu" then
-		return tonumber(value);
 	end
-	return nil;
+	if value == "false" then
+		return false;
+	elseif value == "true" then
+		return true;
+	end
+	return tonumber(value);
 end
 
 function PowaAuras:VersionGreater(v1, v2)
@@ -477,6 +477,7 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 	local hasStacksSettings = false;
 	local oldSpellAlertLogic = true;
 	local hasTypePrefix = string.find(aurastring,"Version:st", 1, true)
+	--self:Message("hasTypePrefix=", hasTypePrefix);
 
 	if (hasTypePrefix) then
 		for _, val in ipairs(settings) do
@@ -485,7 +486,6 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 			local varType = string.sub(var,1,2);
 			var = string.sub(var,3);
 			if (key=="Version") then
-				--self:Message("key ",key,"=", var);
 				local _, _, major, minor = string.find(var, self.VersionPattern);
 				if (self:VersionGreater({Major=tonumber(major), Minor=tonumber(minor), Build=0, Revision=""},
 										{Major=3, Minor=0, Build=0, Revision="J"})) then
@@ -505,11 +505,11 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 		for _, val in ipairs(settings) do
 			local key, var = strsplit(":", val);
 			oldSpellAlertLogic = false;
+			--self:Message("val=", val);
+			--self:Message(key,"=", var);
 			if (key=="Version") then
 			elseif (string.sub(key,1,6) == "timer.") then
 				key = string.sub(key,7);
-				--self:Message("val=", val);
-				--self:Message(key,"=", var);
 				if (cPowaTimer.ExportSettings[key]~=nil) then
 					--self:Message("cPowaTimer.ExportSettings[key]=",cPowaTimer.ExportSettings[key]," type=", type(cPowaTimer.ExportSettings[key]));
 					importTimerSettings[key] = self:ExtractImportValue(type(cPowaTimer.ExportSettings[key]), var);
@@ -522,6 +522,7 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 					hasStacksSettings = true;
 				end
 			else
+				--self:Message("cPowaAura.ExportSettings[",key,"]=", cPowaAura.ExportSettings[key]);
 				if (cPowaAura.ExportSettings[key]~= nil) then
 					importAuraSettings[key] = self:ExtractImportValue(type(cPowaAura.ExportSettings[key]), var);
 				end
@@ -532,6 +533,7 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 	for k, v in pairs(aura) do
 		if (importAuraSettings[k]~=nil) then
 			local varType = type(v);
+			--self:Message("k=",k, " v=",importAuraSettings[k]);
 			if (k=="combat") then
 				if (importAuraSettings[k]==0) then
 					aura[k] = 0;
@@ -624,6 +626,8 @@ function PowaAuras:CreateNewAuraFromImport(auraId, importString, updateLink)
 	end
 	self.Auras[auraId] = self:ImportAura(importString, auraId, updateLink);
 	self.Auras[auraId]:Init();
+		
+	self:CalculateAuraSequence();
 
 	if (auraId > 120) then
 		PowaGlobalSet[auraId] = self.Auras[auraId];
@@ -640,7 +644,7 @@ function PowaAuras:CreateNewAuraSetFromImport(importString)
 
 	for i = min, max do
 		if (self.Auras[i] ~= nil) then	
-			PowaAuras:DeleteAura(self.Auras[i]);
+			self:DeleteAura(self.Auras[i]);
 		end
 	end
 
@@ -686,6 +690,8 @@ function PowaAuras:CreateNewAuraSetFromImport(importString)
 			end
 		end
 	end
+	
+	self:CalculateAuraSequence();
 
 	self:UpdateMainOption();
 end
