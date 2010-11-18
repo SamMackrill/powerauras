@@ -1849,7 +1849,7 @@ function cPowaPurgeableSpell:CheckUnit(unit, targetOf)
 		if (self.Debug) then
 			PowaAuras:Message("cPowaPurgeableSpell CheckUnit=", unit, " won't show because unit ", reason);
 		end	
-		--return false;
+		return false;
 	end
 	
 	if (self.Debug) then

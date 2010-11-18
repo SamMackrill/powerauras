@@ -107,8 +107,8 @@ end
 
 function PowaAuras:LoadAuras()
 	--self:Message("Saved varaible convertion: PowaSet");
-
 	self.Auras = {};
+	self.AuraSequence = {};	
 	
 	for k, v in pairs(PowaGlobalSet) do
 		--self:UnitTestDebug("PowaGlobalSet",k,v.buffname);
@@ -142,6 +142,8 @@ function PowaAuras:LoadAuras()
 		self:UpdateOldAuras();
 	end
 	
+	self:CalculateAuraSequence();
+	
 	-- Copy to Saved Sets
 	PowaSet = self.Auras;
 	for i = 121, 360 do
@@ -151,9 +153,16 @@ function PowaAuras:LoadAuras()
 	
 end
 
+function PowaAuras:CalculateAuraSequence()
+	wipe(self.AuraSequence);	
+	for id, aura in pairs(self.Auras) do
+		table.insert(self.AuraSequence, aura);
+	end
+end
+
 function PowaAuras:DiscoverLinkedAuras()
-	for _, aura in pairs(self.Auras) do
-		self:DiscoverLinksForAura(aura, true);
+	for i = 1, #self.AuraSequence do
+		self:DiscoverLinksForAura(self.AuraSequence[i], true);
 	end
 	--for id in pairs(self.UsedInMultis) do
 	--	self:ShowText("UsedInMultis ",id);
@@ -697,8 +706,9 @@ function PowaAuras:OnUpdate(elapsed)
 
 	-- Update each aura (timers and stacks)
 	--self:UnitTestInfo("Aura updates");
-	for i = 1, #self.Auras do
-		local aura = self.Auras[i];
+	for i = 1, #self.AuraSequence do
+		local aura = self.AuraSequence[i];
+		--self:Message("UpdateAura Call id=", aura.id, " ", aura);
 		if (self:UpdateAura(aura, elapsed)) then
 			self:UpdateTimer(aura, timerElapsed, skipTimerUpdate);
 		end
@@ -775,7 +785,9 @@ function PowaAuras:TestThisEffect(auraId, giveReason, ignoreCascade)
 		self:Message("Test Aura for Hide or Show = ",auraId);
 		self:Message("Active= ", aura.Active);
 		self:Message("Showing= ", aura.Showing);
+		self:Message("HideRequest= ", aura.HideRequest);
 	end
+	
 	-- Prevent crash if class not set-up properly
 	if (not aura.ShouldShow) then
 		self:Message("ShouldShow nil! id= ",auraId)
@@ -1218,6 +1230,9 @@ function PowaAuras:UpdateAura(aura, elapsed)
 		--self:ShowText("UpdateAura: Don't show, aura missing");
 		return false;
 	end
+	--if (aura.Debug) then
+	--	self:Message("UpdateAura ", aura.id, " ", elapsed);
+	--end
 	if (aura.off) then
 		if (aura.Showing) then
 			aura:Hide();
@@ -1254,7 +1269,6 @@ function PowaAuras:UpdateAura(aura, elapsed)
 		end
 		
 		if (aura.HideRequest) then
-
 		
 			if (self.ModTest == false and not aura.EndSoundPlayed) then
 				

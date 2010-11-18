@@ -373,7 +373,6 @@ function PowaAuras:UNIT_SPELLCAST_CHANNEL_STOP(...)
 	PowaAuras:SpellcastEvent(unit);
 end
 
-
 function PowaAuras:RUNE_POWER_UPDATE(...)
 	if (self.ModTest == false) then
 		self.DoCheck.Runes = true;
@@ -601,11 +600,23 @@ function PowaAuras:UNIT_EXITED_VEHICLE(...)
 	self:VehicleCheck(unit, false)
 end
 	
-function PowaAuras:UNIT_FACTION(...) --- GetPVPTimer() returns the time until unflag in ms
+function PowaAuras:PLAYER_FLAGS_CHANGED(...)
+	local unit = ...;
+	if (self.DebugEvents) then
+		self:DisplayText("PLAYER_FLAGS_CHANGED unit = ",unit);
+	end
+	self:FlagsChanged(unit);
+end
+
+function PowaAuras:UNIT_FACTION(...)
 	local unit = ...;
 	if (self.DebugEvents) then
 		self:DisplayText("UNIT_FACTION unit = ",unit);
 	end
+	self:FlagsChanged(unit);
+end
+
+function PowaAuras:FlagsChanged(unit)
 	if (unit == "player") then
 		local flag = UnitIsPVP("player");
 		if (flag ~= self.PvPFlagSet) then
