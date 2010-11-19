@@ -3136,8 +3136,7 @@ function PowaAuras:RedisplayAura(auraId) ---Re-show aura after options changed
 	end
 end
 
-function PowaAuras:EquipmentSlotsShow()
-
+function PowaAuras:ResetSlotsToEmpty()
 	for _, child in ipairs({ PowaEquipmentSlotsFrame:GetChildren() }) do
 		--self:Message(child:GetName(), " ", child:GetObjectType());
 		if (child:IsObjectType("Button")) then
@@ -3151,7 +3150,11 @@ function PowaAuras:EquipmentSlotsShow()
 			end
 		end
 	end
-	
+end
+
+function PowaAuras:EquipmentSlotsShow()
+
+	self:ResetSlotsToEmpty();
 	local aura = self.Auras[self.CurrentAuraId];
 	if (not aura) then
 		return;
@@ -3162,9 +3165,14 @@ function PowaAuras:EquipmentSlotsShow()
 		if (string.len(pword)>0 and pword~="???") then
 			local slotId = GetInventorySlotInfo(pword.."Slot");
 			--PowaAuras:Message("pword=",pword, " slotId= ",slotId);
-
 			if (slotId) then
-				local texture = GetInventoryItemTexture("player", slotId);
+				local ok, texture = pcall(GetInventoryItemTexture, "player", slotId);
+				if (not ok) then
+					self:Message("Slot definitions are invalid!");
+					self:ResetSlotsToEmpty();
+					aura.buffname = "";
+					return;
+				end
 				if (texture~=nil) then
 					getglobal("Powa"..pword.."SlotIconTexture"):SetTexture(texture);
 					getglobal("Powa"..pword.."Slot").Set = true;
