@@ -2958,8 +2958,9 @@ function cPowaGTFO:AddEffectAndEvents()
 		table.insert(PowaAuras.AurasByType.GTFOLow, self.id);
 	elseif (self.GTFO == 2) then
 		table.insert(PowaAuras.AurasByType.GTFOFail, self.id);
+    elseif (self.GTFO == 3) then
+        table.insert(PowaAuras.AurasByType.GTFOFriendlyFire, self.id);
 	end
-	
 end
 
 function cPowaGTFO:CheckIfShouldShow(giveReason)
@@ -2969,6 +2970,8 @@ function cPowaGTFO:CheckIfShouldShow(giveReason)
 		self:SetIcon("Interface\\icons\\spell_fire_bluefire");
 	elseif (self.GTFO == 2) then
 		self:SetIcon("Interface\\icons\\ability_suffocate");
+	elseif (self.GTFO == 3) then
+		self:SetIcon("Interface\\icons\\spell_fire_felflamering");
 	else
 		self:SetIcon("Interface\\icons\\spell_fire_fire");
 	end

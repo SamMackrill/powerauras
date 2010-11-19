@@ -70,7 +70,7 @@ PowaAuras = {
 
 	PowaStance = {[0] = "Humanoid"};
 	
-	PowaGTFO = {[0] = "High Damage", [1] = "Low Damage", [2] = "Fail Alert"};
+	PowaGTFO = {[0] = "High Damage", [1] = "Low Damage", [2] = "Fail Alert", [3] = "Friendly Fire"};
 		
 	allowedOperators = {
 		["="] = true,
@@ -629,6 +629,7 @@ PowaAuras:RegisterAuraType('Tracking');
 PowaAuras:RegisterAuraType('GTFOHigh');
 PowaAuras:RegisterAuraType('GTFOLow');
 PowaAuras:RegisterAuraType('GTFOFail');
+PowaAuras:RegisterAuraType('GTFOFriendlyFire');
 
 
 
