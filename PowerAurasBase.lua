@@ -84,7 +84,6 @@ PowaAuras = {
 
 	DefaultOperator = ">=";
 
-	MainOptionPage = 1;
 	CurrentAuraPage = 1;
 	
 	MoveEffect = 0; -- 1 = copie / 2 = move
