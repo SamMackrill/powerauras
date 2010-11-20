@@ -2091,26 +2091,6 @@ function cPowaCombo:CheckIfShouldShow(giveReason)
 		if (not giveReason) then return nil; end
 		return nil, PowaAuras.Text.nomReasonNoUseCombo;
 	end
-	
-	if (PowaAuras.playerclass=="DRUID") then
-		local form = GetShapeshiftForm();
-		if (self.Debug) then
-			PowaAuras:Message("form=",form); --OK
-		end
-		if (form==0) then
-			if (not giveReason) then return nil; end
-			return nil, PowaAuras.Text.nomReasonNoUseComboInForm;
-		end
-		local icon = GetShapeshiftFormInfo(form);
-		if (self.Debug) then
-			PowaAuras:Message("icon=",icon); --OK
-		end
-		--PowaAuras:ShowText("playerclass=",PowaAuras.playerclass, " GetShapeshiftForm=",form, " icon=",icon);
-		if (icon ~= "Interface\\Icons\\Spell_Nature_WispSplode") then
-			if (not giveReason) then return nil; end
-			return nil, PowaAuras.Text.nomReasonNoUseComboInForm;
-		end
-	end
 
 	PowaAuras:Debug("Check Combos");
 	local nCombo = GetComboPoints("player");
