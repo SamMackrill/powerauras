@@ -23,7 +23,7 @@ function PowaAuras:UpdateMainOption()
 
 	-- attach the icons
 	for i = 1, 24 do
-		local k = ((self.MainOptionPage-1)*24) + i;
+		local k = ((self.CurrentAuraPage-1)*24) + i;
 		--self:Message("icon ", k);
 		local aura = self.Auras[k];
 		-- icone
@@ -63,13 +63,13 @@ function PowaAuras:UpdateMainOption()
 		end
 	end
 	-- choisi la liste en cours
-	getglobal("PowaOptionsList"..self.MainOptionPage):SetHighlightTexture("Interface\\Buttons\\UI-Panel-Button-Highlight");
-	getglobal("PowaOptionsList"..self.MainOptionPage):LockHighlight();
+	getglobal("PowaOptionsList"..self.CurrentAuraPage):SetHighlightTexture("Interface\\Buttons\\UI-Panel-Button-Highlight");
+	getglobal("PowaOptionsList"..self.CurrentAuraPage):LockHighlight();
 end
 
 function PowaAuras:IconeClick(owner, button)
 	local iconeID = owner:GetID();
-	local auraId = ((self.MainOptionPage-1)*24) + iconeID;
+	local auraId = ((self.CurrentAuraPage-1)*24) + iconeID;
 
 	if (self.MoveEffect > 0) then -- mode move, annule
 		return;
@@ -110,7 +110,6 @@ function PowaAuras:IconeClick(owner, button)
 		end
 	elseif (self.CurrentAuraId ~= auraId) then -- clicked a different button
 		self.CurrentAuraId = auraId;
-		self.CurrentAuraPage = self.MainOptionPage;
 		PowaSelected:SetPoint("CENTER", owner, "CENTER");
 		PowaSelected:Show();
 		self:InitPage(); -- change de page dans l'editeur d'effet
@@ -119,7 +118,7 @@ end
 
 function PowaAuras:IconeEntered(owner)
 	local iconeID = owner:GetID();
-	local k = ((self.MainOptionPage-1)*24) + iconeID;
+	local k = ((self.CurrentAuraPage-1)*24) + iconeID;
 	local aura = self.Auras[k];
 	if (self.MoveEffect > 0) then -- mode move, annule
 		return;
@@ -208,14 +207,12 @@ function PowaAuras:MainListClick(owner)
 		return;
 	end
 	
-	getglobal("PowaOptionsList"..self.MainOptionPage):SetHighlightTexture("");
-	getglobal("PowaOptionsList"..self.MainOptionPage):UnlockHighlight();
+	getglobal("PowaOptionsList"..self.CurrentAuraPage):SetHighlightTexture("");
+	getglobal("PowaOptionsList"..self.CurrentAuraPage):UnlockHighlight();
 	PowaSelected:Hide();
-	self.MainOptionPage = listeID;
+	self.CurrentAuraPage = listeID;
+	self.CurrentAuraId = ((self.CurrentAuraPage-1)*24)+1;
 
-	-- selectionne le premier effet de la page
-	self.CurrentAuraId = ((self.MainOptionPage-1)*24)+1;
-	self.CurrentAuraPage = self.MainOptionPage;
 	-- change de page dans l'editeur d'effet ou cache l'editeur
 	if (self.Auras[auraId] ~= nil and self.Auras[self.CurrentAuraId].buffname ~= "" and self.Auras[ self.CurrentAuraId].buffname ~= " ") then
 		self:InitPage(); 
@@ -224,9 +221,9 @@ function PowaAuras:MainListClick(owner)
 	end
 
 	-- set text for rename
-	--local pageButton = "PowaOptionsList"..self.MainOptionPage;
+	--local pageButton = "PowaOptionsList"..self.CurrentAuraPage;
 	--self:ShowText(pageButton, getglobal(pageButton));
-	local currentText = getglobal("PowaOptionsList"..self.MainOptionPage):GetText();
+	local currentText = getglobal("PowaOptionsList"..self.CurrentAuraPage):GetText();
 	if (currentText==nil) then currentText = "" end;
 	PowaOptionsRenameEditBox:SetText( currentText );
 
@@ -236,7 +233,7 @@ end
 function PowaAuras:MainListEntered(owner)
 	local listeID = owner:GetID();
 
-	if (self.MainOptionPage ~= listeID) then
+	if (self.CurrentAuraPage ~= listeID) then
 		if (self.MoveEffect > 0) then
 			getglobal("PowaOptionsList"..listeID):SetHighlightTexture("Interface\\Buttons\\UI-Panel-Button-Highlight"); 
 		else
@@ -259,7 +256,7 @@ function PowaAuras:OptionRename()
 	PowaOptionsRename:Hide();
 	PowaOptionsRenameEditBox:Show();
 
-	local currentText = getglobal("PowaOptionsList"..self.MainOptionPage):GetText();
+	local currentText = getglobal("PowaOptionsList"..self.CurrentAuraPage):GetText();
 	if (currentText==nil) then currentText = "" end;
 	PowaOptionsRenameEditBox:SetText( currentText );
 end
@@ -268,20 +265,19 @@ function PowaAuras:OptionRenameEdited()
 	PowaOptionsRename:Show();
 	PowaOptionsRenameEditBox:Hide();
 
-	getglobal("PowaOptionsList"..self.MainOptionPage):SetText( PowaOptionsRenameEditBox:GetText() );
-	if (self.MainOptionPage > 5) then
-		PowaGlobalListe[self.MainOptionPage-5] = PowaOptionsRenameEditBox:GetText();
+	getglobal("PowaOptionsList"..self.CurrentAuraPage):SetText( PowaOptionsRenameEditBox:GetText() );
+	if (self.CurrentAuraPage > 5) then
+		PowaGlobalListe[self.CurrentAuraPage-5] = PowaOptionsRenameEditBox:GetText();
 	else
-		PowaPlayerListe[self.MainOptionPage] = PowaOptionsRenameEditBox:GetText();
+		PowaPlayerListe[self.CurrentAuraPage] = PowaOptionsRenameEditBox:GetText();
 	end
 end
 
 function PowaAuras:TriageIcones(nPage)
-	  local min = ((nPage-1)*24) + 1;
-	  local max = min + 23;
+	 local min = ((nPage-1)*24) + 1;
+	 local max = min + 23;
 
-
-	-- masque les effets de la page
+	-- Hide any auras on this page
 	for i = min, max do
 		local aura = self.Auras[i];
 		if (aura) then
@@ -297,12 +293,13 @@ function PowaAuras:TriageIcones(nPage)
 				self:ReindexAura(i, a);
 			end
 			if (i>a) then
-				self:DeleteAura(self.Auras[i]);
+				self.Auras[i] = nil;
 			end
 			a = a + 1;
 		end
 	end
-	-- gere les liens vers les effets globaux
+	
+	-- Keep global auras in step
 	for i = 121, 360 do
 		if (self.Auras[i]) then 
 			PowaGlobalSet[i] = self.Auras[i]; 
@@ -321,6 +318,7 @@ function PowaAuras:ReindexAura(oldId, newId)
 	if (self.Auras[newId].Stacks) then
 		self.Auras[newId].Stacks.id = newId;
 	end
+	-- Update any multi-id references
 	for i = 1, 360 do
 		local aura = self.Auras[i];
 		if (aura) then 
@@ -342,6 +340,9 @@ function PowaAuras:ReindexAura(oldId, newId)
 end
 
 function PowaAuras:DeleteAura(aura)
+	if (not aura) then return; end
+	aura:Hide();
+
 	if (aura.Timer) then aura.Timer:Delete(); end
 	if (aura.Stacks) then aura.Stacks:Delete(); end
 	
@@ -351,36 +352,31 @@ function PowaAuras:DeleteAura(aura)
 	self.SecondaryFrames[aura.id] = nil;
 	self.SecondaryTextures[aura.id] = nil;
 
-	self.Auras[aura.id] = nil;
-	if (aura.id > 120) then
-		PowaGlobalSet[aura.id] = nil;
-	end
-	self:CalculateAuraSequence();
-end
-
-function PowaAuras:OptionDeleteEffect(auraId)
-
-	if (not IsControlKeyDown()) then return; end
-
-	local aura = self.Auras[auraId];
-	if (not aura) then return; end
-	
-	aura:Hide();
-	self:DeleteAura(aura);
-
 	PowaSelected:Hide();
 
 	if (PowaBarConfigFrame:IsVisible()) then
 		PowaBarConfigFrame:Hide();
 	end
 
-	self:TriageIcones(self.MainOptionPage);
+	self.Auras[aura.id] = nil;
+	if (aura.id > 120) then
+		PowaGlobalSet[aura.id] = nil;
+	end
+end
+
+function PowaAuras:OptionDeleteEffect(auraId)
+
+	if (not IsControlKeyDown()) then return; end
+	self:DeleteAura(self.Auras[auraId]);
+
+	self:TriageIcones(self.CurrentAuraPage);
+	self:CalculateAuraSequence();
 	self:UpdateMainOption();
 end
 
 function PowaAuras:GetNextFreeSlot(page)
 	if (page==nil) then
-		page = self.MainOptionPage;
+		page = self.CurrentAuraPage;
 	end
 	local min = ((page-1)*24) + 1;
 	local max = min + 23;
@@ -403,7 +399,7 @@ function PowaAuras:OptionNewEffect()
                    
 	--self:Message("New Effect slot=", i)
 	self.CurrentAuraId = i;
-	self.CurrentAuraPage = self.MainOptionPage;
+	self.CurrentAuraPage = self.CurrentAuraPage;
 	local aura = self:AuraFactory(self.BuffTypes.Buff, i);
 	--self:Message("Timer.enabled=", aura.Timer.enabled)
 	aura:Init();
@@ -639,7 +635,7 @@ function PowaAuras:CreateNewAuraSetFromImport(importString)
 		return;
 	end
 
-	local min = ((self.MainOptionPage-1)*24) + 1;
+	local min = ((self.CurrentAuraPage-1)*24) + 1;
 	local max = min + 23;
 
 	for i = min, max do
@@ -682,11 +678,11 @@ function PowaAuras:CreateNewAuraSetFromImport(importString)
 			end
 		end
 		if (not nameFound) then
-			getglobal("PowaOptionsList"..self.MainOptionPage):SetText( setName );
-			if (self.MainOptionPage > 5) then
-				PowaGlobalListe[self.MainOptionPage-5] = setName;
+			getglobal("PowaOptionsList"..self.CurrentAuraPage):SetText( setName );
+			if (self.CurrentAuraPage > 5) then
+				PowaGlobalListe[self.CurrentAuraPage-5] = setName;
 			else
-				PowaPlayerListe[self.MainOptionPage] = setName;
+				PowaPlayerListe[self.CurrentAuraPage] = setName;
 			end
 		end
 	end
@@ -705,7 +701,6 @@ function PowaAuras:OptionImportEffect()
 	end
                        
 	self.ImportAuraId = i;
-	self.CurrentAuraPage = self.MainOptionPage;
 
 	StaticPopup_Show("POWERAURAS_IMPORT_AURA");
 			
@@ -719,13 +714,13 @@ end
 
 function PowaAuras:CreateAuraSetString()
 	local setString = "Set=";
-	if (self.MainOptionPage > 5) then
-		setString = setString .. PowaGlobalListe[self.MainOptionPage-5];
+	if (self.CurrentAuraPage > 5) then
+		setString = setString .. PowaGlobalListe[self.CurrentAuraPage-5];
 	else
-		setString = setString .. PowaPlayerListe[self.MainOptionPage];
+		setString = setString .. PowaPlayerListe[self.CurrentAuraPage];
 	end
 	setString = setString .. "@";
-	local min = ((self.MainOptionPage-1)*24) + 1;
+	local min = ((self.CurrentAuraPage-1)*24) + 1;
 	local max = min + 23;
 
 	for i = min, max do
@@ -807,7 +802,7 @@ function PowaAuras:BeginMoveEffect(Pfrom, ToPage)
 
 	self:DoCopyEffect(Pfrom, i, true); -- copie et efface effet actuel
 	self:TriageIcones(self.CurrentAuraPage); -- trie les pages pour eviter les trous
-	self.CurrentAuraId = ((self.MainOptionPage-1)*24)+1; -- nouvelle aura en cours sera le premier effet de cette page
+	self.CurrentAuraId = ((self.CurrentAuraPage-1)*24)+1; -- nouvelle aura en cours sera le premier effet de cette page
 	-- gere les visus
 	self:DisableMoveMode();
 	-- met a jour la page
@@ -849,7 +844,10 @@ function PowaAuras:DoCopyEffect(idFrom, idTo, isMove)
 
 	if (isMove) then
 		self:DeleteAura(self.Auras[idFrom]);
+		self:TriageIcones(self.CurrentAuraPage);
 	end
+	self:CalculateAuraSequence();
+	self:UpdateMainOption();
 end
 
 function PowaAuras:MainOptionShow()
