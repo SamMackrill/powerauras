@@ -120,7 +120,7 @@ function cPowaStacks:SetStackCount(count)
 		return;
 	end
 
-	if (self.enabled==false) then 
+	if (self.enabled==false or aura.InactiveDueToMulti) then 
 		--PowaAuras:UnitTestInfo("Stacks disabled");
 		--if (aura.Debug) then
 		--	PowaAuras:DisplayText("Stacks disabled");
@@ -143,15 +143,28 @@ function cPowaStacks:SetStackCount(count)
 	
 	if (count>99) then count = 99; end;
 	if (self.lastShownValue==count and self.Showing) then
+		self.UpdateValueTo = nil;
 		if (aura.Debug) then
 			PowaAuras:DisplayText("Stacks unchanged");
 		end
 		return;
 	end
-	self.lastShownValue=count;
+	self.UpdateValueTo = count;
+end
+
+function cPowaStacks:Update()
+	if (not self.UpdateValueTo) then return; end
+	local aura = PowaAuras.Auras[self.id];
+	if (aura == nil) then return;end
+
+	if (aura.Debug) then
+		PowaAuras:DisplayText("Stacks Update UpdateValueTo=",self.UpdateValueTo);
+	end
+	self.lastShownValue=self.UpdateValueTo;
 	PowaAuras:CreateStacksFrameIfMissing(self.id, self.UpdatePing);
-	self:ShowValue(aura, count);
+	self:ShowValue(aura, self.UpdateValueTo);
 	self.Showing = true;
+	self.UpdateValueTo = nil;
 end
 
 function cPowaStacks:Hide()
@@ -161,6 +174,8 @@ function cPowaStacks:Hide()
 		PowaAuras.StacksFrames[self.id]:Hide();
 	end
 	self.Showing = false;
+	self.UpdateValueTo = nil;
+	self.lastShownValue = nil;
 end
 
 function cPowaStacks:Delete()

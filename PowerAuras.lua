@@ -796,7 +796,7 @@ function PowaAuras:TestThisEffect(auraId, giveReason, ignoreCascade)
 	end
 	
 	--self:ShowText("Test Aura for Hide or Show = ",auraId, " showing=",aura.Showing);
-	aura.TimerInactiveDueToMulti = nil;
+	aura.InactiveDueToMulti = nil;
 	local shouldShow, reason = aura:ShouldShow(giveReason or debugEffectTest);
 	if (shouldShow==-1) then
 		if (debugEffectTest) then
@@ -808,14 +808,14 @@ function PowaAuras:TestThisEffect(auraId, giveReason, ignoreCascade)
 	if (shouldShow==true) then
 		shouldShow, reason = self:CheckMultiple(aura, reason, giveReason or debugEffectTest);
 		if (not shouldShow) then
-			--self:ShowText("TimerInactiveDueToMulti Aura ", aura.buffname, " (",auraId,")");
-			aura.TimerInactiveDueToMulti = true;
+			--self:ShowText("InactiveDueToMulti Aura ", aura.buffname, " (",auraId,")");
+			aura.InactiveDueToMulti = true;
 		end
 	elseif (aura.Timer and aura.CanHaveTimerOnInverse) then
 		local multiShouldShow = self:CheckMultiple(aura, reason, giveReason or debugEffectTest);
 		if (not multiShouldShow) then
-			--self:ShowText("TimerInactiveDueToMulti Aura ", aura.buffname, " (",auraId,")");
-			aura.TimerInactiveDueToMulti = true;
+			--self:ShowText("InactiveDueToMulti Aura ", aura.buffname, " (",auraId,")");
+			aura.InactiveDueToMulti = true;
 		end
 	end
 	if (debugEffectTest) then
@@ -1018,7 +1018,6 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 		aura.ForceTimeInvert = nil;
 	end
 	
-
 	if (aura.Timer and aura.Timer.enabled) then
 		if (aura.Debug) then
 			self:Message("Show Timer");
@@ -1298,8 +1297,7 @@ function PowaAuras:UpdateAura(aura, elapsed)
 				end
 				aura.EndSoundPlayed = true;
 			end
-		
-		
+			
 			if (aura.Stacks) then
 				aura.Stacks:Hide();
 			end
@@ -1337,12 +1335,16 @@ function PowaAuras:UpdateAura(aura, elapsed)
 			self:UpdateAuraAnimation(aura, elapsed, frame);
 		end
 
-		if (self.ModTest and aura.Stacks and aura.Active) then
-			if (aura.Stacks.SetStackCount) then
-				aura.Stacks:SetStackCount(random(1,12));
-			else
-				self:Message("aura.Stacks:SetStackCount nil!! ",aura.id);			
+		if (aura.Active and aura.Stacks and aura.Stacks.enabled) then
+			if (self.ModTest) then
+				if (aura.Stacks.SetStackCount) then
+					aura.Stacks:SetStackCount(random(1,12));
+				else
+					self:Message("aura.Stacks:SetStackCount nil!! ",aura.id);			
+				end
 			end
+		
+			aura.Stacks:Update();
 		end
 
 	end
@@ -1379,7 +1381,7 @@ function PowaAuras:UpdateTimer(aura, timerElapsed, skipTimerUpdate)
 		self:Message("timerHide=",timerHide);
 		self:Message("InactiveDueToState=",aura.InactiveDueToState);
 	end
-	if (timerHide or (aura.InactiveDueToState and not aura.Active) or aura.TimerInactiveDueToMulti) then
+	if (timerHide or (aura.InactiveDueToState and not aura.Active) or aura.InactiveDueToMulti) then
 		aura.Timer:Hide(); -- Request or state
 		if (aura.ForceTimeInvert) then
 			aura.Timer:Update(timerElapsed);				
