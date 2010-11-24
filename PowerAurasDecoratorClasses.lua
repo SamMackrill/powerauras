@@ -222,7 +222,6 @@ cPowaTimer.ExportSettings = {
 	UpdatePing = false,
 	ShowActivation = false,
 	Seconds99 = false,
-	InvertAuraBelow = 0,
 	Texture = "Default",
 	Relative = "NONE",
 	UseOwnColor = false,
@@ -283,7 +282,7 @@ function cPowaTimer:Update(elapsed)
 		PowaAuras:DisplayText("Timer.Update ",self.id);
 	end
 
-	if (self.enabled==false and self.InvertAuraBelow==0) then
+	if (self.enabled==false and aura.InvertAuraBelow==0) then
 		--PowaAuras:UnitTestInfo("Timer disabled");
 		if (PowaAuras.DebugCycle) then
 			PowaAuras:DisplayText("Timer disabled");
