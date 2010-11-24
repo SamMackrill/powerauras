@@ -185,7 +185,7 @@ function PowaAuras:DiscoverLinksForAura(aura, ignoreOff)
 end
 	
 function PowaAuras:UpdateOldAuras()
-	--self:Message("Saved varaible convertion: PowaTimer #", #PowaTimer);
+	self:Message("Upgrading old power auras");
 	-- Copy old timer info (should be once only)
 	for k, v in pairs(PowaTimer) do
 		local aura = self.Auras[k];
@@ -213,40 +213,39 @@ function PowaAuras:UpdateOldAuras()
 		if (oldaura==nil) then
 			oldaura = PowaGlobalSet[i];
 		end
-		if (aura) then
+		if (aura and oldaura) then
 		
-		
-			if (aura.combat==0) then
+			if (oldaura.combat==0) then
 				aura.combat = 0;
-			elseif (aura.combat==1) then
+			elseif (oldaura.combat==1) then
 				aura.combat = true;
-			elseif (aura.combat==2) then
+			elseif (oldaura.combat==2) then
 				aura.combat = false;
 			end
-			if (aura.ignoreResting==true) then
+			if (oldaura.ignoreResting==true) then
 				aura.isResting = true;
-			elseif (aura.ignoreResting==true) then
+			elseif (oldaura.ignoreResting==true) then
 				aura.isResting = false;
 			end
 			aura.ignoreResting = nil;
-			if (aura.isinraid==true) then
+			if (oldaura.isinraid==true) then
 				aura.inRaid = true;
-			elseif (aura.isinraid==false) then
+			elseif (oldaura.isinraid==false) then
 				aura.inRaid = 0;
 			end
 			aura.isinraid = nil;
-			if (aura.isDead==true) then
+			if (oldaura.isDead==true) then
 				aura.isAlive = false;
-			elseif (aura.isDead==false) then
+			elseif (oldaura.isDead==false) then
 				aura.isAlive = true;
-			elseif (aura.isDead==0) then
+			elseif (oldaura.isDead==0) then
 				aura.isAlive = 0;
 			end
 			aura.isDead = nil;
 			if (aura.buffname == "") then
 				--self:Message("Delete aura "..i);
 				self.Auras[i] = nil;
-			elseif (aura.bufftype == nil and oldaura~=nil) then
+			elseif (aura.bufftype == nil) then
 				--self:Message("Repair bufftype for #"..i);
 				
 				if (oldaura.isdebuff) then
@@ -309,6 +308,10 @@ function PowaAuras:UpdateOldAuras()
 					aura.Stacks.h = math.floor(aura.Stacks.h * 100 + 0.5) / 100;
 				end				
 			end			
+		
+			if (aura.Timer and self:IsNumeric(oldaura.Timer.InvertAuraBelow)) then
+				aura.InvertAuraBelow = oldaura.Timer.InvertAuraBelow;
+			end
 			
 		end
 	end

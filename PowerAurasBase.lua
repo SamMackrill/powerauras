@@ -919,6 +919,9 @@ function PowaAuras:Error( msg, holdtime )
 	UIErrorsFrame:AddMessage(msg, 0.75, 0.75, 1.0, 1.0, holdtime);
 end
 
+function PowaAuras:IsNumeric(a)
+    return type(tonumber(a)) == "number";
+end
 
 function PowaAuras:ReverseTable(t)
 	if (type(t)~="table") then return nil; end

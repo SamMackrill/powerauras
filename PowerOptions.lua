@@ -487,9 +487,16 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 										{Major=3, Minor=0, Build=0, Revision="J"})) then
 					oldSpellAlertLogic = false;
 				end
-			elseif (string.sub(key,1,6) == "timer.") then
-				importTimerSettings[string.sub(key,7)] = self:ExtractImportValue(varType, var);
-				hasTimerSettings = true;
+			elseif (string.sub(key,1,6) == "timer.") then		
+				local key = string.sub(key,7);
+				if (key == "InvertAuraBelow") then
+					if (self:IsNumeric(var)) then
+						importAuraSettings[key] = self:ExtractImportValue(varType, var);
+					end
+				else
+					importTimerSettings[key] = self:ExtractImportValue(varType, var);
+					hasTimerSettings = true;
+				end
 			elseif (string.sub(key,1,7) == "stacks.") then
 				importStacksSettings[string.sub(key,8)] = self:ExtractImportValue(varType, var);
 				hasStacksSettings = true;
@@ -655,7 +662,9 @@ function PowaAuras:CreateNewAuraSetFromImport(importString)
 			if (not offset) then
 				local _, _, oldAuraId = string.find(k, "(%d+)");
 				--self:ShowText("oldAuraId=", oldAuraId);
-				offset = min - oldAuraId;
+				if (self:IsNumeric(oldAuraId)) then
+					offset = min - oldAuraId;
+				end
 				--self:ShowText(" offset=", offset);
 			end
 			self.Auras[auraId] = self:ImportAura(v, auraId, offset);
@@ -947,7 +956,7 @@ function PowaAuras:UpdateTimerOptions()
 		UIDropDownMenu_SetSelectedValue(PowaBuffTimerRelative, timer.Relative);		
 		UIDropDownMenu_SetSelectedValue(PowaDropDownTimerTexture, timer.Texture);
 		
-		PowaTimerInvertAuraSlider:SetValue(timer.InvertAuraBelow);
+		PowaTimerInvertAuraSlider:SetValue(aura.InvertAuraBelow);
 
 	end
 end
@@ -2591,7 +2600,7 @@ function PowaAuras:PowaTimerInvertAuraSliderChanged(slider)
 	end
 	getglobal(slider:GetName().."Text"):SetText(text.." : "..slider:GetValue().." sec");
 
-	self.Auras[self.CurrentAuraId].Timer.InvertAuraBelow = slider:GetValue();
+	self.Auras[self.CurrentAuraId].InvertAuraBelow = slider:GetValue();
 	--self:CreateTimerFrameIfMissing(self.CurrentAuraId);
 end
 
