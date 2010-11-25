@@ -45,7 +45,7 @@ end
 -->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 function PowaAuras:Toggle(enable)
-	if (self.Initialising) then return; end
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
 	--self:ShowText("Toggle Frame=", PowaAuras_Frame);
 	if (enable==nil) then
 		enable = PowaMisc.Disabled;
@@ -106,7 +106,7 @@ function PowaAuras:RegisterEvents(frame)
 end
 
 function PowaAuras:LoadAuras()
-	--self:Message("Saved varaible convertion: PowaSet");
+	--self:ShowText("LoadAuras");
 	self.Auras = {};
 	self.AuraSequence = {};	
 	
@@ -143,6 +143,8 @@ function PowaAuras:LoadAuras()
 	end
 	
 	self:CalculateAuraSequence();
+	--self:ShowText(#self.AuraSequence," Auras loaded");
+
 	
 	-- Copy to Saved Sets
 	PowaSet = self.Auras;
@@ -558,8 +560,11 @@ end
 --=== Run time ===--
 function PowaAuras:OnUpdate(elapsed)
 	--self:UnitTestInfo("OnUpdate", elapsed);
+	if (self.NextDebugCheck>0 and self.DebugTimer > self.NextDebugCheck) then
+		PowaAuras:Message("OnUpdate   Init=", not (self.VariablesLoaded and self.SetupDone)); --OK
+	end
 
-	if (self.Initialising) then return; end 
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end 
 		
 	self.ChecksTimer = self.ChecksTimer + elapsed;
 	self.TimerUpdateThrottleTimer = self.TimerUpdateThrottleTimer + elapsed;	
@@ -1214,7 +1219,7 @@ end
 function PowaAuras:DisplayAura(auraId)
 	--self:UnitTestInfo("DisplayAura", auraId);
 	--self:ShowText("DisplayAura aura ", auraId);
-	if (self.Initialising) then return; end   --- de-actived
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end   --- de-actived
 
 	local aura = self.Auras[auraId];
 	if (aura==nil or aura.off) then return; end

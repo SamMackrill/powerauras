@@ -44,7 +44,6 @@ PowaAuras = {
 	
 	VariablesLoaded = false;
 	SetupDone = false;
-	Initialising = true;
 	ModTest = false;
 	DebugCycle = false; 	
 	ResetTargetTimers = false;

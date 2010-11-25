@@ -1370,7 +1370,7 @@ end
 --================
 
 function PowaAuras:BarAuraTextureSliderChanged()
-	if (self.Initialising) then return; end
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
 	local SliderValue = PowaBarAuraTextureSlider:GetValue();
 	local CheckTexture = 0;
 	local auraId = self.CurrentAuraId;
@@ -1412,7 +1412,7 @@ end
 
  
 function PowaAuras:BarAuraAlphaSliderChanged()
-	if (self.Initialising) then return; end
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
 	local SliderValue = PowaBarAuraAlphaSlider:GetValue();
 
 	PowaBarAuraAlphaSliderText:SetText(self.Text.nomAlpha.." : "..format("%.0f",SliderValue*100).."%");
@@ -1422,7 +1422,7 @@ function PowaAuras:BarAuraAlphaSliderChanged()
 end
 
 function PowaAuras:BarAuraSizeSliderChanged()
-	if (self.Initialising) then return; end
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
 	local SliderValue = PowaBarAuraSizeSlider:GetValue();
 	local auraId = self.CurrentAuraId;
 	
@@ -1433,7 +1433,7 @@ function PowaAuras:BarAuraSizeSliderChanged()
 end
 
 function PowaAuras:BarAuraCoordSliderChanged()
-	if (self.Initialising) then return; end
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
 	local SliderValue = PowaBarAuraCoordSlider:GetValue();
 	local auraId = self.CurrentAuraId;
 	
@@ -1447,7 +1447,7 @@ function PowaAuras:BarAuraCoordSliderChanged()
 end
 
 function PowaAuras:BarAuraCoordXSliderChanged()
-	if (self.Initialising) then return; end
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
 	local SliderValue = PowaBarAuraCoordXSlider:GetValue();
 	local auraId = self.CurrentAuraId;
 	
@@ -1461,7 +1461,7 @@ function PowaAuras:BarAuraCoordXSliderChanged()
 end
 
 function PowaAuras:BarAuraAnimSpeedSliderChanged()
-	if (self.Initialising) then return; end
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
 	local SliderValue = PowaBarAuraAnimSpeedSlider:GetValue();
 	local auraId = self.CurrentAuraId;
 
@@ -1472,7 +1472,7 @@ function PowaAuras:BarAuraAnimSpeedSliderChanged()
 end
 
 function PowaAuras:BarAuraAnimDurationSliderChanged(control)
-	if (self.Initialising) then return; end
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
 	local sliderValue = control:GetValue();
 
 	getglobal(control:GetName().."Text"):SetText(self.Text.nomDuration.." : "..sliderValue.." sec");
@@ -1483,7 +1483,7 @@ function PowaAuras:BarAuraAnimDurationSliderChanged(control)
 end
 
 function PowaAuras:BarAuraSymSliderChanged()
-	if (self.Initialising) then return; end
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
 
 	local sliderValue = PowaBarAuraSymSlider:GetValue();
 
@@ -1506,7 +1506,7 @@ function PowaAuras:BarAuraSymSliderChanged()
 end
 
 function PowaAuras:BarAuraDeformSliderChanged()
-	if (self.Initialising) then return; end
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
 	local sliderValue = PowaBarAuraDeformSlider:GetValue();
 
 	PowaBarAuraDeformSliderText:SetText(self.Text.nomDeform.." : "..format("%.2f", sliderValue));
@@ -1516,7 +1516,7 @@ function PowaAuras:BarAuraDeformSliderChanged()
 end
 
 function PowaAuras:BarThresholdSliderChanged()
-	if (self.Initialising) then return; end
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
 	--PowaAuras:ShowText("======BarThresholdSliderChanged======");
 	local sliderValue = PowaBarThresholdSlider:GetValue();
 	--PowaAuras:ShowText("sliderValue=", sliderValue);
@@ -2491,7 +2491,7 @@ end
 
 function PowaAuras:UpdateOptionsTimer(auraId)
 
-	if (self.Initialising) then return; end
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
 	
 	local timer = self.Auras[auraId].Timer;
 	
@@ -2515,7 +2515,7 @@ end
 
 
 function PowaAuras:UpdateOptionsStacks(auraId)
-	if (self.Initialising) then return; end  
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end  
 	
 	local stacks = self.Auras[auraId].Stacks;
 	
@@ -2533,7 +2533,7 @@ function PowaAuras:UpdateOptionsStacks(auraId)
 end
 
 function PowaAuras:ShowTimerChecked(control)
-	if (self.Initialising) then return; end
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
 	if (control:GetChecked()) then
 		self.Auras[self.CurrentAuraId].Timer.enabled = true;
 		self:CreateTimerFrameIfMissing(self.CurrentAuraId);	
@@ -2546,7 +2546,7 @@ end
 function PowaAuras:TimerAlphaSliderChanged()
 	local SliderValue = PowaTimerAlphaSlider:GetValue();
 
-	if (self.Initialising) then return; end   -- desactived
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end   -- desactived
 	
 	PowaTimerAlphaSliderText:SetText(self.Text.nomAlpha.." : "..format("%.2f", SliderValue) );
 
@@ -2557,7 +2557,7 @@ end
 function PowaAuras:TimerSizeSliderChanged()
 	local SliderValue = PowaTimerSizeSlider:GetValue();
 
-	if (self.Initialising) then return; end   -- desactived
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end   -- desactived
 
 	PowaTimerSizeSliderText:SetText(self.Text.nomTaille.." : "..format("%.2f", SliderValue) );
 
@@ -2568,7 +2568,7 @@ end
 function PowaAuras:TimerCoordSliderChanged()
 	local SliderValue = PowaTimerCoordSlider:GetValue();
 
-	if (self.Initialising) then return; end   -- desactived
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end   -- desactived
 
 	PowaTimerCoordSliderText:SetText(self.Text.nomPos.." Y : "..SliderValue);
 
@@ -2579,7 +2579,7 @@ end
 function PowaAuras:TimerCoordXSliderChanged()
 	local SliderValue = PowaTimerCoordXSlider:GetValue();
 
-	if (self.Initialising) then return; end   -- desactived
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end   -- desactived
 
 	PowaTimerCoordXSliderText:SetText(self.Text.nomPos.." X : "..SliderValue);
 
@@ -2588,7 +2588,7 @@ function PowaAuras:TimerCoordXSliderChanged()
 end
 
 function PowaAuras:PowaTimerInvertAuraSliderChanged(slider)
-	if (self.Initialising) then return; end
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
 
 	local text;
 	if (self.Auras[self.CurrentAuraId].InvertTimeHides) then
@@ -2605,7 +2605,7 @@ function PowaAuras:PowaTimerInvertAuraSliderChanged(slider)
 end
 
 function PowaAuras:TimerDurationSliderChanged()
-	if (self.Initialising) then return; end
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
 	local SliderValue = PowaTimerDurationSlider:GetValue();
 
 	PowaTimerDurationSliderText:SetText(self.Text.nomTimerDuration.." : "..SliderValue.." sec");
@@ -2626,7 +2626,7 @@ function PowaAuras.DropDownMenu_OnClickTimerRelative(self)
 end
 
 function PowaAuras:TimerChecked(control, setting)
-	if (self.Initialising) then return; end
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
 	local aura = self.Auras[self.CurrentAuraId];
 	if (control:GetChecked()) then
 		aura.Timer[setting] = true;
@@ -2639,7 +2639,7 @@ function PowaAuras:TimerChecked(control, setting)
 end
 
 function PowaAuras:SettingChecked(control, setting)
-	if (self.Initialising) then return; end
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
 	if (control:GetChecked()) then
 		self.Auras[self.CurrentAuraId][setting] = true;
 	else
@@ -2648,7 +2648,7 @@ function PowaAuras:SettingChecked(control, setting)
 end
 
 function PowaAuras:TimerTransparentChecked(control)
-	if (self.Initialising) then return; end
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
 	if (control:GetChecked()) then
 		self.Auras[self.CurrentAuraId].Timer.Transparent = true;
 	else
@@ -2661,7 +2661,7 @@ end
 --==== Stacks ====
 
 function PowaAuras:ShowStacksChecked(control)
-	if (self.Initialising) then return; end
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
 	if (control:GetChecked()) then
 		self.Auras[self.CurrentAuraId].Stacks.enabled = true;
 	else
@@ -2673,7 +2673,7 @@ end
 function PowaAuras:StacksAlphaSliderChanged()
 	local SliderValue = PowaStacksAlphaSlider:GetValue();
 
-	if (self.Initialising) then return; end   -- desactived
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end   -- desactived
 	
 	PowaStacksAlphaSliderText:SetText(self.Text.nomAlpha.." : "..format("%.2f", SliderValue) );
 
@@ -2683,7 +2683,7 @@ end
 function PowaAuras:StacksSizeSliderChanged()
 	local SliderValue = PowaStacksSizeSlider:GetValue();
 
-	if (self.Initialising) then return; end   -- desactived
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end   -- desactived
 
 	PowaStacksSizeSliderText:SetText(self.Text.nomTaille.." : "..format("%.2f", SliderValue) );
 
@@ -2693,7 +2693,7 @@ end
 function PowaAuras:StacksCoordSliderChanged()
 	local SliderValue = PowaStacksCoordSlider:GetValue();
 
-	if (self.Initialising) then return; end   -- desactived
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end   -- desactived
 
 	PowaStacksCoordSliderText:SetText(self.Text.nomPos.." Y : "..SliderValue);
 
@@ -2703,7 +2703,7 @@ end
 function PowaAuras:StacksCoordXSliderChanged()
 	local SliderValue = PowaStacksCoordXSlider:GetValue();
 
-	if (self.Initialising) then return; end   -- desactived
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end   -- desactived
 
 	PowaStacksCoordXSliderText:SetText(self.Text.nomPos.." X : "..SliderValue);
 
@@ -2722,7 +2722,7 @@ function PowaAuras.DropDownMenu_OnClickStacksRelative(self)
 end
 
 function PowaAuras:StacksChecked(control, setting)
-	if (self.Initialising) then return; end
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
 	if (control:GetChecked()) then
 		self.Auras[self.CurrentAuraId].Stacks[setting] = true;
 	else
@@ -3124,7 +3124,7 @@ end
 
 function PowaAuras:RedisplayAura(auraId) ---Re-show aura after options changed
 
-	if (self.Initialising) then return; end 
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end 
 
 	local aura = self.Auras[auraId];
 	if (not aura) then
