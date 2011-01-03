@@ -138,7 +138,7 @@ function PowaAuras:LoadAuras()
 		end
 	end
 	
-	if (self.DebugAura) then
+	if (self.DebugAura and self.Auras[self.DebugAura]) then
 		self.Auras[self.DebugAura].Debug = true;
 	end
 	
@@ -916,71 +916,100 @@ function PowaAuras:SetAuraHideRequest(aura, secondaryAura)
 	end
 end
 
+-- Drag and Drop functions
 
-local function startMove(self, button)
-	--PowaAuras:ShowText("startMove button=", button, " isMoving=",self.isMoving);
-	if button == "LeftButton" and not self.isMoving then
-		self.isMoving = true;
-		PowaAuras:ShowText("startMove id=", self.aura.id);
-		self:StartMoving();
-		if (PowaAuras.CurrentAuraId ~= self.aura.id) then
-			PowaAuras:ShowText("Switching from id=", PowaAuras.CurrentAuraId);
-			local i = self.aura.id - (PowaAuras.CurrentAuraPage-1)*24;
-			if (i>0 and i<25) then
-				local icon = getglobal("PowaIcone"..i);
-			end
-			PowaAuras:SetCurrent(icon, self.aura.id);
-		end
-		PowaAuras:InitPage(self.aura);
-		local secondaryAura = PowaAuras.SecondaryAuras[self.aura.id];
-		if (secondaryAura~=nil) then
-			secondaryAura.HideRequest = true;
-		end
+local function stopFrameMoving(frame)
+	if (not frame.isMoving) then return; end
+	frame.isMoving = false;
+	--PowaAuras:ShowText("stopMove id=", frame.aura.id);
+	frame:StopMovingOrSizing();
+	frame.aura.x = math.floor(frame:GetLeft() + (frame:GetWidth()  - UIParent:GetWidth())  / 2 + 0.5);
+	frame.aura.y = math.floor(frame:GetTop()  - (frame:GetHeight() + UIParent:GetHeight()) / 2 + 0.5);
+	if (PowaAuras.CurrentAuraId == frame.aura.id) then
+		PowaAuras:InitPage(frame.aura);
 	end
 end
 
-local function stopMove(self, button)
+local function stopMove(frame, button)
 	--PowaAuras:ShowText("stopMove button=", button);
-	--PowaAuras:ShowText("isMoving=",self.isMoving);
-	if (button == "LeftButton" and self.isMoving) then
-		self.isMoving = false;
-		PowaAuras:ShowText("stopMove id=", self.aura.id);
-		self:StopMovingOrSizing();
-		self.aura.x = math.floor(self:GetLeft() + (self:GetWidth()  - UIParent:GetWidth())  / 2 + 0.5);
-		self.aura.y = math.floor(self:GetTop()  - (self:GetHeight() + UIParent:GetHeight()) / 2 + 0.5);
-		if (PowaAuras.CurrentAuraId == self.aura.id) then
-			PowaAuras:InitPage(self.aura);
+	--PowaAuras:ShowText("isMoving=",frame.isMoving);
+	if (button ~= "LeftButton") then return end;
+	stopFrameMoving(frame);
+end
+
+
+local function startFrameMoving(frame)
+	if (frame.isMoving) then return; end
+	if (PowaAuras.CurrentAuraId ~= frame.aura.id) then
+		--PowaAuras:ShowText("Switching from id=", PowaAuras.CurrentAuraId);
+		stopFrameMoving(PowaAuras.Frames[PowaAuras.CurrentAuraId]);
+		local i = frame.aura.id - (PowaAuras.CurrentAuraPage-1)*24;
+		local icon;
+		if (i>0 and i<25) then
+			icon = getglobal("PowaIcone"..i);
 		end
+		PowaAuras:SetCurrent(icon, frame.aura.id);
+		--PowaAuras:InitPage(frame.aura); -- This seems to mess things up?
 	end
-end
-
-local function enterAura(self)
-	self.mouseIsOver = true;
-end
-
-local function leaveAura(self)
-	self.mouseIsOver = nil;
-end
-
-local function keyUp(self, key)
-	if ((key~="UP" and key~="DOWN" and key~="LEFT" and key~="RIGHT") or not self.mouseIsOver) then return; end
-	if (key=="UP") then
-		self.aura.y = self.aura.y + 1;
-	elseif (key=="DOWN") then
-		self.aura.y = self.aura.y - 1;
-	elseif (key=="LEFT") then
-		self.aura.x = self.aura.x - 1;
-	elseif (key=="RIGHT") then
-		self.aura.x = self.aura.x + 1;
-	end
-	local secondaryAura = PowaAuras.SecondaryAuras[self.aura.id];
+	frame.isMoving = true;
+	--PowaAuras:ShowText("startMove id=", frame.aura.id);
+	frame:StartMoving();
+	local secondaryAura = PowaAuras.SecondaryAuras[frame.aura.id];
 	if (secondaryAura~=nil) then
 		secondaryAura.HideRequest = true;
 	end
-	if (PowaAuras.CurrentAuraId == self.aura.id) then
-		PowaAuras:InitPage(self.aura);
+end
+
+local function startMove(frame, button)
+	--PowaAuras:ShowText("startMove button=", button, " isMoving=",frame.isMoving);
+	if (button ~= "LeftButton") then return end;
+	startFrameMoving(frame);
+end
+
+local function keyUp(frame, key)
+	--PowaAuras:ShowText("keyUp key=", key, " aura=",frame.aura.id);
+	if ((key~="UP" and key~="DOWN" and key~="LEFT" and key~="RIGHT") or not frame.mouseIsOver) then return; end
+	if (key=="UP") then
+		frame.aura.y = frame.aura.y + 1;
+	elseif (key=="DOWN") then
+		frame.aura.y = frame.aura.y - 1;
+	elseif (key=="LEFT") then
+		frame.aura.x = frame.aura.x - 1;
+	elseif (key=="RIGHT") then
+		frame.aura.x = frame.aura.x + 1;
 	end
-	PowaAuras:RedisplayAura(self.aura.id);
+	local secondaryAura = PowaAuras.SecondaryAuras[frame.aura.id];
+	if (secondaryAura~=nil) then
+		secondaryAura.HideRequest = true;
+	end
+	if (PowaAuras.CurrentAuraId == frame.aura.id) then
+		PowaAuras:InitPage(frame.aura);
+	end
+	PowaAuras:RedisplayAura(frame.aura.id);
+end
+
+local function enterAura(frame)
+	--PowaAuras:ShowText("enterAura aura=",frame.aura.id);
+	frame.mouseIsOver = true;
+	frame:EnableKeyboard(true);
+	frame:SetScript("OnKeyUp", keyUp);
+	frame:SetScript("OnDragStart", frame.StartMoving);
+	frame:SetScript("OnDragStop", frame.StopMovingOrSizing);
+	frame:SetScript("OnMouseDown", startMove);
+	frame:SetScript("OnMouseUp", stopMove);
+end
+
+local function leaveAura(frame)
+	--PowaAuras:ShowText("leaveAura aura=",frame.aura.id);
+	frame.mouseIsOver = nil;
+	stopFrameMoving(frame);
+	frame:EnableKeyboard(false);
+	frame:SetScript("OnKeyUp", nil);
+	frame:SetScript("OnDragStart", nil);
+	frame:SetScript("OnDragStop", nil);
+	frame:SetScript("OnMouseDown", nil);
+	frame:SetScript("OnMouseUp", nil);
+	frame:SetScript("OnKeyUp", nil);
 end
 
 function PowaAuras:SetForDragging(aura, frame)
@@ -988,20 +1017,13 @@ function PowaAuras:SetForDragging(aura, frame)
 	--self:ShowText("Set Dragging ", aura.id);
 	frame:SetMovable(true);
 	frame:EnableMouse(true);
-	frame:EnableKeyboard(true);
 	frame:SetClampedToScreen(false);
 	frame:RegisterForDrag("LeftButton");
 	frame:SetBackdrop( self.Backdrop);
 	frame:SetBackdropColor(0, 0.6, 0, 1);
-	frame:SetScript("OnDragStart", frame.StartMoving);
-	frame:SetScript("OnDragStop", frame.StopMovingOrSizing);
-	frame:SetScript("OnMouseDown", startMove);
-	frame:SetScript("OnMouseUp", stopMove);
-	frame:SetScript("OnKeyUp", keyUp);
-	frame:SetScript("OnHide", stopMove);
+	--frame:SetScript("OnHide", stopMove);
 	frame:SetScript("OnEnter", enterAura);
 	frame:SetScript("OnLeave", leaveAura);
-	--frame:SetScript("OnLeave", stopMove);
 	frame.SetForDragging = true;
 end
 
