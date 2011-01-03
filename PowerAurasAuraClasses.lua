@@ -473,7 +473,7 @@ function cPowaAura:CheckState(giveReason)
 	end		
 	
 	--- target checks
-	if (not self.raid and not self.party and not self.groupOrSelf and not (self.bufftype==PowaAuras.BuffTypes.SpellAlert and self.Extra) and not (self.bufftype==PowaAuras.BuffTypes.OwnSpell)) then
+	if (not self.raid and not self.party and not self.groupOrSelf and not (self.bufftype==PowaAuras.BuffTypes.SpellAlert and self.Extra) and not (self.bufftype==PowaAuras.BuffTypes.SpellCooldown)) then
 		--- Check if target exists and is alive
 		if (self.target or self.targetfriend) then
 			if (UnitName("target") == nil) then
@@ -507,7 +507,7 @@ function cPowaAura:CheckState(giveReason)
 		end
 	end
 	
-	if (self.bufftype==PowaAuras.BuffTypes.OwnSpell and self.targetfriend and not UnitExists("pet")) then
+	if (self.bufftype==PowaAuras.BuffTypes.SpellCooldown and self.targetfriend and not UnitExists("pet")) then
 		if (not giveReason) then return false; end
 		return false, PowaAuras.Text.nomReasonNoPet;
 	end
@@ -765,6 +765,9 @@ function cPowaAura:GetSpellFromMatch(spellMatch)
 	if (spellId) then
 		spellId = tonumber(spellId);
 		local spellName, rank, spellIcon = GetSpellInfo(spellId);
+		if (rank) then
+			spellName = spellName.."("..rank..")";
+		end
 		return spellName, spellIcon, spellId;
 	end
 	return spellMatch;
@@ -923,7 +926,7 @@ function cPowaAura:CreateAuraString(keepLink)
 	end
 
 	if tempstr and tempstr ~= "" then
-		tempstr = strtrim(tempstr);
+		tempstr = self:Trim(tempstr);
 		tempstr = string.sub(tempstr, 1, string.len(tempstr)-1);
 	end
 	PowaAuras:Debug("Aura-string length: "..tostring(string.len(tempstr)));
@@ -1232,10 +1235,9 @@ function cPowaBuffBase:IsPresent(unit, s, giveReason, textToCheck)
 		auraName, _, auraTexture, count, _, _, expirationTime, caster, _, _, auraId = UnitAura(unit, s, self.buffAuraType);
 	end
 
-	if (auraName == nil) then return nil; end
+	if (auraName == nil) then return nil; end -- no more buffs
 
 	PowaAuras:Debug("Aura=",auraName," count=",count," expirationTime=", expirationTime," caster=",caster);
-
 
 	if (not self:CompareAura(unit, s, auraName, auraTexture, auraId, textToCheck)) then
 		PowaAuras:Debug("CompareAura not found");
@@ -1364,7 +1366,7 @@ function cPowaBuffBase:CheckAllAuraSlots(target, giveReason)
 	if (not startFrom) then startFrom = 1; end
 	for pword in string.gmatch(self.buffname, "[^/]+") do
 		if (self.Debug) then
-			PowaAuras:DisplayText("Check Auras for ", pword);
+			PowaAuras:DisplayText("Check Auras for >>", pword,"<<");
 		end
 		for i = startFrom - 1, 1, -1 do
 			if (self.Debug) then
@@ -1373,7 +1375,9 @@ function cPowaBuffBase:CheckAllAuraSlots(target, giveReason)
 			present, reason = self:IsPresent(target, i, giveReason, pword);
 			if (present) then
 				--PowaAuras:UnitTestDebug("CheckAllAuraSlots Present!");
-				--PowaAuras:ShowText("Found ", i);
+				if (self.Debug) then
+					PowaAuras:DisplayText("Found ", i);
+				end
 				self.CurrentSlot = i;
 				self.CurrentMatch = pword;
 				if (not giveReason) then return true; end
@@ -1390,7 +1394,9 @@ function cPowaBuffBase:CheckAllAuraSlots(target, giveReason)
 			end
 			if (present) then
 				--PowaAuras:UnitTestDebug("CheckAllAuraSlots Present!");
-				--PowaAuras:ShowText("Found ", i);
+				if (self.Debug) then
+					PowaAuras:DisplayText("Found ", i);
+				end
 				self.CurrentSlot = i;
 				self.CurrentMatch = pword;
 				if (not giveReason) then return true; end
@@ -2217,16 +2223,16 @@ function cPowaActionReady:ShowTimerDurationSlider()
 	return true;
 end
 
-cPowaOwnSpell = PowaClass(cPowaAura, {AuraType = "OwnSpells", CanHaveTimer=true, CanHaveTimerOnInverse=true, CooldownAura=true, CanHaveInvertTime=true});
-cPowaOwnSpell.OptionText={
+cPowaSpellCooldown = PowaClass(cPowaAura, {AuraType = "SpellCooldowns", CanHaveTimer=true, CanHaveTimerOnInverse=true, CooldownAura=true, CanHaveInvertTime=true});
+cPowaSpellCooldown.OptionText={
 						buffNameTooltip=PowaAuras.Text.aideBuff8,
 						exactTooltip=PowaAuras.Text.aideExact,
-						typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.OwnSpell],
+						typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.SpellCooldown],
 						mineText=PowaAuras.Text.nomIgnoreUseable, mineTooltip=PowaAuras.Text.aideIgnoreUseable,
 						targetFriendText=PowaAuras.Text.nomCheckPet, targetFriendTooltip=PowaAuras.Text.aideCheckPet,
 						};
-cPowaOwnSpell.ShowOptions={["PowaBarTooltipCheck"]=1};
-cPowaOwnSpell.CheckBoxes={
+cPowaSpellCooldown.ShowOptions={["PowaBarTooltipCheck"]=1};
+cPowaSpellCooldown.CheckBoxes={
 						  ["PowaInverseButton"]=1,
 						  ["PowaInverseButton"]=1,
 						  ["PowaIngoreCaseButton"]=1,
@@ -2234,23 +2240,24 @@ cPowaOwnSpell.CheckBoxes={
 						  };
 						  
 							  					 
-cPowaOwnSpell.TooltipOptions = {r=1.0, g=0.6, b=0.2, showBuffName=true};
+cPowaSpellCooldown.TooltipOptions = {r=1.0, g=0.6, b=0.2, showBuffName=true};
 
-function cPowaOwnSpell:AddEffectAndEvents()
+function cPowaSpellCooldown:AddEffectAndEvents()
 	table.insert(PowaAuras.AurasByType[self.AuraType], self.id);
 	PowaAuras.Events.SPELL_UPDATE_COOLDOWN = true;
 end
 
-function cPowaOwnSpell:CheckIfShouldShow(giveReason)
+function cPowaSpellCooldown:CheckIfShouldShow(giveReason)
 	--PowaAuras:UnitTestDebug("Check Spell:", self.buffname);
 	if (self.Debug) then
-		PowaAuras:Message("====OWN SPELL====");
+		PowaAuras:Message("====SPELL COOLDOWN====");
 		PowaAuras:Message("Spell=", self.buffname);
 	end
 	for pword in string.gmatch(self.buffname, "[^/]+") do
 		local spellName, spellIcon, spellId = self:GetSpellFromMatch(pword);
 		if (self.Debug) then
-			PowaAuras:Message("spellName= ",spellName," spellIcon= ",spellIcon," spellId= ",spellId);
+			PowaAuras:Message("spellName=",spellName," spellId=",spellId);
+			PowaAuras:Message("spellIcon=",spellIcon);
 		end
 		if (self:IconIsRequired()) then
 			if (not spellIcon) then
@@ -2260,19 +2267,10 @@ function cPowaOwnSpell:CheckIfShouldShow(giveReason)
 		end
 		local cdstart, cdduration, enabled;
 		if (self.targetfriend) then
-			if (spellId) then
-				cdstart, cdduration, enabled = GetSpellCooldown(spellId, BOOKTYPE_PET);
-			else
-				cdstart, cdduration, enabled = GetSpellCooldown(spellName, BOOKTYPE_PET);
-			end
+			cdstart, cdduration, enabled = GetSpellCooldown(spellName, BOOKTYPE_PET);
 		else
-			if (spellId) then
-				cdstart, cdduration, enabled = GetSpellCooldown(spellId);
-			else
-				cdstart, cdduration, enabled = GetSpellCooldown(spellName);
-			end
+			cdstart, cdduration, enabled = GetSpellCooldown(spellName);
 		end
-		--PowaAuras:UnitTestDebug("cdstart= ",cdstart," duration= ",cdduration," enabled= ",enabled);
 		if (self.Debug) then
 			PowaAuras:Message("cdstart= ",cdstart," duration= ", cdduration, " enabled= ",enabled);
 		end
@@ -2332,7 +2330,7 @@ function cPowaOwnSpell:CheckIfShouldShow(giveReason)
 	if (not giveReason) then return false; end
 	return false, reason
 end
-function cPowaOwnSpell:ShowTimerDurationSlider()
+function cPowaSpellCooldown:ShowTimerDurationSlider()
 	return true;
 end
 
@@ -3729,7 +3727,7 @@ PowaAuras.AuraClasses = {
 	[PowaAuras.BuffTypes.PvP]=cPowaPvP,
 	[PowaAuras.BuffTypes.SpellAlert]=cPowaSpellAlert,
 	[PowaAuras.BuffTypes.Stance]=cPowaStance,
-	[PowaAuras.BuffTypes.OwnSpell]=cPowaOwnSpell,
+	[PowaAuras.BuffTypes.SpellCooldown]=cPowaSpellCooldown,
 	[PowaAuras.BuffTypes.StealableSpell]=cPowaStealableSpell,
 	[PowaAuras.BuffTypes.PurgeableSpell]=cPowaPurgeableSpell,
 	[PowaAuras.BuffTypes.GTFO]=cPowaGTFO,
