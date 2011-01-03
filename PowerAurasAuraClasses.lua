@@ -62,7 +62,7 @@ end);
 -- This is the set of values that will be exported with their default values
 -- Be very careful if you change this as it may break many old exports
 -- Stings must always be set as at least an empty string
--- Numbers an booleans can be set interchangable (e.g. for tri-states)
+-- Numbers and booleans can be set interchangably (e.g. for tri-states)
 cPowaAura.ExportSettings = {
 	off = false,
 	
@@ -806,64 +806,71 @@ function cPowaAura:Trim(s)
     return (string.gsub(s, "^%s*(.-)%s*$", "%1"));
 end
 
-function cPowaAura:MatchSpell(spellName, spellTexture, spellId, textToFind)
-	if (spellName==nil or textToFind==nil) then
+function cPowaAura:MatchSpell(spellName, spellTexture, spellId, matchString)
+	if (spellName==nil or matchString==nil) then
 		return false;
 	end
-	if (textToFind=="*") then
+	if (matchString=="*") then
 		return true;
 	end
 	if (self.Debug) then
-		PowaAuras:Message("  MatchSpell spellName   =",spellName, " ID=", spellId); --OK
-		--PowaAuras:Message("             spellTexture=",spellTexture); --OK
-		PowaAuras:Message("             textToFind  =",textToFind); --OK
+		PowaAuras:Message("--MatchSpell--"); --OK
+		PowaAuras:Message("  spellName   =",spellName, " ID=", spellId); --OK
+		PowaAuras:Message("  matchString =",matchString); --OK
 	end
-	for pword in string.gmatch(textToFind, "[^/]+") do
+	for pword in string.gmatch(matchString, "[^/]+") do
 		pword = self:Trim(pword);
 		if (string.len(pword)>0) then
+			if (self.Debug) then
+				PowaAuras:Message("  Looking for ", pword); --OK
+			end
 			local textToSearch;
 			local textureMatch;
 			local spellIdMatch;
+			local matchName;
 			if string.find(pword, "_") then
 				 _, _,textToSearch = string.find(spellTexture, "([%w_]*)$")
-				 spellName = pword;
+				 matchName = pword;
 			else
 				textToSearch = spellName;
-				spellName, textureMatch, spellIdMatch = self:GetSpellFromMatch(pword);
+				matchName, textureMatch, spellIdMatch = self:GetSpellFromMatch(pword);
 			end
-			if (spellName==nil) then
+			if (matchName==nil) then
 				PowaAuras:DisplayText(PowaAuras:InsertText(PowaAuras.Text.nomUnknownSpellId, pword)); -- OK
-			end
-			if (spellIdMatch and spellId) then
-				if (self.Debug) then
-					PowaAuras:Message("Check Spell Ids match spell=", spellId, " looking for Id=", spellIdMatch, " found=", (spellIdMatch==spellId)); --OK
-				end
-				return (spellIdMatch==spellId);
-			end
-			--PowaAuras:ShowText("textureMatch=", textureMatch);
-			if (spellName and (not textureMatch or textureMatch==spellTexture)) then
-				if (textToSearch) then
-					if (self.ignoremaj) then
-						textToSearch = string.upper(textToSearch)
-						spellName = string.upper(spellName);
-					end
+			else
+				if (spellIdMatch and spellId) then
 					if (self.Debug) then
-						PowaAuras:Message("spellName="..tostring(spellName).."<<");
-						PowaAuras:Message("search="..tostring(textToSearch).."<<");
+						PowaAuras:Message("Check Spell Ids match spell=", spellId, " looking for Id=", spellIdMatch, " found=", (spellIdMatch==spellId)); --OK
 					end
-					if (self.exact) then
+					if (spellIdMatch==spellId) then
+						return true;
+					end
+				end
+				--PowaAuras:ShowText("textureMatch=", textureMatch);
+				if (matchName and (not textureMatch or textureMatch==spellTexture)) then
+					if (textToSearch) then
+						if (self.ignoremaj) then
+							textToSearch = string.upper(textToSearch)
+							matchName = string.upper(matchName);
+						end
 						if (self.Debug) then
-							PowaAuras:Message("exact=", (textToSearch == spellName)); --OK
+							PowaAuras:Message("matchName="..tostring(matchName).."<<");
+							PowaAuras:Message("search="..tostring(textToSearch).."<<");
 						end
-						if (textToSearch == spellName) then
-							return true;
-						end
-					else
-						if (self.Debug) then
-							PowaAuras:Message("find=", string.find(textToSearch, spellName, 1, true)); --OK
-						end
-						if (string.find(textToSearch, spellName, 1, true)) then
-							return true;
+						if (self.exact) then
+							if (self.Debug) then
+								PowaAuras:Message("exact=", (textToSearch == matchName)); --OK
+							end
+							if (textToSearch == matchName) then
+								return true;
+							end
+						else
+							if (self.Debug) then
+								PowaAuras:Message("find=", string.find(textToSearch, matchName, 1, true)); --OK
+							end
+							if (string.find(textToSearch, matchName, 1, true)) then
+								return true;
+							end
 						end
 					end
 				end
@@ -1095,7 +1102,7 @@ function cPowaAura:CheckTimerInvert()
 		timeValue = math.max(self.Timer.DurationInfo - GetTime(), 0);
 	end
 	
-	if (PowaAuras.DebugCycle or self.Debug) then
+	if (PowaAuras.DebugCycle) then
 		PowaAuras:DisplayText("=================");
 		PowaAuras:DisplayText("CheckTimerInvert");
 		PowaAuras:DisplayText("id=",self.id);
@@ -1221,13 +1228,13 @@ end
 
 
 function cPowaBuffBase:IsPresent(unit, s, giveReason, textToCheck)
-	--PowaAuras:Debug("IsPresent on ",unit,"  buffid ",s," type ", self.buffAuraType);
+	--PowaAuras:Debug("IsPresent on ",unit," buffid ",s," type ", self.buffAuraType);
 	--PowaAuras.BuffSlotCount = PowaAuras.BuffSlotCount + 1;
 	if (self.Debug) then
-		PowaAuras:DisplayText("IsPresent on ",unit,"  buffid ",s," type ", self.buffAuraType);
+		PowaAuras:DisplayText("IsPresent on ",unit," buffid=",s," type=", self.buffAuraType);
 	end
 
-	local auraName, _, auraTexture, count, _, _, expirationTime, caster, _, _, auraId;
+	local auraName, auraTexture, count, expirationTime, caster, auraId;
 	if (self.exact) then
 		-- TODO - exact check should be moved to CheckAllAuraSlots()
 		auraName, _, auraTexture, count, _, _, expirationTime, caster, _, _, auraId = UnitAura(unit, textToCheck, nil, self.buffAuraType);
@@ -1238,12 +1245,21 @@ function cPowaBuffBase:IsPresent(unit, s, giveReason, textToCheck)
 	if (auraName == nil) then return nil; end -- no more buffs
 
 	PowaAuras:Debug("Aura=",auraName," count=",count," expirationTime=", expirationTime," caster=",caster);
+	if (self.Debug) then
+		PowaAuras:DisplayText("Aura=",auraName," count=",count," expirationTime=", expirationTime," caster=",caster);
+	end
 
 	if (not self:CompareAura(unit, s, auraName, auraTexture, auraId, textToCheck)) then
 		PowaAuras:Debug("CompareAura not found");
+		if (self.Debug) then
+			PowaAuras:DisplayText("CompareAura not found");
+		end
 		self.DisplayValue = textToCheck;
 		self.DisplayUnit = unit;
 		return false;
+	end
+	if (self.Debug) then
+		PowaAuras:DisplayText("  Present!");
 	end
 	
 	local isMine = (caster~=nil) and UnitExists(caster) and UnitIsUnit("player", caster);
@@ -1263,6 +1279,7 @@ function cPowaBuffBase:IsPresent(unit, s, giveReason, textToCheck)
 		self.Stacks:SetStackCount(count);
 	end			
 	--PowaAuras:ShowText("Present!");
+
 	if (self.Timer) then
 		self.Timer:SetDurationInfo(expirationTime);
 		self:CheckTimerInvert();
@@ -1314,7 +1331,10 @@ end
 function cPowaBuffBase:CompareAura(target, z, auraName, auraTexture, auraId, textToCheck)
 	
 	PowaAuras:Debug("CompareAura",z," ",auraName, auraTexture);
-	
+	if (self.Debug) then
+		PowaAuras:DisplayText("CompareAura",z," ",auraName, " ", auraTexture);
+	end
+
 	if self:MatchSpell(auraName, auraTexture, auraId, textToCheck) then
 		--PowaAuras:UnitTestDebug("Aura match found! ", self.id);
 		if (not self:CheckTooltip(self.tooltipCheck, target, z)) then
