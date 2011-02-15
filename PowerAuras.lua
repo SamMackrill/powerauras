@@ -104,6 +104,9 @@ function PowaAuras:ReregisterEvents(frame)
 end
 
 function PowaAuras:RegisterEvents(frame)
+	if (self.playerclass=="DRUID") then
+		self.Events.UPDATE_SHAPESHIFT_FORM = true;
+	end
 	for event in pairs(self.Events) do
 		if (self[event]) then
 			frame:RegisterEvent(event);
@@ -640,7 +643,7 @@ function PowaAuras:OnUpdate(elapsed)
 		--self:UnitTestInfo("ChecksTimer", self.ChecksTimer, self.NextCheck);
 		if ((self.ChecksTimer > (self.NextCheck + PowaMisc.OnUpdateLimit))) then
 			self.ChecksTimer = 0;
-			local isMountedNow = (IsMounted()~=nil);
+			local isMountedNow = (IsMounted()~=nil or self:IsDruidTravelForm());
 			if (isMountedNow ~= self.WeAreMounted) then
 				self.DoCheck.All = true;
 				self.WeAreMounted = isMountedNow;
@@ -736,6 +739,12 @@ function PowaAuras:OnUpdate(elapsed)
 	
 	self.ResetTargetTimers = false;
 
+end
+
+function PowaAuras:IsDruidTravelForm()
+	if (self.playerclass~="DRUID") then return false; end
+	--local nStance = GetShapeshiftForm();
+	return false; -- TODO
 end
 
 function PowaAuras:NewCheckBuffs()
@@ -1525,7 +1534,8 @@ function PowaAuras:UpdateTimer(aura, timerElapsed, skipTimerUpdate)
 		self:DisplayText("aura.Active=",aura.Active);
 	end
 	local timerHide;
-	if (aura.Timer.ShowOnAuraHide and not self.ModTest and (not aura.ForceTimeInvert and not aura.InvertTimeHides)) then
+	--if (aura.Timer.ShowOnAuraHide and not self.ModTest and ((not aura.ForceTimeInvert and not aura.InvertTimeHides) or (aura.ForceTimeInvert and not aura.inverse)) ) then
+	if (aura.Timer.ShowOnAuraHide and not self.ModTest and (not aura.ForceTimeInvert and not aura.InvertTimeHides) ) then
 		timerHide = aura.Active;
 	else
 		timerHide = not aura.Active;
