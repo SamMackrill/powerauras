@@ -479,7 +479,12 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 	local hasTimerSettings = false;
 	local hasStacksSettings = false;
 	local oldSpellAlertLogic = true;
-	local hasTypePrefix = string.find(aurastring,"Version:st", 1, true)
+	local hasTypePrefix = false;
+	if (not string.find(aurastring,"Version:", 1, true)) then
+		hasTypePrefix = true;
+	else
+		hasTypePrefix = string.find(aurastring,"Version:st", 1, true);
+	end
 	--self:Message("hasTypePrefix=", hasTypePrefix);
 
 	if (hasTypePrefix) then
