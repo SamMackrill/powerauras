@@ -8,7 +8,7 @@ PowaAuras = {
 	CurrentAuraId = 1;
 	NextCheck = 0.2; 
 	Tstep = 0.09765625;
-	NextDebugCheck = 0;
+	NextDebugCheck = 0.0;
 	InspectTimeOut = 12;
 	InspectDelay = 2;
 	ExportMaxSize = 4000;
@@ -16,7 +16,7 @@ PowaAuras = {
 	TextureCount = 186;
 	
 	DebugEvents = false;
-	--DebugAura = 2;
+	--DebugAura = 3;
 	
 	-- Internal counters
 	DebugTimer = 0;
