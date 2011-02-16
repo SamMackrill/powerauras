@@ -297,6 +297,7 @@
 						PowaResetPositionButtonText:SetText(PowaAuras.Text.nomReset);
 					</OnLoad>
 					<OnClick>
+						PowaAuras:ResetPositions();
 						PowaAuras:MainOptionShow();
 					</OnClick>
 				</Scripts>
