@@ -22,6 +22,7 @@ PowaMisc =
 		UserSetMaxTextures = PowaAuras.TextureCount,
 		OverrideMaxTextures = false,
 		Locked = false,
+		SoundChannel = "Master",
 	};
 
 	PowaGlobalMisc = 
@@ -373,7 +374,7 @@ function PowaAuras:CustomTexPath(customname)
 	--self:ShowText("CustomTexPath ", customname);
 	local texpath;
 	if string.find(customname,".", 1, true) then
-		texpath = PowaMisc.PathToAuras..customname;
+		texpath = PowaGlobalMisc.PathToAuras .. customname;
 	else
 		local spellId = select(3, string.find(customname, "%[?(%d+)%]?"));
 		if (spellId) then		
@@ -1078,7 +1079,7 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 			if (string.find(aura.customsound, "\\")) then
 				pathToSound = aura.customsound;
 			else 
-				pathToSound = PowaGlobalMisc.PathToSounds..aura.customsound;
+				pathToSound = PowaGlobalMisc.PathToSounds .. aura.customsound;
 			end
 			--self:ShowText("Playing custom sound ",pathToSound);		
 			PlaySoundFile(pathToSound);
@@ -1086,10 +1087,10 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 			if (PowaAuras.Sound[aura.sound]~=nil and string.len(PowaAuras.Sound[aura.sound])>0) then
 				if (string.find(PowaAuras.Sound[aura.sound], "%.")) then
 					--self:ShowText("Playing sound ",PowaGlobalMisc.PathToSounds,PowaAuras.Sound[aura.sound]);		
-					PlaySoundFile(PowaGlobalMisc.PathToSounds..PowaAuras.Sound[aura.sound]);
+					PlaySoundFile(PowaGlobalMisc.PathToSounds .. PowaAuras.Sound[aura.sound], PowaMisc.SoundChannel);
 				else
 					--self:ShowText("Playing WoW sound ",PowaAuras.Sound[aura.sound]);		
-					PlaySound(PowaAuras.Sound[aura.sound]);
+					PlaySound(PowaAuras.Sound[aura.sound], PowaMisc.SoundChannel);
 				end
 			end
 		end	
