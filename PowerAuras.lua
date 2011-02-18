@@ -1628,36 +1628,7 @@ function PowaAuras:SetupStaticPopups()
 		exclusive = 1,
 		whileDead = 1,
 		hideOnEscape = 1
-	};	
-	
-	StaticPopupDialogs["POWERAURAS_EXPORT_AURA"] = {
-		text = self.Text.aideExport,
-		button1 = DONE,
-		hasEditBox = 1,
-		maxLetters = self.ExportMaxSize,
-		--hasWideEditBox = 1,
-		editBoxWidth = self.ExportWidth,
-		OnShow = function(self)
-			self.editBox:SetText(PowaAuras.Auras[PowaAuras.CurrentAuraId]:CreateAuraString());
-			self.editBox:SetFocus();
-			self.editBox:HighlightText();
-		end,
-		OnHide = function(self)
-			ChatEdit_FocusActiveWindow(); 
-			self.editBox:SetText("");
-		end,
-		EditBoxOnEnterPressed = function(self)
-			self:GetParent():Hide();
-		end,
-		EditBoxOnEscapePressed = function(self)
-			self:GetParent():Hide();
-		end,
-		timeout = 0,
-		exclusive = 1,
-		whileDead = 1,
-		hideOnEscape = 1
 	};
-
 	
 	StaticPopupDialogs["POWERAURAS_IMPORT_AURA_SET"] = {
 		text = self.Text.aideImportSet,
@@ -1684,34 +1655,6 @@ function PowaAuras:SetupStaticPopups()
 			local parent = self:GetParent();
 			PowaAuras:CreateNewAuraSetFromImport(parent.editBox:GetText());
 			parent:Hide();
-		end,
-		EditBoxOnEscapePressed = function(self)
-			self:GetParent():Hide();
-		end,
-		timeout = 0,
-		exclusive = 1,
-		whileDead = 1,
-		hideOnEscape = 1
-	};	
-	
-	StaticPopupDialogs["POWERAURAS_EXPORT_AURA_SET"] = {
-		text = self.Text.aideExportSet,
-		button1 = DONE,
-		hasEditBox = 1,
-		maxLetters = self.ExportMaxSize * 24,
-		--hasWideEditBox = 1,
-		editBoxWidth = self.ExportWidth,
-		OnShow = function(self)
-			self.editBox:SetText(PowaAuras:CreateAuraSetString());
-			self.editBox:SetFocus();
-			self.editBox:HighlightText();
-		end,
-		OnHide = function(self)
-			ChatEdit_FocusActiveWindow(); 
-			self.editBox:SetText("");
-		end,
-		EditBoxOnEnterPressed = function(self)
-			self:GetParent():Hide();
 		end,
 		EditBoxOnEscapePressed = function(self)
 			self:GetParent():Hide();

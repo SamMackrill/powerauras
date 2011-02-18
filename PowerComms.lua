@@ -273,13 +273,15 @@ These functions are responsible for handling the individual instructions not rel
 ------------------------------------------------------------------------------------------------------------------------
 VERSION_REQUEST
 
-Sends our PowerAuras version to the requesting party. Mostly just here for testing.
+Sends our PowerAuras version to the requesting party. Mostly just here for testing. Sends the version back with a
+VERSION_RESPONSE header.
 ------------------------------------------------------------------------------------------------------------------------
 --]]
 PowaComms:AddHandler("VERSION_REQUEST", function(self, _, from)
 	-- Give them our version.
 	self:SendAddonMessage("VERSION_RESPONSE", PowaAuras.Version, from);
 end);
+
 PowaComms:AddHandler("VERSION_RESPONSE", function(self, data, from)
 	-- Read it.
 	print("User " .. from .. " has version " .. data);

@@ -735,7 +735,8 @@ end
 
 function PowaAuras:OptionExportEffect()
 	if self.Auras[self.CurrentAuraId] then
-		StaticPopup_Show("POWERAURAS_EXPORT_AURA");
+		PowaAuraExportDialogCopyBox:SetText(PowaAuras.Auras[PowaAuras.CurrentAuraId]:CreateAuraString());
+		StaticPopupSpecial_Show(PowaAuraExportDialog);
 	end
 end
 
@@ -761,11 +762,12 @@ function PowaAuras:CreateAuraSetString()
 end
 
 function PowaAuras:OptionImportSet()
-	StaticPopup_Show("POWERAURAS_IMPORT_AURA_SET");		
+	StaticPopup_Show("POWERAURAS_IMPORT_AURA_SET");
 end
 
 function PowaAuras:OptionExportSet()
-	StaticPopup_Show("POWERAURAS_EXPORT_AURA_SET");
+	PowaAuraExportDialogCopyBox:SetText(PowaAuras:CreateAuraSetString());
+	StaticPopupSpecial_Show(PowaAuraExportDialog);
 end
 
 function PowaAuras:DisableMoveMode()
