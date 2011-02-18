@@ -30,6 +30,7 @@ PowerAurasAnimationsOld.lua
 PowerAuras.lua
 PowerAurasEvents.lua
 PowerOptions.lua
+PowerComms.lua
 PowerAuras.xml
 PowerOptions.xml
 PowerBlizzOptions.xml
