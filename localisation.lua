@@ -734,6 +734,9 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	ExportDialogSendingTitle = "Sending...",
 	ExportDialogSendButton = "Send",
 	ExportDialogCancelButton = "Close",
+	-- Cross-client import dialog
+	PlayerImportDialogTopTitle = "You Have Auras!",
+	PlayerImportDialogDescTitle = "%s would like to send you some auras.",
 
 });
 
