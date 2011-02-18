@@ -188,7 +188,7 @@
 		<Scripts>
 			<OnLoad>
 				-- Set parameters for StaticPopup.
-				self.exclusive = 1;
+				self.exclusive = 0;
 				self.whileDead = 1;
 				self.hideOnEscape = 1;
 				self.timeout = 0;
@@ -208,6 +208,92 @@
 				-- Usability.
 				PowaAuraExportDialogCopyBox:HighlightText();
 				PowaAuraExportDialogCopyBox:SetFocus();
+			</OnShow>
+		</Scripts>
+	</Frame>
+	<!-- Cross-client import dialog, do not use for general imports -->
+	<Frame name="PowaAuraPlayerImportDialog" frameStrata="DIALOG" hidden="true" toplevel="true" parent="UIParent">		
+		<Size>
+			<AbsDimension x="384" y="115" />
+		</Size>
+		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+			<BackgroundInsets>
+				<AbsInset left="11" right="12" top="12" bottom="11" />
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="32" />
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="32" />
+			</EdgeSize>
+		</Backdrop>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentTopTitle" inherits="GameFontNormalLarge" text="You Have Auras!" justifyH="CENTER">
+					<Anchors>
+						<Anchor point="TOP" relativePoint="TOP" x="0" y="-24"/>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentDescTitle" inherits="GameFontNormal" text="%s would like to send you some auras." justifyH="CENTER">
+					<Anchors>
+						<Anchor point="TOP" relativePoint="TOP" x="0" y="-50"/>
+					</Anchors>
+					<Color r="1" g="1" b="1" />
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentAcceptButton" inherits="UIPanelButtonTemplate2" text="Accept">
+				<Size>
+					<AbsDimension x="118" y="22" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT">
+						<Offset x="45" y="20" />
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						-- Disable both buttons.
+						self:Disable();
+						PowaAuraPlayerImportDialogCancelButton:Disable();
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentCancelButton" inherits="UIPanelButtonTemplate2" text="Reject">
+				<Size>
+					<AbsDimension x="118" y="22" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT">
+						<Offset x="-50" y="20" />
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						-- REJECTED.
+						StaticPopupSpecial_Hide(PowaAuraPlayerImportDialog);
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				-- Set parameters for StaticPopup.
+				self.exclusive = 0;
+				self.whileDead = 1;
+				self.hideOnEscape = 1;
+				self.timeout = 0;
+				-- Localization.
+				PowaAuraPlayerImportDialogTopTitle:SetText(PowaAuras.Text.PlayerImportDialogTopTitle);
+				PowaAuraPlayerImportDialogDescTitle:SetText(PowaAuras.Text.PlayerImportDialogDescTitle);
+				-- Debug
+				StaticPopupSpecial_Show(PowaAuraPlayerImportDialog);
+			</OnLoad>
+			<OnShow>
+				-- Reset things.
+				PowaAuraPlayerImportDialogAcceptButton:Enable();
+				PowaAuraPlayerImportDialogCancelButton:Enable();
 			</OnShow>
 		</Scripts>
 	</Frame>
