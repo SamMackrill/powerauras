@@ -805,7 +805,7 @@ function PowaAuras:ExportDialogSetStatus(status)
 			PowaAuraExportDialogSendTitle:SetText(
 				format(PowaAuras.Text.ExportDialogSendTitle2, PowaAuraExportDialog.sendDisplay)
 			);
-			PowaAuras:DialogSetTimeout(PowaAuraExportDialog, 10);
+			PowaAuras:DialogSetTimeout(PowaAuraExportDialog, 30);
 		elseif(PowaAuraExportDialog.status == 3) then
 			-- Status 3 - error (this can occur at any stage!).
 			PowaAuraExportDialogSendTitle:SetText(
@@ -921,7 +921,7 @@ function PowaAuras:PlayerImportDialogSetStatus(status)
 		PowaAuraPlayerImportDialogDescTitle:SetText(
 			format(PowaAuras.Text.PlayerImportDialogDescTitle1, PowaAuraPlayerImportDialog.receiveDisplay)
 		);
-		PowaAuras:DialogSetTimeout(PowaAuraPlayerImportDialog, 10);
+		PowaAuras:DialogSetTimeout(PowaAuraPlayerImportDialog, 30);
 	elseif(PowaAuraPlayerImportDialog.status >= 2) then
 		-- Disable buttons unless told otherwise.
 		PowaAuraPlayerImportDialogAcceptButton:Disable();
@@ -1009,7 +1009,7 @@ function PowaAuras:PlayerImportDialogCancel()
 	PowaAuraPlayerImportDialog.receiveDisplay = "";
 	PowaAuraPlayerImportDialog.receiveString = nil;
 	-- Hide.
-	PowaAuraPlayerImportDialog:Hide();
+	StaticPopupSpecial_Hide(PowaAuraPlayerImportDialog);
 end
 
 -- This bit mostly consists of handlers.
