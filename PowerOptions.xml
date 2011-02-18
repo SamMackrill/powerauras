@@ -162,10 +162,8 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						-- Change labels, hide editbox, disable me.
-						PowaAuraExportDialogSendBox:Hide();
-						PowaAuraExportDialogSendTitle:SetText(PowaAuras.Text.ExportDialogSendingTitle);
-						self:Disable();
+						-- Fire func.
+						PowaAuras:ExportDialogBeginSend();
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -188,26 +186,29 @@
 		<Scripts>
 			<OnLoad>
 				-- Set parameters for StaticPopup.
-				self.exclusive = 0;
+				self.exclusive = 1;
 				self.whileDead = 1;
-				self.hideOnEscape = 1;
+				self.hideOnEscape = 0;
 				self.timeout = 0;
+				-- Status tracking, allows us to send and close/reopen the dialog with no lost progress. In theory.
+				self.status = 1;
+				self.statusTimeout = 0; -- Setting this to > 0 will cause the status to be set to 2 when the time is exceeded.
+				self.statusTimeoutProgress = 0;
+				self.sendTo = nil;
+				self.sendDisplay = "";
+				self.sendString = nil;
+				self.sendType = nil; -- 1 = single aura, 2 = aura set.
 				-- Localization.
 				PowaAuraExportDialogTopTitle:SetText(PowaAuras.Text.ExportDialogTopTitle);
 				PowaAuraExportDialogCopyTitle:SetText(PowaAuras.Text.ExportDialogCopyTitle);
 				PowaAuraExportDialogMidTitle:SetText(PowaAuras.Text.ExportDialogMidTitle);
-				PowaAuraExportDialogSendTitle:SetText(PowaAuras.Text.ExportDialogSendTitle);
-				PowaAuraExportDialogSendButton:SetText(PowaAuras.Text.ExportDialogSendButton);
+				PowaAuraExportDialogSendTitle:SetText(PowaAuras.Text.ExportDialogSendTitle1);
+				PowaAuraExportDialogSendButton:SetText(PowaAuras.Text.ExportDialogSendButton1);
 				PowaAuraExportDialogCancelButton:SetText(PowaAuras.Text.ExportDialogCancelButton);
 			</OnLoad>
 			<OnShow>
-				-- Reset things.
-				PowaAuraExportDialogSendTitle:SetText(PowaAuras.Text.ExportDialogSendTitle);
-				PowaAuraExportDialogSendBox:SetText("");
-				PowaAuraExportDialogSendBox:Show();
-				-- Usability.
-				PowaAuraExportDialogCopyBox:HighlightText();
-				PowaAuraExportDialogCopyBox:SetFocus();
+				-- Fire func.
+				PowaAuras:ExportDialogOnShow();
 			</OnShow>
 		</Scripts>
 	</Frame>
@@ -254,9 +255,7 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						-- Disable both buttons.
-						self:Disable();
-						PowaAuraPlayerImportDialogCancelButton:Disable();
+						PowaAuras:PlayerImportDialogAccept();
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -272,7 +271,7 @@
 				<Scripts>
 					<OnClick>
 						-- REJECTED.
-						StaticPopupSpecial_Hide(PowaAuraPlayerImportDialog);
+						PowaAuras:PlayerImportDialogCancel();
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -280,20 +279,27 @@
 		<Scripts>
 			<OnLoad>
 				-- Set parameters for StaticPopup.
-				self.exclusive = 0;
+				self.exclusive = 1;
 				self.whileDead = 1;
-				self.hideOnEscape = 1;
+				self.hideOnEscape = 0;
 				self.timeout = 0;
+				-- Status tracking. Not as complicated as the export dialog.
+				self.status = 1;
+				self.statusTimeout = 0;
+				self.statusTimeoutProgress = 0;
+				self.receiveFrom = nil;
+				self.receiveDisplay = "";
+				self.receiveString = nil;
+				self.receiveType = nil; -- 1 = single aura, 2 = aura set.
 				-- Localization.
 				PowaAuraPlayerImportDialogTopTitle:SetText(PowaAuras.Text.PlayerImportDialogTopTitle);
-				PowaAuraPlayerImportDialogDescTitle:SetText(PowaAuras.Text.PlayerImportDialogDescTitle);
-				-- Debug
-				StaticPopupSpecial_Show(PowaAuraPlayerImportDialog);
+				PowaAuraPlayerImportDialogDescTitle:SetText(PowaAuras.Text.PlayerImportDialogDescTitle1);
+				PowaAuraPlayerImportDialogAcceptButton:SetText(PowaAuras.Text.PlayerImportDialogAcceptButton1);
+				PowaAuraPlayerImportDialogCancelButton:SetText(PowaAuras.Text.PlayerImportDialogCancelButton1);
 			</OnLoad>
 			<OnShow>
-				-- Reset things.
-				PowaAuraPlayerImportDialogAcceptButton:Enable();
-				PowaAuraPlayerImportDialogCancelButton:Enable();
+				-- OnShow function.
+				PowaAuras:PlayerImportDialogOnShow();
 			</OnShow>
 		</Scripts>
 	</Frame>
