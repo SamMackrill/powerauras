@@ -63,6 +63,154 @@
 	      </Layer>
 		</Layers>
 	</Button>
+	
+	<!-- New look export frame -->
+	<Frame name="PowaAuraExportDialog" frameStrata="DIALOG" hidden="true" toplevel="true" parent="UIParent">		
+		<Size>
+			<AbsDimension x="384" y="218" />
+		</Size>
+		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+			<BackgroundInsets>
+				<AbsInset left="11" right="12" top="12" bottom="11" />
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="32" />
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="32" />
+			</EdgeSize>
+		</Backdrop>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentTopTitle" inherits="GameFontNormalLarge" text="Export Auras" justifyH="CENTER">
+					<Anchors>
+						<Anchor point="TOP" relativePoint="TOP" x="0" y="-24"/>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentCopyTitle" inherits="GameFontNormal" text="Press Ctrl-C to copy the below aura string." justifyH="CENTER">
+					<Anchors>
+						<Anchor point="TOP" relativePoint="TOP" x="0" y="-50"/>
+					</Anchors>
+					<Color r="1" g="1" b="1" />
+				</FontString>
+				<FontString name="$parentMidTitle" inherits="GameFontNormalLarge" text="Send to Player" justifyH="CENTER">
+					<Anchors>
+						<Anchor point="TOP" relativePoint="TOP" x="0" y="-100"/>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentSendTitle" inherits="GameFontNormal" text="Enter a player name below and click 'Send'." justifyH="CENTER">
+					<Anchors>
+						<Anchor point="TOP" relativePoint="TOP" x="0" y="-125"/>
+					</Anchors>
+					<Color r="1" g="1" b="1" />
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<EditBox name="$parentCopyBox" inherits="InputBoxTemplate" autoFocus="false">
+				<Size>
+					<AbsDimension x="280" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOP">
+						<Offset x="0" y="-70" />
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnEscapePressed>
+						self:ClearFocus();
+					</OnEscapePressed>
+					<OnEnterPressed>
+						self:ClearFocus();
+					</OnEnterPressed>
+				</Scripts>
+			</EditBox>
+			<EditBox name="$parentSendBox" inherits="InputBoxTemplate" autoFocus="false">
+				<Size>
+					<AbsDimension x="280" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOP">
+						<Offset x="0" y="-145" />
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnEscapePressed>
+						self:ClearFocus();
+					</OnEscapePressed>
+					<OnEnterPressed>
+						self:ClearFocus();
+					</OnEnterPressed>
+					<OnTextChanged>
+						-- Enable/disable button like a champ.
+						if(strlen(self:GetText()) > 0) then
+							PowaAuraExportDialogSendButton:Enable();
+						else
+							PowaAuraExportDialogSendButton:Disable();
+						end
+					</OnTextChanged>
+				</Scripts>
+			</EditBox>
+			<Button name="$parentSendButton" inherits="UIPanelButtonTemplate2" text="Send" disabled="true">
+				<Size>
+					<AbsDimension x="118" y="22" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT">
+						<Offset x="45" y="20" />
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						-- Change labels, hide editbox, disable me.
+						PowaAuraExportDialogSendBox:Hide();
+						PowaAuraExportDialogSendTitle:SetText(PowaAuras.Text.ExportDialogSendingTitle);
+						self:Disable();
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentCancelButton" inherits="UIPanelButtonTemplate2" text="Close">
+				<Size>
+					<AbsDimension x="118" y="22" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT">
+						<Offset x="-50" y="20" />
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						StaticPopupSpecial_Hide(PowaAuraExportDialog);
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				-- Set parameters for StaticPopup.
+				self.exclusive = 1;
+				self.whileDead = 1;
+				self.hideOnEscape = 1;
+				self.timeout = 0;
+				-- Localization.
+				PowaAuraExportDialogTopTitle:SetText(PowaAuras.Text.ExportDialogTopTitle);
+				PowaAuraExportDialogCopyTitle:SetText(PowaAuras.Text.ExportDialogCopyTitle);
+				PowaAuraExportDialogMidTitle:SetText(PowaAuras.Text.ExportDialogMidTitle);
+				PowaAuraExportDialogSendTitle:SetText(PowaAuras.Text.ExportDialogSendTitle);
+				PowaAuraExportDialogSendButton:SetText(PowaAuras.Text.ExportDialogSendButton);
+				PowaAuraExportDialogCancelButton:SetText(PowaAuras.Text.ExportDialogCancelButton);
+			</OnLoad>
+			<OnShow>
+				-- Reset things.
+				PowaAuraExportDialogSendTitle:SetText(PowaAuras.Text.ExportDialogSendTitle);
+				PowaAuraExportDialogSendBox:SetText("");
+				PowaAuraExportDialogSendBox:Show();
+				-- Usability.
+				PowaAuraExportDialogCopyBox:HighlightText();
+				PowaAuraExportDialogCopyBox:SetFocus();
+			</OnShow>
+		</Scripts>
+	</Frame>
 
 	<Frame name="PowaOptionsFrame" toplevel="true" movable="true" parent="UIParent" frameStrata="MEDIUM" hidden="true" enableMouse="true" enableKeyboard="true">
 		<Size>
@@ -1038,5 +1186,4 @@
 			</Frame>
 		</Frames>
     </Frame>
-
 </Ui>

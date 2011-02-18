@@ -725,6 +725,15 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		PvP        = {MatchReason="$1 PvP flag set",        NoMatchReason="$1 PvP flag not set"},
 		SpellAlert = {MatchReason="$1 casting $2",        	NoMatchReason="$1 not casting $2"},
 	},
+	
+	-- Export dialog
+	ExportDialogTopTitle = "Export Auras",
+	ExportDialogCopyTitle = "Press Ctrl-C to copy the below aura string.",
+	ExportDialogMidTitle = "Send to Player",
+	ExportDialogSendTitle = "Enter a player name below and click 'Send'.",
+	ExportDialogSendingTitle = "Sending...",
+	ExportDialogSendButton = "Send",
+	ExportDialogCancelButton = "Close",
 
 });
 
