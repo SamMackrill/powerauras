@@ -133,7 +133,6 @@ message is concatenated, sent to the appropriate function and the sender is made
 PowaComms:AddHandler("MULTIPART", function(self, data, from, segpos, segtotal)
 	-- Accept multipart messages from our locked partner.
 	if(not self.ReceiverLock or self.ReceiverLock ~= from) then return; end
-	tinsert(self.ReceiverStore, segpos, data);
 	-- Do we have all of the segments?
 	-- If we never receive them all, our lock will expire in about 10 seconds and all data is purged, with the sender
 	-- being notified.
@@ -162,7 +161,6 @@ If a lock wasn't properly closed beforehand, the previous lock owner will receiv
 PowaComms:AddHandler("REQUEST_LOCK", function(self, data, from)
 	-- Accept if we're not locked.
 	if(not self.ReceiverLock or time() > self.ReceiverTimeout) then
-	print("Reciever Lock Granted: " .. from);
 		-- If it was an expired lock, tell the person it belonged to.
 		-- Don't send timeouts if the same person is contacting us, it causes a problem.
 		if(self.ReceiverLock and self.ReceiverLock ~= from) then
@@ -177,7 +175,6 @@ PowaComms:AddHandler("REQUEST_LOCK", function(self, data, from)
 		-- Tell sender we love them.
 		self:SendAddonMessage("ACCEPT_LOCK", "", from);
 	else
-	print("Reciever Lock Denied: " .. from);
 		-- We're locked.
 		self:SendAddonMessage("REJECT_LOCK", "", from);
 	end
@@ -212,7 +209,6 @@ Handler for lock accepts. Will begin transmitting a multipart message.
 PowaComms:AddHandler("ACCEPT_LOCK", function(self, _, from)
 	-- Verify lock ownership.
 	if(not self.SenderLock or self.SenderLock ~= from) then return; end
-	print("Beginning transfer: " .. from);
 	-- Start transmitting data.
 	local segment, i, total = "", 1, ceil(strlen(self.SenderStore) / 200);
 	for i=1,total do
@@ -231,7 +227,6 @@ Called when the receiver has told us that all segments have been received, close
 PowaComms:AddHandler("MULTIPART_SUCCESS", function(self, _, from)
 	-- Verify lock ownership.
 	if(not self.SenderLock or self.SenderLock ~= from) then return; end
-	print("Transfer succeeded: " .. from);
 	self:ResetSenderLock();
 end);
 --[[
@@ -244,7 +239,6 @@ Called if the receiver is busy and cannot service our request. Resets our lock.
 PowaComms:AddHandler("REJECT_LOCK", function(self, _, from)
 	-- Verify lock ownership.
 	if(not self.SenderLock or self.SenderLock ~= from) then return; end
-	print("Lock rejected: " .. from);
 	-- Close any locks we had with this user.
 	self:ResetSenderLock();
 end);
@@ -258,7 +252,6 @@ Called if the receiver or us had a transmission fault which left us with an open
 PowaComms:AddHandler("TIMEOUT_LOCK", function(self, _, from)
 	-- Verify lock ownership.
 	if(not self.SenderLock or self.SenderLock ~= from) then return; end
-	print("Lock timeout: " .. from);
 	-- Close any locks we had with this user.
 	self:ResetSenderLock();
 end);
@@ -280,9 +273,4 @@ VERSION_RESPONSE header.
 PowaComms:AddHandler("VERSION_REQUEST", function(self, _, from)
 	-- Give them our version.
 	self:SendAddonMessage("VERSION_RESPONSE", PowaAuras.Version, from);
-end);
-
-PowaComms:AddHandler("VERSION_RESPONSE", function(self, data, from)
-	-- Read it.
-	print("User " .. from .. " has version " .. data);
 end);
