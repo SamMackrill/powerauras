@@ -1082,7 +1082,7 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 				pathToSound = PowaGlobalMisc.PathToSounds .. aura.customsound;
 			end
 			--self:ShowText("Playing custom sound ",pathToSound);		
-			PlaySoundFile(pathToSound);
+			PlaySoundFile(pathToSound, PowaMisc.SoundChannel);
 		elseif (aura.sound > 0) then
 			if (PowaAuras.Sound[aura.sound]~=nil and string.len(PowaAuras.Sound[aura.sound])>0) then
 				if (string.find(PowaAuras.Sound[aura.sound], "%.")) then
@@ -1445,16 +1445,16 @@ function PowaAuras:UpdateAura(aura, elapsed)
 						pathToSound = PowaGlobalMisc.PathToSounds..aura.customsoundend;
 					end
 					--self:ShowText("Playing sound "..pathToSound);		
-					PlaySoundFile(pathToSound);
+					PlaySoundFile(pathToSound, PowaMisc.SoundChannel);
 				elseif (aura.soundend > 0) then
 					if (PowaAuras.Sound[aura.soundend]~=nil and string.len(PowaAuras.Sound[aura.soundend])>0) then
 						if (aura.Debug) then
 							self:Message("Playing end sound ", PowaAuras.Sound[aura.soundend]);
 						end
 						if (string.find(PowaAuras.Sound[aura.soundend], "%.")) then
-							PlaySoundFile(PowaGlobalMisc.PathToSounds..PowaAuras.Sound[aura.soundend]);
+							PlaySoundFile(PowaGlobalMisc.PathToSounds..PowaAuras.Sound[aura.soundend], PowaMisc.SoundChannel);
 						else
-							PlaySound(PowaAuras.Sound[aura.soundend]);
+							PlaySound(PowaAuras.Sound[aura.soundend], PowaMisc.SoundChannel);
 						end
 					end
 				end
