@@ -130,12 +130,26 @@ function cPowaStacks:ShowValue(aura, newvalue)
 	local centi  = math.floor(newvalue / 100);
 	local deci   = math.floor((newvalue - (centi*100)) / 10); -- /10 to trim the trailing digit off.
 	local uni    = math.floor(newvalue - (centi*100) - (deci * 10));
-	--PowaAuras:ShowText("Show stacks: ", centi, " ",deci, " ", uni, " (", newvalue, ")");
+	--PowaAuras:ShowText("Show stacks: ", centi, " ",deci, " ", uni, " (", newvalue, ")", self.HideLeadingZeroes);
 	local tStep = PowaAuras.Tstep;
 	-- Set coords for each.
 	frame.texture:SetTexCoord(tStep , tStep * 1.5, tStep * uni, tStep * (uni+1));
-	frame.deciTexture:SetTexCoord(tStep , tStep * 1.5, tStep * deci, tStep * (deci+1));
-	frame.centiTexture:SetTexCoord(tStep , tStep * 1.5, tStep * centi, tStep * (centi+1));
+	if(deci > 0 or (deci == 0 and centi > 0) or self.HideLeadingZeroes == false) then
+		frame.deciTexture:SetTexCoord(tStep , tStep * 1.5, tStep * deci, tStep * (deci+1));
+		if(not frame.deciTexture:IsShown()) then
+			frame.deciTexture:Show();
+		end
+	elseif(frame.deciTexture:IsShown()) then
+		frame.deciTexture:Hide();
+	end
+	if(centi > 0 or self.HideLeadingZeroes == false) then
+		frame.centiTexture:SetTexCoord(tStep , tStep * 1.5, tStep * centi, tStep * (centi+1));
+		if(not frame.centiTexture:IsShown()) then
+			frame.centiTexture:Show();
+		end
+	elseif(frame.centiTexture:IsShown()) then
+		frame.centiTexture:Hide();
+	end
 	
 	if (not frame:IsVisible()) then
 		--PowaAuras:Message("Show Stacks Frame for ", self.id);

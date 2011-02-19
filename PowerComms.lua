@@ -133,6 +133,7 @@ message is concatenated, sent to the appropriate function and the sender is made
 PowaComms:AddHandler("MULTIPART", function(self, data, from, segpos, segtotal)
 	-- Accept multipart messages from our locked partner.
 	if(not self.ReceiverLock or self.ReceiverLock ~= from) then return; end
+	tinsert(self.ReceiverStore, segpos, data);
 	-- Do we have all of the segments?
 	-- If we never receive them all, our lock will expire in about 10 seconds and all data is purged, with the sender
 	-- being notified.
