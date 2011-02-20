@@ -923,6 +923,7 @@ function PowaAuras:PlayerImportDialogSetStatus(status)
 			format(PowaAuras.Text.PlayerImportDialogDescTitle1, PowaAuraPlayerImportDialog.receiveDisplay)
 		);
 		PowaAuras:DialogSetTimeout(PowaAuraPlayerImportDialog, 30);
+		PowaAuraPlayerImportDialogWarningTitle:Hide();
 	elseif(PowaAuraPlayerImportDialog.status >= 2) then
 		-- Disable buttons unless told otherwise.
 		PowaAuraPlayerImportDialogAcceptButton:Disable();
