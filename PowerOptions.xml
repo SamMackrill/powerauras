@@ -301,6 +301,10 @@
 				-- OnShow function.
 				PowaAuras:PlayerImportDialogOnShow();
 			</OnShow>
+			<OnHide>
+				-- OnHide function.
+				PowaAuras:PlayerImportDialogOnHide();
+			</OnHide>
 		</Scripts>
 	</Frame>
 
@@ -1077,7 +1081,6 @@
 							</Anchor>
 						</Anchors>
 					</Button>
-
 				</Frames>
 			</Frame>
 -- Fenetre global liste
@@ -1221,7 +1224,6 @@
 							</Anchor>
 						</Anchors>
 					</Button>
-					
 					-- Rename Button
 					<Button name="PowaOptionsRename" inherits="OptionsButtonTemplate" text="Renommer">
 						<Size>
