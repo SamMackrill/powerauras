@@ -939,9 +939,6 @@ function PowaAuras:PlayerImportDialogSetStatus(status)
 			PowaAuraPlayerImportDialogDescTitle:SetText(PowaAuras.Text.PlayerImportDialogDescTitle3);
 			PowaAuraPlayerImportDialogCancelButton:Enable();
 			PowaAuras:DialogSetTimeout(PowaAuraPlayerImportDialog, 0);
-			-- Don't store receiver name.
-			PowaAuraPlayerImportDialog.receiveFrom = nil;
-			PowaAuraPlayerImportDialog.receiveDisplay = "";
 		elseif(PowaAuraPlayerImportDialog.status == 4) then
 			-- Status 4 - waiting for save.
 			PowaAuraPlayerImportDialogDescTitle:SetText(PowaAuras.Text.PlayerImportDialogDescTitle4);
