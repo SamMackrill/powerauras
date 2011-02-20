@@ -751,6 +751,9 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	PlayerImportDialogAcceptButton2  = "Save",
 	PlayerImportDialogCancelButton1  = "Reject",
 
+	aideBlockIncomingAuras = "Prevent anybody sending you auras",
+	nomBlockIncomingAuras = "Block Incoming Auras",
+
 });
 
 --end

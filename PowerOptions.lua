@@ -3144,6 +3144,14 @@ function PowaAuras:MiscChecked(control, setting)
 	end
 end
 
+function PowaAuras:GlobalMiscChecked(control, setting)
+	if (control:GetChecked()) then
+		PowaGlobalMisc[setting] = true;
+	else
+		PowaGlobalMisc[setting] = false;
+	end
+end
+
 local function OptionsOK()
 	--PowaAuras:DisplayText("OptionsOK");
 	PowaMisc.OnUpdateLimit = (100 - PowaOptionsUpdateSlider2:GetValue()) / 200;
