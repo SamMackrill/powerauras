@@ -1023,7 +1023,7 @@ end
 
 PowaComms:AddHandler("EXPORT_REQUEST", function(_, data, from)
 	-- If we're busy, reject. If we're in combat, reject.
-	if(PowaAuraPlayerImportDialog.receiveFrom or InCombatLockdown() or PowaMisc.BlockIncomingAuras == true) then
+	if(PowaAuraPlayerImportDialog.receiveFrom or InCombatLockdown() or PowaGlobalMisc.BlockIncomingAuras == true) then
 		if(PowaMisc.debug) then PowaAuras:ShowText("Comms: Autorejected EXPORT_REQUEST."); end
 		PowaComms:SendAddonMessage("EXPORT_REJECT", "", from);
 		return;
