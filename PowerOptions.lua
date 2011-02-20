@@ -971,6 +971,13 @@ function PowaAuras:PlayerImportDialogOnShow(self)
 	PowaAuras:PlayerImportDialogSetStatus();	
 end
 
+function PowaAuras:PlayerImportDialogOnHide(self)
+	-- Clear our receiveFrom/etc. vars here.
+	PowaAuraPlayerImportDialog.receiveFrom = nil;
+	PowaAuraPlayerImportDialog.receiveDisplay = "";
+	PowaAuraPlayerImportDialog.receiveString = nil;
+end
+
 function PowaAuras:PlayerImportDialogAccept()
 	-- Accept only if we're at status 1.
 	if(PowaAuraPlayerImportDialog.status == 1 and PowaAuraPlayerImportDialog.receiveFrom) then
@@ -1004,10 +1011,6 @@ function PowaAuras:PlayerImportDialogCancel()
 	if(PowaAuraPlayerImportDialog.status == 1 and PowaAuraPlayerImportDialog.receiveFrom) then
 		PowaComms:SendAddonMessage("EXPORT_REJECT", "", PowaAuraPlayerImportDialog.receiveFrom);
 	end
-	-- Don't store receiver name.
-	PowaAuraPlayerImportDialog.receiveFrom = nil;
-	PowaAuraPlayerImportDialog.receiveDisplay = "";
-	PowaAuraPlayerImportDialog.receiveString = nil;
 	-- Hide.
 	StaticPopupSpecial_Hide(PowaAuraPlayerImportDialog);
 end
