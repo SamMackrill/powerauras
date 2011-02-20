@@ -29,6 +29,7 @@ PowaMisc =
 	{
 		PathToSounds = "Interface\\AddOns\\PowerAuras\\Sounds\\",
 		PathToAuras = "Interface\\Addons\\PowerAuras\\Custom\\",
+		BlockIncomingAuras = false,
 	};
 
 PowaAuras.PowaMiscDefault = PowaAuras:CopyTable(PowaMisc);
