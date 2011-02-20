@@ -790,7 +790,6 @@ function PowaAuras:ExportDialogSetStatus(status)
 		-- Status 1 - not yet sent.
 		PowaAuraExportDialogSendTitle:SetText(PowaAuras.Text.ExportDialogSendTitle1);
 		PowaAuraExportDialogSendButton:SetText(PowaAuras.Text.ExportDialogSendButton1);
-		PowaAuraExportDialogSendBox:SetText("");
 		PowaAuraExportDialogCancelButton:Enable();
 		PowaAuraExportDialogSendBox:Show();
 		PowaAuras:DialogSetTimeout(PowaAuraExportDialog, 0);
@@ -884,6 +883,7 @@ end
 PowaComms:AddHandler("EXPORT_REJECT", function(_, _, from)
 	-- Were we sending to this person?
 	if(PowaAuraExportDialog.sendTo == from) then
+		if(PowaMisc.debug) then PowaAuras:ShowText("Comms: EXPORT_REJECT from " .. from); end
 		PowaAuras:ExportDialogSetStatus(3);
 		PowaAuraExportDialog.sendTo = nil;
 	end
@@ -893,6 +893,7 @@ end);
 PowaComms:AddHandler("EXPORT_ACCEPT", function(_, _, from)
 	-- Were we sending to this person?
 	if(PowaAuraExportDialog.sendTo == from) then
+		if(PowaMisc.debug) then PowaAuras:ShowText("Comms: EXPORT_ACCEPT from " .. from); end
 		PowaAuras:ExportDialogSetStatus(4);
 		-- Let's get busy!
 		PowaComms:SendAddonMessage("EXPORT_DATA", PowaAuraExportDialog.sendString, from);
@@ -927,6 +928,7 @@ function PowaAuras:PlayerImportDialogSetStatus(status)
 		PowaAuraPlayerImportDialogAcceptButton:Disable();
 		PowaAuraPlayerImportDialogCancelButton:Disable();
 		PowaAuraPlayerImportDialogCancelButton:SetText(PowaAuras.Text.ExportDialogCancelButton);
+		PowaAuraPlayerImportDialogWarningTitle:Hide();
 		if(PowaAuraPlayerImportDialog.status == 2) then
 			-- Status 2 - receiving.
 			PowaAuraPlayerImportDialogDescTitle:SetText(PowaAuras.Text.PlayerImportDialogDescTitle2);
@@ -942,6 +944,10 @@ function PowaAuras:PlayerImportDialogSetStatus(status)
 		elseif(PowaAuraPlayerImportDialog.status == 4) then
 			-- Status 4 - waiting for save.
 			PowaAuraPlayerImportDialogDescTitle:SetText(PowaAuras.Text.PlayerImportDialogDescTitle4);
+			-- Warning message for aura sets.
+			if(PowaAuraPlayerImportDialog.receiveType == 2) then
+				PowaAuraPlayerImportDialogWarningTitle:Show();		
+			end
 			PowaAuraPlayerImportDialogAcceptButton:SetText(PowaAuras.Text.PlayerImportDialogAcceptButton2);
 			PowaAuras:DialogSetTimeout(PowaAuraPlayerImportDialog, 0);
 			PowaAuraPlayerImportDialogAcceptButton:Enable();
@@ -972,6 +978,10 @@ function PowaAuras:PlayerImportDialogOnShow(self)
 end
 
 function PowaAuras:PlayerImportDialogOnHide(self)
+	-- Reject only if we're at status 1.
+	if(PowaAuraPlayerImportDialog.status == 1 and PowaAuraPlayerImportDialog.receiveFrom) then
+		PowaComms:SendAddonMessage("EXPORT_REJECT", "", PowaAuraPlayerImportDialog.receiveFrom);
+	end
 	-- Clear our receiveFrom/etc. vars here.
 	PowaAuraPlayerImportDialog.receiveFrom = nil;
 	PowaAuraPlayerImportDialog.receiveDisplay = "";
@@ -1007,10 +1017,6 @@ function PowaAuras:PlayerImportDialogAccept()
 end
 
 function PowaAuras:PlayerImportDialogCancel()
-	-- Reject only if we're at status 1.
-	if(PowaAuraPlayerImportDialog.status == 1 and PowaAuraPlayerImportDialog.receiveFrom) then
-		PowaComms:SendAddonMessage("EXPORT_REJECT", "", PowaAuraPlayerImportDialog.receiveFrom);
-	end
 	-- Hide.
 	StaticPopupSpecial_Hide(PowaAuraPlayerImportDialog);
 end
@@ -1020,6 +1026,7 @@ end
 PowaComms:AddHandler("EXPORT_REQUEST", function(_, data, from)
 	-- If we're busy, reject. If we're in combat, reject.
 	if(PowaAuraPlayerImportDialog.receiveFrom or InCombatLockdown()) then
+		if(PowaMisc.debug) then PowaAuras:ShowText("Comms: Rejected EXPORT_REQUEST: ", InCombatLockdown(), " ", PowaAuraPlayerImportDialog.receiveFrom); end
 		PowaComms:SendAddonMessage("EXPORT_REJECT", "", from);
 		return;
 	end
@@ -1036,6 +1043,7 @@ end);
 PowaComms:AddHandler("EXPORT_DATA", function(_, data, from)
 	-- Were we receiving from this person?
 	if(PowaAuraPlayerImportDialog.receiveFrom == from) then
+		if(PowaMisc.debug) then PowaAuras:ShowText("Comms: Receiving EXPORT_DATA"); end
 		-- Status code 4 - we are pro.
 		PowaAuras:PlayerImportDialogSetStatus(4);
 		-- Store the data.

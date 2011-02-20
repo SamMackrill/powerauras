@@ -45,6 +45,7 @@ function PowaAuras:CHAT_MSG_ADDON(header, data, channel, from)
 		tonumber(strsub(header, segpos+1, segtotal-1), 10),
 		tonumber(strsub(header, segtotal+1), 10);
 	-- Fire handlers.
+	if(PowaMisc.debug) then self:ShowText("Comms: Firing handler for instruction " .. instruction); end
 	self.Comms:FireHandler(instruction, data, from, segpos, segtotal);
 end
 --[[
@@ -57,6 +58,7 @@ Wrapper for SendAddonMessage, handles all of the lock requests and multiple data
 function PowaComms:SendAddonMessage(instruction, data, to, segment, total)
 	-- Check length.
 	local length = strlen(data);
+	if(PowaMisc.debug) then PowaAuras:ShowText("Comms: Sending instruction " .. instruction .. " (data length " .. length .. ")"); end
 	if(length <= 200) then
 		-- And AWAY!
 		SendAddonMessage("POWA|" .. instruction .. "|" .. (segment or 1) .. "|" .. (total or 1), data, "WHISPER", to);
