@@ -3172,6 +3172,7 @@ local function OptionsOK()
 	PowaAuras:EnableChecked();
 	PowaAuras:MiscChecked(PowaDebugButton, "debug");
 	PowaAuras:MiscChecked(PowaTimerRoundingButton, "TimerRoundUp");
+	PowaAuras:GlobalMiscChecked(PowaBlockIncomingAurasButton, "BlockIncomingAuras");
 
 	local newDefaultTimerTexture = UIDropDownMenu_GetSelectedValue(PowaDropDownDefaultTimerTexture);
 	if (newDefaultTimerTexture~=PowaMisc.DefaultTimerTexture) then
@@ -3234,6 +3235,7 @@ local function OptionsRefresh()
 	PowaDebugButton:SetChecked(PowaMisc.debug);
 	PowaTimerRoundingButton:SetChecked(PowaMisc.TimerRoundUp);
 	PowaAllowInspectionsButton:SetChecked(PowaMisc.AllowInspections);
+	PowaBlockIncomingAurasButton:SetChecked(PowaGlobalMisc.BlockIncomingAuras);
 	UIDropDownMenu_SetSelectedValue(PowaDropDownDefaultTimerTexture, PowaMisc.DefaultTimerTexture);
 	UIDropDownMenu_SetSelectedValue(PowaDropDownDefaultStacksTexture, PowaMisc.DefaultStacksTexture);
 	PowaCustomSoundPath:SetText(PowaGlobalMisc.PathToSounds);
