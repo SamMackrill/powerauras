@@ -167,7 +167,6 @@ function cPowaStacks:SetStackCount(count)
 		return;
 	end
 	
-	if (count>999) then count = 999; end;
 	if (self.lastShownValue==count and self.Showing) then
 		self.UpdateValueTo = nil;
 		if (aura.Debug) then
