@@ -123,6 +123,7 @@ cPowaAura.ExportSettings = {
 	stacks = 0,
 	stacksLower = 0,
 	stacksOperator = PowaAuras.DefaultOperator,
+	stacksUseTooltip = false,
 
 	threshold = 50,
 	thresholdinvert = false,
@@ -781,7 +782,7 @@ function cPowaAura:SetStacks(text)
 	PowaAuras:Debug(stacks);
 		
 	if (stacks ~= self.stacks) then
-		if (stacks > 9999) or (stacks < 0) then stacks = 0; end
+		if (stacks < 0) then stacks = 0; end
 		self.stacks = stacks or 0;
 	end
 	
@@ -790,7 +791,7 @@ function cPowaAura:SetStacks(text)
 	PowaAuras:Debug(stacksLower);
 	
 	if (stacksLower ~= self.stacksLower) then
-		if (stacksLower > 9999) or (stacksLower < 0) or (stacksLower > stacks) then stacksLower = 0; end
+		if (stacksLower < 0) or (stacksLower > stacks) then stacksLower = 0; end
 		self.stacksLower = stacksLower or 0;
 	end
 	
@@ -1084,6 +1085,34 @@ function cPowaAura:CheckStacks(count)
 			or (operator == "!"  and count ~= stacks));
 end
 
+function cPowaAura:CheckStacksTooltip(unit, index)
+	-- Tooltip or normal stack count?
+	if(self.stacksUseTooltip == true) then
+		-- Set tooltip owner, and to the given aura.
+		PowaAuras_Tooltip:SetOwner(UIParent, "ANCHOR_NONE");
+		PowaAuras_Tooltip:SetUnitAura(unit, index, self.buffAuraType);
+		-- Check all lines for numbers.
+		for z = 1, PowaAuras_Tooltip:NumLines() do
+			-- Match any numbers in the text.
+			local text = _G["PowaAuras_TooltipTextLeft"..z]:GetText();
+			local i, l = strfind(text, "%d+");
+			if(i and l) then
+				-- Check stacks.
+				if(self:CheckStacks(tonumber(strsub(text, i, l), 10))) then
+					-- Done.
+					PowaAuras_Tooltip:Hide();
+					return tonumber(strsub(text, i, l), 10);
+				end
+			end
+		end
+		-- Hide tooltip.
+		PowaAuras_Tooltip:Hide();
+		return 0;
+	else
+		return 0;
+	end
+end
+
 function cPowaAura:StacksText()
 	local stacksText = self.stacksOperator..tostring(self.stacks);
 	if (self.stacksOperator=="-") then
@@ -1270,8 +1299,12 @@ function cPowaBuffBase:IsPresent(unit, s, giveReason, textToCheck)
 		return nil, PowaAuras.Text.nomReasonBuffPresentNotMine;
 	end
 	if (not self:CheckStacks(count)) then
-		if (giveReason) then return nil, PowaAuras:InsertText(PowaAuras.Text.nomReasonStacksMismatch, count, self:StacksText()); end
-		return nil;
+		-- Check tooltip for stacks.
+		count = self:CheckStacksTooltip(unit, s);
+		if(count == 0) then
+			if (giveReason) then return nil, PowaAuras:InsertText(PowaAuras.Text.nomReasonStacksMismatch, count, self:StacksText()); end
+			return nil;
+		end
 	end
 	self.DisplayValue = auraName;
 	self.DisplayUnit = unit;
