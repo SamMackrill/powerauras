@@ -930,7 +930,7 @@ end
 -- Drag and Drop functions
 
 local function stopFrameMoving(frame)
-	if (not frame.isMoving) then return; end
+	if (frame==nil or not frame.isMoving) then return; end
 	frame.isMoving = false;
 	--PowaAuras:ShowText("stopMove id=", frame.aura.id);
 	frame:StopMovingOrSizing();
