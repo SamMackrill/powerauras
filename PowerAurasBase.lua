@@ -781,6 +781,7 @@ PowaAuras.DebuffTypeSpellIds={
 	[20170] = PowaAuras.DebuffCatType.Stun,		-- Stun (Seal of Justice proc)
 	[10326] = PowaAuras.DebuffCatType.CC,		-- Turn Evil (works against Warlocks using Metamorphasis and Death Knights using Lichborne)
 	[63529] = PowaAuras.DebuffCatType.Silence,	-- Shield of the Templar
+	[31935] = PowaAuras.DebuffCatType.Silence,	-- Avenger's Shield.
 	[20184] = PowaAuras.DebuffCatType.Snare,	-- Judgement of Justice (not really a snare, druids might want this though)
 	-- Priest
 	[605]   = PowaAuras.DebuffCatType.CC,		-- Mind Control
