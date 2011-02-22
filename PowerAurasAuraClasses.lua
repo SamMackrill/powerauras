@@ -123,7 +123,6 @@ cPowaAura.ExportSettings = {
 	stacks = 0,
 	stacksLower = 0,
 	stacksOperator = PowaAuras.DefaultOperator,
-	stacksUseTooltip = false,
 
 	threshold = 50,
 	thresholdinvert = false,
@@ -1299,12 +1298,8 @@ function cPowaBuffBase:IsPresent(unit, s, giveReason, textToCheck)
 		return nil, PowaAuras.Text.nomReasonBuffPresentNotMine;
 	end
 	if (not self:CheckStacks(count)) then
-		-- Check tooltip for stacks.
-		count = self:CheckStacksTooltip(unit, s);
-		if(count == 0) then
-			if (giveReason) then return nil, PowaAuras:InsertText(PowaAuras.Text.nomReasonStacksMismatch, count, self:StacksText()); end
-			return nil;
-		end
+		if (giveReason) then return nil, PowaAuras:InsertText(PowaAuras.Text.nomReasonStacksMismatch, count, self:StacksText()); end
+		return nil;
 	end
 	self.DisplayValue = auraName;
 	self.DisplayUnit = unit;
