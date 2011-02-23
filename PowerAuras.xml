@@ -3800,6 +3800,28 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                   <OnClick>PowaAuras:StacksChecked(self, "UpdatePing");</OnClick>
                 </Scripts>
               </CheckButton>
+			  
+			  <CheckButton name="PowaBuffStacksLegacySizing"
+                           inherits="PowaCheckTemplate">
+                <Size>
+                  <AbsDimension x="25"
+                                y="25" />
+                </Size>
+                <Anchors>
+                  <Anchor point="TOP"
+                          relativeTo="PowaBuffStacksUpdatePingButton"
+                          relativePoint="BOTTOM">
+                    <Offset>
+                      <AbsDimension x="0"
+                                    y="4" />
+                    </Offset>
+                  </Anchor>
+                </Anchors>
+                <Scripts>
+                  <OnLoad>PowaBuffStacksLegacySizingText:SetText(PowaAuras.Text.nomLegacySizing);</OnLoad>
+                  <OnClick>PowaAuras:StacksChecked(self, "LegacySizing");</OnClick>
+                </Scripts>
+              </CheckButton>
 
 			  <CheckButton name="PowaBuffStacksUseOwnColorButton"
                            inherits="PowaCheckTemplate">

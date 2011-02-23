@@ -115,6 +115,7 @@ PowaAuras = {
 	AlwaysEvents = 
 	{
 		ACTIVE_TALENT_GROUP_CHANGED = true,	
+		CHAT_MSG_ADDON = true,
 		INSPECT_TALENT_READY = true,	
 		PARTY_MEMBERS_CHANGED = true,	
 		PLAYER_ALIVE = true,
@@ -130,7 +131,6 @@ PowaAuras = {
 		UNIT_FACTION = true,
 		UNIT_SPELLCAST_SUCCEEDED = true,
 		ZONE_CHANGED_NEW_AREA = true,
-		CHAT_MSG_ADDON = true,
 	};
 
 	RelativeToParent = 
