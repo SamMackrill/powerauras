@@ -727,6 +727,11 @@ function PowaAuras:GetStances()
 		self.PowaStance[2] = select(2,GetShapeshiftFormInfo(1));
 		return;
 	end
+	if(self.playerclass == "ROGUE") then -- Fix for shadow dance (which is apparently at index 3).
+		self.PowaStance[1] = select(2,GetShapeshiftFormInfo(1));
+		self.PowaStance[3] = select(2,GetShapeshiftFormInfo(3));
+		return;
+	end
 	for iForm=1, GetNumShapeshiftForms() do
 		self.PowaStance[iForm] = select(2,GetShapeshiftFormInfo(iForm));
 	end
