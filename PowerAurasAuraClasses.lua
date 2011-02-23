@@ -1084,34 +1084,6 @@ function cPowaAura:CheckStacks(count)
 			or (operator == "!"  and count ~= stacks));
 end
 
-function cPowaAura:CheckStacksTooltip(unit, index)
-	-- Tooltip or normal stack count?
-	if(self.stacksUseTooltip == true) then
-		-- Set tooltip owner, and to the given aura.
-		PowaAuras_Tooltip:SetOwner(UIParent, "ANCHOR_NONE");
-		PowaAuras_Tooltip:SetUnitAura(unit, index, self.buffAuraType);
-		-- Check all lines for numbers.
-		for z = 1, PowaAuras_Tooltip:NumLines() do
-			-- Match any numbers in the text.
-			local text = _G["PowaAuras_TooltipTextLeft"..z]:GetText();
-			local i, l = strfind(text, "%d+");
-			if(i and l) then
-				-- Check stacks.
-				if(self:CheckStacks(tonumber(strsub(text, i, l), 10))) then
-					-- Done.
-					PowaAuras_Tooltip:Hide();
-					return tonumber(strsub(text, i, l), 10);
-				end
-			end
-		end
-		-- Hide tooltip.
-		PowaAuras_Tooltip:Hide();
-		return 0;
-	else
-		return 0;
-	end
-end
-
 function cPowaAura:StacksText()
 	local stacksText = self.stacksOperator..tostring(self.stacks);
 	if (self.stacksOperator=="-") then
@@ -1705,6 +1677,16 @@ function cPowaTypeDebuff:IsPresent(target, z)
 		self.DisplayValue = name;
 		return false;
 	end
+	
+	-- If typeDebuff is empty, scan the topright line of the tooltip for the type.
+	if(typeDebuff == nil or typeDebuff == "") then
+		PowaAuras_Tooltip:SetOwner(UIParent, "ANCHOR_NONE");
+		PowaAuras_Tooltip:SetUnitAura(target, z, self.buffAuraType);
+		if(PowaAuras_Tooltip:NumLines() >= 1) then
+			typeDebuff = (PowaAuras_TooltipTextRight1 and PowaAuras_TooltipTextRight1:GetText() or "");
+		end
+		PowaAuras_Tooltip:Hide();
+	end
 
 	local typeDebuffName;
 	if (typeDebuff ~= nil) then
@@ -1724,6 +1706,95 @@ function cPowaTypeDebuff:IsPresent(target, z)
 
 	if self:MatchText(typeDebuffName, self.buffname)
 	or self:MatchText(typeDebuffCatName, self.buffname) then
+		self.DisplayValue = name;
+		if (self.Stacks) then
+			self.Stacks:SetStackCount(count);
+		end
+		self:SetIcon(texture);
+		if (self.Timer) then
+			self.Timer:SetDurationInfo(expirationTime);
+			self:CheckTimerInvert();
+			if (self.ForceTimeInvert) then
+				return false;
+			end
+		end
+		return true;
+	end
+
+	self.DisplayValue = self.buffname;
+	return false;
+end
+
+
+cPowaTypeBuff = PowaClass(cPowaBuffBase, {buffAuraType = "HELPFUL", AuraType="Buff Type"});
+cPowaTypeBuff.OptionText={
+						buffNameTooltip=PowaAuras.Text.aideBuff3,
+						exactTooltip=PowaAuras.Text.aideExact,
+						typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.TypeBuff],
+						mineText=PowaAuras.Text.nomDispellable, mineTooltip=PowaAuras.Text.aideDispellable,
+						targetFriendText=PowaAuras.Text.nomCheckFriend, targetFriendTooltip=PowaAuras.Text.aideTargetFriend,
+						};
+cPowaTypeBuff.ShowOptions = {["PowaGroupAnyButton"]=1,
+							   ["PowaBarTooltipCheck"]=1};						 
+cPowaTypeBuff.CheckBoxes = {["PowaTargetButton"]=1,
+							  ["PowaPartyButton"]=1,
+							  ["PowaFocusButton"]=1,
+							  ["PowaRaidButton"]=1,
+							  ["PowaGroupOrSelfButton"]=1,
+							  ["PowaGroupAnyButton"]=1,
+							  ["PowaOptunitnButton"]=1,
+							  ["PowaInverseButton"]=1,
+							  ["PowaIngoreCaseButton"]=1,
+							  ["PowaOwntexButton"]=1,
+							  };
+cPowaTypeBuff.TooltipOptions = {r=0.8, g=1.0, b=0.8, showBuffName=true};
+
+function cPowaTypeBuff:IsPresent(target, z)
+	local removeable;
+	if (self.mine) then
+		removeable = 1;
+	end
+	local name, _, texture, count, typeBuff, _, expirationTime = UnitBuff(target, z, removeable);
+	if (not name) then
+		return nil;
+	end
+	if (self.Debug) then
+		PowaAuras:Message("TypeBuff ", name, " IsPresent on ",target,"  buffid ",z,"  removeable ",removeable);
+	end
+	self.DisplayUnit = target;
+	if (self.mine and typeBuff==nil) then
+		self.DisplayValue = name;
+		return false;
+	end
+	
+	-- If typeBuff is empty, scan the topright line of the tooltip for the type.
+	if(typeBuff == nil or typeBuff == "") then
+		PowaAuras_Tooltip:SetOwner(UIParent, "ANCHOR_NONE");
+		PowaAuras_Tooltip:SetUnitAura(target, z, self.buffAuraType);
+		if(PowaAuras_Tooltip:NumLines() >= 1) then
+			typeBuff = (PowaAuras_TooltipTextRight1 and PowaAuras_TooltipTextRight1:GetText() or "");
+		end
+		PowaAuras_Tooltip:Hide();
+	end
+
+	local typeBuffName;
+	if (typeBuff ~= nil) then
+		typeBuffName = PowaAuras.Text.DebuffType[typeBuff];
+	end
+	local typeBuffCatName = PowaAuras.Text.DebuffCatType[PowaAuras.DebuffCatSpells[name]];
+	if (typeBuffName == nil and typeBuffCatName==nil) then
+		typeBuffName = PowaAuras.Text.aucun;
+	end
+
+	--PowaAuras:UnitTestDebug("typeBuffName ",typeBuffName);
+	--PowaAuras:UnitTestDebug("typeBuffCatName ",typeBuffCatName);
+	--PowaAuras:UnitTestDebug("self.buffname ",self.buffname);
+	if (self.Debug) then
+		PowaAuras:Message("typeBuffName ", typeBuffName, " typeBuffCatName ",typeBuffCatName,"  self.buffname ",self.buffname);
+	end
+
+	if self:MatchText(typeBuffName, self.buffname)
+	or self:MatchText(typeBuffCatName, self.buffname) then
 		self.DisplayValue = name;
 		if (self.Stacks) then
 			self.Stacks:SetStackCount(count);
@@ -3785,6 +3856,7 @@ PowaAuras.AuraClasses = {
 	[PowaAuras.BuffTypes.Slots]=cPowaSlots,
 	[PowaAuras.BuffTypes.Items]=cPowaItems,
 	[PowaAuras.BuffTypes.Tracking]=cPowaTracking,
+	[PowaAuras.BuffTypes.TypeBuff]=cPowaTypeBuff,
 	[PowaAuras.BuffTypes.Static]=cPowaStatic,
 }
 

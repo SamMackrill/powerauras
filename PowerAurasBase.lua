@@ -272,6 +272,7 @@ PowaAuras = {
 		Items=22,
 		Slots=23,
 		Tracking=24,
+		TypeBuff=25,
 		GTFO=50,
 	};
 

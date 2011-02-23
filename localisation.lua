@@ -58,6 +58,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		Disease = "Disease",
 		Curse   = "Curse",
 		Poison  = "Poison",
+		-- Non standard types below here.
+		Enrage  = "Enrage",
 	},
 
 	DebuffCatType =
@@ -121,6 +123,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		[PowaAuras.BuffTypes.Slots] = "Equipment Slots",
 		[PowaAuras.BuffTypes.Items] = "Named Items",
 		[PowaAuras.BuffTypes.Tracking] = "Tracking",
+		[PowaAuras.BuffTypes.TypeBuff] = "Buff type",
 		[PowaAuras.BuffTypes.GTFO] = "GTFO Alert",
 	},
 	
