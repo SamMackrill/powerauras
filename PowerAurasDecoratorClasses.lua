@@ -32,6 +32,7 @@ cPowaStacks.ExportSettings = {
 	r = 1.0,
 	g = 1.0,
 	b = 1.0,
+	LegacySizing = false,
 }
 
 function cPowaStacks:CreateAuraString()
@@ -78,6 +79,7 @@ function cPowaStacks:ShowValue(aura, newvalue)
 	local texcount = #(frame.textures);
 	local unitcount = (newvalue == 0 and 1 or (floor(math.log10(newvalue))+1));
 	local tStep = PowaAuras.Tstep;
+	local w = (self.LegacySizing and 20 or 10);
 	
 	for i=1, (texcount > unitcount and texcount or unitcount) do
 		-- Make textures if needed.
@@ -116,8 +118,8 @@ function cPowaStacks:ShowValue(aura, newvalue)
 			-- Show and position it accordingly.
 			frame.textures[i]:Show();
 			frame.textures[i]:ClearAllPoints();
-			frame.textures[i]:SetPoint("RIGHT", frame, "RIGHT", -((i-1)*(10*self.h))+(((unitcount-2)*(10*self.h))/2), 0);
-			frame.textures[i]:SetWidth((10*self.h));
+			frame.textures[i]:SetPoint("RIGHT", frame, "RIGHT", -((i-1)*(w*self.h))+(((unitcount-2)*(w*self.h))/2), 0);
+			frame.textures[i]:SetWidth((w*self.h));
 			frame.textures[i]:SetHeight((20*self.h));
 			-- Set the texture coordinates.
 			frame.textures[i]:SetTexCoord(tStep , tStep * 1.5, tStep * (newvalue % 10), tStep * ((newvalue % 10)+1));
