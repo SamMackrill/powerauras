@@ -836,6 +836,7 @@ PowaAuras.DebuffTypeSpellIds={
 	[23694] = PowaAuras.DebuffCatType.Root,		-- Improved Hamstring
 	[1715]  = PowaAuras.DebuffCatType.Snare,	-- Hamstring
 	[12323] = PowaAuras.DebuffCatType.Snare,	-- Piercing Howl
+	[85388] = PowaAuras.DebuffCatType.Stun,	    -- THROWDOWN!
 	-- Other
 	[30217] = PowaAuras.DebuffCatType.Stun,		-- Adamantite Grenade
 	[30216] = PowaAuras.DebuffCatType.Stun,		-- Fel Iron Bomb
