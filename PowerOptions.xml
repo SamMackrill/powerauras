@@ -98,7 +98,10 @@
 						<Anchor point="TOP" relativePoint="TOP" x="0" y="-100"/>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentSendTitle" inherits="GameFontNormal" text="Enter a player name below and click 'Send'." justifyH="CENTER">
+				<FontString name="$parentSendTitle" inherits="GameFontNormal" text="Enter a player name below and click 'Send'." justifyH="CENTER" justifyV="TOP">
+					<Size>
+						<AbsDimension x="375" y="24" />
+					</Size>
 					<Anchors>
 						<Anchor point="TOP" relativePoint="TOP" x="0" y="-125"/>
 					</Anchors>
@@ -125,7 +128,7 @@
 					</OnEnterPressed>
 				</Scripts>
 			</EditBox>
-			<EditBox name="$parentSendBox" inherits="InputBoxTemplate" autoFocus="false">
+			<EditBox name="$parentSendBox" inherits="InputBoxTemplate" autoFocus="false" letters="12">
 				<Size>
 					<AbsDimension x="280" y="20" />
 				</Size>
@@ -224,7 +227,7 @@
 					</Anchors>
 					<Color r="1" g="1" b="1" />
 				</FontString>
-				<FontString name="$parentWarningTitle" inherits="GameFontNormal" text="" justifyH="CENTER">
+				<FontString name="$parentWarningTitle" inherits="GameFontNormal" text="" justifyH="CENTER" justifyV="TOP">
 					<Size>
 						<AbsDimension x="375" y="24" />
 					</Size>
