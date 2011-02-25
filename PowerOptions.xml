@@ -163,7 +163,7 @@
 				<Scripts>
 					<OnClick>
 						-- Fire func.
-						PowaAuraExportDialog:BeginSend();
+						PowaAuraExportDialog:OnAccept();
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -178,7 +178,8 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						StaticPopupSpecial_Hide(PowaAuraExportDialog);
+						-- Fire func.
+						PowaAuraExportDialog:OnCancel();
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -246,7 +247,7 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						PowaAuras:PlayerImportDialogAccept();
+						PowaAuraPlayerImportDialog:OnAccept();
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -262,13 +263,15 @@
 				<Scripts>
 					<OnClick>
 						-- REJECTED.
-						PowaAuras:PlayerImportDialogCancel();
+						PowaAuraPlayerImportDialog:OnCancel();
 					</OnClick>
 				</Scripts>
 			</Button>
 		</Frames>
 		<Scripts>
 			<OnLoad>
+				-- Fire init func.
+				PowaAuras:PlayerImportDialogInit(self);
 				-- Set parameters for StaticPopup.
 				self.exclusive = 1;
 				self.whileDead = 1;
@@ -291,11 +294,11 @@
 			</OnLoad>
 			<OnShow>
 				-- OnShow function.
-				PowaAuras:PlayerImportDialogOnShow();
+				self:OnShow();
 			</OnShow>
 			<OnHide>
 				-- OnHide function.
-				PowaAuras:PlayerImportDialogOnHide();
+				self:OnHide();
 			</OnHide>
 		</Scripts>
 	</Frame>
