@@ -163,7 +163,7 @@
 				<Scripts>
 					<OnClick>
 						-- Fire func.
-						PowaAuras:ExportDialogBeginSend();
+						PowaAuraExportDialog:BeginSend();
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -185,30 +185,12 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
-				-- Set parameters for StaticPopup.
-				self.exclusive = 1;
-				self.whileDead = 1;
-				self.hideOnEscape = 1;
-				self.timeout = 0;
-				-- Status tracking, allows us to send and close/reopen the dialog with no lost progress. In theory.
-				self.status = 1;
-				self.statusTimeout = 0; -- Setting this to > 0 will cause the status to be set to 2 when the time is exceeded.
-				self.statusTimeoutProgress = 0;
-				self.sendTo = nil;
-				self.sendDisplay = "";
-				self.sendString = nil;
-				self.sendType = nil; -- 1 = single aura, 2 = aura set.
-				-- Localization.
-				PowaAuraExportDialogTopTitle:SetText(PowaAuras.Text.ExportDialogTopTitle);
-				PowaAuraExportDialogCopyTitle:SetText(PowaAuras.Text.ExportDialogCopyTitle);
-				PowaAuraExportDialogMidTitle:SetText(PowaAuras.Text.ExportDialogMidTitle);
-				PowaAuraExportDialogSendTitle:SetText(PowaAuras.Text.ExportDialogSendTitle1);
-				PowaAuraExportDialogSendButton:SetText(PowaAuras.Text.ExportDialogSendButton1);
-				PowaAuraExportDialogCancelButton:SetText(PowaAuras.Text.ExportDialogCancelButton);
+				-- Fire init func.
+				PowaAuras:ExportDialogInit(self);
 			</OnLoad>
 			<OnShow>
 				-- Fire func.
-				PowaAuras:ExportDialogOnShow();
+				self:OnShow();
 			</OnShow>
 		</Scripts>
 	</Frame>
