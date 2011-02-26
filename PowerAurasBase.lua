@@ -789,6 +789,7 @@ PowaAuras.DebuffTypeSpellIds={
 	[605]   = PowaAuras.DebuffCatType.CC,		-- Mind Control
 	[64044] = PowaAuras.DebuffCatType.CC,		-- Psychic Horror
 	[8122]  = PowaAuras.DebuffCatType.CC,		-- Psychic Scream
+	[87204]  = PowaAuras.DebuffCatType.CC,		-- Sin and Punishment fear/horror.
 	[9484]  = PowaAuras.DebuffCatType.CC,		-- Shackle Undead (works against Death Knights using Lichborne)
 	[15487] = PowaAuras.DebuffCatType.Silence,	-- Silence
 	--[64058] = Disarm,	-- Psychic Horror (duplicate debuff names not allowed atm, need to figure out how to support this later)
