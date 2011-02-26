@@ -56,6 +56,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		Disease = "질병",
 		Curse = "저주",
 		Poison = "독",
+		-- Non standard types below here.
+		Enrage  = "Enrage",
 	},
 
 	DebuffCatType =
@@ -95,6 +97,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		[PowaAuras.BuffTypes.Slots] = "Equipment Slots",
 		[PowaAuras.BuffTypes.Items] = "Named Items",
 		[PowaAuras.BuffTypes.Tracking] = "Tracking",
+		[PowaAuras.BuffTypes.TypeBuff] = "Buff type",
 		[PowaAuras.BuffTypes.GTFO] = "GTFO Alert",
 	},
 
@@ -495,6 +498,38 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		Aggro      = {MatchReason="$1 has aggro",           NoMatchReason="$1 does not have aggro"},
 		PvP        = {MatchReason="$1 PvP flag set",        NoMatchReason="$1 PvP flag not set"},
 	},
+	
+	-- Export dialog
+	ExportDialogTopTitle      = "Export Auras",
+	ExportDialogCopyTitle     = "Press Ctrl-C to copy the below aura string.",
+	ExportDialogMidTitle      = "Send to Player",
+	ExportDialogSendTitle1    = "Enter a player name below and click 'Send'.",
+	ExportDialogSendTitle2    = "Contacting %s (%d seconds remaining)...",      -- The 1/2/3/4 suffix denotes the internal status of the frame.
+	ExportDialogSendTitle3a   = "%s is in combat and cannot accept the offer.",
+	ExportDialogSendTitle3b   = "%s is not accepting export requests.",
+	ExportDialogSendTitle3c   = "%s has not responded, they may be away or offline.",
+	ExportDialogSendTitle3d   = "%s is currently receiving another export request.",
+	ExportDialogSendTitle3e   = "%s has declined the offer.",
+	ExportDialogSendTitle4    = "Sending auras...",
+	ExportDialogSendTitle5    = "Send successful!",
+	ExportDialogSendButton1   = "Send",
+	ExportDialogSendButton2   = "Back",
+	ExportDialogCancelButton  = "Close",
+	-- Cross-client import dialog
+	PlayerImportDialogTopTitle       = "You Have Auras!",
+	PlayerImportDialogDescTitle1     = "%s would like to send you some auras.",
+	PlayerImportDialogDescTitle2     = "Receiving auras...",
+	PlayerImportDialogDescTitle3     = "The offer has expired.",
+	PlayerImportDialogDescTitle4     = "Select a page to save the auras to.",
+	PlayerImportDialogWarningTitle   = "|cFFFF0000Note: |rYou are being sent an aura set, this will overwrite any existing auras on the selected page.",
+	PlayerImportDialogDescTitle5     = "Auras saved!",
+	PlayerImportDialogDescTitle6     = "No aura slots are available.",
+	PlayerImportDialogAcceptButton1  = "Accept",
+	PlayerImportDialogAcceptButton2  = "Save",
+	PlayerImportDialogCancelButton1  = "Reject",
+
+	aideBlockIncomingAuras = "Prevent anybody sending you auras",
+	nomBlockIncomingAuras = "Block Incoming Auras",
 
 });
 
