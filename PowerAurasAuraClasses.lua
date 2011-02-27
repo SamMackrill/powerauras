@@ -915,15 +915,17 @@ function cPowaAura:CreateAuraString(keepLink)
 	local tempstr = "Version:"..PowaMisc.Version.."; ";
 	local varpref = "";
 	for k, default in pairs (self.ExportSettings) do
-		local v = self[k];
-		--- multi condition checks not supported for single export.
-		if (k == "multiids" and not keepLink) then
-			v = "";
+		if(self[k]) then
+			local v = self[k];
+			--- multi condition checks not supported for single export.
+			if (k == "multiids" and not keepLink) then
+				v = "";
+			end
+			if (k == "icon" and string.find(string.lower(v), string.lower(PowaAuras.IconSource), 1, true)==1) then
+				v = string.sub(v, string.len(PowaAuras.IconSource)+1);
+			end
+			tempstr = tempstr..PowaAuras:GetSettingForExport("", k, v, default);
 		end
-		if (k == "icon" and string.find(string.lower(v), string.lower(PowaAuras.IconSource), 1, true)==1) then
-			v = string.sub(v, string.len(PowaAuras.IconSource)+1);
-		end
-		tempstr = tempstr..PowaAuras:GetSettingForExport("", k, v, default);
 	end
 	if (self.Timer and self.Timer.enabled) then
 		tempstr = tempstr..self.Timer:CreateAuraString();
