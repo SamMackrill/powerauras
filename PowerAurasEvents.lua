@@ -657,12 +657,13 @@ end
 
 function PowaAuras:COMBAT_LOG_EVENT_UNFILTERED(...)
 	--self:ShowText("COMBAT_LOG_EVENT_UNFILTERED");
-	local timestamp,event,sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags, spellId, spellName, _, spellType = ...;
+	-- 4.1 added some unknown argument between event and sourceGUID, it seemed to evaluate to false a lot.
+	local timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags, spellId, spellName, _, spellType = ...;
 	if (not self.ModTest) then
-		--self:ShowText("CLEU: ", event, " by me=", sourceGUID==UnitGUID("player"), " on me=", destGUID==UnitGUID("player"), " ", spellName);
-		--self:ShowText("Player=", UnitGUID("player"), " sourceGUID=", sourceGUID, " destGUID=", destGUID);
-		--self:ShowText(sourceName, " ", destName);
-		--self:ShowText(sourceFlags, " ", destFlags);
+		-- self:ShowText("CLEU: ", event, " by me=", sourceGUID==UnitGUID("player"), " on me=", destGUID==UnitGUID("player"), " ", spellName);
+		-- self:ShowText("Player=", UnitGUID("player"), " sourceGUID=", sourceGUID, " destGUID=", destGUID);
+		-- self:ShowText(sourceName, " ", destName);
+		-- self:ShowText(sourceFlags, " ", destFlags);
 		
 		--if bit.band(destFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) > 0 then
 		--	self:ShowText("Dest: a player")
@@ -679,11 +680,11 @@ function PowaAuras:COMBAT_LOG_EVENT_UNFILTERED(...)
 				self.CastOnMe[sourceName] = {SpellName=spellName, SpellId=spellId, SourceGUID=sourceGUID, Hostile=bit.band(sourceFlags, COMBATLOG_OBJECT_REACTION_HOSTILE)};
 				self.DoCheck.Spells = true; --- scan party/raid targets for casting
 				self.DoCheck.CheckIt = true;
-				--if self.CastOnMe[sourceName].Hostile > 0 then
-				--	self:ShowText(self.Colors.Red, spellName, " cast on me by ", sourceName);
-				--else
-				--	self:ShowText(self.Colors.Green, spellName, " cast on me by ", sourceName);
-				--end
+				-- if self.CastOnMe[sourceName].Hostile > 0 then
+					-- self:ShowText(self.Colors.Red, spellName, " cast on me by ", sourceName);
+				-- else
+					-- self:ShowText(self.Colors.Green, spellName, " cast on me by ", sourceName);
+				-- end
 			end
 			if (event == "ENVIRONMENTAL_DAMAGE") then
 				--self:ShowText("ENVIRONMENTAL_DAMAGE type=", spellId, " size=", spellName);					
@@ -702,6 +703,16 @@ function PowaAuras:COMBAT_LOG_EVENT_UNFILTERED(...)
 				end
 				self.DoCheck.Aoe = true;
 				self.DoCheck.CheckIt = true;
+			end
+		elseif (sourceGUID==UnitGUID("player") and tonumber(destGUID, 10) == 0 and spellName and PowaAuras.StringStarts(event,"SPELL_") and sourceName) then
+			-- Can be used for procs like Lava Surge! which applies to the player but is never cast on the player according to the args.
+			self.CastByMe[sourceName] = {SpellName=spellName, SpellId=spellId, SourceGUID=sourceGUID, Hostile=bit.band(sourceFlags, COMBATLOG_OBJECT_REACTION_HOSTILE)};
+			self.DoCheck.Spells = true; --- scan party/raid targets for casting
+			self.DoCheck.CheckIt = true;
+			if self.CastByMe[sourceName].Hostile > 0 then
+				self:ShowText(self.Colors.Red, spellName, " cast by me.");
+			else
+				self:ShowText(self.Colors.Green, spellName, " cast by me.");
 			end
 		end
 	end

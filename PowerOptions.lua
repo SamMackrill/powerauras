@@ -1427,6 +1427,14 @@ function PowaAuras:SetOptionText(aura)
 		PowaExtraButton:SetChecked(false);
 		self:HideCheckBox("PowaExtraButton");
 	end
+	if (aura.OptionText.extra2Text) then
+		self:ShowCheckBox("PowaExtra2Button");
+		PowaExtra2ButtonText:SetText(aura.OptionText.extra2Text);
+		PowaExtra2Button.tooltipText = aura.OptionText.extra2Tooltip; 
+	else
+		PowaExtra2Button:SetChecked(false);
+		self:HideCheckBox("PowaExtra2Button");
+	end
 	if (aura.OptionText.targetFriendText) then
 		self:EnableCheckBox("PowaTargetFriendButton");
 		PowaTargetFriendButtonText:SetText(aura.OptionText.targetFriendText);

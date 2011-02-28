@@ -1703,7 +1703,31 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
 						getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.Ternary[self.Parameter]);
 					</OnShow>
                 </Scripts>
-			  </CheckButton>	
+			  </CheckButton>
+
+			  <CheckButton name="PowaExtra2Button" inherits="PowaCheckTemplate">
+                <Size>
+                  <AbsDimension x="25"
+                                y="25" />
+                </Size>
+                <Anchors>
+                  <Anchor point="TOPLEFT"
+                          relativeTo="PowaIsAliveButton"
+                          relativePoint="TOPRIGHT">
+                    <Offset>
+                      <AbsDimension x="70"
+                                    y="0" />
+                    </Offset>
+                  </Anchor>
+                </Anchors>
+                <Scripts>
+					<OnLoad>
+						self.tooltipText = PowaAuras.Text.aideExtra2; 
+						getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomExtra2); 
+					</OnLoad>
+					<OnClick>PowaAuras:SettingChecked(self, "Extra2");</OnClick>
+                </Scripts>
+			  </CheckButton>
 
 			  <CheckButton name="PowaIsInPartyButton" inherits="PowaTernarySelectorTemplate">
                 <Anchors>

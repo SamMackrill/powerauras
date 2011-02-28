@@ -117,6 +117,7 @@ cPowaAura.ExportSettings = {
 	ignoremaj = true,
 	exact = false,
 	Extra = false,
+	Extra2 = false,
 	
 	InvertAuraBelow = 0,
 
@@ -2812,6 +2813,7 @@ cPowaSpellAlert.OptionText={buffNameTooltip=PowaAuras.Text.aideSpells,
                             typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.SpellAlert], 
 					        mineText=PowaAuras.Text.nomCanInterrupt, mineTooltip=PowaAuras.Text.aideCanInterrupt,
 					        extraText=PowaAuras.Text.nomOnMe, extraTooltip=PowaAuras.Text.aideOnMe,
+					        extra2Text=PowaAuras.Text.nomMine, extra2Tooltip=PowaAuras.Text.aideMine,
 							targetFriendText=PowaAuras.Text.nomCheckFriend, targetFriendTooltip=PowaAuras.Text.aideTargetFriend,
 							};
 cPowaSpellAlert.CheckBoxes={
@@ -2981,8 +2983,8 @@ function cPowaSpellAlert:CheckIfShouldShow(giveReason)
 		return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonAnimationDuration, casterName, info.SpellName);
 	end
 	
-	if (self.Extra) then
-		for casterName,info in pairs(PowaAuras.CastOnMe) do
+	if (self.Extra or self.Extra2) then
+		for casterName,info in pairs((self.Extra and PowaAuras.CastOnMe or self.Extra2 and PowaAuras.CastByMe)) do
 			if (self.Debug) then
 				PowaAuras:DisplayText(casterName, " casting ", info.SpellName, " hostile=",info.Hostile);
 			end
@@ -3007,6 +3009,7 @@ function cPowaSpellAlert:CheckIfShouldShow(giveReason)
 		--if (not giveReason) then return false; end
 		--return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonNotCastingOnMe);
 	end
+	
 	return self:CheckAllUnits(giveReason);
 end
 

@@ -173,6 +173,7 @@ PowaAuras = {
 	
 	ExtraUnitEvent = {};
 	CastOnMe = {};
+	CastByMe = {}; -- Used by CLEU for proc testing.
 	
 	DoCheck =
 	{
