@@ -249,7 +249,7 @@ function PowaAuras:AddMoveRandomLocation(animationGroup, xrangel, xrangeu, xoffs
 	trans.useTrigger = useTrigger;
 	trans:SetOrder(order);
 	trans:SetDuration(duration);
-	trans:SetMaxFramerate(fps);
+	-- -- trans:SetMaxFramerate(fps);
 	trans:SetScript("OnPlay",
 	function(self)
 		if (not self.useTrigger or self:GetParent().Trigger) then
@@ -264,7 +264,7 @@ function PowaAuras:AddAlphaOnTrigger(animationGroup, alphaTo, duration, fps, ord
 	local alpha = animationGroup:CreateAnimation("Alpha");
 	alpha:SetOrder(order);
 	alpha:SetDuration(duration);
-	alpha:SetMaxFramerate(fps);
+	-- -- alpha:SetMaxFramerate(fps);
 	alpha.alphaTo = alphaTo;
 	alpha:SetScript("OnPlay",
 	function(self)
@@ -281,7 +281,7 @@ function PowaAuras:AddTranslation(animationGroup, dx, dy, duration, fps, order)
 	trans:SetOrder(order);
 	trans:SetDuration(duration);
 	--trans:SetEndDelay(1);
-	trans:SetMaxFramerate(fps);
+	-- -- trans:SetMaxFramerate(fps);
 	trans:SetOffset(dx, dy);
 	--trans:SetScript("OnPlay",
 	--function(self)
@@ -294,7 +294,7 @@ function PowaAuras:AddScale(animationGroup, xscaleTo, yscaleTo, duration, fps, o
 	scale:SetOrder(order);
 	scale:SetDuration(duration);
 	--scale:SetEndDelay(5);
-	scale:SetMaxFramerate(fps);
+	-- -- scale:SetMaxFramerate(fps);
 	scale:SetScale(xscaleTo, yscaleTo);
 	--scale:SetScript("OnPlay",
 	--function(self)
@@ -310,7 +310,7 @@ function PowaAuras:AddAlpha(animationGroup, alphaTo, duration, fps, order)
 	local alpha = animationGroup:CreateAnimation("Alpha");
 	alpha:SetOrder(order);
 	alpha:SetDuration(duration);
-	alpha:SetMaxFramerate(fps);
+	-- -- alpha:SetMaxFramerate(fps);
 	alpha:SetChange(alphaTo);
 	--alpha:SetScript("OnPlay",
 	--function(self)
@@ -326,7 +326,7 @@ function PowaAuras:AddFade(animationGroup, duration, fps, order)
 	local alpha = animationGroup:CreateAnimation("Alpha");
 	alpha:SetOrder(order);
 	alpha:SetDuration(duration);
-	alpha:SetMaxFramerate(fps);
+	-- -- alpha:SetMaxFramerate(fps);
 	alpha:SetScript("OnPlay",
 	function(self)
 		self:SetChange(-self:GetRegionParent():GetAlpha());
@@ -337,7 +337,7 @@ function PowaAuras:AddRelativeAlpha(animationGroup, change, duration, fps, order
 	local alpha = animationGroup:CreateAnimation("Alpha");
 	alpha:SetOrder(order);
 	alpha:SetDuration(duration);
-	alpha:SetMaxFramerate(fps);
+	-- -- alpha:SetMaxFramerate(fps);
 	alpha:SetScript("OnPlay",
 	function(self)
 		local alpha = self:GetRegionParent():GetAlpha();
@@ -348,7 +348,7 @@ end
 function PowaAuras:AddAbsoluteAlpha(animationGroup, targetAlpha, duration, fps, order)
 	local alpha = animationGroup:CreateAnimation("Alpha");
 	alpha:SetOrder(order);
-	alpha:SetDuration(duration);
+	-- -- alpha:SetDuration(duration);
 	alpha:SetMaxFramerate(fps);
 	alpha:SetScript("OnPlay",
 	function(self)
@@ -365,7 +365,7 @@ function PowaAuras:AddRotation(animationGroup, angle, duration, fps, order)
 	local rotation = animationGroup:CreateAnimation("Rotation");
 	rotation:SetOrder(order);
 	rotation:SetDuration(duration);
-	rotation:SetMaxFramerate(fps);
+	-- -- rotation:SetMaxFramerate(fps);
 	rotation:SetDegrees(angle);
 end
 
