@@ -117,7 +117,6 @@ cPowaAura.ExportSettings = {
 	ignoremaj = true,
 	exact = false,
 	Extra = false,
-	Extra2 = false,
 	
 	InvertAuraBelow = 0,
 
@@ -474,7 +473,7 @@ function cPowaAura:CheckState(giveReason)
 	end		
 	
 	--- target checks
-	if (not self.raid and not self.party and not self.groupOrSelf and not (self.bufftype==PowaAuras.BuffTypes.SpellAlert and self.Extra) and not (self.bufftype==PowaAuras.BuffTypes.SpellCooldown)) then
+	if (not self.raid and not self.party and not self.groupOrSelf and not (self.bufftype==PowaAuras.BuffTypes.SpellAlert and self.Extra) and not (self.bufftype==PowaAuras.BuffTypes.SpellCooldown) and not (self.bufftype==PowaAuras.BuffTypes.SpellCastByMe)) then
 		--- Check if target exists and is alive
 		if (self.target or self.targetfriend) then
 			if (UnitName("target") == nil) then
@@ -1190,6 +1189,43 @@ function cPowaAura:ShouldShowForRole(role, flag, giveReason)
 	return true, PowaAuras.Text.nomReasonNotRole[flag];
 end
 
+
+function cPowaAura:CheckSpellName(unit, spellname, spellicon, endtime, spellId)	
+	
+	if self:MatchSpell(spellname, spellicon, spellId, self.buffname, true) then
+		if (self.Timer and endtime~=nil) then
+			self.Timer:SetDurationInfo(GetTime() + endtime/1000);
+			self:CheckTimerInvert();
+			if (self.ForceTimeInvert) then
+				return false;
+			end
+		end
+		if (self.Debug) then
+			PowaAuras:DisplayText(unit, " is casting ", spellname, " ", spellicon);
+		end
+		if (spellicon==nil) then
+			if (spellId~=nil) then
+				_, _, spellicon = GetSpellInfo(spellId);				
+			else
+				_, _, spellicon = GetSpellInfo(spellname);
+			end
+		end
+		self:SetIcon(spellicon);
+		self.DisplayValue = spellname;
+		self.DisplayUnit = unit;
+		self:UpdateText();
+		if (PowaAuras.ExtraUnitEvent[unit]) then
+			if (self.Debug) then
+				PowaAuras:DisplayText("Set to Hide in=", self.duration or 1, "s");
+			end
+			PowaAuras.Pending[self.id] =  GetTime() + (self.duration or 1); -- Instant spells may have no complete event
+		end
+		return true;
+	end
+	
+	--PowaAuras:UnitTestDebug(unit, " is casting ", spellname, " no match");
+	return false;
+end	
 	
 cPowaBuffBase = PowaClass(cPowaAura, {CanHaveTimer=true, CanHaveStacks=true, CanHaveInvertTime=true, InvertTimeHides=true});
 
@@ -2813,7 +2849,6 @@ cPowaSpellAlert.OptionText={buffNameTooltip=PowaAuras.Text.aideSpells,
                             typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.SpellAlert], 
 					        mineText=PowaAuras.Text.nomCanInterrupt, mineTooltip=PowaAuras.Text.aideCanInterrupt,
 					        extraText=PowaAuras.Text.nomOnMe, extraTooltip=PowaAuras.Text.aideOnMe,
-					        extra2Text=PowaAuras.Text.nomMine, extra2Tooltip=PowaAuras.Text.aideMine,
 							targetFriendText=PowaAuras.Text.nomCheckFriend, targetFriendTooltip=PowaAuras.Text.aideTargetFriend,
 							};
 cPowaSpellAlert.CheckBoxes={
@@ -2935,43 +2970,6 @@ function cPowaSpellAlert:CheckUnit(unit)
 	return self:CheckSpellName(unit, spellname, spellicon, endtime);
 end
 
-function cPowaSpellAlert:CheckSpellName(unit, spellname, spellicon, endtime, spellId)	
-	
-	if self:MatchSpell(spellname, spellicon, spellId, self.buffname, true) then
-		if (self.Timer and endtime~=nil) then
-			self.Timer:SetDurationInfo(GetTime() + endtime/1000);
-			self:CheckTimerInvert();
-			if (self.ForceTimeInvert) then
-				return false;
-			end
-		end
-		if (self.Debug) then
-			PowaAuras:DisplayText(unit, " is casting ", spellname, " ", spellicon);
-		end
-		if (spellicon==nil) then
-			if (spellId~=nil) then
-				_, _, spellicon = GetSpellInfo(spellId);				
-			else
-				_, _, spellicon = GetSpellInfo(spellname);
-			end
-		end
-		self:SetIcon(spellicon);
-		self.DisplayValue = spellname;
-		self.DisplayUnit = unit;
-		self:UpdateText();
-		if (PowaAuras.ExtraUnitEvent[unit]) then
-			if (self.Debug) then
-				PowaAuras:DisplayText("Set to Hide in=", self.duration or 1, "s");
-			end
-			PowaAuras.Pending[self.id] =  GetTime() + (self.duration or 1); -- Instant spells may have no complete event
-		end
-		return true;
-	end
-	
-	--PowaAuras:UnitTestDebug(unit, " is casting ", spellname, " no match");
-	return false;
-end	
-
 function cPowaSpellAlert:CheckIfShouldShow(giveReason)
 	--PowaAuras:UnitTestDebug("Check for spell being cast ", self.buffname, self.target, self.focus, self.targetfriend, self.Extra);
 	if (self.Debug) then
@@ -2983,8 +2981,8 @@ function cPowaSpellAlert:CheckIfShouldShow(giveReason)
 		return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonAnimationDuration, casterName, info.SpellName);
 	end
 	
-	if (self.Extra or self.Extra2) then
-		for casterName,info in pairs((self.Extra and PowaAuras.CastOnMe or self.Extra2 and PowaAuras.CastByMe)) do
+	if (self.Extra) then
+		for casterName,info in pairs(PowaAuras.CastOnMe) do
 			if (self.Debug) then
 				PowaAuras:DisplayText(casterName, " casting ", info.SpellName, " hostile=",info.Hostile);
 			end
@@ -3002,18 +3000,69 @@ function cPowaSpellAlert:CheckIfShouldShow(giveReason)
 						PowaAuras.Pending[self.id] = GetTime() + self.duration;
 					end				
 					if (not giveReason) then return true; end
-					return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonCastingOnMe, casterName, info.SpellName);
+					return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonCastingOnMe, info.SpellName, info.DestName);
 				end
 			end
 		end
 		--if (not giveReason) then return false; end
 		--return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonNotCastingOnMe);
 	end
-	
 	return self:CheckAllUnits(giveReason);
 end
 
 function cPowaSpellAlert:ShowTimerDurationSlider()
+	return true;
+end
+
+
+cPowaSpellCastByMe = PowaClass(cPowaAura, {AuraType = "SpellCastByMe", CanHaveInvertTime=true, ValueName = "SpellCastByMe", ForceIconCheck=true});
+cPowaSpellCastByMe.OptionText={buffNameTooltip=PowaAuras.Text.aideSpellCastByMe, 
+                            exactTooltip=PowaAuras.Text.aideExact, 
+                            typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.SpellCastByMe], 
+							};
+cPowaSpellCastByMe.CheckBoxes={
+	["PowaInverseButton"]=1,
+	["PowaIngoreCaseButton"]=1,
+	["PowaOwntexButton"]=1,
+ 	};					
+							  
+cPowaSpellCastByMe.TooltipOptions = {r=0.4, g=0.8, b=0.8, showBuffName=true};
+
+function cPowaSpellCastByMe:AddEffectAndEvents()
+	PowaAuras.Events.COMBAT_LOG_EVENT_UNFILTERED = true;
+	
+	table.insert(PowaAuras.AurasByType.SpellCastByMe, self.id);
+end
+
+function cPowaSpellCastByMe:CheckIfShouldShow(giveReason)
+	if (self.Debug) then
+		PowaAuras:DisplayText("Check for spell being cast by me: ", self.buffname);
+		PowaAuras:DisplayText("Active=", self.Active, " Pending=", PowaAuras.Pending[self.id]);
+	end
+	if (self.Active and PowaAuras.Pending[self.id] and PowaAuras.Pending[self.id] > GetTime()) then
+		if (not giveReason) then return true; end
+		return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonAnimationDuration, casterName, info.SpellName);
+	end
+	
+	for spellName,info in pairs(PowaAuras.CastByMe) do
+		if (self.Debug) then
+			PowaAuras:DisplayText("I am casting ", spellName, " on=",info.DestName);
+		end
+		if self:CheckSpellName("Player", info.SpellName, nil, nil, info.SpellId) then
+			if (self.duration==0) then
+				PowaAuras.Pending[self.id] = GetTime() + 1;
+			else
+				PowaAuras.Pending[self.id] = GetTime() + self.duration;
+			end				
+			if (not giveReason) then return true; end
+			return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonCastingByMe, info.SpellName);
+		end
+	end
+	return false, nomReasonNotCastingByMe;
+
+end
+
+function cPowaSpellCastByMe:ShowTimerDurationSlider()
 	return true;
 end
 
@@ -3850,6 +3899,7 @@ PowaAuras.AuraClasses = {
 	[PowaAuras.BuffTypes.Aggro]=cPowaAggro,
 	[PowaAuras.BuffTypes.PvP]=cPowaPvP,
 	[PowaAuras.BuffTypes.SpellAlert]=cPowaSpellAlert,
+	[PowaAuras.BuffTypes.SpellCastByMe]=cPowaSpellCastByMe,
 	[PowaAuras.BuffTypes.Stance]=cPowaStance,
 	[PowaAuras.BuffTypes.SpellCooldown]=cPowaSpellCooldown,
 	[PowaAuras.BuffTypes.StealableSpell]=cPowaStealableSpell,
