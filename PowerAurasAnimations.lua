@@ -281,7 +281,7 @@ function PowaAuras:AddTranslation(animationGroup, dx, dy, duration, fps, order)
 	trans:SetOrder(order);
 	trans:SetDuration(duration);
 	--trans:SetEndDelay(1);
-	if(self.WoWBuild < 13682) then alpha:SetMaxFramerate(fps); end
+	if(self.WoWBuild < 13682) then trans:SetMaxFramerate(fps); end
 	trans:SetOffset(dx, dy);
 	--trans:SetScript("OnPlay",
 	--function(self)
@@ -294,7 +294,7 @@ function PowaAuras:AddScale(animationGroup, xscaleTo, yscaleTo, duration, fps, o
 	scale:SetOrder(order);
 	scale:SetDuration(duration);
 	--scale:SetEndDelay(5);
-	if(self.WoWBuild < 13682) then alpha:SetMaxFramerate(fps); end
+	if(self.WoWBuild < 13682) then scale:SetMaxFramerate(fps); end
 	scale:SetScale(xscaleTo, yscaleTo);
 	--scale:SetScript("OnPlay",
 	--function(self)
@@ -365,7 +365,7 @@ function PowaAuras:AddRotation(animationGroup, angle, duration, fps, order)
 	local rotation = animationGroup:CreateAnimation("Rotation");
 	rotation:SetOrder(order);
 	rotation:SetDuration(duration);
-	if(self.WoWBuild < 13682) then alpha:SetMaxFramerate(fps); end
+	if(self.WoWBuild < 13682) then rotation:SetMaxFramerate(fps); end
 	rotation:SetDegrees(angle);
 end
 
