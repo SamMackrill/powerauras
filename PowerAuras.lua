@@ -783,6 +783,7 @@ function PowaAuras:NewCheckBuffs()
 	wipe(self.ChangedUnits.Targets);
 	wipe(self.ExtraUnitEvent);
 	wipe(self.CastOnMe);
+	wipe(self.CastByMe);
 
 end
 

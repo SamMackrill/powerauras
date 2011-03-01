@@ -113,6 +113,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		[PowaAuras.BuffTypes.PvP] = "PvP",
 		[PowaAuras.BuffTypes.Stance] = "Stance",
 		[PowaAuras.BuffTypes.SpellAlert] = "Spell Alert", 
+		[PowaAuras.BuffTypes.SpellCastByMe] = "Spell Cast by Me",
 		[PowaAuras.BuffTypes.SpellCooldown] = "Spell Cooldown", 
 		[PowaAuras.BuffTypes.StealableSpell] = "Stealable Spell",
 		[PowaAuras.BuffTypes.PurgeableSpell] = "Purgeable Spell",
@@ -281,6 +282,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideBuff8 = "Enter here the name, or a part of the name, of a spell from your spellbook. You can enter a spell id [12345].",
 	
 	aideSpells = "Enter here the Spell Name that will trigger a spell alert Aura.",
+	aideSpellCastByMe = "Enter here the Spell Name that will trigger a spell cast by me Aura.",
 	aideStacks = "Enter here the operator and the amount of stacks, required activate/deactivate the effect. Operator is required ex: '<5' '>3' '=11' '!5' '>=0' '<=6' '2-8'",
 
 	aideStealableSpells = "Enter here the Stealable Spell Name that will trigger the Aura (use * for any stealable spell).", 
@@ -633,6 +635,9 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	
 	nomReasonCastingOnMe	 = "$1 is casting $2 on me", --$1=CasterName $2=SpellName (e.g. "Rotface is casting Slime Spray on me")
 	nomReasonNotCastingOnMe	 = "No matching spell being cast on me",
+	
+	nomReasonCastingByMe	 = "I am casting $1 on $2", --$1=SpellName $2=TargetName (e.g. "I am casting Holy Light on Fred")
+	nomReasonNotCastingByMe	 = "No matching spell being cast by me",
 	
 	nomReasonAnimationDuration  = "Still within custom duration",
 	

@@ -173,7 +173,7 @@ PowaAuras = {
 	
 	ExtraUnitEvent = {};
 	CastOnMe = {};
-	CastByMe = {}; -- Used by CLEU for proc testing.
+	CastByMe = {};
 	
 	DoCheck =
 	{
@@ -274,6 +274,7 @@ PowaAuras = {
 		Slots=23,
 		Tracking=24,
 		TypeBuff=25,
+		SpellCastByMe=26,
 		GTFO=50,
 	};
 
@@ -612,6 +613,8 @@ PowaAuras:RegisterAuraType('PlayerSpells');
 PowaAuras:RegisterAuraType('PartySpells');
 PowaAuras:RegisterAuraType('RaidSpells');
 PowaAuras:RegisterAuraType('GroupOrSelfSpells');
+
+PowaAuras:RegisterAuraType('SpellCastByMe');
 		
 PowaAuras:RegisterAuraType('StealableSpells');
 PowaAuras:RegisterAuraType('StealableTargetSpells');
