@@ -548,6 +548,21 @@ PowaAuras = {
 		"PowaDropDownGTFO",
 		"PowaDropDownPowerType",
 	};
+	
+	TriggerTypes = {
+		Timer        = 1,
+		Stacks       = 2,
+		AuraStart    = 3,
+		AuraEnd      = 4,
+		TriggerStart = 5,
+		TriggerEnd   = 6,
+	};
+	
+	TriggerDecorators = {
+		Opacity  = 1,
+		Color    = 2,
+		Scale    = 3,
+	};
 
 	Backdrop = {
 		bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
@@ -555,6 +570,18 @@ PowaAuras = {
 		tile = true
 	};
 };
+
+-- Check for LibStub and LibSharedMedia for fonts.
+if(LibStub) then
+	-- Try LSM (pass true to prevent errors0
+	local LSM = LibStub("LibSharedMedia-3.0", true);
+	if(LSM) then
+		-- Get all fonts.
+		for _, font in pairs(LSM:HashTable(LSM.MediaType.FONT)) do
+			tinsert(PowaAuras.Fonts, font);
+		end
+	end
+end
 
 function PowaAuras:RegisterAuraType(auraType)
 	self.AurasByType[auraType] = {};
@@ -637,8 +664,6 @@ PowaAuras:RegisterAuraType('GTFOHigh');
 PowaAuras:RegisterAuraType('GTFOLow');
 PowaAuras:RegisterAuraType('GTFOFail');
 PowaAuras:RegisterAuraType('GTFOFriendlyFire');
-
-
 
 -- Use these spells to detect GCD, ideally these should be spells classes have from the beginning
 PowaAuras.GCDSpells = {
