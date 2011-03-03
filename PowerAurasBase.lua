@@ -562,7 +562,7 @@ PowaAuras = {
 		Opacity  = 1,
 		Color    = 2,
 		Scale    = 3,
-	}
+	};
 
 	Backdrop = {
 		bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
