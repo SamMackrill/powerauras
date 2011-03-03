@@ -519,7 +519,7 @@ function cPowaAura:CheckState(giveReason)
 	end
         
     --- focus
-	if (self.focus and (UnitName("focus") == nil or UnitName("focus") == UnitName("player"))) then --- focuscheck
+	if (self.focus and (UnitName("focus") == nil)) then --- focuscheck
 		if (not giveReason) then return false; end
 		return false, PowaAuras.Text.nomReasonNoFocus;
 	end
@@ -2266,29 +2266,57 @@ end
 function cPowaActionReady:CheckIfShouldShow(giveReason)
 	PowaAuras:Debug("Check Action / Button:", self.slot);
 	--PowaAuras:ShowText("====ACTION READY====");
-	--PowaAuras:ShowText("Slot=", self.slot);
+	-- PowaAuras:ShowText("Slot=", self.slot);
 	if (not self.slot or self.slot == 0) then 
 		if (not giveReason) then return false; end
 		return false, PowaAuras.Text.nomReasonActionNotFound; 
-	end 
-
-	local cdstart, cdduration, enabled = GetActionCooldown(self.slot);
-	--PowaAuras:ShowText("cdstart= ",cdstart," duration= ",cdduration," enabled= ",enabled);
-	if (not enabled) then
-		if (self.Timer) then
-			self.Timer:SetDurationInfo(0);
-		end
-		if (not giveReason) then return false; end
-		return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonActionlNotEnabled, spellName);
 	end
-
-	--PowaAuras:ShowText("self.mine= ",self.mine," usable= ",IsUsableAction(self.slot));
-	if (not self.mine) then
-		local usable, noMana = IsUsableAction(self.slot);
-		if (not usable) then
-			--PowaAuras:ShowText("HIDE!!");
+	
+	-- What's on this button, a spell/item or macro?
+	local actionType, actionId = GetActionInfo(self.slot);
+	local cdstart, cdduration, enabled = 0, 0, 1;
+	if(actionType == "macro"
+	and ((GetMacroSpell(actionId) and GetMacroSpell(actionId) ~= GetSpellInfo(self.buffname))
+	or  (GetMacroItem(actionId) and GetMacroItem(actionId) ~= GetItemInfo(self.buffname)))) then
+		-- It's a macro, and the spell on the macro isn't the one we're trying to track, use SpellCooldown/IsUsableSpell on self.buffname.
+		cdstart, cdduration, enabled = GetSpellCooldown(self.buffname);
+		-- PowaAuras:ShowText("cdstart= ",cdstart," duration= ",cdduration," enabled= ",enabled);
+		if (not enabled) then
+			if (self.Timer) then
+				self.Timer:SetDurationInfo(0);
+			end
 			if (not giveReason) then return false; end
-			return false, PowaAuras.Text.nomReasonActionNotUsable;
+			return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonActionlNotEnabled, spellName);
+		end
+
+		-- PowaAuras:ShowText("self.mine= ",self.mine," usable= ",IsUsableSpell(self.buffname));
+		if (not self.mine) then
+			local usable, noMana = IsUsableSpell(self.buffname);
+			if (not usable) then
+				--PowaAuras:ShowText("HIDE!!");
+				if (not giveReason) then return false; end
+				return false, PowaAuras.Text.nomReasonActionNotUsable;
+			end
+		end
+	else
+		cdstart, cdduration, enabled = GetActionCooldown(self.slot);
+		-- PowaAuras:ShowText("cdstart= ",cdstart," duration= ",cdduration," enabled= ",enabled);
+		if (not enabled) then
+			if (self.Timer) then
+				self.Timer:SetDurationInfo(0);
+			end
+			if (not giveReason) then return false; end
+			return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonActionlNotEnabled, spellName);
+		end
+
+		-- PowaAuras:ShowText("self.mine= ",self.mine," usable= ",IsUsableSpell(self.buffname));
+		if (not self.mine) then
+			local usable, noMana = IsUsableAction(self.slot);
+			if (not usable) then
+				--PowaAuras:ShowText("HIDE!!");
+				if (not giveReason) then return false; end
+				return false, PowaAuras.Text.nomReasonActionNotUsable;
+			end
 		end
 	end
 	
@@ -2311,8 +2339,9 @@ function cPowaActionReady:CheckIfShouldShow(giveReason)
 	end
 	
 	if (cdstart == 0 or self.CooldownOver) then
+		-- Aight, good to go.
 		if (self.Debug) then
-			PowaAuras:Message("SHOW!!"); --OK
+			-- PowaAuras:Message("SHOW!!"); --OK
 		end
 		if (not giveReason) then return true; end
 		return true, PowaAuras.Text.nomReasonActionReady;
