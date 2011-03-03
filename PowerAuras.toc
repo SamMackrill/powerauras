@@ -25,6 +25,7 @@ PowerAurasRole.lua
 PowerAurasDump.lua
 PowerAurasDecoratorClasses.lua
 PowerAurasAuraClasses.lua
+PowerTriggers.lua
 PowerAurasAnimations.lua
 PowerAurasAnimationsOld.lua
 PowerAuras.lua
