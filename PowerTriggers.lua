@@ -20,14 +20,14 @@ PowaTriggers = {
 	Triggers = {},
 }
 
--- Populate the other two tables.
+-- Populate the other table.
 for _, index in pairs(PowaTriggers.Conditions) do
 	tinsert(PowaTriggers.Triggers, index, {[0] = 0}); -- Index 0 stores a count, faster than using # a lot.
 end
 
 -- Checks for the existance of any triggers belonging to the specified condition.
 function PowaTriggers:HasTriggers(condition)
-	if(not self.Triggers[condition] or self.TriggerCount[condition] == 0) then return false; else return true; end	
+	if(not self.Triggers[condition] or self.Triggers[condition][0] == 0) then return false; else return true; end	
 end
 
 -- Checks for the existance of a specific trigger belonging to a specified condition.
@@ -37,14 +37,26 @@ function PowaTriggers:HasTrigger(condition, triggerId)
 end
 
 -- Attempts to fire any registered triggers for the given condition.
-function PowaTriggers:FireTrigger(condition, value)
+function PowaTriggers:FireTriggers(condition, value)
 	-- Check trigger existance.
-	if(self:HasTrigger(condition) == false) then return false; end
+	if(self:HasTriggers(condition) == false) then return false; end
 	-- Go over triggers.
 	for triggerId, auraId in pairs(self.Triggers[condition]) do
-		-- Fire it.
-		if(PowaAuras.Auras[auraId]) then PowaAuras.Auras[auraId]:FireTrigger(triggerId, value); end
+		if(triggerId ~= 0) then
+			-- Fire it.
+			self:FireTrigger(condition, triggerId, value);
+		end
 	end
+	return true;
+end
+
+-- Attempts to fire a specific trigger for the given condition.
+function PowaTriggers:FireTrigger(condition, triggerId, value)
+	-- Check trigger existance.
+	if(self:HasTrigger(condition, triggerId) == false) then return false; end
+	-- Fire it.
+	local auraId = self.Triggers[condition][triggerId];
+	if(PowaAuras.Auras[auraId]) then PowaAuras.Auras[auraId]:OnTrigger(triggerId, value); end
 	return true;
 end
 
