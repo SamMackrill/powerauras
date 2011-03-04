@@ -23,6 +23,7 @@ localisation_esES.lua
 localisation_esMX.lua
 PowerAurasRole.lua
 PowerAurasDump.lua
+PowerAurasTriggerClasses.lua
 PowerAurasDecoratorClasses.lua
 PowerAurasAuraClasses.lua
 PowerAurasAnimations.lua
