@@ -645,7 +645,7 @@ function PowaAuras:OnUpdate(elapsed)
 		--self:UnitTestInfo("ChecksTimer", self.ChecksTimer, self.NextCheck);
 		if ((self.ChecksTimer > (self.NextCheck + PowaMisc.OnUpdateLimit))) then
 			self.ChecksTimer = 0;
-			local isMountedNow = (IsMounted()~=nil or self:IsDruidTravelForm());
+			local isMountedNow = (IsMounted() == 1 and true or self:IsDruidTravelForm());
 			if (isMountedNow ~= self.WeAreMounted) then
 				self.DoCheck.All = true;
 				self.WeAreMounted = isMountedNow;
@@ -745,8 +745,13 @@ end
 
 function PowaAuras:IsDruidTravelForm()
 	if (self.playerclass~="DRUID") then return false; end
-	--local nStance = GetShapeshiftForm();
-	return false; -- TODO
+	local nStance = GetShapeshiftForm();
+	-- If stance 4 or 6, we're in travel/flight form.
+	if(nStance == 4 or nStance == 6) then return true; end
+	-- If in stance 5, it's complicated. Moonkin/Tree form take index 5 if learned, but if not learned then flight form is here.
+	if(nStance == 5 and select(5, GetTalentInfo(3,21)) == 0 and select(5, GetTalentInfo(1,8)) == 0) then return true; end
+	-- Otherwise we're not in it.
+	return false;
 end
 
 function PowaAuras:NewCheckBuffs()

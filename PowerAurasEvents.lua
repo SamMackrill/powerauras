@@ -93,7 +93,7 @@ function PowaAuras:Setup()
 	self.WeAreInRaid = (GetNumRaidMembers() > 0);
 	self.WeAreInParty = (GetNumPartyMembers() > 0);
 
-	self.WeAreMounted = (IsMounted()~=nil);
+	self.WeAreMounted = (IsMounted() == 1 and true or self:IsDruidTravelForm());
 	self.WeAreInVehicle = (UnitInVehicle("player")~=nil);
 
 	self.ActiveTalentGroup = GetActiveTalentGroup();
