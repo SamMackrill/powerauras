@@ -1512,6 +1512,9 @@ function PowaAuras:UpdateAura(aura, elapsed)
 		end
 
 	end
+	
+	-- Check triggers.
+	aura:CheckTriggers();
 
 	aura.HideRequest = false;
 	return true;

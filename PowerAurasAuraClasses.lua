@@ -36,6 +36,19 @@ cPowaAura = PowaClass(function(aura, id, base)
 	aura.Debug = nil;
 	aura.CurrentText = nil;
 	
+	aura.Triggers = {};
+	aura.TriggerDecorators = {};
+	aura.TriggerChecks = {};
+	aura.TriggerDoCheck = false;
+	
+	for decorator, _ in pairs(PowaAuras.TriggerDecorators) do
+		aura.TriggerDecorators[decorator] = nil;
+	end
+	
+	for ttype, _ in pairs(PowaAuras.TriggerTypes) do
+		aura.TriggerChecks[ttype] = nil;
+	end
+	
 	if (aura.minDuration) then
 		aura.duration = math.max(aura.duration, aura.minDuration);
 		--PowaAuras:ShowText("duration ", aura.duration, " minDuration ", aura.minDuration);
@@ -197,6 +210,45 @@ end
 
 function cPowaAura:StacksAllowed()
 	return (self.CanHaveStacks and not self.inverse);
+end
+
+function cPowaAura:SetTriggerCheck(trigger, value)
+	-- Set the value.
+	self.TriggerChecks[trigger] = value;
+	self.TriggerDoCheck = true;
+end
+
+function cPowaAura:CheckTriggers()
+	if(self.TriggerDoCheck == false) then return; end
+	-- Determine the triggers which currently own active decorator classes. We do these first so they can deactivate properly if needed.
+	for _, triggerId in pairs(self.TriggerDecorators) do
+		-- Check these first.
+		if(self.TriggerChecks[self.Triggers[triggerId].Type] ~= nil) then
+			self.Triggers[triggerId]:Check(self.TriggerChecks[self.Triggers[triggerId].Type]);
+		end
+	end
+	-- Iterate over triggers.
+	for _, trigger in pairs(self.Triggers) do
+		-- Check if needed (I know this means checking ones we've just checked again, call it a temporary inconvenience).
+		if(self.TriggerChecks[trigger.Type] ~= nil) then
+			trigger:Check(self.TriggerChecks[trigger.Type]);
+		end
+	end
+	-- Reset.
+	self.TriggerDoCheck = false;
+end
+
+function cPowaAura:CanDecorate(decorator, triggerId)
+	if(self.TriggerDecorators[decorator] == nil or self.TriggerDecorators[decorator] == triggerId) then return true; else return false; end
+end
+
+function cPowaAura:ApplyDecorator(decorator, triggerId)
+	if(self:CanDecorate(decorator, triggerId) == true) then
+		self.TriggerDecorators[decorator] = triggerId;
+		return true;
+	else
+		return false;
+	end
 end
 
 function cPowaAura:HideShowTabs()
