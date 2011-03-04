@@ -46,7 +46,7 @@ function PowaAuras:Dump_Safe()
 	-- IsInInstance
 	PowaState["IsInInstance"] = IsInInstance();
 	-- IsMounted
-	PowaState["IsMounted"] = IsMounted();
+	PowaState["IsMounted"] = (IsMounted() == 1 and true or self:IsDruidTravelForm());
 	-- IsFlying
 	PowaState["IsFlying"] = IsFlying();
 	-- IsResting
