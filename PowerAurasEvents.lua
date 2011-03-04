@@ -660,10 +660,10 @@ function PowaAuras:COMBAT_LOG_EVENT_UNFILTERED(...)
 	if (self.ModTest) then return end
 	local timestamp,event,casterHidden,sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags, spellId, spellName, _, spellType = ...;
 	if (not spellName) then return end
-	--self:ShowText("CLEU: ", event, " by me=", sourceGUID==UnitGUID("player"), " on me=", destGUID==UnitGUID("player"), " ", spellName);
-	--self:ShowText("Player=", UnitGUID("player"), " sourceGUID=", sourceGUID, " destGUID=", destGUID);
-	--self:ShowText(sourceName, " ", destName);
-	--self:ShowText(sourceFlags, " ", destFlags);
+	self:ShowText("CLEU: ", event, " by me=", sourceGUID==UnitGUID("player"), " on me=", destGUID==UnitGUID("player"), " ", spellName);
+	self:ShowText("Player=", UnitGUID("player"), " sourceGUID=", sourceGUID, " destGUID=", destGUID);
+	self:ShowText(sourceName, " ", destName);
+	self:ShowText(sourceFlags, " ", destFlags);
 	--
 	--if bit.band(destFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) > 0 then
 	--	self:ShowText("Dest: a player")
@@ -674,7 +674,8 @@ function PowaAuras:COMBAT_LOG_EVENT_UNFILTERED(...)
 	if (sourceGUID==UnitGUID("player") and event=="SPELL_CAST_SUCCESS") then
 		if (self.DebugEvents) then
 			self:DisplayText("COMBAT_LOG_EVENT_UNFILTERED", "-  By Me! ", event);
-		end		self.CastByMe[spellName] = {SpellName=spellName, SpellId=spellId, DestGUID=destGUID, DestName=destName, Hostile=bit.band(destFlags, COMBATLOG_OBJECT_REACTION_HOSTILE)};
+		end
+		self.CastByMe[spellName] = {SpellName=spellName, SpellId=spellId, DestGUID=destGUID, DestName=destName, Hostile=bit.band(destFlags, COMBATLOG_OBJECT_REACTION_HOSTILE)};
 		self:ShowText(sourceName, " ", destName);
 		self:ShowText(sourceFlags, " ", destFlags);
 		self:ShowText("hostile ", self.CastByMe[spellName].Hostile);
@@ -685,7 +686,7 @@ function PowaAuras:COMBAT_LOG_EVENT_UNFILTERED(...)
 		else
 			self:ShowText(self.Colors.Green, spellName, " cast by me");
 		end
-		self.DoCheck.SpellByMe = true;
+		self.DoCheck.SpellCastByMe = true;
 	end
 	
 	if (destGUID==UnitGUID("player")) then
