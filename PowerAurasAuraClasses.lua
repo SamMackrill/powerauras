@@ -450,6 +450,10 @@ function cPowaAura:SetIcon(texturePath)
 	end
 end
 
+function cPowaAura:SkipTargetChecks()
+	return false;
+end
+
 function cPowaAura:CheckState(giveReason)
 	
 	--- player aura but player is dead
@@ -473,7 +477,7 @@ function cPowaAura:CheckState(giveReason)
 	end		
 	
 	--- target checks
-	if (not self.raid and not self.party and not self.groupOrSelf and not (self.bufftype==PowaAuras.BuffTypes.SpellAlert and self.Extra) and not (self.bufftype==PowaAuras.BuffTypes.SpellCooldown) and not (self.bufftype==PowaAuras.BuffTypes.SpellCastByMe)) then
+	if (not self.raid and not self.party and not self.groupOrSelf and not self:SkipTargetChecks()
 		--- Check if target exists and is alive
 		if (self.target or self.targetfriend) then
 			if (UnitName("target") == nil) then
@@ -2405,6 +2409,10 @@ function cPowaSpellCooldown:AddEffectAndEvents()
 	PowaAuras.Events.SPELL_UPDATE_COOLDOWN = true;
 end
 
+function cPowaSpellCooldown:SkiptargetCheck()
+	return true;
+end
+
 function cPowaSpellCooldown:CheckIfShouldShow(giveReason)
 	--PowaAuras:UnitTestDebug("Check Spell:", self.buffname);
 	if (self.Debug) then
@@ -2912,6 +2920,10 @@ function cPowaSpellAlert:AddEffectAndEvents()
 	end
 end
 
+function cPowaSpellAlert:SkiptargetCheck()
+	return self.Extra;
+end
+
 function cPowaSpellAlert:CheckUnit(unit)
 	if (self.Debug) then
 		PowaAuras:DisplayText("Spell Alert CheckUnit ", unit);
@@ -3032,6 +3044,10 @@ function cPowaSpellCastByMe:AddEffectAndEvents()
 	PowaAuras.Events.COMBAT_LOG_EVENT_UNFILTERED = true;
 	
 	table.insert(PowaAuras.AurasByType.SpellCastByMe, self.id);
+end
+
+function cPowaSpellCooldown:SkiptargetCheck()
+	return true;
 end
 
 function cPowaSpellCastByMe:CheckIfShouldShow(giveReason)
