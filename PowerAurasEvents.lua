@@ -658,7 +658,11 @@ end
 function PowaAuras:COMBAT_LOG_EVENT_UNFILTERED(...)
 	--self:ShowText("COMBAT_LOG_EVENT_UNFILTERED");
 	if (self.ModTest) then return end
-	local timestamp,event,casterHidden,sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags, spellId, spellName, _, spellType = ...;
+	if(self.WoWBuild < 13682) then 
+		local timestamp,event,sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags, spellId, spellName, _, spellType = ...;
+	else
+		local timestamp,event,casterHidden,sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags, spellId, spellName, _, spellType = ...;
+	end
 	if (not spellName) then return end
 	self:ShowText("CLEU: ", event, " by me=", sourceGUID==UnitGUID("player"), " on me=", destGUID==UnitGUID("player"), " ", spellName);
 	self:ShowText("Player=", UnitGUID("player"), " sourceGUID=", sourceGUID, " destGUID=", destGUID);
