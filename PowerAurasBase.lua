@@ -559,9 +559,9 @@ PowaAuras = {
 	};
 	
 	TriggerDecorators = {
-		Opacity  = 1,
-		Color    = 2,
-		Scale    = 3,
+		AuraOpacity  = 1,
+		AuraColor    = 2,
+		AuraScale    = 3,
 	};
 
 	Backdrop = {
