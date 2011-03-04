@@ -477,7 +477,7 @@ function cPowaAura:CheckState(giveReason)
 	end		
 	
 	--- target checks
-	if (not self.raid and not self.party and not self.groupOrSelf and not self:SkipTargetChecks()
+	if (not self.raid and not self.party and not self.groupOrSelf and not self:SkipTargetChecks()) then
 		--- Check if target exists and is alive
 		if (self.target or self.targetfriend) then
 			if (UnitName("target") == nil) then
