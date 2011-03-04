@@ -249,7 +249,7 @@ function PowaAuras:AddMoveRandomLocation(animationGroup, xrangel, xrangeu, xoffs
 	trans.useTrigger = useTrigger;
 	trans:SetOrder(order);
 	trans:SetDuration(duration);
-	-- -- trans:SetMaxFramerate(fps);
+	if(self.WoWBuild < 13682) then trans:SetMaxFramerate(fps); end
 	trans:SetScript("OnPlay",
 	function(self)
 		if (not self.useTrigger or self:GetParent().Trigger) then
@@ -264,7 +264,7 @@ function PowaAuras:AddAlphaOnTrigger(animationGroup, alphaTo, duration, fps, ord
 	local alpha = animationGroup:CreateAnimation("Alpha");
 	alpha:SetOrder(order);
 	alpha:SetDuration(duration);
-	-- -- alpha:SetMaxFramerate(fps);
+	if(self.WoWBuild < 13682) then alpha:SetMaxFramerate(fps); end
 	alpha.alphaTo = alphaTo;
 	alpha:SetScript("OnPlay",
 	function(self)
@@ -281,7 +281,7 @@ function PowaAuras:AddTranslation(animationGroup, dx, dy, duration, fps, order)
 	trans:SetOrder(order);
 	trans:SetDuration(duration);
 	--trans:SetEndDelay(1);
-	-- -- trans:SetMaxFramerate(fps);
+	if(self.WoWBuild < 13682) then trans:SetMaxFramerate(fps); end
 	trans:SetOffset(dx, dy);
 	--trans:SetScript("OnPlay",
 	--function(self)
@@ -294,7 +294,7 @@ function PowaAuras:AddScale(animationGroup, xscaleTo, yscaleTo, duration, fps, o
 	scale:SetOrder(order);
 	scale:SetDuration(duration);
 	--scale:SetEndDelay(5);
-	-- -- scale:SetMaxFramerate(fps);
+	if(self.WoWBuild < 13682) then scale:SetMaxFramerate(fps); end
 	scale:SetScale(xscaleTo, yscaleTo);
 	--scale:SetScript("OnPlay",
 	--function(self)
@@ -310,7 +310,7 @@ function PowaAuras:AddAlpha(animationGroup, alphaTo, duration, fps, order)
 	local alpha = animationGroup:CreateAnimation("Alpha");
 	alpha:SetOrder(order);
 	alpha:SetDuration(duration);
-	-- -- alpha:SetMaxFramerate(fps);
+	if(self.WoWBuild < 13682) then alpha:SetMaxFramerate(fps); end
 	alpha:SetChange(alphaTo);
 	--alpha:SetScript("OnPlay",
 	--function(self)
@@ -326,7 +326,7 @@ function PowaAuras:AddFade(animationGroup, duration, fps, order)
 	local alpha = animationGroup:CreateAnimation("Alpha");
 	alpha:SetOrder(order);
 	alpha:SetDuration(duration);
-	-- -- alpha:SetMaxFramerate(fps);
+	if(self.WoWBuild < 13682) then alpha:SetMaxFramerate(fps); end
 	alpha:SetScript("OnPlay",
 	function(self)
 		self:SetChange(-self:GetRegionParent():GetAlpha());
@@ -337,7 +337,7 @@ function PowaAuras:AddRelativeAlpha(animationGroup, change, duration, fps, order
 	local alpha = animationGroup:CreateAnimation("Alpha");
 	alpha:SetOrder(order);
 	alpha:SetDuration(duration);
-	-- -- alpha:SetMaxFramerate(fps);
+	if(self.WoWBuild < 13682) then alpha:SetMaxFramerate(fps); end
 	alpha:SetScript("OnPlay",
 	function(self)
 		local alpha = self:GetRegionParent():GetAlpha();
@@ -349,7 +349,7 @@ function PowaAuras:AddAbsoluteAlpha(animationGroup, targetAlpha, duration, fps, 
 	local alpha = animationGroup:CreateAnimation("Alpha");
 	alpha:SetOrder(order);
 	-- -- alpha:SetDuration(duration);
-	alpha:SetMaxFramerate(fps);
+	if(self.WoWBuild < 13682) then alpha:SetMaxFramerate(fps); end
 	alpha:SetScript("OnPlay",
 	function(self)
 		self:SetChange(math.min(targetAlpha,0.99) - self:GetRegionParent():GetAlpha());
@@ -365,7 +365,7 @@ function PowaAuras:AddRotation(animationGroup, angle, duration, fps, order)
 	local rotation = animationGroup:CreateAnimation("Rotation");
 	rotation:SetOrder(order);
 	rotation:SetDuration(duration);
-	-- -- rotation:SetMaxFramerate(fps);
+	if(self.WoWBuild < 13682) then rotation:SetMaxFramerate(fps); end
 	rotation:SetDegrees(angle);
 end
 
