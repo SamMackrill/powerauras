@@ -175,6 +175,7 @@ PowaAuras = {
 	
 	ExtraUnitEvent = {};
 	CastOnMe = {};
+	CastByMe = {};
 	
 	DoCheck =
 	{
