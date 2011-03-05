@@ -352,7 +352,7 @@ function PowaAuras:DeleteAura(aura)
 
 	if (aura.Timer) then aura.Timer:Dispose(); end
 	if (aura.Stacks) then aura.Stacks:Dispose(); end
-	self:Dispose();
+	aura:Dispose();
 
 	PowaSelected:Hide();
 
