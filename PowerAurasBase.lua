@@ -877,7 +877,9 @@ PowaAuras.DebuffTypeSpellIds={
 	[1715]  = PowaAuras.DebuffCatType.Snare,	-- Hamstring
 	[12323] = PowaAuras.DebuffCatType.Snare,	-- Piercing Howl
 	[85388] = PowaAuras.DebuffCatType.Stun,	    -- THROWDOWN!
-	-- Other
+	-- Engineering/Tailoring
+	[75148] = PowaAuras.DebuffCatType.Root,     -- Embersilk net
+	[89637] = PowaAuras.DebuffCatType.CC,       -- Big Daddy
 	[30217] = PowaAuras.DebuffCatType.Stun,		-- Adamantite Grenade
 	[30216] = PowaAuras.DebuffCatType.Stun,		-- Fel Iron Bomb
 	[20549] = PowaAuras.DebuffCatType.Stun,		-- War Stomp
@@ -886,15 +888,15 @@ PowaAuras.DebuffTypeSpellIds={
 	[55536] = PowaAuras.DebuffCatType.Root,		-- Frostweave Net
 	[13099] = PowaAuras.DebuffCatType.Root,		-- Net-o-Matic
 	[29703] = PowaAuras.DebuffCatType.Snare,	-- Dazed
-	-- PvE (consider deprecated?)
-	[28169] = PowaAuras.DebuffCatType.PvE,		-- Mutating Injection (Grobbulus)
-	[28059] = PowaAuras.DebuffCatType.PvE,		-- Positive Charge (Thaddius)
-	[28084] = PowaAuras.DebuffCatType.PvE,		-- Negative Charge (Thaddius)
-	[27819] = PowaAuras.DebuffCatType.PvE,		-- Detonate Mana (Kel'Thuzad)
-	[63024] = PowaAuras.DebuffCatType.PvE,		-- Gravity Bomb (XT-002 Deconstructor)
-	[63018] = PowaAuras.DebuffCatType.PvE,		-- Light Bomb (XT-002 Deconstructor)
-	[62589] = PowaAuras.DebuffCatType.PvE,		-- Nature's Fury (Freya, via Ancient Conservator)
-	[63276] = PowaAuras.DebuffCatType.PvE,		-- Mark of the Faceless (General Vezax)
+	-- Racials
+	[20549] = PowaAuras.DebuffCatType.Stun,     -- War stomp
+	[28730] = PowaAuras.DebuffCatType.Silence,  -- Arcane Torrent (caster)
+	[80483] = PowaAuras.DebuffCatType.Silence,  -- Arcane Torrent (hunter)
+	[25046] = PowaAuras.DebuffCatType.Silence,  -- Arcane Torrent (rogue)
+	[50613] = PowaAuras.DebuffCatType.Silence,  -- Arcane Torrent (death knight)
+	[69179] = PowaAuras.DebuffCatType.Silence,  -- Arcane Torrent (warrior)
+	-- Other
+	[29703] = PowaAuras.DebuffCatType.Snare,	-- Dazed
 };
 
 PowaAuras.Text = {};
