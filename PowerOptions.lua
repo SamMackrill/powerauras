@@ -350,14 +350,9 @@ function PowaAuras:DeleteAura(aura)
 	if (not aura) then return; end
 	aura:Hide();
 
-	if (aura.Timer) then aura.Timer:Delete(); end
-	if (aura.Stacks) then aura.Stacks:Delete(); end
-	
-	self.Frames[aura.id] = nil;
-	self.Textures[aura.id] = nil;
-	self.SecondaryAuras[aura.id] = nil;
-	self.SecondaryFrames[aura.id] = nil;
-	self.SecondaryTextures[aura.id] = nil;
+	if (aura.Timer) then aura.Timer:Dispose(); end
+	if (aura.Stacks) then aura.Stacks:Dispose(); end
+	self:Dispose();
 
 	PowaSelected:Hide();
 
@@ -2528,13 +2523,23 @@ function PowaAuras:FillDropdownSorted(t, info)
 end
 
 function PowaAuras.DropDownMenu_OnClickBuffType(self)
-	--PowaAuras:Message("DropDownMenu_OnClickBuffType bufftype ", self.value, " for aura ", PowaAuras.CurrentAuraId, " ", self.owner);
+	PowaAuras:Message("DropDownMenu_OnClickBuffType bufftype ", self.value, " for aura ", PowaAuras.CurrentAuraId, " ", self.owner);
 
+	local oldAura = PowaAuras.Auras[PowaAuras.CurrentAuraId];
+    local showing = oldAura.Showing;
+	oldAura:Hide();
+
+	if (oldAura.Timer) then oldAura.Timer:Dispose(); end
+	if (oldAura.Stacks) then oldAura.Stacks:Dispose(); end
+	oldAura:Dispose();
+	
 	UIDropDownMenu_SetSelectedValue(self.owner, self.value);
 
-	local aura = PowaAuras:AuraFactory(self.value, PowaAuras.CurrentAuraId, PowaAuras.Auras[PowaAuras.CurrentAuraId]);
+	local aura = PowaAuras:AuraFactory(self.value, oldAura.id, oldAura);
 		
 	aura.icon= "";
+	aura.Showing = showing;
+	
 	PowaAuras.Auras[PowaAuras.CurrentAuraId] = aura
 	if (PowaAuras.CurrentAuraId > 120) then
 		PowaGlobalSet[PowaAuras.CurrentAuraId] = aura;
@@ -2549,6 +2554,8 @@ function PowaAuras.DropDownMenu_OnClickBuffType(self)
 	if (aura.CheckBoxes.PowaOwntexButton~=1) then
 		aura.owntex = false;
 	end
+	
+	PowaAuras:RedisplayAura(aura.id);
 
 	--PowaAuras:Message(">>> bufftype=", aura.bufftype);
 	PowaAuras:InitPage(aura);
@@ -2942,7 +2949,7 @@ function PowaAuras:ShowTimerChecked(control)
 		self:CreateTimerFrameIfMissing(self.CurrentAuraId);	
 	else
 		self.Auras[self.CurrentAuraId].Timer.enabled = false;
-		self.Auras[self.CurrentAuraId].Timer:Delete();
+		self.Auras[self.CurrentAuraId].Timer:Dispose();
 	end
 end
 
@@ -3025,7 +3032,7 @@ function PowaAuras.DropDownMenu_OnClickTimerRelative(self)
 	timer.x = 0;
 	timer.y = 0;
 	timer.Relative = self.value;
-	timer:Delete();
+	timer:Dispose();
 end
 
 function PowaAuras:TimerChecked(control, setting)
@@ -3036,7 +3043,7 @@ function PowaAuras:TimerChecked(control, setting)
 	else
 		aura.Timer[setting] = false;
 	end
-	aura.Timer:Delete();
+	aura.Timer:Dispose();
 	aura.Timer:SetShowOnAuraHide(aura);
 	--self:CreateTimerFrameIfMissing(self.CurrentAuraId);
 end
@@ -3057,7 +3064,7 @@ function PowaAuras:TimerTransparentChecked(control)
 	else
 		self.Auras[self.CurrentAuraId].Timer.Transparent = false;
 	end
-	self.Auras[self.CurrentAuraId].Timer:Delete();
+	self.Auras[self.CurrentAuraId].Timer:Dispose();
 	--self:CreateTimerFrameIfMissing(self.CurrentAuraId);
 end
 
@@ -3069,7 +3076,7 @@ function PowaAuras:ShowStacksChecked(control)
 		self.Auras[self.CurrentAuraId].Stacks.enabled = true;
 	else
 		self.Auras[self.CurrentAuraId].Stacks.enabled = false;
-		self.Auras[self.CurrentAuraId].Stacks:Delete();
+		self.Auras[self.CurrentAuraId].Stacks:Dispose();
 	end
 end
 
@@ -3121,7 +3128,7 @@ function PowaAuras.DropDownMenu_OnClickStacksRelative(self)
 	stacks.x = 0;
 	stacks.y = 0;
 	stacks.Relative = self.value;
-	stacks:Delete();	
+	stacks:Dispose();	
 end
 
 function PowaAuras:StacksChecked(control, setting)
@@ -3131,7 +3138,7 @@ function PowaAuras:StacksChecked(control, setting)
 	else
 		self.Auras[self.CurrentAuraId].Stacks[setting] = false;
 	end
-	self.Auras[self.CurrentAuraId].Stacks:Delete();
+	self.Auras[self.CurrentAuraId].Stacks:Dispose();
 end
 
 function PowaAuras_CommanLine(msg)
@@ -3399,7 +3406,7 @@ function PowaAuras.DropDownMenu_OnClickTimerTexture(self)
 	local aura = PowaAuras.Auras[PowaAuras.CurrentAuraId];
 	if (aura==nil or aura.Timer==nil) then return; end
 	aura.Timer.Texture = self.value;
-	aura.Timer:Delete();
+	aura.Timer:Dispose();
 	--PowaAuras:CreateTimerFrameIfMissing(PowaAuras.CurrentAuraId);
 end
 
@@ -3414,7 +3421,7 @@ function PowaAuras.DropDownMenu_OnClickStacksTexture(self)
 	local aura = PowaAuras.Auras[PowaAuras.CurrentAuraId];
 	if (aura==nil or aura.Stacks==nil) then return; end
 	aura.Stacks.Texture = self.value;
-	aura.Stacks:Delete();
+	aura.Stacks:Dispose();
 end
 
 --- Ternary Logic ---
