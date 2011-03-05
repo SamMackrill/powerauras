@@ -177,6 +177,14 @@ cPowaAura.ExportSettings = {
 function cPowaAura:Init()
 end
 
+function cPowaAura:Dispose()
+	PowaAuras.Frames[self.id] = nil;
+	PowaAuras.Textures[self.id] = nil;
+	PowaAuras.SecondaryAuras[self.id] = nil;
+	PowaAuras.SecondaryFrames[self.id] = nil;
+	PowaAuras.SecondaryTextures[self.id] = nil;
+end
+
 function cPowaAura:CustomEvents()
 end
 

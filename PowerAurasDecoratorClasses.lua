@@ -206,7 +206,7 @@ function cPowaStacks:Hide()
 	self.lastShownValue = nil;
 end
 
-function cPowaStacks:Delete()
+function cPowaStacks:Dispose()
 	self:Hide();
 	if PowaAuras.StacksFrames[self.id] then
 		PowaAuras.StacksFrames[self.id] = nil;
@@ -506,7 +506,7 @@ function cPowaTimer:Hide()
 	--PowaAuras:ShowText("Hide timer frame");
 end
 
-function cPowaTimer:Delete()
+function cPowaTimer:Dispose()
 	self:Hide();
 	if PowaAuras.TimerFrame[self.id] then
 		PowaAuras.TimerFrame[self.id][1] = nil;
