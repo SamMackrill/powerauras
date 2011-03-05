@@ -682,17 +682,18 @@ function PowaAuras:COMBAT_LOG_EVENT_UNFILTERED(...)
 			self:DisplayText("COMBAT_LOG_EVENT_UNFILTERED", "-  By Me! ", event);
 		end
 		self.CastByMe[spellName] = {SpellName=spellName, SpellId=spellId, DestGUID=destGUID, DestName=destName, Hostile=bit.band(destFlags, COMBATLOG_OBJECT_REACTION_HOSTILE)};
-		self:ShowText(sourceName, " ", destName);
-		self:ShowText(sourceFlags, " ", destFlags);
-		self:ShowText("hostile ", self.CastByMe[spellName].Hostile);
-		if self.CastByMe[spellName].Hostile > 0 then
-			self:ShowText(self.Colors.Red, spellName, " cast by me on ", destName);
-		elseif (destName~=nil) then
-			self:ShowText(self.Colors.Green, spellName, " cast by me on ", destName);
-		else
-			self:ShowText(self.Colors.Green, spellName, " cast by me");
-		end
-		self.DoCheck.SpellCastByMe = true;
+		--self:ShowText(sourceName, " ", destName);
+		--self:ShowText(sourceFlags, " ", destFlags);
+		--self:ShowText("hostile ", self.CastByMe[spellName].Hostile);
+		--if self.CastByMe[spellName].Hostile > 0 then
+		--	self:ShowText(self.Colors.Red, spellName, " cast by me on ", destName);
+		--elseif (destName~=nil) then
+		--	self:ShowText(self.Colors.Green, spellName, " cast by me on ", destName);
+		--else
+		--	self:ShowText(self.Colors.Green, spellName, " cast by me");
+		--end
+		self.DoCheck.PlayerSpells = true;
+		self.DoCheck.GroupOrSelfSpells = true;
 	end
 	
 	if (destGUID==UnitGUID("player")) then
