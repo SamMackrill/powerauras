@@ -175,6 +175,10 @@ cPowaAura.ExportSettings = {
 }
 	
 function cPowaAura:Init()
+	self:SetFixedIcon();
+end
+
+function cPowaAura:SetFixedIcon()
 end
 
 function cPowaAura:Dispose()
@@ -2059,6 +2063,11 @@ function cPowaAoE:AddEffectAndEvents()
 	PowaAuras.Events.COMBAT_LOG_EVENT_UNFILTERED = true;
 end
 
+function cPowaAoE:SetFixedIcon()
+	self.icon = nil;
+	self:SetIcon("Interface\\icons\\Spell_fire_meteorstorm");
+end
+
 function cPowaAoE:CheckIfShouldShow(giveReason)
 	PowaAuras:Debug("Check AoE");
 
@@ -2066,7 +2075,6 @@ function cPowaAoE:CheckIfShouldShow(giveReason)
 		--PowaAuras:ShowText("checking AoE "..spell.." ("..spellId..")");
 		if self:MatchSpell(spell, PowaAuras.AoeAuraTexture[spellId], spellId, self.buffname) then
 			--PowaAuras:ShowText("Found! Showing=", self.Showing, " Active=", self.Active);
-			self:SetIcon("Interface\\icons\\Spell_fire_meteorstorm");
 			if (self.duration>0) then
 				self.TimeToHide = GetTime() + self.duration;
 			end
@@ -2224,6 +2232,11 @@ function cPowaCombo:AddEffectAndEvents()
 	end
 end						  
 
+function cPowaCombo:SetFixedIcon()
+	self.icon = nil;
+	self:SetIcon("Interface\\icons\\inv_sword_48");
+end
+
 function cPowaCombo:CheckIfShouldShow(giveReason)
 	if (PowaAuras.playerclass ~= "ROGUE" and PowaAuras.playerclass~="DRUID") then
 		if (self.Debug) then
@@ -2238,7 +2251,6 @@ function cPowaCombo:CheckIfShouldShow(giveReason)
 	local combo = tostring(nCombo);
 	--PowaAuras:UnitTestDebug("nCombo=", nCombo, " self.buffname=", self.buffname);
 	if self:MatchText(combo, self.buffname) then
-		self:SetIcon("Interface\\icons\\inv_sword_48");
 		if (self.Stacks) then
 			self.Stacks:SetStackCount(nCombo);
 		end			
@@ -2551,11 +2563,11 @@ function cPowaAuraStats:AddEffectAndEvents()
 		PowaAuras.Events.UNIT_POWER = true;
 		PowaAuras.Events.UNIT_MAXPOWER = true;
 	end
-	
-	self:SetFixedIcon();
+
 end
 
 function cPowaAuraStats:Init()
+	self:SetFixedIcon();
 	if (not self.PowerType) then return; end
 	self.MaxRange = PowaAuras.PowerRanges[self.PowerType];
 	self.RangeType = PowaAuras.RangeType[self.PowerType];
@@ -2774,8 +2786,13 @@ function cPowaAggro:CheckUnit(unit)
 	--PowaAuras:Message(unit," UnitThreatSituation=", UnitThreatSituation(unit));
 	return (UnitThreatSituation(unit) or -1)> 0;
 end	
-function cPowaAggro:CheckIfShouldShow(giveReason)
+
+function cPowaAggro:SetFixedIcon()
+	self.icon = nil;
 	self:SetIcon("Interface\\icons\\Ability_Warrior_EndlessRage");
+end
+
+function cPowaAggro:CheckIfShouldShow(giveReason)
 	PowaAuras:Debug("Check Aggro status");
 	return self:CheckAllUnits(giveReason);
 end
@@ -2813,6 +2830,10 @@ function cPowaPvP:AddEffectAndEvents()
 		table.insert(PowaAuras.AurasByType.RaidPvP, self.id);
 	end
 	PowaAuras.Events.UNIT_FACTION = true;
+end
+
+function cPowaPvP:SetFixedIcon()
+	self.icon = nil;
 	self:SetIcon("Interface\\icons\\achievement_arena_2v2_7");
 end
 
@@ -3131,9 +3152,8 @@ function cPowaGTFO:AddEffectAndEvents()
 	end
 end
 
-function cPowaGTFO:CheckIfShouldShow(giveReason)
-	PowaAuras:Debug("Check GTFO");
-
+function cPowaGTFO:SetFixedIcon()
+	self.icon = nil;
 	if (self.GTFO == 1) then
 		self:SetIcon("Interface\\icons\\spell_fire_bluefire");
 	elseif (self.GTFO == 2) then
@@ -3143,7 +3163,9 @@ function cPowaGTFO:CheckIfShouldShow(giveReason)
 	else
 		self:SetIcon("Interface\\icons\\spell_fire_fire");
 	end
+end
 
+function cPowaGTFO:CheckIfShouldShow(giveReason)
 	PowaAuras:Debug("GTFO alert");
 	if (GTFO) then
 	    if (GTFO.ShowAlert) then
@@ -3244,6 +3266,7 @@ cPowaPet.CheckBoxes={["PowaInverseButton"]=1,
 cPowaPet.TooltipOptions = {r=0.4, g=1.0, b=0.4};
 
 function cPowaPet:Init()
+	self:SetFixedIcon();
 	if (PowaAuras.playerclass == "DEATHKNIGHT") then
 		local name, iconPath, _, _, currentRank = GetTalentInfo(3, 20); -- Master of Ghouls
 		--PowaAuras:Message(name, "? currentRank=",currentRank);
@@ -3268,7 +3291,8 @@ function cPowaPet:AddEffectAndEvents()
 	end	
 end
 
-function cPowaPet:CheckIfShouldShow(giveReason)
+function cPowaPet:SetFixedIcon()
+	self.icon = nil;
 	if (PowaAuras.playerclass == "WARLOCK") then
 		self:SetIcon("Interface\\icons\\Spell_shadow_summonimp");
 	elseif (PowaAuras.playerclass == "MAGE") then
@@ -3278,7 +3302,9 @@ function cPowaPet:CheckIfShouldShow(giveReason)
 	else
 		self:SetIcon("Interface\\icons\\Ability_hunter_pet_bear");
 	end
-
+end
+		
+function cPowaPet:CheckIfShouldShow(giveReason)
 	if(UnitExists("pet")) then
 		if (PowaAuras.playerclass == "MAGE") then
 			--TODO: Get time left for Water Elemental?
@@ -3409,12 +3435,13 @@ function cPowaRunes:AddRuneTimeLeft(slot, count)
 	return gaps;
 end
 
+function cPowaRunes:SetFixedIcon()
+	self.icon = nil;
+	self:SetIcon("Interface\\icons\\spell_arcane_arcane01");
+end
 		
 function cPowaRunes:CheckIfShouldShow(giveReason)
 	--PowaAuras:Message("Rune Aura CheckIfShouldShow");
-
-	self:SetIcon("Interface\\icons\\spell_arcane_arcane01");
-	
 	self:GetRuneState();
 	local show, reason = self:RunesPresent(giveReason);
 	return show, reason;
@@ -3572,6 +3599,11 @@ function cPowaSlots:AddEffectAndEvents()
 	PowaAuras.Events.BAG_UPDATE = true;
 	PowaAuras.Events.BAG_UPDATE_COOLDOWN = true;
 	PowaAuras.Events.UNIT_INVENTORY_CHANGED = true;
+end
+
+function cPowaSlots:SetFixedIcon()
+	self.icon = nil;
+	self:SetIcon("Interface\\icons\\inv_throwingaxepvp330_08");
 end
 
 function cPowaSlots:CheckIfShouldShow(giveReason)
@@ -3894,10 +3926,13 @@ function cPowaStatic:AddEffectAndEvents()
 end
 
 function cPowaStatic:CheckIfShouldShow(giveReason)
-	self:SetIcon("Interface\\icons\\Spell_frost_frozencore");
 	return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonStatic);
 end
 
+function cPowaStatic:SetFixedIcon()
+	self.icon = nil;
+	self:SetIcon("Interface\\icons\\Spell_frost_frozencore");
+end
 
 -- Concrete Classes
 PowaAuras.AuraClasses = {

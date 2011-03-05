@@ -2539,10 +2539,11 @@ function PowaAuras.DropDownMenu_OnClickBuffType(self)
 		
 	aura.icon= "";
 	aura.Showing = showing;
+	aura:Init();
 	
-	PowaAuras.Auras[PowaAuras.CurrentAuraId] = aura
+	PowaAuras.Auras[aura.id] = aura
 	if (PowaAuras.CurrentAuraId > 120) then
-		PowaGlobalSet[PowaAuras.CurrentAuraId] = aura;
+		PowaGlobalSet[aura.id] = aura;
 	end				
 
 	if (aura.bufftype == PowaAuras.BuffTypes.Slots) then
@@ -2555,9 +2556,8 @@ function PowaAuras.DropDownMenu_OnClickBuffType(self)
 		aura.owntex = false;
 	end
 	
+	PowaAuras:UpdateMainOption();
 	PowaAuras:RedisplayAura(aura.id);
-
-	--PowaAuras:Message(">>> bufftype=", aura.bufftype);
 	PowaAuras:InitPage(aura);
 end
 
