@@ -249,7 +249,7 @@ function PowaAuras:AddMoveRandomLocation(animationGroup, xrangel, xrangeu, xoffs
 	trans.useTrigger = useTrigger;
 	trans:SetOrder(order);
 	trans:SetDuration(duration);
-	trans:SetMaxFramerate(fps);
+	if(self.WoWBuild < 13682) then trans:SetMaxFramerate(fps); end
 	trans:SetScript("OnPlay",
 	function(self)
 		if (not self.useTrigger or self:GetParent().Trigger) then
@@ -348,7 +348,7 @@ end
 function PowaAuras:AddAbsoluteAlpha(animationGroup, targetAlpha, duration, fps, order)
 	local alpha = animationGroup:CreateAnimation("Alpha");
 	alpha:SetOrder(order);
-	alpha:SetDuration(duration);
+	-- -- alpha:SetDuration(duration);
 	if(self.WoWBuild < 13682) then alpha:SetMaxFramerate(fps); end
 	alpha:SetScript("OnPlay",
 	function(self)
