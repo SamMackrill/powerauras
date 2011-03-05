@@ -2523,7 +2523,7 @@ function PowaAuras:FillDropdownSorted(t, info)
 end
 
 function PowaAuras.DropDownMenu_OnClickBuffType(self)
-	PowaAuras:Message("DropDownMenu_OnClickBuffType bufftype ", self.value, " for aura ", PowaAuras.CurrentAuraId, " ", self.owner);
+	--PowaAuras:Message("DropDownMenu_OnClickBuffType bufftype ", self.value, " for aura ", PowaAuras.CurrentAuraId, " ", self.owner);
 
 	local oldAura = PowaAuras.Auras[PowaAuras.CurrentAuraId];
     local showing = oldAura.Showing;
