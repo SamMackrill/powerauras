@@ -2916,7 +2916,7 @@ function cPowaSpellAlert:SkiptargetCheck()
 	return self.Extra;
 end
 
-function cPowaAura:CheckSpellName(unit, spellname, spellicon, endtime, spellId)	
+function cPowaSpellAlert:CheckSpellName(unit, spellname, spellicon, endtime, spellId)	
 	
 	if self:MatchSpell(spellname, spellicon, spellId, self.buffname, true) then
 		if (self.Timer and endtime~=nil) then
