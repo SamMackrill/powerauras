@@ -348,7 +348,7 @@ end
 function PowaAuras:AddAbsoluteAlpha(animationGroup, targetAlpha, duration, fps, order)
 	local alpha = animationGroup:CreateAnimation("Alpha");
 	alpha:SetOrder(order);
-	-- -- alpha:SetDuration(duration);
+	alpha:SetDuration(duration);
 	if(self.WoWBuild < 13682) then alpha:SetMaxFramerate(fps); end
 	alpha:SetScript("OnPlay",
 	function(self)

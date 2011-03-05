@@ -1194,43 +1194,6 @@ function cPowaAura:ShouldShowForRole(role, flag, giveReason)
 end
 
 
-function cPowaAura:CheckSpellName(unit, spellname, spellicon, endtime, spellId)	
-	
-	if self:MatchSpell(spellname, spellicon, spellId, self.buffname, true) then
-		if (self.Timer and endtime~=nil) then
-			self.Timer:SetDurationInfo(GetTime() + endtime/1000);
-			self:CheckTimerInvert();
-			if (self.ForceTimeInvert) then
-				return false;
-			end
-		end
-		if (self.Debug) then
-			PowaAuras:DisplayText(unit, " is casting ", spellname, " ", spellicon);
-		end
-		if (spellicon==nil) then
-			if (spellId~=nil) then
-				_, _, spellicon = GetSpellInfo(spellId);				
-			else
-				_, _, spellicon = GetSpellInfo(spellname);
-			end
-		end
-		self:SetIcon(spellicon);
-		self.DisplayValue = spellname;
-		self.DisplayUnit = unit;
-		self:UpdateText();
-		if (PowaAuras.ExtraUnitEvent[unit]) then
-			if (self.Debug) then
-				PowaAuras:DisplayText("Set to Hide in=", self.duration or 1, "s");
-			end
-			PowaAuras.Pending[self.id] =  GetTime() + (self.duration or 1); -- Instant spells may have no complete event
-		end
-		return true;
-	end
-	
-	--PowaAuras:UnitTestDebug(unit, " is casting ", spellname, " no match");
-	return false;
-end	
-	
 cPowaBuffBase = PowaClass(cPowaAura, {CanHaveTimer=true, CanHaveStacks=true, CanHaveInvertTime=true, InvertTimeHides=true});
 
 function cPowaBuffBase:AddEffectAndEvents()
@@ -2952,6 +2915,43 @@ end
 function cPowaSpellAlert:SkiptargetCheck()
 	return self.Extra;
 end
+
+function cPowaAura:CheckSpellName(unit, spellname, spellicon, endtime, spellId)	
+	
+	if self:MatchSpell(spellname, spellicon, spellId, self.buffname, true) then
+		if (self.Timer and endtime~=nil) then
+			self.Timer:SetDurationInfo(GetTime() + endtime/1000);
+			self:CheckTimerInvert();
+			if (self.ForceTimeInvert) then
+				return false;
+			end
+		end
+		if (self.Debug) then
+			PowaAuras:DisplayText(unit, " is casting ", spellname, " ", spellicon);
+		end
+		if (spellicon==nil) then
+			if (spellId~=nil) then
+				_, _, spellicon = GetSpellInfo(spellId);				
+			else
+				_, _, spellicon = GetSpellInfo(spellname);
+			end
+		end
+		self:SetIcon(spellicon);
+		self.DisplayValue = spellname;
+		self.DisplayUnit = unit;
+		self:UpdateText();
+		if (PowaAuras.ExtraUnitEvent[unit]) then
+			if (self.Debug) then
+				PowaAuras:DisplayText("Set to Hide in=", self.duration or 1, "s");
+			end
+			PowaAuras.Pending[self.id] =  GetTime() + (self.duration or 1); -- Instant spells may have no complete event
+		end
+		return true;
+	end
+	
+	--PowaAuras:UnitTestDebug(unit, " is casting ", spellname, " no match");
+	return false;
+end	
 
 function cPowaSpellAlert:CheckUnit(unit)
 	if (self.Debug) then
