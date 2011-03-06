@@ -208,9 +208,7 @@ end
 
 function cPowaStacks:Dispose()
 	self:Hide();
-	if PowaAuras.StacksFrames[self.id] then
-		PowaAuras.StacksFrames[self.id] = nil;
-	end
+	PowaAuras:Dispose("StacksFrames", self.id);
 end
 
 --===== Timer =====
@@ -508,9 +506,7 @@ end
 
 function cPowaTimer:Dispose()
 	self:Hide();
-	if PowaAuras.TimerFrame[self.id] then
-		PowaAuras.TimerFrame[self.id][1] = nil;
-		PowaAuras.TimerFrame[self.id][2] = nil;
-		PowaAuras.TimerFrame[self.id] = nil;
-	end
+	PowaAuras:Dispose("TimerFrame", self.id, 1);
+	PowaAuras:Dispose("TimerFrame", self.id, 2);
+	PowaAuras:Dispose("TimerFrame", self.id);
 end

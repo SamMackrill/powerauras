@@ -182,11 +182,12 @@ function cPowaAura:SetFixedIcon()
 end
 
 function cPowaAura:Dispose()
-	PowaAuras.Frames[self.id] = nil;
-	PowaAuras.Textures[self.id] = nil;
-	PowaAuras.SecondaryAuras[self.id] = nil;
-	PowaAuras.SecondaryFrames[self.id] = nil;
-	PowaAuras.SecondaryTextures[self.id] = nil;
+	self:Hide();
+	PowaAuras:Dispose("Frames", self.id);
+	PowaAuras:Dispose("Textures", self.id);
+	PowaAuras:Dispose("SecondaryFrames", self.id);
+	PowaAuras:Dispose("SecondaryTextures", self.id);
+	PowaAuras:Dispose("SecondaryAuras", self.id);
 end
 
 function cPowaAura:CustomEvents()

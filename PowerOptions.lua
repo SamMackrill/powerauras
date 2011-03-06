@@ -346,8 +346,24 @@ function PowaAuras:ReindexAura(oldId, newId)
 	end
 end
 
+function PowaAuras:Dispose(tableName, key, key2)
+	local t = self[tableName];
+	if (t==nil or t[key]==nil) then return; end
+	if (key2~=nil) then
+		if (t[key][key2]==nil) then return; end
+		t = t[key];
+		key = key2;
+	end
+	if (t[key].Hide) then
+		t[key]:Hide();
+	end
+	t[key] = nil;
+end
+
 function PowaAuras:DeleteAura(aura)
 	if (not aura) then return; end
+	--self:Message("DeleteAura ", aura.id);
+
 	aura:Hide();
 
 	if (aura.Timer) then aura.Timer:Dispose(); end
@@ -1204,6 +1220,7 @@ function PowaAuras:BeginMoveEffect(Pfrom, ToPage)
 
 	self:DoCopyEffect(Pfrom, i, true); -- copie et efface effet actuel
 	self:TriageIcones(self.CurrentAuraPage); -- trie les pages pour eviter les trous
+	self:CalculateAuraSequence();
 	self.CurrentAuraId = ((self.CurrentAuraPage-1)*24)+1; -- nouvelle aura en cours sera le premier effet de cette page
 	-- gere les visus
 	self:DisableMoveMode();
@@ -2524,8 +2541,13 @@ end
 
 function PowaAuras.DropDownMenu_OnClickBuffType(self)
 	--PowaAuras:Message("DropDownMenu_OnClickBuffType bufftype ", self.value, " for aura ", PowaAuras.CurrentAuraId, " ", self.owner);
+	UIDropDownMenu_SetSelectedValue(self.owner, self.value);
 
-	local oldAura = PowaAuras.Auras[PowaAuras.CurrentAuraId];
+	PowaAuras:ChangeAuraType(PowaAuras.CurrentAuraId, self.value);
+end
+
+function PowaAuras:ChangeAuraType(id, newType)
+	local oldAura = self.Auras[id];
     local showing = oldAura.Showing;
 	oldAura:Hide();
 
@@ -2533,20 +2555,19 @@ function PowaAuras.DropDownMenu_OnClickBuffType(self)
 	if (oldAura.Stacks) then oldAura.Stacks:Dispose(); end
 	oldAura:Dispose();
 	
-	UIDropDownMenu_SetSelectedValue(self.owner, self.value);
-
-	local aura = PowaAuras:AuraFactory(self.value, oldAura.id, oldAura);
+	local aura = self:AuraFactory(newType, id, oldAura);
 		
 	aura.icon= "";
 	aura.Showing = showing;
 	aura:Init();
 	
-	PowaAuras.Auras[aura.id] = aura
-	if (PowaAuras.CurrentAuraId > 120) then
-		PowaGlobalSet[aura.id] = aura;
+	self.Auras[id] = aura
+	if (self.CurrentAuraId > 120) then
+		PowaGlobalSet[id] = aura;
 	end				
-
-	if (aura.bufftype == PowaAuras.BuffTypes.Slots) then
+	self:CalculateAuraSequence();
+	
+	if (aura.bufftype == self.BuffTypes.Slots) then
 		if (not PowaEquipmentSlotsFrame:IsVisible()) then PowaEquipmentSlotsFrame:Show(); end
 	else
 		if (PowaEquipmentSlotsFrame:IsVisible()) then PowaEquipmentSlotsFrame:Hide(); end
@@ -2556,9 +2577,9 @@ function PowaAuras.DropDownMenu_OnClickBuffType(self)
 		aura.owntex = false;
 	end
 	
-	PowaAuras:UpdateMainOption();
-	PowaAuras:RedisplayAura(aura.id);
-	PowaAuras:InitPage(aura);
+	self:UpdateMainOption();
+	self:RedisplayAura(aura.id);
+	self:InitPage(aura);
 end
 
 
@@ -3472,7 +3493,6 @@ end
 
 
 function PowaAuras:OptionTest()
-
 	--self:Message("OptionTest for ", self.CurrentAuraId);
 	local aura = self.Auras[self.CurrentAuraId];
 	if (not aura or aura.buffname == "" or aura.buffname == " ") then

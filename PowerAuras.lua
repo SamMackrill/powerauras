@@ -1423,7 +1423,7 @@ function PowaAuras:UpdateAura(aura, elapsed)
 		local frame = aura:GetFrame();
 		if (frame == nil) then
 			----self:UnitTestInfo("UpdateAura: Don't show, frame missing");
-			--self:ShowText("UpdateAura: Don't show, frame missing");
+			self:ShowText("UpdateAura: Don't show, frame missing");
 			return false;
 		end
 		--self:ShowText("UpdateAura ", aura, " ", elapsed, " HideRequest=", aura.HideRequest);
