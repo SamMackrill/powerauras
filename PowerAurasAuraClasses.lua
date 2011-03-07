@@ -37,7 +37,8 @@ cPowaAura = PowaClass(function(aura, id, base)
 	aura.CurrentText = nil;
 	
 	aura.Triggers = {};
-	aura.TriggerDecorators = {};
+	aura.TriggersByType = {};
+	aura.TriggerDecorators = {}; -- Stores a table of active decorators trigger ID's and their types.
 	aura.TriggerChecks = {};
 	aura.TriggerDoCheck = false;
 	
@@ -46,6 +47,7 @@ cPowaAura = PowaClass(function(aura, id, base)
 	end
 	
 	for ttype, _ in pairs(PowaAuras.TriggerTypes) do
+		aura.TriggersByType[ttype] = {};
 		aura.TriggerChecks[ttype] = nil;
 	end
 	
@@ -233,35 +235,77 @@ end
 
 function cPowaAura:CheckTriggers()
 	if(self.TriggerDoCheck == false) then return; end
-	-- Determine the triggers which currently own active decorator classes. We do these first so they can deactivate properly if needed.
-	for _, triggerId in pairs(self.TriggerDecorators) do
-		-- Check these first.
-		if(self.TriggerChecks[self.Triggers[triggerId].Type] ~= nil) then
-			self.Triggers[triggerId]:Check(self.TriggerChecks[self.Triggers[triggerId].Type]);
-		end
+	-- Debugging thing, just keep a counter of total triggers for GLOBALCOUNTVAR checking.
+	local count = 0;
+	while(self.Triggers[count+1]) do
+		count = count+1;
 	end
-	-- Iterate over triggers.
-	for _, trigger in pairs(self.Triggers) do
-		-- Check if needed (I know this means checking ones we've just checked again, call it a temporary inconvenience).
-		if(self.TriggerChecks[trigger.Type] ~= nil) then
-			trigger:Check(self.TriggerChecks[trigger.Type]);
+	GLOBALCOUNTVAR = 25;
+	-- -- -- Determine the triggers which currently own active decorator classes. We do these first so they can deactivate properly if needed.
+	-- -- for _, triggerId in pairs(self.TriggerDecorators) do
+		-- -- -- Check these first.
+		-- -- if(triggerId and self.Triggers[triggerId]) then
+			-- -- self.Triggers[triggerId]:Check(self.TriggerChecks[self.Triggers[triggerId].Type]);
+		-- -- end
+	-- -- end
+	-- Go over checks.
+	for cType, cValue in pairs(self.TriggerChecks) do
+		-- Go over the triggers for this type.
+		local trigger = nil;
+		for triggerId, _ in pairs(self.TriggersByType[cType]) do
+			trigger = self.Triggers[triggerId] or nil;
+			if(trigger) then
+				local val = trigger:Check(cValue)
+				if(val == 1) then
+					self:RemoveTrigger(triggerId);
+				elseif(val == 2 and count < GLOBALCOUNTVAR) then
+					self:CreateTrigger(cPowaTimerTrigger);
+					count = count + 1;
+				elseif(val == 2 and count >= GLOBALCOUNTVAR) then
+					UIErrorsFrame:AddMessage("GLOBALCOUNTVAR Reached.", 0.0, 0.0, 1.0);	
+				end
+			end
 		end
 	end
 	-- Reset.
 	self.TriggerDoCheck = false;
 end
 
+function cPowaAura:CreateTrigger(tType)
+	-- Get a place to put this trigger in.
+	local id = 1;
+	while(self.Triggers[id]) do
+		id = id + 1;
+	end
+	-- Make the trigger class.
+	local trigger = tType(self.id, id);
+	UIErrorsFrame:AddMessage("Creating " .. trigger.Type .. "Trigger (" .. self.id .. ", " .. id .. ")", 0.0, 1.0, 0.0);
+	self.Triggers[id] = trigger;
+	self.TriggersByType[trigger.Type][id] = true;
+	return id;
+end
+
+function cPowaAura:RemoveTrigger(id)
+	-- Remove trigger.
+	if(not self.Triggers[id]) then return false; end
+	UIErrorsFrame:AddMessage("Removing " .. self.Triggers[id].Type .. "Trigger (" .. self.id .. ", " .. id .. ")", 1.0, 0.0, 0.0);
+	-- Remove.
+	self.TriggersByType[self.Triggers[id].Type][id] = nil;
+	self.Triggers[id] = nil;
+	return true;
+end
+
 function cPowaAura:CanDecorate(decorator, triggerId)
-	if(self.TriggerDecorators[decorator] == nil or self.TriggerDecorators[decorator] == triggerId) then return true; else return false; end
+	-- if(self.TriggerDecorators[decorator] == nil or self.TriggerDecorators[decorator] == triggerId) then return true; else return false; end
 end
 
 function cPowaAura:ApplyDecorator(decorator, triggerId)
-	if(self:CanDecorate(decorator, triggerId) == true) then
-		self.TriggerDecorators[decorator] = triggerId;
-		return true;
-	else
-		return false;
-	end
+	-- if(self:CanDecorate(decorator, triggerId) == true) then
+		-- self.TriggerDecorators[decorator] = triggerId;
+		-- return true;
+	-- else
+		-- return false;
+	-- end
 end
 
 function cPowaAura:HideShowTabs()
