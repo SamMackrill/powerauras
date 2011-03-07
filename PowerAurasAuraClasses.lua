@@ -227,20 +227,14 @@ function cPowaAura:StacksAllowed()
 	return (self.CanHaveStacks and not self.inverse);
 end
 
-function cPowaAura:SetTriggerCheck(trigger, value)
+function cPowaAura:SetTriggerCheck(ttype, value)
 	-- Set the value.
-	self.TriggerChecks[trigger] = value;
+	self.TriggerChecks[ttype] = value;
 	self.TriggerDoCheck = true;
 end
 
 function cPowaAura:CheckTriggers()
 	if(self.TriggerDoCheck == false) then return; end
-	-- Debugging thing, just keep a counter of total triggers for GLOBALCOUNTVAR checking.
-	local count = 0;
-	while(self.Triggers[count+1]) do
-		count = count+1;
-	end
-	GLOBALCOUNTVAR = 25;
 	-- -- -- Determine the triggers which currently own active decorator classes. We do these first so they can deactivate properly if needed.
 	-- -- for _, triggerId in pairs(self.TriggerDecorators) do
 		-- -- -- Check these first.
@@ -255,15 +249,7 @@ function cPowaAura:CheckTriggers()
 		for triggerId, _ in pairs(self.TriggersByType[cType]) do
 			trigger = self.Triggers[triggerId] or nil;
 			if(trigger) then
-				local val = trigger:Check(cValue)
-				if(val == 1) then
-					self:RemoveTrigger(triggerId);
-				elseif(val == 2 and count < GLOBALCOUNTVAR) then
-					self:CreateTrigger(cPowaTimerTrigger);
-					count = count + 1;
-				elseif(val == 2 and count >= GLOBALCOUNTVAR) then
-					UIErrorsFrame:AddMessage("GLOBALCOUNTVAR Reached.", 0.0, 0.0, 1.0);	
-				end
+				trigger:Check(cValue);
 			end
 		end
 	end
@@ -295,17 +281,22 @@ function cPowaAura:RemoveTrigger(id)
 	return true;
 end
 
-function cPowaAura:CanDecorate(decorator, triggerId)
-	-- if(self.TriggerDecorators[decorator] == nil or self.TriggerDecorators[decorator] == triggerId) then return true; else return false; end
+function cPowaAura:ApplyDecorator(decorator, triggerId, force)
+	if(self.TriggerDecorators[decorator] == nil or self.TriggerDecorators[decorator] == triggerId or force) then
+		self.TriggerDecorators[decorator] = triggerId;
+		return true;
+	else
+		return false;
+	end
 end
 
-function cPowaAura:ApplyDecorator(decorator, triggerId)
-	-- if(self:CanDecorate(decorator, triggerId) == true) then
-		-- self.TriggerDecorators[decorator] = triggerId;
-		-- return true;
-	-- else
-		-- return false;
-	-- end
+function cPowaAura:RemoveDecorator(decorator, triggerId, force)
+	if(self.TriggerDecorators[decorator] == nil or self.TriggerDecorators[decorator] == triggerId or force) then
+		self.TriggerDecorators[decorator] = nil;
+		return true;
+	else
+		return false;
+	end
 end
 
 function cPowaAura:HideShowTabs()
