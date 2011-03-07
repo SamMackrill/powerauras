@@ -235,13 +235,6 @@ end
 
 function cPowaAura:CheckTriggers()
 	if(self.TriggerDoCheck == false) then return; end
-	-- -- -- Determine the triggers which currently own active decorator classes. We do these first so they can deactivate properly if needed.
-	-- -- for _, triggerId in pairs(self.TriggerDecorators) do
-		-- -- -- Check these first.
-		-- -- if(triggerId and self.Triggers[triggerId]) then
-			-- -- self.Triggers[triggerId]:Check(self.TriggerChecks[self.Triggers[triggerId].Type]);
-		-- -- end
-	-- -- end
 	-- Go over checks.
 	for cType, cValue in pairs(self.TriggerChecks) do
 		-- Go over the triggers for this type.
@@ -282,7 +275,7 @@ function cPowaAura:RemoveTrigger(id)
 end
 
 function cPowaAura:ApplyDecorator(decorator, triggerId, force)
-	if(self.TriggerDecorators[decorator] == nil or self.TriggerDecorators[decorator] == triggerId or force) then
+	if(not self.TriggerDecorators[decorator] or self.TriggerDecorators[decorator] == triggerId or force) then
 		self.TriggerDecorators[decorator] = triggerId;
 		return true;
 	else
@@ -291,7 +284,7 @@ function cPowaAura:ApplyDecorator(decorator, triggerId, force)
 end
 
 function cPowaAura:RemoveDecorator(decorator, triggerId, force)
-	if(self.TriggerDecorators[decorator] == nil or self.TriggerDecorators[decorator] == triggerId or force) then
+	if(self.TriggerDecorators[decorator] and self.TriggerDecorators[decorator] == triggerId or force) then
 		self.TriggerDecorators[decorator] = nil;
 		return true;
 	else
