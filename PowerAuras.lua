@@ -447,6 +447,11 @@ function PowaAuras:CreateStacksFrameIfMissing(auraId, updatePing)
 		frame.texture:SetBlendMode("ADD");
 		frame.texture:SetAllPoints(frame);
 		frame.texture:SetTexture(aura.Stacks:GetTexture());
+		
+		frame.textures = {
+			[1] = frame.texture
+		};
+		
 		if (updatePing) then
 			--self:ShowText("Creating Ping animation ", auraId, " ", index);
 			frame.PingAnimationGroup = frame:CreateAnimationGroup("Ping");
