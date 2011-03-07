@@ -447,6 +447,11 @@ function PowaAuras:CreateStacksFrameIfMissing(auraId, updatePing)
 		frame.texture:SetBlendMode("ADD");
 		frame.texture:SetAllPoints(frame);
 		frame.texture:SetTexture(aura.Stacks:GetTexture());
+		
+		frame.textures = {
+			[1] = frame.texture
+		};
+		
 		if (updatePing) then
 			--self:ShowText("Creating Ping animation ", auraId, " ", index);
 			frame.PingAnimationGroup = frame:CreateAnimationGroup("Ping");
@@ -645,7 +650,7 @@ function PowaAuras:OnUpdate(elapsed)
 		--self:UnitTestInfo("ChecksTimer", self.ChecksTimer, self.NextCheck);
 		if ((self.ChecksTimer > (self.NextCheck + PowaMisc.OnUpdateLimit))) then
 			self.ChecksTimer = 0;
-			local isMountedNow = (IsMounted()~=nil or self:IsDruidTravelForm());
+			local isMountedNow = (IsMounted() == 1 and true or self:IsDruidTravelForm());
 			if (isMountedNow ~= self.WeAreMounted) then
 				self.DoCheck.All = true;
 				self.WeAreMounted = isMountedNow;
@@ -745,8 +750,13 @@ end
 
 function PowaAuras:IsDruidTravelForm()
 	if (self.playerclass~="DRUID") then return false; end
-	--local nStance = GetShapeshiftForm();
-	return false; -- TODO
+	local nStance = GetShapeshiftForm();
+	-- If stance 4 or 6, we're in travel/flight form.
+	if(nStance == 4 or nStance == 6) then return true; end
+	-- If in stance 5, it's complicated. Moonkin/Tree form take index 5 if learned, but if not learned then flight form is here.
+	if(nStance == 5 and select(5, GetTalentInfo(3,21)) == 0 and select(5, GetTalentInfo(1,8)) == 0) then return true; end
+	-- Otherwise we're not in it.
+	return false;
 end
 
 function PowaAuras:NewCheckBuffs()
@@ -783,6 +793,7 @@ function PowaAuras:NewCheckBuffs()
 	wipe(self.ChangedUnits.Targets);
 	wipe(self.ExtraUnitEvent);
 	wipe(self.CastOnMe);
+	wipe(self.CastByMe);
 
 end
 
@@ -1417,7 +1428,7 @@ function PowaAuras:UpdateAura(aura, elapsed)
 		local frame = aura:GetFrame();
 		if (frame == nil) then
 			----self:UnitTestInfo("UpdateAura: Don't show, frame missing");
-			--self:ShowText("UpdateAura: Don't show, frame missing");
+			self:ShowText("UpdateAura: Don't show, frame missing");
 			return false;
 		end
 		--self:ShowText("UpdateAura ", aura, " ", elapsed, " HideRequest=", aura.HideRequest);

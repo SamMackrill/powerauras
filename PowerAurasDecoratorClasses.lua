@@ -60,19 +60,14 @@ function cPowaStacks:GetTexture()
 end
 
 function cPowaStacks:ShowValue(aura, newvalue)
-	--PowaAuras:ShowText("Stacks Showvalue id=", self.id, " newvalue=", newvalue);
-	if (PowaAuras.ModTest) then
-		newvalue = random(0,25000);
-	end	
-	
 	local frame = PowaAuras.StacksFrames[self.id];
 	if (frame==nil or newvalue==nil) then
 		return;
 	end
-	if(not frame.textures) then
-		frame.textures = {
-			[1] = frame.texture;		
-		};
+	
+	--PowaAuras:ShowText("Stacks Showvalue id=", self.id, " newvalue=", newvalue);
+	if (PowaAuras.ModTest) then
+		newvalue = random(0,25000);
 	end
 	
 	-- Create textures dynamically to support > 9 stacks.
@@ -206,11 +201,9 @@ function cPowaStacks:Hide()
 	self.lastShownValue = nil;
 end
 
-function cPowaStacks:Delete()
+function cPowaStacks:Dispose()
 	self:Hide();
-	if PowaAuras.StacksFrames[self.id] then
-		PowaAuras.StacksFrames[self.id] = nil;
-	end
+	PowaAuras:Dispose("StacksFrames", self.id);
 end
 
 --===== Timer =====
@@ -506,11 +499,9 @@ function cPowaTimer:Hide()
 	--PowaAuras:ShowText("Hide timer frame");
 end
 
-function cPowaTimer:Delete()
+function cPowaTimer:Dispose()
 	self:Hide();
-	if PowaAuras.TimerFrame[self.id] then
-		PowaAuras.TimerFrame[self.id][1] = nil;
-		PowaAuras.TimerFrame[self.id][2] = nil;
-		PowaAuras.TimerFrame[self.id] = nil;
-	end
+	PowaAuras:Dispose("TimerFrame", self.id, 1);
+	PowaAuras:Dispose("TimerFrame", self.id, 2);
+	PowaAuras:Dispose("TimerFrame", self.id);
 end
