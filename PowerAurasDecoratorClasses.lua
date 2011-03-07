@@ -61,7 +61,7 @@ end
 
 function cPowaStacks:ShowValue(aura, newvalue)
 	local frame = PowaAuras.StacksFrames[self.id];
-	if (frame==nil or newvalue==nil or self.Showing == false) then
+	if (frame==nil or newvalue==nil) then
 		return;
 	end
 	
