@@ -93,7 +93,7 @@ function PowaAuras:Setup()
 	self.WeAreInRaid = (GetNumRaidMembers() > 0);
 	self.WeAreInParty = (GetNumPartyMembers() > 0);
 
-	self.WeAreMounted = (IsMounted()~=nil);
+	self.WeAreMounted = (IsMounted() == 1 and true or self:IsDruidTravelForm());
 	self.WeAreInVehicle = (UnitInVehicle("player")~=nil);
 
 	self.ActiveTalentGroup = GetActiveTalentGroup();
@@ -657,59 +657,83 @@ end
 
 function PowaAuras:COMBAT_LOG_EVENT_UNFILTERED(...)
 	--self:ShowText("COMBAT_LOG_EVENT_UNFILTERED");
+	if (self.ModTest) then return end
 	-- 4.1 backwards compat (will remove when 4.1 is live, prevents needing to time a release to fix this).
+	local timestamp,event,casterHidden,sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags, spellId, spellName, spellType;
 	if(self.WoWBuild >= 13682) then
-		local timestamp,event,casterHidden,sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags, spellId, spellName, _, spellType = ...;	
+		timestamp,event,casterHidden,sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags, spellId, spellName, _, spellType = ...;	
 	else
-		local timestamp,event,sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags, spellId, spellName, _, spellType = ...;
+		timestamp,event,sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags, spellId, spellName, _, spellType = ...;
 	end
-	if (not self.ModTest) then
-		--self:ShowText("CLEU: ", event, " by me=", sourceGUID==UnitGUID("player"), " on me=", destGUID==UnitGUID("player"), " ", spellName);
-		--self:ShowText("Player=", UnitGUID("player"), " sourceGUID=", sourceGUID, " destGUID=", destGUID);
+	if (not spellName) then return end
+	--self:ShowText("CLEU: ", event, " by me=", sourceGUID==UnitGUID("player"), " on me=", destGUID==UnitGUID("player"), " ", spellName);
+	--self:ShowText("Player=", UnitGUID("player"), " sourceGUID=", sourceGUID, " destGUID=", destGUID);
+	--self:ShowText(sourceName, " ", destName);
+	--self:ShowText(sourceFlags, " ", destFlags);
+	--
+	--if bit.band(destFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) > 0 then
+	--	self:ShowText("Dest: a player")
+	--end		
+	--if bit.band(destFlags, COMBATLOG_OBJECT_AFFILIATION_MINE) > 0 then
+	--	self:ShowText("Dest: belongs to me")
+	--end
+	if (sourceGUID==UnitGUID("player") and event=="SPELL_CAST_SUCCESS") then
+		if (self.DebugEvents) then
+			self:DisplayText("COMBAT_LOG_EVENT_UNFILTERED", "-  By Me! ", event);
+		end
+		self.CastByMe[spellName] = {SpellName=spellName, SpellId=spellId, DestGUID=destGUID, DestName=destName, Hostile=bit.band(destFlags, COMBATLOG_OBJECT_REACTION_HOSTILE)};
 		--self:ShowText(sourceName, " ", destName);
 		--self:ShowText(sourceFlags, " ", destFlags);
-		
-		--if bit.band(destFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) > 0 then
-		--	self:ShowText("Dest: a player")
-		--end		
-		--if bit.band(destFlags, COMBATLOG_OBJECT_AFFILIATION_MINE) > 0 then
-		--	self:ShowText("Dest: belongs to me")
+		--self:ShowText("hostile ", self.CastByMe[spellName].Hostile);
+		--if self.CastByMe[spellName].Hostile > 0 then
+		--	self:ShowText(self.Colors.Red, spellName, " cast by me on ", destName);
+		--elseif (destName~=nil) then
+		--	self:ShowText(self.Colors.Green, spellName, " cast by me on ", destName);
+		--else
+		--	self:ShowText(self.Colors.Green, spellName, " cast by me");
 		--end
-		
-		if (destGUID==UnitGUID("player") and spellName) then
-			if (self.DebugEvents) then
-				self:DisplayText("COMBAT_LOG_EVENT_UNFILTERED", "-  On Me! ", event);
-			end
-			if (PowaAuras.StringStarts(event,"SPELL_") and sourceName) then
-				self.CastOnMe[sourceName] = {SpellName=spellName, SpellId=spellId, SourceGUID=sourceGUID, Hostile=bit.band(sourceFlags, COMBATLOG_OBJECT_REACTION_HOSTILE)};
-				self.DoCheck.Spells = true; --- scan party/raid targets for casting
-				self.DoCheck.CheckIt = true;
-				--if self.CastOnMe[sourceName].Hostile > 0 then
-				--	self:ShowText(self.Colors.Red, spellName, " cast on me by ", sourceName);
-				--else
-				--	self:ShowText(self.Colors.Green, spellName, " cast on me by ", sourceName);
-				--end
-			end
-			if (event == "ENVIRONMENTAL_DAMAGE") then
-				--self:ShowText("ENVIRONMENTAL_DAMAGE type=", spellId, " size=", spellName);					
-				if  (spellId ~= "FALLING") then
-					self.AoeAuraAdded[0] = spellId;
-					self.DoCheck.Aoe = true;
-					self.DoCheck.CheckIt = true;
-				end
-			elseif ((event=="SPELL_PERIODIC_DAMAGE"
-				  or event=="SPELL_DAMAGE"
-				  or ((event=="SPELL_AURA_APPLIED" or event=="SPELL_AURA_APPLIED_DOSE") and spellType=="DEBUFF"))) then
-				--self:ShowText("SPELL_PERIODIC_DAMAGE ", spellId, " ", spellName);
-				self.AoeAuraAdded[spellId] = spellName;
-				if (not self.AoeAuraTexture[spellName]) then
-					self.AoeAuraTexture[spellId] = select(3, GetSpellInfo(spellId));
-				end
+		self.DoCheck.PlayerSpells = true;
+		self.DoCheck.GroupOrSelfSpells = true;
+	end
+	
+	if (destGUID==UnitGUID("player")) then
+		if (self.DebugEvents) then
+			self:DisplayText("COMBAT_LOG_EVENT_UNFILTERED", "-  On Me! ", event);
+		end
+		if (PowaAuras.StringStarts(event,"SPELL_") and sourceName) then
+			self.CastOnMe[sourceName] = {SpellName=spellName, SpellId=spellId, SourceGUID=sourceGUID, Hostile=bit.band(sourceFlags, COMBATLOG_OBJECT_REACTION_HOSTILE)};
+			self.DoCheck.Spells = true; --- scan party/raid targets for casting
+			self.DoCheck.CheckIt = true;
+			--if self.CastOnMe[sourceName].Hostile > 0 then
+			--	self:ShowText(self.Colors.Red, spellName, " cast on me by ", sourceName);
+			--else
+			--	self:ShowText(self.Colors.Green, spellName, " cast on me by ", sourceName);
+			--end
+			return;
+		end
+		if (event == "ENVIRONMENTAL_DAMAGE") then
+			--self:ShowText("ENVIRONMENTAL_DAMAGE type=", spellId, " size=", spellName);					
+			if  (spellId ~= "FALLING") then
+				self.AoeAuraAdded[0] = spellId;
 				self.DoCheck.Aoe = true;
 				self.DoCheck.CheckIt = true;
 			end
+			return;
+		end
+		if ((event=="SPELL_PERIODIC_DAMAGE"
+			  or event=="SPELL_DAMAGE"
+			  or ((event=="SPELL_AURA_APPLIED" or event=="SPELL_AURA_APPLIED_DOSE") and spellType=="DEBUFF"))) then
+			--self:ShowText("SPELL_PERIODIC_DAMAGE ", spellId, " ", spellName);
+			self.AoeAuraAdded[spellId] = spellName;
+			if (not self.AoeAuraTexture[spellName]) then
+				self.AoeAuraTexture[spellId] = select(3, GetSpellInfo(spellId));
+			end
+			self.DoCheck.Aoe = true;
+			self.DoCheck.CheckIt = true;
+			return;
 		end
 	end
+
 end
 
 function PowaAuras:ACTIONBAR_SLOT_CHANGED(...)
