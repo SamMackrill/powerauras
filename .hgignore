@@ -1,0 +1,4 @@
+glob:*.bak
+glob:*.out
+glob:*.session
+glob:*.session
