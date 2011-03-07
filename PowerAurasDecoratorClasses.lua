@@ -60,19 +60,14 @@ function cPowaStacks:GetTexture()
 end
 
 function cPowaStacks:ShowValue(aura, newvalue)
+	local frame = PowaAuras.StacksFrames[self.id];
+	if (frame==nil or newvalue==nil or self.Showing == false) then
+		return;
+	end
+	
 	--PowaAuras:ShowText("Stacks Showvalue id=", self.id, " newvalue=", newvalue);
 	if (PowaAuras.ModTest) then
 		newvalue = random(0,25000);
-	end	
-	
-	local frame = PowaAuras.StacksFrames[self.id];
-	if (frame==nil or newvalue==nil) then
-		return;
-	end
-	if(not frame.textures) then
-		frame.textures = {
-			[1] = frame.texture;		
-		};
 	end
 	
 	-- Create textures dynamically to support > 9 stacks.
