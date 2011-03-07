@@ -20,6 +20,7 @@ cPowaTrigger.ExportSettings = {
 }
 
 function cPowaTrigger:Check(value)
+	--PowaAuras:ShowText("Checking " , self.Type , "Trigger (" , self.AuraId , "," , self.TriggerId , ") against value " , value);
 	local result = (value >= 5 and value <= 6);
 	-- Attempt to activate our decorators.
 	for dType, decorator in pairs(self.Decorators) do
@@ -46,16 +47,25 @@ function cPowaTrigger:CreateDecorator(dType)
 	return true;	
 end
 
--- -- function cPowaTrigger:RemoveDecorator(id)
-
--- -- end
 
 --[[
 =====cPowaTimerTrigger=====
 Timer trigger type class.
 ===========================
 --]]
-cPowaTimerTrigger = PowaClass(cPowaTrigger, { Type = "Timer" });
+cPowaTimerTrigger     = PowaClass(cPowaTrigger, { Type = PowaAuras.TriggerTypes.Timer });
+cPowaStacksTrigger    = PowaClass(cPowaTrigger, { Type = PowaAuras.TriggerTypes.Stacks });
+
+cPowaAuraStartTrigger = PowaClass(cPowaTrigger, { Type = PowaAuras.TriggerTypes.AuraStart });
+function cPowaAuraStartTrigger:Check(value)
+	return true;
+end
+
+cPowaAuraEndTrigger   = PowaClass(cPowaTrigger, { Type = PowaAuras.TriggerTypes.AuraEnd });
+function cPowaAuraEndTrigger:Check(value)
+	return true;
+end
+
 
 --[[
 =====cPowaDecorator========
@@ -139,7 +149,7 @@ end
       -- -- f.last = f.last + elapsed;
       -- -- if(f.last > 0.1) then
          -- -- for i=1,4 do
-            -- -- PowaAuras.Auras[i]:SetTriggerCheck("Timer", random(1,6));
+            -- -- PowaAuras.Auras[i]:SetTriggerCheck(PowaAuras.TriggerTypes.Timer, random(1,6));
          -- -- end
          -- -- f.last = f.last - 0.1;
       -- -- end
