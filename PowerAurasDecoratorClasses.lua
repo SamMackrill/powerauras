@@ -173,6 +173,7 @@ function cPowaStacks:SetStackCount(count)
 		return;
 	end
 	self.UpdateValueTo = count;
+	aura:SetTriggerCheck("Stacks", count);
 end
 
 function cPowaStacks:Update()
@@ -350,6 +351,7 @@ function cPowaTimer:Update(elapsed)
 		return;
 	end
 	
+	aura:SetTriggerCheck("Timer", newvalue);
 		
 	if (newvalue and newvalue > 0) then --- Time has value to display
 
