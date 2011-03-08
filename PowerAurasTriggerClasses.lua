@@ -46,9 +46,11 @@ function cPowaTrigger:CreateDecorator(dType)
 	return true;	
 end
 
--- -- function cPowaTrigger:RemoveDecorator(id)
-
--- -- end
+function cPowaTrigger:RemoveDecorator(id)
+	-- Remove decorator if exists.
+	if(not self.Decorators[id]) then return; end
+	self.Decorators[id] = nil;
+end
 
 --[[
 =====cPowaTimerTrigger=====
