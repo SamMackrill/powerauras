@@ -2297,13 +2297,9 @@ function cPowaActionReady:CheckIfShouldShow(giveReason)
 		return false, PowaAuras.Text.nomReasonActionNotFound; 
 	end
 	
-	-- What's on this button, a spell/item or macro?
 	local actionType, actionId = GetActionInfo(self.slot);
 	local cdstart, cdduration, enabled = 0, 0, 1;
-	if(actionType == "macro"
-	and ((GetMacroSpell(actionId) and GetMacroSpell(actionId) ~= GetSpellInfo(self.buffname))
-	or  (GetMacroItem(actionId) and GetMacroItem(actionId) ~= GetItemInfo(self.buffname)))) then
-		-- It's a macro, and the spell on the macro isn't the one we're trying to track, use SpellCooldown/IsUsableSpell on self.buffname.
+	if(actionType == "macro" and GetSpellInfo(self.buffname)) then
 		cdstart, cdduration, enabled = GetSpellCooldown(self.buffname);
 		-- PowaAuras:ShowText("cdstart= ",cdstart," duration= ",cdduration," enabled= ",enabled);
 		if (not enabled) then
@@ -2322,7 +2318,18 @@ function cPowaActionReady:CheckIfShouldShow(giveReason)
 				if (not giveReason) then return false; end
 				return false, PowaAuras.Text.nomReasonActionNotUsable;
 			end
-		end
+		end		
+	elseif(actionType == "macro" and tonumber(self.buffname) and GetItemInfo(self.buffname)) then
+		local itemid = tonumber(self.buffname);
+		cdstart, cdduration, enabled = GetItemCooldown(itemid);
+		-- PowaAuras:ShowText("cdstart= ",cdstart," duration= ",cdduration," enabled= ",enabled);
+		if (not enabled) then
+			if (self.Timer) then
+				self.Timer:SetDurationInfo(0);
+			end
+			if (not giveReason) then return false; end
+			return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonActionlNotEnabled, spellName);
+		end		
 	else
 		cdstart, cdduration, enabled = GetActionCooldown(self.slot);
 		-- PowaAuras:ShowText("cdstart= ",cdstart," duration= ",cdduration," enabled= ",enabled);
