@@ -157,7 +157,8 @@ function PowaAuras:LoadAuras()
 	
 	self:CalculateAuraSequence();
 	--self:ShowText(#self.AuraSequence," Auras loaded");
-
+	
+	self:CreateTriggers();
 	
 	-- Copy to Saved Sets
 	PowaSet = self.Auras;
@@ -166,6 +167,16 @@ function PowaAuras:LoadAuras()
 	end
 	PowaTimer = {};
 	
+end
+
+function PowaAuras:CreateTriggers()
+	for i = 1, #self.AuraSequence do
+		local aura = self.AuraSequence[i];
+		local trigger=aura:CreateTrigger(cPowaAuraStartTrigger);
+		trigger:AddAction(cPowaAuraMessageAction, "Aura Start");
+		local trigger=aura:CreateTrigger(cPowaAuraEndTrigger);
+		trigger:AddAction(cPowaAuraMessageAction, "End Start");		
+	end
 end
 
 function PowaAuras:CalculateAuraSequence()
@@ -1524,8 +1535,7 @@ function PowaAuras:UpdateAura(aura, elapsed)
 
 	end
 	
-	-- Check triggers.
-	aura:CheckTriggers();
+	aura:ProcessTriggerQueue();
 
 	aura.HideRequest = false;
 	return true;
