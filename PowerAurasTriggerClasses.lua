@@ -40,7 +40,7 @@ end
 
 function cPowaTrigger:AddAction(actionClass, actionValue)
 	local action = actionClass(self.AuraId, self.Id, actionValue);
-	UIErrorsFrame:AddMessage("Creating " .. action.Type .. "Action (" .. self.AuraId .. ", " .. self.Id .. ")", 0.0, 1.0, 0.0);
+	PowaAuras:ShowText("Creating " .. action.Type .. "Action (" .. self.AuraId .. ", " .. self.Id .. ")");
 	self.Actions[#self.Actions] = action;
 	return action;	
 end
@@ -62,10 +62,12 @@ cPowaTimerTrigger = PowaClass(cPowaTrigger, { Type = "Timer" });
 cPowaStacksTrigger = PowaClass(cPowaTrigger, { Type = "Stacks" });
 cPowaAuraStartTrigger = PowaClass(cPowaTrigger, { Type = "AuraStart" });
 function cPowaAuraStartTrigger:Check()
+	--PowaAuras:ShowText("cPowaAuraStartTrigger:Check");
 	return true;
 end
 cPowaAuraEndTrigger = PowaClass(cPowaTrigger, { Type = "AuraEnd" });
 function cPowaAuraEndTrigger:Check()
+	--PowaAuras:ShowText("cPowaAuraEndTrigger:Check");
 	return true;
 end
 
@@ -119,7 +121,17 @@ end
 cPowaAuraMessageAction = PowaClass(cPowaTriggerAction, { Type = "Message" });
 
 function cPowaAuraMessageAction:Execute()
-	PowaAuras:ShowText( action.Value );
+	PowaAuras:ShowText( self.Value );
+end
+
+--[[
+=====cPowaAuraAnimationAction========
+===========================
+--]]
+cPowaAuraAnimationAction = PowaClass(cPowaTriggerAction, { Type = "Animation" });
+
+function cPowaAuraAnimationAction:Execute()
+	PowaAuras:ShowText( self.Value );
 end
 
 --[[

@@ -219,7 +219,6 @@ function cPowaAura:StacksAllowed()
 end
 
 
-
 function cPowaAura:CreateTrigger(tType)
 	-- Get a place to put this trigger in.
 	local id = 1;
@@ -228,7 +227,7 @@ function cPowaAura:CreateTrigger(tType)
 	end
 	-- Make the trigger class.
 	local trigger = tType(self.id, id);
-	UIErrorsFrame:AddMessage("Creating " .. trigger.Type .. "Trigger (" .. self.id .. ", " .. id .. ")", 0.0, 1.0, 0.0);
+	PowaAuras:ShowText("Creating " .. trigger.Type .. "Trigger (" .. self.id .. ", " .. id .. ")");
 	self.Triggers[id] = trigger;
 	--self.TriggersByType[trigger.Type][id] = true;
 	return trigger;
@@ -238,6 +237,7 @@ function cPowaAura:ProcessTriggerQueue()
 	for _, action in pairs(self.TriggerActionQueue) do
 		action:Execute();
 	end
+	wipe(self.TriggerActionQueue);
 end
 	
 	
@@ -251,8 +251,10 @@ end
 
 
 function cPowaAura:CheckTriggers(triggerType, value)
+	PowaAuras:ShowText("Checking all ",triggerType, " auras"); 
 	for _, trigger in pairs(self.Triggers) do
-		if (tType==triggerType) then
+		--PowaAuras:ShowText(self.id, " : ",trigger.Type); 
+		if (trigger.Type==triggerType) then
 			if (trigger:Check(value)) then
 				self:FireTrigger(trigger)
 			end
