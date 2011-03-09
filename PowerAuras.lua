@@ -172,10 +172,12 @@ end
 function PowaAuras:CreateTriggers()
 	for i = 1, #self.AuraSequence do
 		local aura = self.AuraSequence[i];
-		local trigger=aura:CreateTrigger(cPowaAuraStartTrigger);
-		trigger:AddAction(cPowaAuraMessageAction, "Aura Start");
-		local trigger=aura:CreateTrigger(cPowaAuraEndTrigger);
-		trigger:AddAction(cPowaAuraMessageAction, "End Start");		
+		if (not aura.off) then
+			local trigger=aura:CreateTrigger(cPowaAuraStartTrigger);
+			trigger:AddAction(cPowaAuraMessageAction, "Action Fired! Show Aura");
+			local trigger=aura:CreateTrigger(cPowaAuraEndTrigger);
+			trigger:AddAction(cPowaAuraMessageAction, "Action Fired! Hide Aura");
+		end
 	end
 end
 
@@ -1240,9 +1242,6 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 		if (not aura.MainAnimation) then aura.MainAnimation = self:AddMainAnimation(aura, frame); end
 		if (not aura.EndAnimation) then aura.EndAnimation = self:AddEndAnimation(aura, frame); end
 	
-	end
-	
-	if (not aura.UseOldAnimations) then
 		if (aura.BeginAnimation) then
 			aura.BeginAnimation:Play();
 			frame:SetAlpha(0); -- prevents flickering
@@ -1259,6 +1258,9 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 
 	aura.Showing = true;
 	aura.HideRequest = false;
+	
+	aura:CheckTriggers("AuraStart");
+	
 	self:ShowSecondaryAuraForFirstTime(aura);	
 end
 
@@ -1415,6 +1417,9 @@ function PowaAuras:UpdateAura(aura, elapsed)
 		--self:ShowText("UpdateAura: Don't show, aura missing");
 		return false;
 	end
+	
+	aura:ProcessTriggerQueue();
+	
 	--if (aura.Debug) then
 	--	self:Message("UpdateAura ", aura.id, " ", elapsed);
 	--end
@@ -1455,6 +1460,8 @@ function PowaAuras:UpdateAura(aura, elapsed)
 		
 		if (aura.HideRequest) then
 		
+			aura:CheckTriggers("AuraEnd");
+
 			if (self.ModTest == false and not aura.EndSoundPlayed) then
 				
 				if (aura.customsoundend ~= "") then
@@ -1534,8 +1541,6 @@ function PowaAuras:UpdateAura(aura, elapsed)
 		end
 
 	end
-	
-	aura:ProcessTriggerQueue();
 
 	aura.HideRequest = false;
 	return true;
