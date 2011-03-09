@@ -292,6 +292,10 @@ function cPowaAura:RemoveDecorator(decorator, triggerId, force)
 	end
 end
 
+function cPowaAura:HasDecorator(decorator)
+	return (self.TriggerDecorators[decorator] and true or false);
+end
+
 function cPowaAura:HideShowTabs()
 	if (self:StacksAllowed()) then 
 		PowaEditorTab5:Show();
