@@ -172,12 +172,7 @@ end
 function PowaAuras:CreateTriggers()
 	for i = 1, #self.AuraSequence do
 		local aura = self.AuraSequence[i];
-		if (not aura.off) then
-			local trigger=aura:CreateTrigger(cPowaAuraStartTrigger);
-			trigger:AddAction(cPowaAuraMessageAction, "Action Fired! Show Aura");
-			local trigger=aura:CreateTrigger(cPowaAuraEndTrigger);
-			trigger:AddAction(cPowaAuraMessageAction, "Action Fired! Hide Aura");
-		end
+		aura:CreateTriggers();
 	end
 end
 
@@ -1121,9 +1116,7 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 		end	
 	end
 	
-	local oldFrame = aura:GetFrame();
 	local frame, texture = aura:CreateFrames();
-	frame.aura = aura;
 
 	if (self.ModTest and not PowaMisc.Locked) then
 		self:SetForDragging(aura, frame);
@@ -1221,7 +1214,7 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 		PowaAuras:CreateStacksFrameIfMissing(aura.id, aura.Stacks.UpdatePing);
 		aura.Stacks:ShowValue(aura, aura.Stacks.lastShownValue)
 	end
-
+--[[
 	if (aura.UseOldAnimations) then
 	
 		frame.statut = 0;
@@ -1250,13 +1243,7 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 			aura.MainAnimation:Play();
 		end
 	end
-
-	if (oldFrame==nil) then -- frame just created
-		--if (aura.begin>0) then
-			local trigger=aura:CreateTrigger(cPowaAuraStartTrigger);
-			trigger:AddAction(cPowaAuraAnimationAction, self.AnimationBeginTypes.ZoomIn);
-		--end
-	end
+	]]--
 	
 	--self:UnitTestInfo("frame:Show()", aura.id);
 	if (aura.Debug) then
