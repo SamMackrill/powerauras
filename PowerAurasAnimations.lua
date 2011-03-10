@@ -11,9 +11,9 @@ function PowaAuras:AddBeginAnimation(aura, frame)
 		return nil;
 	end
 	
-	local animationGroup = frame:CreateAnimationGroup("Begin");
+	local animationGroup, duration = PowaAuras:AddAnimation(frame, aura.begin, "Begin", aura.speed, aura.alpha, true)
 	animationGroup.aura = aura;
-	
+
 	--animationGroup:SetScript("OnPlay",
 	--function(self)
 	--	local aura = self.aura;
@@ -37,40 +37,92 @@ function PowaAuras:AddBeginAnimation(aura, frame)
 			end
 		end
 	end);
+
+	if (aura.beginSpin) then
+		self:AddRotation(animationGroup, 360, math.max(duration/4, 0.25), PowaMisc.AnimationFps, animationGroup:GetMaxOrder()+1);
+	end	
 	
-	local duration, duration2 = self:CalculateDurations(aura.speed);
-	
-	--PowaAuras:ShowText("AddBeginAnimation duration=", duration, " speed=", aura.speed);
-	if (aura.begin~=PowaAuras.AnimationBeginTypes.Bounce) then
-		self:AddJumpAlphaAndReturn(animationGroup, -math.min(aura.alpha,0.99), duration, PowaMisc.AnimationFps, 1);
+	return animationGroup;				
+end
+
+
+function PowaAuras:AddEndAnimation(aura, frame)
+	--PowaAuras:ShowText("AddEndAnimation finish=", aura.finish);
+	if (not aura.finish or aura.finish==PowaAuras.AnimationEndTypes.None) then
+		return nil;
 	end
-	if (aura.begin==PowaAuras.AnimationBeginTypes.ZoomOut) then
+	
+	local animationGroup, duration = PowaAuras:AddAnimation(frame, 100 + aura.finish, "End", aura.speed, aura.alpha, false)
+	animationGroup.aura = aura;
+	
+	--animationGroup:SetScript("OnPlay",
+	--function(self)
+	--	PowaAuras:ShowText("EndAnimation OnPlay ", self:GetName(), " aura=", self.aura.id);
+	--end);
+	
+	animationGroup:SetScript("OnFinished",
+	function(self, forced)
+		--PowaAuras:ShowText("EndAnimation OnFinished ", self:GetName(), " aura=", self.aura.id);
+		if (self.aura) then
+			self.aura:Hide(true);
+		end
+	end);
+	
+	return animationGroup;				
+end
+
+function PowaAuras:AddAnimation(frame, animation, group, speed, alpha, begin)
+
+	local animationGroup = frame:CreateAnimationGroup(group);
+
+	local duration, duration2 = self:CalculateDurations(speed);
+	
+	--PowaAuras:ShowText("AddBeginAnimation duration=", duration, " speed=", speed);
+	if (begin and animation~=PowaAuras.AnimationBeginTypes.Bounce) then
+		self:AddJumpAlphaAndReturn(animationGroup, -math.min(alpha,0.99), duration, PowaMisc.AnimationFps, 1);
+	end
+	if (animation==PowaAuras.AnimationBeginTypes.ZoomOut) then
 		self:AddJumpScaleAndReturn(animationGroup, 0.5, duration, PowaMisc.AnimationFps, 1);
-	elseif (aura.begin==PowaAuras.AnimationBeginTypes.ZoomIn) then
+	elseif (animation==PowaAuras.AnimationBeginTypes.ZoomIn) then
 		self:AddJumpScaleAndReturn(animationGroup, 1.5, duration, PowaMisc.AnimationFps, 1);
-	elseif (aura.begin==PowaAuras.AnimationBeginTypes.FadeIn) then
-	elseif (aura.begin==PowaAuras.AnimationBeginTypes.TranslateLeft) then
+	elseif (animation==PowaAuras.AnimationBeginTypes.FadeIn) then
+	elseif (animation==PowaAuras.AnimationBeginTypes.TranslateLeft) then
 		self:AddJumpTranslateAndReturn(animationGroup, -100, 0, duration, PowaMisc.AnimationFps, 1);
-	elseif (aura.begin==PowaAuras.AnimationBeginTypes.TranslateTopLeft) then
+	elseif (animation==PowaAuras.AnimationBeginTypes.TranslateTopLeft) then
 		self:AddJumpTranslateAndReturn(animationGroup, -75,75, duration, PowaMisc.AnimationFps, 1);
-	elseif (aura.begin==PowaAuras.AnimationBeginTypes.TranslateTop) then
+	elseif (animation==PowaAuras.AnimationBeginTypes.TranslateTop) then
 		self:AddJumpTranslateAndReturn(animationGroup, 0, 100, duration, PowaMisc.AnimationFps, 1);
-	elseif (aura.begin==PowaAuras.AnimationBeginTypes.TranslateTopRight) then
+	elseif (animation==PowaAuras.AnimationBeginTypes.TranslateTopRight) then
 		self:AddJumpTranslateAndReturn(animationGroup, 75, 75, duration, PowaMisc.AnimationFps, 1);
-	elseif (aura.begin==PowaAuras.AnimationBeginTypes.TranslateRight) then
+	elseif (animation==PowaAuras.AnimationBeginTypes.TranslateRight) then
 		self:AddJumpTranslateAndReturn(animationGroup, 100, 0, duration, PowaMisc.AnimationFps, 1);
-	elseif (aura.begin==PowaAuras.AnimationBeginTypes.TranslateBottomRight) then
+	elseif (animation==PowaAuras.AnimationBeginTypes.TranslateBottomRight) then
 		self:AddJumpTranslateAndReturn(animationGroup, 75, -75, duration, PowaMisc.AnimationFps, 1);
-	elseif (aura.begin==PowaAuras.AnimationBeginTypes.TranslateBottom) then
+	elseif (animation==PowaAuras.AnimationBeginTypes.TranslateBottom) then
 		self:AddJumpTranslateAndReturn(animationGroup, 0, -100, duration, PowaMisc.AnimationFps, 1);
-	elseif (aura.begin==PowaAuras.AnimationBeginTypes.TranslateBottomLeft) then
+	elseif (animation==PowaAuras.AnimationBeginTypes.TranslateBottomLeft) then
 		self:AddJumpTranslateAndReturn(animationGroup, -75, -75, duration, PowaMisc.AnimationFps, 1);
-	elseif (aura.begin==PowaAuras.AnimationBeginTypes.Bounce) then
-		self:AddAlpha(animationGroup, math.min(aura.alpha,0.99), 0, 0, 1);
+	elseif ((animation-100)==PowaAuras.AnimationEndTypes.Fade) then
+		self:AddFade(animationGroup, duration / 2, PowaMisc.AnimationFps, 1);
+	elseif ((animation-100)==PowaAuras.AnimationEndTypes.GrowAndFade) then
+		self:AddFade(animationGroup, duration / 2, PowaMisc.AnimationFps, 1);
+		self:AddScale(animationGroup, 2.0, 2.0, duration / 2, PowaMisc.AnimationFps, 1);
+	elseif ((animation-100)==PowaAuras.AnimationEndTypes.ShrinkAndFade) then
+		self:AddFade(animationGroup, duration / 2, PowaMisc.AnimationFps, 1);
+		self:AddScale(animationGroup, 0.25, 0.25, duration / 2, PowaMisc.AnimationFps, 1);
+	elseif ((animation-100)==PowaAuras.AnimationEndTypes.SpinAndFade) then
+		self:AddFade(animationGroup, duration * 2, PowaMisc.AnimationFps, 1);
+		self:AddRotation(animationGroup, 360 * 4, duration * 2, PowaMisc.AnimationFps, 1);
+	elseif ((animation-100)==PowaAuras.AnimationEndTypes.SpinShrinkAndFade) then
+		self:AddFade(animationGroup, duration * 2, PowaMisc.AnimationFps, 1);
+		self:AddRotation(animationGroup, 360 * 4, duration * 2, PowaMisc.AnimationFps, 1);
+		self:AddScale(animationGroup, 0.25, 0.25, duration * 2, PowaMisc.AnimationFps, 1);		
+	elseif (animation==PowaAuras.AnimationBeginTypes.Bounce) then
+		self:AddAlpha(animationGroup, math.min(alpha,0.99), 0, 0, 1);
 		local u = 0;
 		local height = 100;
 		local efficiency = 0.6;
-		local a = 800 * aura.speed;
+		local a = 800 * speed;
 		self:AddTranslation(animationGroup,  0,  height, 0, 0, 1);
 		local steps = 6;
 		local dT = math.sqrt(2*height/a);
@@ -103,12 +155,8 @@ function PowaAuras:AddBeginAnimation(aura, frame)
 		end
 
 	end
-
-	if (aura.beginSpin) then
-		self:AddRotation(animationGroup, 360, math.max(duration/4, 0.25), PowaMisc.AnimationFps, animationGroup:GetMaxOrder()+1);
-	end
 	
-	return animationGroup;
+	return animationGroup, duration, duration2;
 end
 
 function PowaAuras:AddJumpTranslateAndReturn(animationGroup, dx, dy, duration, fps, order)
@@ -369,46 +417,3 @@ function PowaAuras:AddRotation(animationGroup, angle, duration, fps, order)
 	rotation:SetDegrees(angle);
 end
 
-function PowaAuras:AddEndAnimation(aura, frame)
-	--PowaAuras:ShowText("AddEndAnimation finish=", aura.finish);
-	if (not aura.finish or aura.finish==PowaAuras.AnimationEndTypes.None) then
-		return nil;
-	end
-	
-	local animationGroup = frame:CreateAnimationGroup("End");
-	animationGroup.aura = aura;
-	
-	--animationGroup:SetScript("OnPlay",
-	--function(self)
-	--	PowaAuras:ShowText("EndAnimation OnPlay ", self:GetName(), " aura=", self.aura.id);
-	--end);
-	
-	animationGroup:SetScript("OnFinished",
-	function(self, forced)
-		--PowaAuras:ShowText("EndAnimation OnFinished ", self:GetName(), " aura=", self.aura.id);
-		if (self.aura) then
-			self.aura:Hide(true);
-		end
-	end);
-	
-	local duration = self:CalculateDurations(aura.speed);
-	--PowaAuras:ShowText("AddEndAnimation duration=", duration, " speed=", aura.speed);
-	if (aura.finish==PowaAuras.AnimationEndTypes.Fade) then
-		self:AddFade(animationGroup, duration / 2, PowaMisc.AnimationFps, 1);
-	elseif (aura.finish==PowaAuras.AnimationEndTypes.GrowAndFade) then
-		self:AddFade(animationGroup, duration / 2, PowaMisc.AnimationFps, 1);
-		self:AddScale(animationGroup, 2.0, 2.0, duration / 2, PowaMisc.AnimationFps, 1);
-	elseif (aura.finish==PowaAuras.AnimationEndTypes.ShrinkAndFade) then
-		self:AddFade(animationGroup, duration / 2, PowaMisc.AnimationFps, 1);
-		self:AddScale(animationGroup, 0.25, 0.25, duration / 2, PowaMisc.AnimationFps, 1);
-	elseif (aura.finish==PowaAuras.AnimationEndTypes.SpinAndFade) then
-		self:AddFade(animationGroup, duration * 2, PowaMisc.AnimationFps, 1);
-		self:AddRotation(animationGroup, 360 * 4, duration * 2, PowaMisc.AnimationFps, 1);
-	elseif (aura.finish==PowaAuras.AnimationEndTypes.SpinShrinkAndFade) then
-		self:AddFade(animationGroup, duration * 2, PowaMisc.AnimationFps, 1);
-		self:AddRotation(animationGroup, 360 * 4, duration * 2, PowaMisc.AnimationFps, 1);
-		self:AddScale(animationGroup, 0.25, 0.25, duration * 2, PowaMisc.AnimationFps, 1);		
-	end
-		
-	return animationGroup;				
-end

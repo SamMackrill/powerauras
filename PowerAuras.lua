@@ -1121,6 +1121,7 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 		end	
 	end
 	
+	local oldFrame = aura:GetFrame();
 	local frame, texture = aura:CreateFrames();
 	frame.aura = aura;
 
@@ -1250,6 +1251,13 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 		end
 	end
 
+	if (oldFrame==nil) then -- frame just created
+		--if (aura.begin>0) then
+			local trigger=aura:CreateTrigger(cPowaAuraStartTrigger);
+			trigger:AddAction(cPowaAuraAnimationAction, self.AnimationBeginTypes.ZoomIn);
+		--end
+	end
+	
 	--self:UnitTestInfo("frame:Show()", aura.id);
 	if (aura.Debug) then
 		self:Message("frame:Show()", aura.id, " ", frame);
