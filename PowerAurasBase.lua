@@ -559,7 +559,7 @@ PowaAuras = {
 		TriggerEnd   = 6,
 	};
 	
-	TriggerDecorators = {
+	TriggerActions = {
 		AuraOpacity  = 1,
 		AuraColor    = 2,
 		AuraScale    = 3,

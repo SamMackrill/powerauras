@@ -37,19 +37,10 @@ cPowaAura = PowaClass(function(aura, id, base)
 	aura.CurrentText = nil;
 	
 	aura.Triggers = {};
-	aura.TriggersByType = {};
-	aura.TriggerDecorators = {}; -- Stores a table of active decorators trigger ID's and their types.
-	aura.TriggerChecks = {};
-	aura.TriggerDoCheck = false;
-	
-	for decorator, _ in pairs(PowaAuras.TriggerDecorators) do
-		aura.TriggerDecorators[decorator] = nil;
-	end
-	
-	for ttype, _ in pairs(PowaAuras.TriggerTypes) do
-		aura.TriggersByType[ttype] = {};
-		aura.TriggerChecks[ttype] = nil;
-	end
+	--aura.TriggersByType = {};
+	aura.TriggerActionQueue = {}; -- Active Actions for processing.
+	--aura.TriggerChecks = {};
+	--aura.TriggerDoCheck = false;
 	
 	if (aura.minDuration) then
 		aura.duration = math.max(aura.duration, aura.minDuration);
@@ -227,28 +218,6 @@ function cPowaAura:StacksAllowed()
 	return (self.CanHaveStacks and not self.inverse);
 end
 
-function cPowaAura:SetTriggerCheck(ttype, value)
-	-- Set the value.
-	self.TriggerChecks[ttype] = value;
-	self.TriggerDoCheck = true;
-end
-
-function cPowaAura:CheckTriggers()
-	if(self.TriggerDoCheck == false) then return; end
-	-- Go over checks.
-	for cType, cValue in pairs(self.TriggerChecks) do
-		-- Go over the triggers for this type.
-		local trigger = nil;
-		for triggerId, _ in pairs(self.TriggersByType[cType]) do
-			trigger = self.Triggers[triggerId] or nil;
-			if(trigger) then
-				trigger:Check(cValue);
-			end
-		end
-	end
-	-- Reset.
-	self.TriggerDoCheck = false;
-end
 
 function cPowaAura:CreateTrigger(tType)
 	-- Get a place to put this trigger in.
@@ -258,12 +227,48 @@ function cPowaAura:CreateTrigger(tType)
 	end
 	-- Make the trigger class.
 	local trigger = tType(self.id, id);
-	UIErrorsFrame:AddMessage("Creating " .. trigger.Type .. "Trigger (" .. self.id .. ", " .. id .. ")", 0.0, 1.0, 0.0);
+	PowaAuras:ShowText("Creating " .. trigger.Type .. "Trigger (" .. self.id .. ", " .. id .. ")");
 	self.Triggers[id] = trigger;
-	self.TriggersByType[trigger.Type][id] = true;
-	return id;
+	--self.TriggersByType[trigger.Type][id] = true;
+	return trigger;
 end
 
+function cPowaAura:ProcessTriggerQueue()
+	for _, action in pairs(self.TriggerActionQueue) do
+		action:Execute();
+	end
+	wipe(self.TriggerActionQueue);
+end
+	
+	
+--[[
+function cPowaAura:SetTriggerCheck(ttype, value)
+	-- Set the value.
+	self.TriggerChecks[ttype] = value;
+	self.TriggerDoCheck = true;
+end
+]]--
+
+
+function cPowaAura:CheckTriggers(triggerType, value)
+	PowaAuras:ShowText("Checking all ",triggerType, " auras"); 
+	for _, trigger in pairs(self.Triggers) do
+		--PowaAuras:ShowText(self.id, " : ",trigger.Type); 
+		if (trigger.Type==triggerType) then
+			if (trigger:Check(value)) then
+				self:FireTrigger(trigger)
+			end
+		end
+	end
+end
+
+function cPowaAura:FireTrigger(trigger)
+	for _, action in pairs(trigger.Actions) do
+		self.TriggerActionQueue[#self.TriggerActionQueue] = action;
+	end
+end
+
+--[[
 function cPowaAura:RemoveTrigger(id)
 	-- Remove trigger.
 	if(not self.Triggers[id]) then return false; end
@@ -274,26 +279,28 @@ function cPowaAura:RemoveTrigger(id)
 	return true;
 end
 
-function cPowaAura:ApplyDecorator(decorator, triggerId, force)
-	if(not self.TriggerDecorators[decorator] or self.TriggerDecorators[decorator] == triggerId or force) then
-		self.TriggerDecorators[decorator] = triggerId;
+function cPowaAura:ApplyAction(action, triggerId, force)
+	if(not self.TriggerActions[action] or self.TriggerActions[action] == triggerId or force) then
+		self.TriggerActions[action] = triggerId;
 		return true;
 	else
 		return false;
 	end
 end
 
-function cPowaAura:RemoveDecorator(decorator, triggerId, force)
-	if(self.TriggerDecorators[decorator] and self.TriggerDecorators[decorator] == triggerId or force) then
-		self.TriggerDecorators[decorator] = nil;
+function cPowaAura:RemoveAction(action, triggerId, force)
+	if(self.TriggerActions[action] and self.TriggerActions[action] == triggerId or force) then
+		self.TriggerActions[action] = nil;
 		return true;
 	else
 		return false;
 	end
 end
+--]]
+--==========================
 
-function cPowaAura:HasDecorator(decorator)
-	return (self.TriggerDecorators[decorator] and true or false);
+function cPowaAura:HasAction(action)
+	return (self.TriggerActions[action] and true or false);
 end
 
 function cPowaAura:HideShowTabs()
