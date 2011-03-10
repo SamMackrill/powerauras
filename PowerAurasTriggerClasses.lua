@@ -13,6 +13,7 @@ cPowaTrigger = PowaClass(function(trigger, auraId, triggerId)
 	trigger.State            = false;
 end);
 
+--[[
 cPowaTrigger.ExportSettings = {
 	Enabled = true,
 	LowerCondition = ">=5",
@@ -37,9 +38,10 @@ function cPowaTrigger:Check(value)
 		end
 	end
 end
+]]--
 
 function cPowaTrigger:AddAction(actionClass, actionValue)
-	local action = actionClass(self.AuraId, self.Id, actionValue);
+	local action = actionClass(self.AuraId, self.Id, #self.Actions - 1, actionValue);
 	PowaAuras:ShowText("Creating " .. action.Type .. "Action (" .. self.AuraId .. ", " .. self.Id .. ")");
 	self.Actions[#self.Actions] = action;
 	return action;	
@@ -76,15 +78,20 @@ end
 
 ===========================
 --]]
-cPowaTriggerAction = PowaClass(function(action, auraId, triggerId, actionValue)
+cPowaTriggerAction = PowaClass(function(action, auraId, triggerId, actionId, actionValue)
 	if(not auraId or not triggerId or not PowaAuras.Auras[auraId] or not PowaAuras.Auras[auraId].Triggers[triggerId]) then return; end
 	PowaAuras:ShowText("Constructing Action type ", action.Type );
 	-- Set up variables for action.
-	action.AuraId           = auraId;
-	action.Id               = triggerId;
-	--action.State            = false;
-	action.Value            = actionValue;
+	action.Id           = actionId;
+	action.AuraId       = auraId;
+	action.TriggerId    = triggerId;
+	--action.State        = false;
+	action.Value        = actionValue;
+	action:Init();
 end);
+
+function cPowaTriggerAction:Init()
+end
 
 --[[
 cPowaTriggerAction.ExportSettings = {
@@ -131,7 +138,12 @@ end
 cPowaAuraAnimationAction = PowaClass(cPowaTriggerAction, { Type = "Animation" });
 
 function cPowaAuraAnimationAction:Execute()
-	PowaAuras:ShowText( self.Value );
+	self.AnimationGroup:Play();
+end
+
+function cPowaAuraAnimationAction:Init()
+	local aura = PowaAuras.Auras[self.AuraId];
+	self.AnimationGroup =  PowaAuras:AddAnimation(aura:GetFrame(), self.Value, "Trigger" .. self.TriggerId .. "_" .. self.Id, aura.speed, aura.alpha, true)
 end
 
 --[[
