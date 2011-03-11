@@ -36,3 +36,4 @@ PowerAuras.xml
 PowerOptions.xml
 PowerBlizzOptions.xml
 PowerSlots.xml
+PowerUI.lua
