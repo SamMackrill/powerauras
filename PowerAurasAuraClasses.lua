@@ -218,6 +218,22 @@ function cPowaAura:StacksAllowed()
 	return (self.CanHaveStacks and not self.inverse);
 end
 
+function cPowaAura:CreateTriggers()
+	if (self.off) then return; end
+	local frame, texture = self:CreateFrames();
+	
+	local trigger=self:CreateTrigger(cPowaAuraStartTrigger);
+	trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Show Aura"});
+	if (self.begin>0) then
+		trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame, Animation=self.begin, Speed=self.speed, Alpha=self.alpha, BeginSpin=self.beginSpin});
+	end			
+	
+	trigger=self:CreateTrigger(cPowaAuraEndTrigger);
+	trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Hide Aura"});
+	if (self.finish>0) then
+		trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame, Animation=self.finish + 100, Speed=self.speed, Alpha=self.alpha});
+	end		
+end
 
 function cPowaAura:CreateTrigger(tType)
 	-- Get a place to put this trigger in.
@@ -234,9 +250,15 @@ function cPowaAura:CreateTrigger(tType)
 end
 
 function cPowaAura:ProcessTriggerQueue()
-	for _, action in pairs(self.TriggerActionQueue) do
-		action:Execute();
+	if (#self.TriggerActionQueue>0) then
+		PowaAuras:ShowText("ProcessTriggerQueue ", #self.TriggerActionQueue); 
 	end
+	for i = 1, #self.TriggerActionQueue do
+		local action = self.TriggerActionQueue[i];
+		PowaAuras:ShowText("Firing Action ", action.Id, " on Trigger ", action.TriggerId, " for Aura ", action.AuraId);
+		action:Fire();
+	end
+
 	wipe(self.TriggerActionQueue);
 end
 	
@@ -251,22 +273,18 @@ end
 
 
 function cPowaAura:CheckTriggers(triggerType, value)
-	PowaAuras:ShowText("Checking all ",triggerType, " auras"); 
-	for _, trigger in pairs(self.Triggers) do
-		--PowaAuras:ShowText(self.id, " : ",trigger.Type); 
+	PowaAuras:ShowText("Checking all ",triggerType, " auras");
+	for i = 1, #self.Triggers do
+		local trigger = self.Triggers[i];
 		if (trigger.Type==triggerType) then
+			PowaAuras:ShowText("Trigger ", i, " Fire! : ", self.id, " - ",trigger.Type); 
 			if (trigger:Check(value)) then
-				self:FireTrigger(trigger)
+				trigger:QueueActions(self);
 			end
 		end
 	end
 end
 
-function cPowaAura:FireTrigger(trigger)
-	for _, action in pairs(trigger.Actions) do
-		self.TriggerActionQueue[#self.TriggerActionQueue] = action;
-	end
-end
 
 --[[
 function cPowaAura:RemoveTrigger(id)
@@ -341,6 +359,7 @@ function cPowaAura:AddExtraTooltipInfo(tooltip)
 	end
 end
 
+-- Get Frame and Texture, creating only if required
 function cPowaAura:CreateFrames()
 	local frame = self:GetFrame();
 	if (frame==nil) then
@@ -355,6 +374,8 @@ function cPowaAura:CreateFrames()
 		
 		frame.baseL = 256;
 		frame.baseH = 256;
+		
+		frame.aura = self;
 	end
 	
 	local texture = self:GetTexture();

@@ -11,7 +11,7 @@ function PowaAuras:AddBeginAnimation(aura, frame)
 		return nil;
 	end
 	
-	local animationGroup, duration = PowaAuras:AddAnimation(frame, aura.begin, "Begin", aura.speed, aura.alpha, true)
+	local animationGroup, duration = PowaAuras:AddAnimation(frame, aura.begin, "Begin", aura.speed, aura.alpha, aura.beginSpin)
 	animationGroup.aura = aura;
 
 	--animationGroup:SetScript("OnPlay",
@@ -38,9 +38,6 @@ function PowaAuras:AddBeginAnimation(aura, frame)
 		end
 	end);
 
-	if (aura.beginSpin) then
-		self:AddRotation(animationGroup, 360, math.max(duration/4, 0.25), PowaMisc.AnimationFps, animationGroup:GetMaxOrder()+1);
-	end	
 	
 	return animationGroup;				
 end
@@ -71,14 +68,14 @@ function PowaAuras:AddEndAnimation(aura, frame)
 	return animationGroup;				
 end
 
-function PowaAuras:AddAnimation(frame, animation, group, speed, alpha, begin)
+function PowaAuras:AddAnimation(frame, animation, group, speed, alpha, beginSpin)
 
 	local animationGroup = frame:CreateAnimationGroup(group);
 
 	local duration, duration2 = self:CalculateDurations(speed);
 	
 	--PowaAuras:ShowText("AddBeginAnimation duration=", duration, " speed=", speed);
-	if (begin and animation~=PowaAuras.AnimationBeginTypes.Bounce) then
+	if (animation<100 and animation~=PowaAuras.AnimationBeginTypes.Bounce) then
 		self:AddJumpAlphaAndReturn(animationGroup, -math.min(alpha,0.99), duration, PowaMisc.AnimationFps, 1);
 	end
 	if (animation==PowaAuras.AnimationBeginTypes.ZoomOut) then
@@ -154,6 +151,10 @@ function PowaAuras:AddAnimation(frame, animation, group, speed, alpha, begin)
 			--self:ShowText("\nHeight=", height);
 		end
 
+	end
+	
+	if (beginSpin) then
+		self:AddRotation(animationGroup, 360, math.max(duration/4, 0.25), PowaMisc.AnimationFps, animationGroup:GetMaxOrder()+1);
 	end
 	
 	return animationGroup, duration, duration2;
