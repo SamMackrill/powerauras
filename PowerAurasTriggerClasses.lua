@@ -3,13 +3,14 @@
 Base class for Trigger Types.
 ===========================
 --]]
-cPowaTrigger = PowaClass(function(trigger, auraId, triggerId)
+cPowaTrigger = PowaClass(function(trigger, auraId, triggerId, value)
 	if(not auraId or not triggerId or not PowaAuras.Auras[auraId]) then return; end
 	PowaAuras:ShowText("Constructing Trigger type ", trigger.Type);
 	-- Set up variables for trigger.
 	trigger.Id               = triggerId;
 	trigger.AuraId           = auraId;
 	trigger.Actions          = {};
+	trigger.Value            = value;
 	trigger.State            = false;
 end);
 
@@ -44,6 +45,7 @@ end
 function cPowaTrigger:QueueActions(aura)
 	for i = 1, #self.Actions do
 		local action = self.Actions[i];
+		action.TriggerValue = self.Value;
 		PowaAuras:ShowText("Queuing Action ", action.Id, " on Trigger ", self.Id, " for Aura ", aura.id);
 		aura.TriggerActionQueue[#aura.TriggerActionQueue+1] = action;
 	end
@@ -81,7 +83,12 @@ function cPowaAuraEndTrigger:Check()
 	--PowaAuras:ShowText("cPowaAuraEndTrigger:Check");
 	return true;
 end
-
+cPowaAuraStateTrigger = PowaClass(cPowaTrigger, { Type = "State" });
+function cPowaAuraStateTrigger:Check(state)
+	--PowaAuras:ShowText("cPowaAuraEndTrigger:Check");
+	self.Value = state;
+	return true;
+end
 --[[
 =====cPowaTriggerAction========
 
@@ -137,7 +144,9 @@ end
 cPowaAuraMessageAction = PowaClass(cPowaTriggerAction, { Type = "Message" });
 
 function cPowaAuraMessageAction:Fire()
-	PowaAuras:ShowText( self.Parameters.Message );
+	local aura = PowaAuras.Auras[self.AuraId];
+	local text = aura:SubstituteInText(self.Parameters.Message , "%%v", function() return self.TriggerValue end, PowaAuras.Text.Unknown);
+	PowaAuras:ShowText( text );
 end
 
 --[[
@@ -148,6 +157,7 @@ cPowaAuraAnimationAction = PowaClass(cPowaTriggerAction, { Type = "Animation" })
 
 function cPowaAuraAnimationAction:Fire()
 	PowaAuras:ShowText("Animation Play: ", self.AnimationGroup:GetName() );
+	self.Parameters.Frame:StopAnimating();
 	self.AnimationGroup:Play();
 end
 
@@ -155,7 +165,11 @@ function cPowaAuraAnimationAction:Init()
 	local aura = PowaAuras.Auras[self.AuraId];
 	local groupName = "Trigger" .. self.TriggerId .. "_" .. self.Id;
 	PowaAuras:ShowText("Add Animation: ", self.Parameters.Animation, " Group=", groupName );
-	self.AnimationGroup =  PowaAuras:AddAnimation(aura, self.Parameters.Frame, self.Parameters.Animation, groupName, self.Parameters.Speed, self.Parameters.Alpha, self.Parameters.BeginSpin, self.Parameters.Hide, self.Parameters.State);
+	if (self.Parameters.Loop) then
+		self.AnimationGroup =  PowaAuras:AddLoopingAnimation(aura, self.Parameters.Frame, self.Parameters.Animation, groupName, self.Parameters.Speed, self.Parameters.Alpha)
+	else
+		self.AnimationGroup =  PowaAuras:AddAnimation(aura, self.Parameters.Frame, self.Parameters.Animation, groupName, self.Parameters.Speed, self.Parameters.Alpha, self.Parameters.BeginSpin, self.Parameters.Hide, self.Parameters.State);
+	end
 end
 
 --[[
