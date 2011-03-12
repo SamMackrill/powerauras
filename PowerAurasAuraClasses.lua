@@ -187,7 +187,9 @@ function cPowaAura:Init()
 end
 
 function cPowaAura:SetState(newState)
-	if (not newState) then return; end
+	if (not newState or newState==self.State) then return; end
+	self.State = newState;
+	self:CheckTriggers("State", newState);
 end
 
 function cPowaAura:SetFixedIcon()
@@ -239,17 +241,23 @@ function cPowaAura:CreateTriggers()
 	if (self.finish>0) then
 		trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame, Animation=self.finish + 100, Speed=self.speed, Alpha=self.alpha, Hide=true});
 	end		
+	
+	trigger=self:CreateTrigger(cPowaAuraStateTrigger, self.State);
+	trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! State Changed to %v"});
+	if (self.anim1>0) then
+		trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame, Animation=self.anim1, Speed=self.speed, Alpha=self.alpha, Loop=true});
+	end			
 end
 
-function cPowaAura:CreateTrigger(tType)
+function cPowaAura:CreateTrigger(tType, value)
 	-- Get a place to put this trigger in.
 	local id = 1;
 	while(self.Triggers[id]) do
 		id = id + 1;
 	end
 	-- Make the trigger class.
-	local trigger = tType(self.id, id);
-	PowaAuras:ShowText("Creating " .. trigger.Type .. "Trigger (" .. self.id .. ", " .. id .. ")");
+	local trigger = tType(self.id, id, value);
+	PowaAuras:ShowText("Creating " .. trigger.Type .. "Trigger (" .. self.id .. ", " .. id .. ") initial value=", value);
 	self.Triggers[id] = trigger;
 	--self.TriggersByType[trigger.Type][id] = true;
 	return trigger;

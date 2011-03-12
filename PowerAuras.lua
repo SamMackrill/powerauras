@@ -1352,7 +1352,7 @@ function PowaAuras:ShowSecondaryAuraForFirstTime(aura)
 	secondaryFrame:SetHeight(secondaryFrame.baseH);
 
 
-
+--[[
 	if (aura.UseOldAnimations) then
 
 		secondaryFrame.statut = 1;
@@ -1386,7 +1386,7 @@ function PowaAuras:ShowSecondaryAuraForFirstTime(aura)
 		end
 
 	end
-	
+	]]--
 	secondaryAura.Showing = true;
 	secondaryAura.HideRequest = false;
 end
