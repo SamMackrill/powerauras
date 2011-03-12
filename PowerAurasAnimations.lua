@@ -5,61 +5,7 @@ function PowaAuras:CalculateDurations(speed)
 	return 1.25 - speed / 2, 1.526 / math.max(speed,0.05) - 0.513;
 end
 
-function PowaAuras:AddBeginAnimation(aura, frame)
-	--PowaAuras:ShowText("AddBeginAnimation begin=", aura.begin);
-	if (not aura.begin or aura.begin==PowaAuras.AnimationBeginTypes.None) then
-		return nil;
-	end
-	
-	local animationGroup, duration = PowaAuras:AddAnimation(aura, frame, aura.begin, "Begin", aura.speed, aura.alpha, aura.beginSpin, false)
-
-	--animationGroup:SetScript("OnPlay",
-	--function(self)
-	--	local aura = self.aura;
-	--	PowaAuras:ShowText("Begin OnPlay ", self:GetName(), " aura=", aura.id);
-	--end);
-	animationGroup:SetScript("OnFinished",
-	function(self, forced)
-		local aura = self.aura;
-		--PowaAuras:ShowText("Begin OnFinished ", self:GetName(), " forced=", forced, " aura=", aura.id);
-		if (aura and aura.MainAnimation) then
-			aura.MainAnimation:Play();
-			local secondaryAura = PowaAuras.SecondaryAuras[aura.id];
-			if (secondaryAura) then
-				local secondaryFrame = PowaAuras.SecondaryFrames[aura.id];
-				if (secondaryFrame) then
-					secondaryFrame:Show(); -- Show Secondary Aura Frame
-					if (secondaryAura.MainAnimation) then
-						secondaryAura.MainAnimation:Play();
-					end
-				end
-			end
-		end
-	end);
-
-	
-	return animationGroup;				
-end
-
-
-function PowaAuras:AddEndAnimation(aura, frame)
-	--PowaAuras:ShowText("AddEndAnimation finish=", aura.finish);
-	if (not aura.finish or aura.finish==PowaAuras.AnimationEndTypes.None) then
-		return nil;
-	end
-	
-	local animationGroup, duration = PowaAuras:AddAnimation(aura, frame, 100 + aura.finish, "End", aura.speed, aura.alpha, false, true)
-	
-	--animationGroup:SetScript("OnPlay",
-	--function(self)
-	--	PowaAuras:ShowText("EndAnimation OnPlay ", self:GetName(), " aura=", self.aura.id);
-	--end);
-
-	
-	return animationGroup;				
-end
-
-function PowaAuras:AddAnimation(aura, frame, animation, group, speed, alpha, beginSpin, hide, state)
+function PowaAuras:AddAnimation(Action, frame, animation, group, speed, alpha, beginSpin, hide, state)
 
 	local animationGroup = frame:CreateAnimationGroup(group);
 	animationGroup.aura = aura;
@@ -68,18 +14,15 @@ function PowaAuras:AddAnimation(aura, frame, animation, group, speed, alpha, beg
 
 	animationGroup:SetScript("OnFinished",
 	function(self, forced)
-		PowaAuras:ShowText("EndAnimation OnFinished ", self:GetName(), " aura=", self.aura.id);
-		if (self.aura) then
-			if (self.HideWhenDone) then
-				self.aura:Hide(true);
-			end
-			self.aura:SetState(self.StateWhenDone);
+		PowaAuras:ShowText("EndAnimation OnFinished ", self:GetName(), " Action=", self.Action.id);
+		if (self.Action) then
+			self.Action:Finished();
 		end
 	end);
 	
 	local duration, duration2 = self:CalculateDurations(speed);
 	
-	--PowaAuras:ShowText("AddBeginAnimation duration=", duration, " speed=", speed);
+	--PowaAuras:ShowText("AddAnimation duration=", duration, " speed=", speed);
 	if (animation<100 and animation~=PowaAuras.AnimationBeginTypes.Bounce) then
 		self:AddJumpAlphaAndReturn(animationGroup, -math.min(alpha,0.99), duration, PowaMisc.AnimationFps, 1);
 	end
@@ -178,26 +121,6 @@ end
 function PowaAuras:AddJumpScaleAndReturn(animationGroup, scale, duration, fps, order)
 	self:AddScale(animationGroup, scale, scale, 0, 0, order);
 	self:AddScale(animationGroup, 1/scale, 1/scale, duration, fps, order+1);
-end
-
-function PowaAuras:AddMainAnimation(aura, frame)
-	if (not animation or animation==PowaAuras.AnimationTypes.Static) then
-		return nil;
-	end
-	
-	--animationGroup:SetScript("OnPlay",
-	--function(self)
-	--	PowaAuras:ShowText("Main OnPlay ", self:GetName(), " aura=", self.aura.id);
-	--end);
-
-	
-	local speed = 1.0;
-	if (aura.isSecondary) then
-		speed = PowaAuras.Auras[aura.id].speed;
-	else
-		speed = aura.speed;
-	end
-	AddLoopingAnimation(aura, frame, animation, "Main", speed, aura.alpha);
 end
 	
 function PowaAuras:AddLoopingAnimation(aura, frame, animation, group, speed, alpha)

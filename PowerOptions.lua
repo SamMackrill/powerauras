@@ -207,7 +207,6 @@ function PowaAuras:MainListClick(owner)
 				aura.off = allEnabled;
 				auraIcon:SetText(offText);
 			end
-			self.SecondaryAuras[i] = nil;
 		end
 		
 		self.DoCheck.All = true;
@@ -290,7 +289,6 @@ function PowaAuras:TriageIcones(nPage)
 		if (aura) then
 			aura:Hide();
 		end
-		self.SecondaryAuras[i] = nil;
 	end
 
 	local a = min;
@@ -430,9 +428,8 @@ function PowaAuras:OptionNewEffect()
 	self:CalculateAuraSequence();
 
 	aura.Active = true;
-	aura:CreateFrames();
+	aura:RecreateFrames();
 	
-	self.SecondaryAuras[i] = nil; -- Force recreate
 	self:DisplayAura(i);
 
 	self:UpdateMainOption();
@@ -2892,8 +2889,7 @@ function PowaAuras:EditorShow()
 	if (aura) then
 		if (not aura.Showing) then 
 			aura.Active = true;
-			aura:CreateFrames();
-			self.SecondaryAuras[aura.id] = nil; -- Force recreate
+			aura:RecreateFrames();
 			self:DisplayAura(aura.id);
 		end
 		self:InitPage(aura);
@@ -3504,8 +3500,7 @@ function PowaAuras:OptionTest()
 		aura.Active = false;
 	else
 		aura.Active = true;
-		aura:CreateFrames();
-		self.SecondaryAuras[aura.id] = nil; -- Force recreate
+		aura:RecreateFrames();
 		self:DisplayAura(aura.id);
 	end
 end
@@ -3517,8 +3512,7 @@ function PowaAuras:OptionTestAll()
 	for id, aura in pairs(self.Auras) do
 		if (not aura.off) then 
 			aura.Active = true;
-			aura:CreateFrames();
-			self.SecondaryAuras[aura.id] = nil; -- Force recreate
+			aura:RecreateFrames();
 			self:DisplayAura(aura.id);
 		end
 	end
@@ -3551,8 +3545,7 @@ function PowaAuras:RedisplayAuras()
 			if (aura.Timer) then aura.Timer:Hide(); end
 			if (aura.Stacks) then aura.Stacks:Hide(); end
 			aura.Active = true;
-			aura:CreateFrames();
-			self.SecondaryAuras[aura.id] = nil; -- Force recreate
+			aura:RecreateFrames();
 			self:DisplayAura(aura.id);
 		end
 	end	
@@ -3583,11 +3576,7 @@ function PowaAuras:RedisplayAura(auraId) ---Re-show aura after options changed
 	--self:ShowText("RedisplayAura auraId=", aura.id, " showing=", aura.Showing);
 	local showing = aura.Showing;
 	aura:Hide();
-	aura.BeginAnimation = nil;
-	aura.MainAnimation = nil;
-	aura.EndAnimation = nil;
-	aura:CreateFrames();
-	self.SecondaryAuras[aura.id] = nil; -- Force recreate
+	aura:RecreateFrames();
 	if (showing) then
 		self:DisplayAura(aura.id);
 	end

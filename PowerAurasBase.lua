@@ -90,7 +90,6 @@ PowaAuras = {
 	MoveEffect = 0; -- 1 = copie / 2 = move
 	
 	Auras = {};
-	SecondaryAuras = {};
 	Frames = {};
 	SecondaryFrames = {};
 	Textures = {};

@@ -201,7 +201,6 @@ function cPowaAura:Dispose()
 	PowaAuras:Dispose("Textures", self.id);
 	PowaAuras:Dispose("SecondaryFrames", self.id);
 	PowaAuras:Dispose("SecondaryTextures", self.id);
-	PowaAuras:Dispose("SecondaryAuras", self.id);
 end
 
 function cPowaAura:CustomEvents()
@@ -228,7 +227,7 @@ end
 
 function cPowaAura:CreateTriggers()
 	if (self.off) then return; end
-	local frame, texture = self:CreateFrames();
+	local frame, texture, frame2, texture2 = self:CreateFrames();
 	
 	local trigger=self:CreateTrigger(cPowaAuraStartTrigger);
 	trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Show Aura"});
@@ -258,7 +257,17 @@ function cPowaAura:CreateTriggers()
 	trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! State Changed to %v"});
 	if (self.anim1>0) then
 		trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame, Animation=self.anim1, Speed=self.speed, Alpha=self.alpha, Loop=true});
-	end			
+	end
+	if (self.anim2) then
+		local speed;
+		if (aura.speed > 0.5) then
+			speed = aura.speed - 0.1; --- legerement plus lent
+		else
+			speed = aura.speed / 2; --- legerement plus lent
+		end
+		trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame2, Animation=self.anim2, Speed=speed, Alpha=self.alpha * 0.5, Loop=true});
+	end
+	
 end
 
 function cPowaAura:CreateTrigger(tType, value)
@@ -385,15 +394,19 @@ function cPowaAura:AddExtraTooltipInfo(tooltip)
 	end
 end
 
--- Get Frame and Texture, creating only if required
-function cPowaAura:CreateFrames()
-	local frame = self:GetFrame();
+function cPowaAura:RecreateFrames()
+	self:Dispose();
+	return self:CreateFrames();
+end
+
+function cPowaAura:GetSingleFrame(secondary)
+	local frame = self:GetFrame(secondary);
 	if (frame==nil) then
 		--PowaAuras:UnitTestInfo("New Frames", self.id);
 		--PowaAuras:UnitTestDebug("Creating frame for aura ", self.id);
 		--- Frame --- 
 		frame = CreateFrame("Frame", nil, UIParent);
-		self:SetFrame(frame);
+		self:SetFrame(frame, secondary);
 		
 		frame:SetFrameStrata(self.strata);
 		frame:Hide();  
@@ -403,8 +416,10 @@ function cPowaAura:CreateFrames()
 		
 		frame.aura = self;
 	end
-	
-	local texture = self:GetTexture();
+end
+
+function cPowaAura:GetSingleTexture(frame, secondary)
+	local texture = self:GetTexture(secondary);
 	if (texture==nil) then
 		--PowaAuras:UnitTestInfo("New Texture", self.id);
 		if self.textaura then
@@ -419,9 +434,7 @@ function cPowaAura:CreateFrames()
 			texture = frame:CreateTexture(nil,"BACKGROUND");
 			texture:SetBlendMode("ADD");
 			texture:SetAllPoints(frame); --- attache la texture a la frame
-			frame.texture = texture;
 		end
-		self:SetTexture(texture);
 	else
 		if self.textaura then
 			--PowaAuras:UnitTestDebug("textaura ", texture:GetObjectType());
@@ -435,7 +448,6 @@ function cPowaAura:CreateFrames()
 				texture:SetFont(STANDARD_TEXT_FONT, 20);
 				texture:SetTextColor(self.r,self.g,self.b);
 				texture:SetJustifyH("CENTER");
-				self:SetTexture(texture);
 			end
 		else
 			if texture:GetObjectType() == "FontString" then
@@ -444,19 +456,28 @@ function cPowaAura:CreateFrames()
 				texture = frame:CreateTexture(nil,"BACKGROUND");
 				texture:SetBlendMode("ADD");	
 				texture:SetAllPoints(frame); --- attache la texture a la frame
-				frame.texture = texture;
-				self:SetTexture(texture);
 			end
 		end
 	end	
-	return frame, texture;
+	self:SetTexture(texture, secondary);
+end
+
+	
+-- Get Frame and Texture, creating only if required
+function cPowaAura:CreateFrames()
+	local frame    = self:GetSingleFrame();
+	local frame2   = self:GetSingleFrame(true);
+	local texture  = self:GetSingleTexture(frame);
+	local texture2 = self:GetSingleTexture(frame2, true);
+
+	return frame, texture, frame2, texture2;
 end
 
 
 function cPowaAura:Hide(skipEndAnimationStop)	
 	--PowaAuras:UnitTestInfo("Aura.Hide ", self.id);
 	
-	if (self.BeginAnimation and self.BeginAnimation:IsPlaying()) then
+	if (self.    and self.BeginAnimation:IsPlaying()) then
 		self.BeginAnimation:Stop();
 	end
 	if (self.MainAnimation and self.MainAnimation:IsPlaying()) then
@@ -466,23 +487,15 @@ function cPowaAura:Hide(skipEndAnimationStop)
 		self.EndAnimation:Stop();
 	end
 
+	if (self.Timer and (PowaAuras.ModTest or self.off)) then self.Timer:Hide(); end -- Hide Aura
+	if (self.Stacks) then self.Stacks:Hide(); end
 	local frame = self:GetFrame();
-
 	if (frame) then
 		frame:Hide();
 	end
-
-	if (not self.isSecondary) then
-		if (self.Timer and (PowaAuras.ModTest or self.off)) then self.Timer:Hide(); end -- Hide Aura
-		if (self.Stacks) then self.Stacks:Hide(); end
-		local frame = PowaAuras.Frames[self.id];
-		if (frame) then
-			frame:Hide();
-		end
-		local secondaryAura = PowaAuras.SecondaryAuras[self.id];
-		if (secondaryAura) then
-			secondaryAura:Hide();
-		end
+	local frame2 = self:GetFrame(true);
+	if (frame2) then
+		frame2:Hide();
 	end
 
 	self.Showing = false;
@@ -885,30 +898,30 @@ function cPowaAura:Display()
 	end
 end
 
-function cPowaAura:GetFrame()
-	if (self.isSecondary) then
+function cPowaAura:GetFrame(secondary)
+	if (secondary) then
 		return PowaAuras.SecondaryFrames[self.id];
 	end
 	return PowaAuras.Frames[self.id];
 end
 
-function cPowaAura:GetTexture()
-	if (self.isSecondary) then
+function cPowaAura:GetTexture(secondary)
+	if (secondary) then
 		return PowaAuras.SecondaryTextures[self.id];
 	end
 	return PowaAuras.Textures[self.id];
 end
 
-function cPowaAura:SetFrame(frame)
-	if (self.isSecondary) then
+function cPowaAura:SetFrame(frame, secondary)
+	if (secondary) then
 		PowaAuras.SecondaryFrames[self.id] = frame;
 		return;
 	end
 	PowaAuras.Frames[self.id] = frame;
 end
 
-function cPowaAura:SetTexture(texture)
-	if (self.isSecondary) then
+function cPowaAura:SetTexture(texture, secondary)
+	if (secondary) then
 		PowaAuras.SecondaryTextures[self.id] = texture;
 		return;
 	end
