@@ -1499,6 +1499,7 @@ function PowaAuras:UpdateAura(aura, elapsed)
 					aura:Hide();
 				end
 			else
+			--[[
 				if (not aura.EndAnimation) then
 					aura:Hide();
 				else
@@ -1516,6 +1517,7 @@ function PowaAuras:UpdateAura(aura, elapsed)
 					end
 					aura.EndAnimation:Play();
 				end
+			]]--
 			end
 		end
 
