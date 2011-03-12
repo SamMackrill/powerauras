@@ -173,6 +173,42 @@ function cPowaAuraAnimationAction:Init()
 end
 
 --[[
+=====cPowaAuraPlaySoundAction========
+===========================
+--]]
+cPowaAuraPlaySoundAction = PowaClass(cPowaTriggerAction, { Type = "PlaySound" });
+
+function cPowaAuraPlaySoundAction:Fire()
+	PowaAuras:ShowText("Sound Play: ", self.Sound);
+	if (self.WoWSound) then
+		PlaySound(self.Sound, PowaMisc.SoundChannel);
+	else
+		PlaySoundFile(self.Sound, PowaMisc.SoundChannel);
+	end
+end
+
+function cPowaAuraPlaySoundAction:Init()
+	if (self.Parameters.CustomSound ~= "") then
+		local pathToSound;
+		if (string.find(aura.customsound, "\\")) then
+			self.Sound = self.Parameters.CustomSound;
+		else 
+			self.Sound = PowaGlobalMisc.PathToSounds .. self.Parameters.CustomSound;
+		end
+	elseif (self.Parameters.Sound > 0) then
+		if (PowaAuras.Sound[self.Parameters.Sound]~=nil and string.len(PowaAuras.Sound[self.Parameters.Sound])>0) then
+			if (string.find(PowaAuras.Sound[self.Parameters.Sound], "%.")) then
+				--self:ShowText("Playing sound ",PowaGlobalMisc.PathToSounds,PowaAuras.Sound[aura.sound]);		
+				self.Sound = PowaGlobalMisc.PathToSounds .. PowaAuras.Sound[self.Parameters.Sound];
+			else
+				--self:ShowText("Playing WoW sound ",PowaAuras.Sound[aura.sound]);		
+				self.Sound = PowaAuras.Sound[self.Parameters.Sound];
+			end
+		end
+	end	
+end
+
+--[[
 =====cPowaAuraOpacityAction========
 Fix that later.
 ===========================

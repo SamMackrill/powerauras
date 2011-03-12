@@ -1084,13 +1084,16 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 	end
 	local auraId = aura.id;
 	
+	--[[
 	if (not aura.UseOldAnimations and aura.EndAnimation and aura.EndAnimation:IsPlaying()) then
 		if (aura.Debug) then
 			self:Message("Hide aura as already playing");
 		end
 		aura:Hide();
 	end
-
+	]]--
+	
+	--[[
 	aura.EndSoundPlayed = nil;
 	
 	if (not self.ModTest) then
@@ -1115,6 +1118,7 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 			end
 		end	
 	end
+	]]--
 	
 	local frame, texture = aura:CreateFrames();
 

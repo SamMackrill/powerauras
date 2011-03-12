@@ -235,11 +235,23 @@ function cPowaAura:CreateTriggers()
 	if (self.begin>0) then
 		trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame, Animation=self.begin, Speed=self.speed, Alpha=self.alpha, BeginSpin=self.beginSpin, State=1});
 	end			
+	if (self.sound>0) then
+		trigger:AddAction(cPowaAuraPlaySoundAction, {Sound=self.sound});
+	end			
+	if (self.customsound~="") then
+		trigger:AddAction(cPowaAuraPlaySoundAction, {CustomSound=self.customsound});
+	end			
 	
 	trigger=self:CreateTrigger(cPowaAuraEndTrigger);
 	trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Hide Aura"});
 	if (self.finish>0) then
 		trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame, Animation=self.finish + 100, Speed=self.speed, Alpha=self.alpha, Hide=true});
+	end	
+	if (self.soundend>0) then
+		trigger:AddAction(cPowaAuraPlaySoundAction, {Sound=self.soundend});
+	end			
+	if (self.customsoundend~="") then
+		trigger:AddAction(cPowaAuraPlaySoundAction, {CustomSound=self.customsoundend});
 	end		
 	
 	trigger=self:CreateTrigger(cPowaAuraStateTrigger, self.State);
