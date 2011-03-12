@@ -255,7 +255,7 @@ function cPowaAura:ProcessTriggerQueue()
 	end
 	for i = 1, #self.TriggerActionQueue do
 		local action = self.TriggerActionQueue[i];
-		PowaAuras:ShowText("Firing Action ", action.Id, " on Trigger ", action.TriggerId, " for Aura ", action.AuraId);
+		PowaAuras:ShowText("Firing Action ", action.Id, " (", action.Type, ") on Trigger ", action.TriggerId, "(", action.Type,") for Aura ", action.AuraId);
 		action:Fire();
 	end
 
