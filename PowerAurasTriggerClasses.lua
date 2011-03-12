@@ -147,13 +147,15 @@ end
 cPowaAuraAnimationAction = PowaClass(cPowaTriggerAction, { Type = "Animation" });
 
 function cPowaAuraAnimationAction:Fire()
+	PowaAuras:ShowText("Animation Play: ", self.AnimationGroup:GetName() );
 	self.AnimationGroup:Play();
 end
 
 function cPowaAuraAnimationAction:Init()
 	local aura = PowaAuras.Auras[self.AuraId];
-	PowaAuras:ShowText("Add Animation: ", self.Parameters.Animation );
-	self.AnimationGroup =  PowaAuras:AddAnimation(self.Parameters.Frame, self.Parameters.Animation, "Trigger" .. self.TriggerId .. "_" .. self.Id, self.Parameters.Speed, self.Parameters.Alpha, self.Parameters.BeginSpin);
+	local groupName = "Trigger" .. self.TriggerId .. "_" .. self.Id;
+	PowaAuras:ShowText("Add Animation: ", self.Parameters.Animation, " - ", groupName );
+	self.AnimationGroup =  PowaAuras:AddAnimation(self.Parameters.Frame, self.Parameters.Animation, groupName, self.Parameters.Speed, self.Parameters.Alpha, self.Parameters.BeginSpin);
 end
 
 --[[
