@@ -154,7 +154,7 @@ end
 function cPowaAuraAnimationAction:Init()
 	local aura = PowaAuras.Auras[self.AuraId];
 	local groupName = "Trigger" .. self.TriggerId .. "_" .. self.Id;
-	PowaAuras:ShowText("Add Animation: ", self.Parameters.Animation, " - ", groupName );
+	PowaAuras:ShowText("Add Animation: ", self.Parameters.Animation, " Group=", groupName );
 	self.AnimationGroup =  PowaAuras:AddAnimation(self.Parameters.Frame, self.Parameters.Animation, groupName, self.Parameters.Speed, self.Parameters.Alpha, self.Parameters.BeginSpin);
 end
 
