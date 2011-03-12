@@ -109,6 +109,9 @@ end);
 function cPowaTriggerAction:Init()
 end
 
+function cPowaTriggerAction:Finished()
+end
+
 --[[
 cPowaTriggerAction.ExportSettings = {
 	Enabled = true,
@@ -170,6 +173,15 @@ function cPowaAuraAnimationAction:Init()
 	else
 		self.AnimationGroup =  PowaAuras:AddAnimation(aura, self.Parameters.Frame, self.Parameters.Animation, groupName, self.Parameters.Speed, self.Parameters.Alpha, self.Parameters.BeginSpin, self.Parameters.Hide, self.Parameters.State);
 	end
+end
+
+function cPowaAuraAnimationAction:Finished()
+	PowaAuras:ShowText("Animation Finished Hide=", self.Parameters.Hide, " State=", self.Parameters.State );
+	local aura = PowaAuras.Auras[self.AuraId];
+	if (self.Parameters.Hide) then
+		aura:Hide(true);
+	end
+	aura:SetState(self.Parameters.State);
 end
 
 --[[
