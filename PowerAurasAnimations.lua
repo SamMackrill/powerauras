@@ -11,8 +11,7 @@ function PowaAuras:AddBeginAnimation(aura, frame)
 		return nil;
 	end
 	
-	local animationGroup, duration = PowaAuras:AddAnimation(frame, aura.begin, "Begin", aura.speed, aura.alpha, aura.beginSpin)
-	animationGroup.aura = aura;
+	local animationGroup, duration = PowaAuras:AddAnimation(aura, frame, aura.begin, "Begin", aura.speed, aura.alpha, aura.beginSpin, false)
 
 	--animationGroup:SetScript("OnPlay",
 	--function(self)
@@ -49,29 +48,36 @@ function PowaAuras:AddEndAnimation(aura, frame)
 		return nil;
 	end
 	
-	local animationGroup, duration = PowaAuras:AddAnimation(frame, 100 + aura.finish, "End", aura.speed, aura.alpha, false)
-	animationGroup.aura = aura;
+	local animationGroup, duration = PowaAuras:AddAnimation(aura, frame, 100 + aura.finish, "End", aura.speed, aura.alpha, false, true)
 	
 	--animationGroup:SetScript("OnPlay",
 	--function(self)
 	--	PowaAuras:ShowText("EndAnimation OnPlay ", self:GetName(), " aura=", self.aura.id);
 	--end);
-	
-	animationGroup:SetScript("OnFinished",
-	function(self, forced)
-		--PowaAuras:ShowText("EndAnimation OnFinished ", self:GetName(), " aura=", self.aura.id);
-		if (self.aura) then
-			self.aura:Hide(true);
-		end
-	end);
+
 	
 	return animationGroup;				
 end
 
-function PowaAuras:AddAnimation(frame, animation, group, speed, alpha, beginSpin)
+function PowaAuras:AddAnimation(aura, frame, animation, group, speed, alpha, beginSpin, hide, state)
 
 	local animationGroup = frame:CreateAnimationGroup(group);
+	animationGroup.aura = aura;
+	animationGroup.HideWhenDone = hide;
+	animationGroup.StateWhenDone = state;
 
+	animationGroup:SetScript("OnFinished",
+	function(self, forced)
+		PowaAuras:ShowText("EndAnimation OnFinished ", self:GetName(), " aura=", self.aura.id);
+		if (self.aura) then
+			if (self.HideWhenDone) then
+				self.aura:Hide(true);
+			end
+			self.aura:SetState(self.StateWhenDone);
+		end
+	end);
+
+	
 	local duration, duration2 = self:CalculateDurations(speed);
 	
 	--PowaAuras:ShowText("AddBeginAnimation duration=", duration, " speed=", speed);

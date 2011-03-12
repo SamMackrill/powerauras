@@ -30,6 +30,8 @@ cPowaAura = PowaClass(function(aura, id, base)
 	end
 
 	aura.id = id;
+	aura.State = 0;
+	
 	aura.Showing = false;
 	aura.Active = false;
 	aura.HideRequest = false;
@@ -184,6 +186,10 @@ function cPowaAura:Init()
 	self:SetFixedIcon();
 end
 
+function cPowaAura:SetState(newState)
+	if (not newState) then return; end
+end
+
 function cPowaAura:SetFixedIcon()
 end
 
@@ -225,13 +231,13 @@ function cPowaAura:CreateTriggers()
 	local trigger=self:CreateTrigger(cPowaAuraStartTrigger);
 	trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Show Aura"});
 	if (self.begin>0) then
-		trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame, Animation=self.begin, Speed=self.speed, Alpha=self.alpha, BeginSpin=self.beginSpin});
+		trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame, Animation=self.begin, Speed=self.speed, Alpha=self.alpha, BeginSpin=self.beginSpin, State=1});
 	end			
 	
 	trigger=self:CreateTrigger(cPowaAuraEndTrigger);
 	trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Hide Aura"});
 	if (self.finish>0) then
-		trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame, Animation=self.finish + 100, Speed=self.speed, Alpha=self.alpha});
+		trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame, Animation=self.finish + 100, Speed=self.speed, Alpha=self.alpha, Hide=true});
 	end		
 end
 
