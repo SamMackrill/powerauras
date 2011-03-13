@@ -161,6 +161,7 @@ cPowaAuraAnimationAction = PowaClass(cPowaTriggerAction, { Type = "Animation" })
 function cPowaAuraAnimationAction:Fire()
 	PowaAuras:ShowText("Animation Play: ", self.AnimationGroup:GetName() );
 	self.Parameters.Frame:StopAnimating();
+	self.Parameters.Frame:Show();
 	self.AnimationGroup:Play();
 end
 

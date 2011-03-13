@@ -883,6 +883,7 @@ function PowaAuras:TestThisEffect(auraId, giveReason, ignoreCascade)
 			if (debugEffectTest) then
 				self:Message("HideAura ", aura.buffname, " (",auraId,") ", reason);
 			end
+			aura:SetHideRequest(aura);
 		end
 		if (aura.Active) then
 			if (not ignoreCascade) then
@@ -1104,21 +1105,14 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 	local frame, texture, frame2, texture2 = aura:CreateFrames();	
 
 	self:InitialiseFrame(aura, frame, texture, aura.alpha);
-	if (aura.anim2 == 0) then --- no secondary aura
+	if (aura.anim2 == 0) then --- no secondary frame
 		if (frame2) then
 			frame2:Hide();
 		end
 		self.SecondaryFrames[aura.id] = nil;
 		self.SecondaryTextures[aura.id] = nil;
 	else
-		self:InitialiseFrame(aura, frame2, texture2, aura.alpha * 0.5);
-		--[[
-		if (aura.speed > 0.5) then
-			secondaryAura.speed = aura.speed - 0.1; --- legerement plus lent
-		else
-			secondaryAura.speed = aura.speed / 2; --- legerement plus lent
-		end
-		]]--		
+		self:InitialiseFrame(aura, frame2, texture2, aura.alpha * 0.5);	
 	end
 
 	if (self.ModTest and not PowaMisc.Locked) then
