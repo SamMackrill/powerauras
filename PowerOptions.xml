@@ -100,7 +100,7 @@
 				</FontString>
 				<FontString name="$parentSendTitle" inherits="GameFontNormal" text="Enter a player name below and click 'Send'." justifyH="CENTER" justifyV="TOP">
 					<Size>
-						<AbsDimension x="375" y="24" />
+						<AbsDimension x="365" y="24" />
 					</Size>
 					<Anchors>
 						<Anchor point="TOP" relativePoint="TOP" x="0" y="-125"/>
@@ -221,7 +221,10 @@
 						<Anchor point="TOP" relativePoint="TOP" x="0" y="-24"/>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentDescTitle" inherits="GameFontNormal" text="%s would like to send you some auras." justifyH="CENTER">
+				<FontString name="$parentDescTitle" inherits="GameFontNormal" text="%s would like to send you some auras." justifyH="CENTER" justifyV="TOP">
+					<Size>
+						<AbsDimension x="365" y="24" />
+					</Size>
 					<Anchors>
 						<Anchor point="TOP" relativePoint="TOP" x="0" y="-50"/>
 					</Anchors>
@@ -229,7 +232,7 @@
 				</FontString>
 				<FontString name="$parentWarningTitle" inherits="GameFontNormal" text="" justifyH="CENTER" justifyV="TOP">
 					<Size>
-						<AbsDimension x="375" y="24" />
+						<AbsDimension x="365" y="24" />
 					</Size>
 					<Anchors>
 						<Anchor point="TOP" relativePoint="TOP" x="0" y="-64"/>
