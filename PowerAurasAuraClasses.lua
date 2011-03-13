@@ -231,7 +231,7 @@ function cPowaAura:CreateTriggers()
 	local trigger=self:CreateTrigger(cPowaAuraStartTrigger);
 	trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Show Aura"});
 	if (self.begin>0) then
-		trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame, Animation=self.begin, Speed=self.speed, Alpha=self.alpha, BeginSpin=self.beginSpin, State=1});
+		trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame, HideFrame=frame2, Animation=self.begin, Speed=self.speed, Alpha=self.alpha, BeginSpin=self.beginSpin, State=1});
 	end			
 	if (self.sound>0) then
 		trigger:AddAction(cPowaAuraPlaySoundAction, {Sound=self.sound});
@@ -242,8 +242,9 @@ function cPowaAura:CreateTriggers()
 	
 	trigger=self:CreateTrigger(cPowaAuraEndTrigger);
 	trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Hide Aura"});
+	trigger:AddAction(cPowaAuraStateAction, {State=2});
 	if (self.finish>0) then
-		trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame, Animation=self.finish + 100, Speed=self.speed, Alpha=self.alpha, Hide=true, State=0});
+		trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame, HideFrame=frame2, Animation=self.finish + 100, Speed=self.speed, Alpha=self.alpha, Hide=true, State=0});
 	end	
 	if (self.soundend>0) then
 		trigger:AddAction(cPowaAuraPlaySoundAction, {Sound=self.soundend});
@@ -252,7 +253,7 @@ function cPowaAura:CreateTriggers()
 		trigger:AddAction(cPowaAuraPlaySoundAction, {CustomSound=self.customsoundend});
 	end		
 	
-	trigger=self:CreateTrigger(cPowaAuraStateTrigger, self.State);
+	trigger=self:CreateTrigger(cPowaAuraStateTrigger, 1, cPowaTrigger.CompareEquals);
 	trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! State Changed to %v"});
 	if (self.anim1>0) then
 		trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame, Animation=self.anim1, Speed=self.speed, Alpha=self.alpha, Loop=true});
@@ -269,14 +270,14 @@ function cPowaAura:CreateTriggers()
 	
 end
 
-function cPowaAura:CreateTrigger(tType, value)
+function cPowaAura:CreateTrigger(tType, value, compare)
 	-- Get a place to put this trigger in.
 	local id = 1;
 	while(self.Triggers[id]) do
 		id = id + 1;
 	end
 	-- Make the trigger class.
-	local trigger = tType(self.id, id, value);
+	local trigger = tType(self.id, id, value, compare);
 	PowaAuras:ShowText("Creating " .. trigger.Type .. "Trigger (" .. self.id .. ", " .. id .. ") initial value=", value);
 	self.Triggers[id] = trigger;
 	--self.TriggersByType[trigger.Type][id] = true;
