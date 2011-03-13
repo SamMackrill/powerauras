@@ -253,7 +253,7 @@ function cPowaAura:CreateTriggers()
 		trigger:AddAction(cPowaAuraPlaySoundAction, {CustomSound=self.customsoundend});
 	end		
 	
-	trigger=self:CreateTrigger(cPowaStateTrigger, 1, "AnimationSate", cPowaTrigger.CompareEquals);
+	trigger=self:CreateTrigger(cPowaStateTrigger, 1, "AnimationSate", "=");
 	trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! State Changed to %v"});
 	if (self.anim1>0) then
 		trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame, Animation=self.anim1, Speed=self.speed, Alpha=self.alpha, Loop=true});
@@ -276,7 +276,7 @@ function cPowaAura:CreateTriggers()
 			if (frame1) then trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame1, Animation=1000, Alpha=self.alpha, Speed=1}); end
 			if (frame2) then trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame2, Animation=1000, Alpha=self.alpha, Speed=1}); end
 		end
-		trigger=self:CreateTrigger(cPowaAuraTimerTrigger, 12, nil, cPowaTrigger.CompareLessThan);
+		trigger=self:CreateTrigger(cPowaAuraTimerTrigger, 12, nil, "<");
 		if (frame1 and frame1.texture) then trigger:AddAction(cPowaAuraColourAction, {Texture=frame1.texture, R=255, G=0, B=0, Revert=true}); end
 		if (frame2 and frame2.texture) then trigger:AddAction(cPowaAuraColourAction, {Texture=frame2.texture, R=255, G=0, B=0, Revert=true}); end
 		trigger:AddAction(cPowaAuraPlaySoundAction, {Sound=11});
@@ -298,7 +298,7 @@ function cPowaAura:CreateTrigger(tType, value, qualifier, compare)
 	end
 	-- Make the trigger class.
 	local trigger = tType(self.id, id, value, qualifier, compare);
-	PowaAuras:ShowText("Creating " .. trigger.Type .. "Trigger (" .. self.id .. ", " .. id .. ") initial value=", value);
+	PowaAuras:ShowText("Creating " .. trigger.Type .. "Trigger (" .. self.id .. ", " .. id .. ") initial value=", value, " compare=", compare);
 	self.Triggers[id] = trigger;
 	--self.TriggersByType[trigger.Type][id] = true;
 	return trigger;

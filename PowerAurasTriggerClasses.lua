@@ -12,11 +12,7 @@ cPowaTrigger = PowaClass(function(trigger, auraId, triggerId, value, qualifier, 
 	trigger.Value            = value;
 	trigger.Qualifier        = qualifier;
 	trigger.Set              = false;
-	if (compare==nil) then
-		trigger.Compare      = cPowaTrigger.CompareAlwaysTrue;
-	else
-		trigger.Compare      = compare;
-	end
+	trigger.CompareOperator  = compare;
 end);
 
 function cPowaTrigger:QueueActions(aura)
@@ -44,7 +40,7 @@ end
 
 function cPowaTrigger:Check(value, qualifier)
 	if (not self:CheckQulifier(qualifier)) then return false; end
-	if (not self.Compare(value, self.Value)) then
+	if (not self:Compare(self.CompareOperator, value, self.Value)) then
 		if (self.Once and self.Set) then self:ResetActions(); end
 		self.Set = false;
 	else
@@ -65,20 +61,18 @@ function cPowaTrigger:CheckQulifier(qualifier)
 	return (qualifier==self.Qualifier);
 end
 
-function cPowaTrigger.CompareAlwaysTrue(v1, v2)
+function cPowaTrigger:Compare(op, v1, v2)
 	--PowaAuras:ShowText("CompareAlwaysTrue");
+	if (op==nil) then return true; end
+	if (op=="=") then return (v1==v2); end
+	if (op==">") then return (v1>v2); end
+	if (op=="<") then return (v1<v2); end
+	if (op==">=") then return (v1>=v2); end
+	if (op=="<=") then return (v1<=v2); end
+	if (op=="!=") then return (v1~=v2); end
 	return true;
 end
 
-function cPowaTrigger.CompareEquals(v1, v2)
-	--PowaAuras:ShowText("CompareEquals v1=", v1, " v2=", v2);
-	return (v1 == v2);
-end
-
-function cPowaTrigger.CompareLessThan(v1, v2)
-	--PowaAuras:ShowText("CompareLessThan v1=", v1, " v2=", v2);
-	return (v1 < v2);
-end
 --[[
 function cPowaTrigger:RemoveAction(id)
 	-- Remove action if exists.
@@ -95,6 +89,7 @@ Timer trigger type class.
 cPowaAuraTimerTrigger = PowaClass(cPowaTrigger, { Type = "Timer", Once=true });
 
 cPowaAuraTimerRefreshTrigger = PowaClass(cPowaTrigger, { Type = "TimerRefresh" });
+
 cPowaStacksTrigger = PowaClass(cPowaTrigger, { Type = "Stacks" });
 
 cPowaAuraStartTrigger = PowaClass(cPowaTrigger, { Type = "AuraStart" });
