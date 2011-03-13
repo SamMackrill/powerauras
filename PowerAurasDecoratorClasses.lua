@@ -418,11 +418,10 @@ function cPowaTimer:Update(elapsed)
 end
 
 function cPowaTimer:SetDurationInfo(endtime)
-	if (self.DurationInfo ~= endtime) then
-		self.DurationInfo = endtime;
-		local aura = PowaAuras.Auras[self.id];
-		aura:CheckTriggers("TimerRefresh");
-	end
+	if (self.DurationInfo == endtime) then return end;
+	self.DurationInfo = endtime;
+	local aura = PowaAuras.Auras[self.id];
+	aura:CheckTriggers("TimerRefresh");
 end
 
 function cPowaTimer:ExtractDigits(displayValue)
@@ -436,23 +435,26 @@ function cPowaTimer:ShowValue(aura, frameIndex, displayValue)
 	if (PowaAuras.TimerFrame[self.id]==nil) then return; end
 	local timerFrame = PowaAuras.TimerFrame[self.id][frameIndex];
 	if (timerFrame==nil) then return; end
-	if (aura.texmode == 1) then
-		timerFrame.texture:SetBlendMode("ADD");
-	else
-		timerFrame.texture:SetBlendMode("DISABLE");
-	end
-	if (self.UseOwnColor) then
-		timerFrame.texture:SetVertexColor(self.r,self.g,self.b);
-	else
-		local auraTexture = PowaAuras.Textures[self.id];
-		if (auraTexture) then
-			if auraTexture:GetObjectType() == "Texture" then
-				timerFrame.texture:SetVertexColor(auraTexture:GetVertexColor());
-			elseif auraTexture:GetObjectType() == "FontString" then
-				timerFrame.texture:SetVertexColor(auraTexture:GetTextColor());
-			end
+	
+	if (not self.Showing) then
+		if (aura.texmode == 1) then
+			timerFrame.texture:SetBlendMode("ADD");
 		else
-			timerFrame.texture:SetVertexColor(aura.r,aura.g,aura.b);
+			timerFrame.texture:SetBlendMode("DISABLE");
+		end
+		if (self.UseOwnColor) then
+			timerFrame.texture:SetVertexColor(self.r,self.g,self.b);
+		else
+			local auraTexture = PowaAuras.Textures[self.id];
+			if (auraTexture) then
+				if auraTexture:GetObjectType() == "Texture" then
+					timerFrame.texture:SetVertexColor(auraTexture:GetVertexColor());
+				elseif auraTexture:GetObjectType() == "FontString" then
+					timerFrame.texture:SetVertexColor(auraTexture:GetTextColor());
+				end
+			else
+				timerFrame.texture:SetVertexColor(aura.r,aura.g,aura.b);
+			end
 		end
 	end
 	

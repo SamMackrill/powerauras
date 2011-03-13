@@ -270,12 +270,13 @@ function cPowaAura:CreateTriggers()
 	
 	if (self.Timer) then
 		local frame1, frame2 = PowaAuras:CreateTimerFrameIfMissing(self.id)
+		PowaAuras:ShowText("Timer Triggers frame1=", frame1, " texture1=", frame1.texture, " frame2=", frame2, " texture2=", frame2.texture);
 		if(self.Timer.UpdatePing) then
 			trigger=self:CreateTrigger(cPowaAuraTimerRefreshTrigger);
 			if (frame1) then trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame1, Animation=1000, Alpha=self.alpha, Speed=1}); end
 			if (frame2) then trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame2, Animation=1000, Alpha=self.alpha, Speed=1}); end
 		end
-		trigger=self:CreateTrigger(cPowaAuraTimerTrigger, 15, nil, cPowaTrigger.CompareLessThan);
+		trigger=self:CreateTrigger(cPowaAuraTimerTrigger, 12, nil, cPowaTrigger.CompareLessThan);
 		if (frame1 and frame1.texture) then trigger:AddAction(cPowaAuraColourAction, {Texture=frame1.texture, R=255, G=0, B=0, Revert=true}); end
 		if (frame2 and frame2.texture) then trigger:AddAction(cPowaAuraColourAction, {Texture=frame2.texture, R=255, G=0, B=0, Revert=true}); end
 		trigger:AddAction(cPowaAuraPlaySoundAction, {Sound=11});
