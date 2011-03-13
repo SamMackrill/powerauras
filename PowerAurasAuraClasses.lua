@@ -351,6 +351,16 @@ end
 --]]
 --==========================
 
+function cPowaAura:SetHideRequest()
+	if (self.Debug) then
+		PowaAuras:Message("SetHideRequest ", self.id, " (", self.buffname, ")");
+	end
+	self.HideRequest = true;
+	if (not self.InvertTimeHides) then
+		self.ForceTimeInvert = nil;
+	end
+end
+
 function cPowaAura:HasAction(action)
 	return (self.TriggerActions[action] and true or false);
 end

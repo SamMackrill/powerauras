@@ -929,15 +929,6 @@ function PowaAuras:CheckMultiple(aura, reason, giveReason)
 	return true, self:InsertText(self.Text.nomReasonMulti, aura.multiids);	
 end
 
-function PowaAuras:SetAuraHideRequest(aura)
-	if (aura.Debug) then
-		self:Message("SetAuraHideRequest ", aura.buffname);
-	end
-	aura.HideRequest = true;
-	if (not aura.InvertTimeHides) then
-		aura.ForceTimeInvert = nil;
-	end
-end
 
 -- Drag and Drop functions
 
@@ -1418,7 +1409,7 @@ function PowaAuras:UpdateAura(aura, elapsed)
 			if (GetTime() >= aura.TimeToHide) then --- If duration has expired then hide this aura
 				----self:UnitTestInfo("UpdateAura: Hide, duration expired");
 				--self:ShowText("UpdateAura: Hide, duration expired");
-				self:SetAuraHideRequest(aura);
+				aura:SetHideRequest();
 				aura.TimeToHide = nil;
 			end
 		end
