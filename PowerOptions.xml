@@ -444,7 +444,7 @@
 						PowaMainTestButtonText:SetText(PowaAuras.Text.nomTest);
 					</OnLoad>
 					<OnClick>
-						PowaAuras:OptionTest();
+						PowaAuras:ToggleTesting();
 						PowaAuras:UpdateMainOption();
 						PlaySound("igCharacterInfoTab");
 					</OnClick>
@@ -465,7 +465,7 @@
 						PowaMainTestAllButtonText:SetText(PowaAuras.Text.nomTestAll);
 					</OnLoad>
 					<OnClick>
-						PowaAuras:OptionTestAll();
+						PowaAuras:TestAllAuras();
 						PowaAuras:UpdateMainOption();
 						PlaySound("igCharacterInfoTab");
 					</OnClick>

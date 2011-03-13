@@ -5,10 +5,10 @@ function PowaAuras:CalculateDurations(speed)
 	return 1.25 - speed / 2, 1.526 / math.max(speed,0.05) - 0.513;
 end
 
-function PowaAuras:AddAnimation(Action, frame, animation, group, speed, alpha, beginSpin, hide, state)
+function PowaAuras:AddAnimation(action, frame, animation, group, speed, alpha, beginSpin, hide, state)
 
 	local animationGroup = frame:CreateAnimationGroup(group);
-	animationGroup.aura = aura;
+	animationGroup.Action = action;
 	animationGroup.HideWhenDone = hide;
 	animationGroup.StateWhenDone = state;
 
@@ -123,14 +123,16 @@ function PowaAuras:AddJumpScaleAndReturn(animationGroup, scale, duration, fps, o
 	self:AddScale(animationGroup, 1/scale, 1/scale, duration, fps, order+1);
 end
 	
-function PowaAuras:AddLoopingAnimation(aura, frame, animation, group, speed, alpha)
+function PowaAuras:AddLoopingAnimation(aura, action, frame, animation, group, speed, alpha, isSecondary)
 		
 	local animationGroup = frame:CreateAnimationGroup(group);
-	animationGroup.aura = aura;
+	animationGroup.Action = action;
 
 	animationGroup:SetScript("OnFinished",
 	function(self, forced)
-		self:Play();
+		if (self.Action) then
+			self.Action:Finished();
+		end
 	end);
 
 	local duration, duration2 = self:CalculateDurations(speed);
@@ -179,7 +181,7 @@ function PowaAuras:AddLoopingAnimation(aura, frame, animation, group, speed, alp
 		local factor = 0.05;
 		local increase = 1 + factor;
 		local decrease = 1 - factor;
-		if (aura.isSecondary) then
+		if (isSecondary) then
 			increase = 1 - factor;
 			decrease = 1 + factor;
 		end
@@ -192,7 +194,7 @@ function PowaAuras:AddLoopingAnimation(aura, frame, animation, group, speed, alp
 		local maxHeight = maxWidth * (1.6 - aura.torsion);
 		local i = 1;
 		local x = aura.x;
-		if (aura.isSecondary) then
+		if (isSecondary) then
 			x = -PowaAuras.Auras[aura.id].x;
 			frame:SetPoint("Center", x,  PowaAuras.Auras[aura.id].y);
 		end

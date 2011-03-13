@@ -169,18 +169,22 @@ function cPowaAuraAnimationAction:Init()
 	local groupName = "Trigger" .. self.TriggerId .. "_" .. self.Id;
 	PowaAuras:ShowText("Add Animation: ", self.Parameters.Animation, " Group=", groupName );
 	if (self.Parameters.Loop) then
-		self.AnimationGroup =  PowaAuras:AddLoopingAnimation(aura, self.Parameters.Frame, self.Parameters.Animation, groupName, self.Parameters.Speed, self.Parameters.Alpha)
+		self.AnimationGroup =  PowaAuras:AddLoopingAnimation(aura, self, self.Parameters.Frame, self.Parameters.Animation, groupName, self.Parameters.Speed, self.Parameters.Alpha, self.Parameters.Secondary)
 	else
-		self.AnimationGroup =  PowaAuras:AddAnimation(aura, self.Parameters.Frame, self.Parameters.Animation, groupName, self.Parameters.Speed, self.Parameters.Alpha, self.Parameters.BeginSpin, self.Parameters.Hide, self.Parameters.State);
+		self.AnimationGroup =  PowaAuras:AddAnimation(self, self.Parameters.Frame, self.Parameters.Animation, groupName, self.Parameters.Speed, self.Parameters.Alpha, self.Parameters.BeginSpin, self.Parameters.Hide, self.Parameters.State);
 	end
 end
 
 function cPowaAuraAnimationAction:Finished()
 	PowaAuras:ShowText("Animation Finished Hide=", self.Parameters.Hide, " State=", self.Parameters.State );
+	if (self.Parameters.Loop) then
+		self.AnimationGroup:Play();
+		return;
+	end
 	local aura = PowaAuras.Auras[self.AuraId];
 	if (self.Parameters.Hide) then
-		aura:Hide(true);
-	end
+		aura:Hide();
+	end	
 	aura:SetState(self.Parameters.State);
 end
 
