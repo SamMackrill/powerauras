@@ -3,7 +3,7 @@
 Base class for Trigger Types.
 ===========================
 --]]
-cPowaTrigger = PowaClass(function(trigger, auraId, triggerId, value)
+cPowaTrigger = PowaClass(function(trigger, auraId, triggerId, value, compare)
 	if(not auraId or not triggerId or not PowaAuras.Auras[auraId]) then return; end
 	PowaAuras:ShowText("Constructing Trigger type ", trigger.Type);
 	-- Set up variables for trigger.
@@ -12,6 +12,11 @@ cPowaTrigger = PowaClass(function(trigger, auraId, triggerId, value)
 	trigger.Actions          = {};
 	trigger.Value            = value;
 	trigger.State            = false;
+	if (compare==nil) then
+		trigger.Compare      = cPowaTrigger.CompareAlwaysTrue;
+	else
+		trigger.Compare      = compare;
+	end
 end);
 
 --[[
@@ -58,6 +63,20 @@ function cPowaTrigger:AddAction(actionClass, parameters)
 	return action;	
 end
 
+function cPowaTrigger:Check(value)
+	return self.Compare(self.Value, value);
+end
+
+function cPowaTrigger.CompareAlwaysTrue(v1, v2)
+	PowaAuras:ShowText("CompareAlwaysTrue");
+	return true;
+end
+
+function cPowaTrigger.CompareEquals(v1, v2)
+	PowaAuras:ShowText("CompareEquals v1=", v1, " v2=", v2);
+	return (v1 == v2);
+end
+
 --[[
 function cPowaTrigger:RemoveAction(id)
 	-- Remove action if exists.
@@ -73,22 +92,13 @@ Timer trigger type class.
 --]]
 cPowaTimerTrigger = PowaClass(cPowaTrigger, { Type = "Timer" });
 cPowaStacksTrigger = PowaClass(cPowaTrigger, { Type = "Stacks" });
+
 cPowaAuraStartTrigger = PowaClass(cPowaTrigger, { Type = "AuraStart" });
-function cPowaAuraStartTrigger:Check()
-	--PowaAuras:ShowText("cPowaAuraStartTrigger:Check");
-	return true;
-end
+
 cPowaAuraEndTrigger = PowaClass(cPowaTrigger, { Type = "AuraEnd" });
-function cPowaAuraEndTrigger:Check()
-	--PowaAuras:ShowText("cPowaAuraEndTrigger:Check");
-	return true;
-end
+
 cPowaAuraStateTrigger = PowaClass(cPowaTrigger, { Type = "State" });
-function cPowaAuraStateTrigger:Check(state)
-	--PowaAuras:ShowText("cPowaAuraEndTrigger:Check");
-	self.Value = state;
-	return true;
-end
+
 --[[
 =====cPowaTriggerAction========
 
@@ -160,8 +170,15 @@ cPowaAuraAnimationAction = PowaClass(cPowaTriggerAction, { Type = "Animation" })
 
 function cPowaAuraAnimationAction:Fire()
 	PowaAuras:ShowText("Animation Play: ", self.AnimationGroup:GetName() );
+	if (self.Parameters.HideFrame) then
+		self.Parameters.HideFrame:StopAnimating();
+		self.Parameters.HideFrame:Hide();
+	end
+	--PowaAuras:ShowText("  StopAnimating" );
 	self.Parameters.Frame:StopAnimating();
+	--PowaAuras:ShowText("  Show Frame" );
 	self.Parameters.Frame:Show();
+	--PowaAuras:ShowText("  Play" );
 	self.AnimationGroup:Play();
 end
 
@@ -170,7 +187,7 @@ function cPowaAuraAnimationAction:Init()
 	local groupName = "Trigger" .. self.TriggerId .. "_" .. self.Id;
 	PowaAuras:ShowText("Add Animation: ", self.Parameters.Animation, " Group=", groupName );
 	if (self.Parameters.Loop) then
-		self.AnimationGroup =  PowaAuras:AddLoopingAnimation(aura, self, self.Parameters.Frame, self.Parameters.Animation, groupName, self.Parameters.Speed, self.Parameters.Alpha, self.Parameters.Secondary)
+		self.AnimationGroup =  PowaAuras:AddLoopingAnimation(aura, self, self.Parameters.Frame, self.Parameters.Animation, groupName, self.Parameters.Speed, self.Parameters.Alpha, self.Parameters.Secondary, "REPEAT")
 	else
 		self.AnimationGroup =  PowaAuras:AddAnimation(self, self.Parameters.Frame, self.Parameters.Animation, groupName, self.Parameters.Speed, self.Parameters.Alpha, self.Parameters.BeginSpin, self.Parameters.Hide, self.Parameters.State);
 	end
@@ -178,16 +195,27 @@ end
 
 function cPowaAuraAnimationAction:Finished()
 	--PowaAuras:ShowText("Animation Finished Hide=", self.Parameters.Hide, " State=", self.Parameters.State );
-	if (self.Parameters.Loop) then
-		self.AnimationGroup:Play();
-		return;
-	end
 	local aura = PowaAuras.Auras[self.AuraId];
 	if (self.Parameters.Hide) then
 		aura:Hide();
 	end	
+	if (self.Parameters.State) then
+		aura:SetState(self.Parameters.State);
+	end
+end
+
+--[[
+=====cPowaAuraStateAction========
+===========================
+--]]
+cPowaAuraStateAction = PowaClass(cPowaTriggerAction, { Type = "State" });
+
+function cPowaAuraStateAction:Fire()
+	local aura = PowaAuras.Auras[self.AuraId];
+	PowaAuras:ShowText("Change State to ", self.Parameters.State );
 	aura:SetState(self.Parameters.State);
 end
+
 
 --[[
 =====cPowaAuraPlaySoundAction========
@@ -275,3 +303,4 @@ end
          -- -- f.last = f.last - 0.1;
       -- -- end
 -- -- end);
+

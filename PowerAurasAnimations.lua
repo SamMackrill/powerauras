@@ -5,16 +5,18 @@ function PowaAuras:CalculateDurations(speed)
 	return 1.25 - speed / 2, 1.526 / math.max(speed,0.05) - 0.513;
 end
 
-function PowaAuras:AddAnimation(action, frame, animation, group, speed, alpha, beginSpin, hide, state)
+function PowaAuras:AddAnimation(action, frame, animation, group, speed, alpha, beginSpin, hide, state, loop)
 
 	local animationGroup = frame:CreateAnimationGroup(group);
 	animationGroup.Action = action;
 	animationGroup.HideWhenDone = hide;
-	animationGroup.StateWhenDone = state;
-
+	animationGroup.StateWhenDone = state;	
+	if (loop) then
+		animationGroup:SetLooping(loop);
+	end
 	animationGroup:SetScript("OnFinished",
 	function(self, forced)
-		PowaAuras:ShowText("EndAnimation OnFinished ", self:GetName(), " Action=", self.Action.id);
+		PowaAuras:ShowText("EndAnimation OnFinished ", self:GetName(), " Action=", self.Action.Id);
 		if (self.Action) then
 			self.Action:Finished();
 		end
@@ -108,25 +110,13 @@ function PowaAuras:AddAnimation(action, frame, animation, group, speed, alpha, b
 	return animationGroup, duration, duration2;
 end
 
-function PowaAuras:AddJumpTranslateAndReturn(animationGroup, dx, dy, duration, fps, order)
-	self:AddTranslation(animationGroup,  dx,  dy, 0, 0, order);
-	self:AddTranslation(animationGroup, -dx, -dy, duration, fps, order+1);
-end
-
-function PowaAuras:AddJumpAlphaAndReturn(animationGroup, change, duration, fps, order)
-	self:AddAlpha(animationGroup,  change, 0, 0, order);
-	self:AddAlpha(animationGroup, -change, duration, fps, order+1);
-end
-
-function PowaAuras:AddJumpScaleAndReturn(animationGroup, scale, duration, fps, order)
-	self:AddScale(animationGroup, scale, scale, 0, 0, order);
-	self:AddScale(animationGroup, 1/scale, 1/scale, duration, fps, order+1);
-end
-	
-function PowaAuras:AddLoopingAnimation(aura, action, frame, animation, group, speed, alpha, isSecondary)
+function PowaAuras:AddLoopingAnimation(aura, action, frame, animation, group, speed, alpha, isSecondary, loop)
 		
 	local animationGroup = frame:CreateAnimationGroup(group);
 	animationGroup.Action = action;
+	if (loop) then
+		animationGroup:SetLooping(loop);
+	end
 
 	animationGroup:SetScript("OnFinished",
 	function(self, forced)
@@ -221,6 +211,21 @@ function PowaAuras:AddLoopingAnimation(aura, action, frame, animation, group, sp
 	end
 
 	return animationGroup;
+end
+
+function PowaAuras:AddJumpTranslateAndReturn(animationGroup, dx, dy, duration, fps, order)
+	self:AddTranslation(animationGroup,  dx,  dy, 0, 0, order);
+	self:AddTranslation(animationGroup, -dx, -dy, duration, fps, order+1);
+end
+
+function PowaAuras:AddJumpAlphaAndReturn(animationGroup, change, duration, fps, order)
+	self:AddAlpha(animationGroup,  change, 0, 0, order);
+	self:AddAlpha(animationGroup, -change, duration, fps, order+1);
+end
+
+function PowaAuras:AddJumpScaleAndReturn(animationGroup, scale, duration, fps, order)
+	self:AddScale(animationGroup, scale, scale, 0, 0, order);
+	self:AddScale(animationGroup, 1/scale, 1/scale, duration, fps, order+1);
 end
 
 function PowaAuras:AddMoveRandomLocation(animationGroup, xrangel, xrangeu, xoffset, yrangel, yrangeu, yoffset, duration, fps, useTrigger, speed, order)
