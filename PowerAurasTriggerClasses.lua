@@ -176,7 +176,7 @@ function cPowaAuraAnimationAction:Init()
 end
 
 function cPowaAuraAnimationAction:Finished()
-	PowaAuras:ShowText("Animation Finished Hide=", self.Parameters.Hide, " State=", self.Parameters.State );
+	--PowaAuras:ShowText("Animation Finished Hide=", self.Parameters.Hide, " State=", self.Parameters.State );
 	if (self.Parameters.Loop) then
 		self.AnimationGroup:Play();
 		return;
@@ -204,9 +204,9 @@ function cPowaAuraPlaySoundAction:Fire()
 end
 
 function cPowaAuraPlaySoundAction:Init()
-	if (self.Parameters.CustomSound ~= "") then
+	if (self.Parameters.CustomSound~=nil and self.Parameters.CustomSound ~= "") then
 		local pathToSound;
-		if (string.find(aura.customsound, "\\")) then
+		if (string.find(self.Parameters.CustomSound, "\\")) then
 			self.Sound = self.Parameters.CustomSound;
 		else 
 			self.Sound = PowaGlobalMisc.PathToSounds .. self.Parameters.CustomSound;

@@ -3496,7 +3496,7 @@ function PowaAuras:ToggleTesting()
 	end
 
 	if (aura.Showing) then 
-		self:SetAuraHideRequest(aura);
+		aura:SetHideRequest();
 		aura.Active = false;
 	else
 		aura.Active = true;
@@ -3530,7 +3530,7 @@ function PowaAuras:OptionHideAll(now) --- Hide all auras
 			if (aura.Timer) then aura.Timer:Hide(); end 
 			if (aura.Stacks) then aura.Stacks:Hide(); end
 		else
-			self:SetAuraHideRequest(aura);
+			aura:SetHideRequest();
 			if (aura.Timer)  then aura.Timer.HideRequest  = true; end
 		end
 	end	
