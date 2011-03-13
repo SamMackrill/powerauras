@@ -243,7 +243,7 @@ function cPowaAura:CreateTriggers()
 	trigger=self:CreateTrigger(cPowaAuraEndTrigger);
 	trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Hide Aura"});
 	if (self.finish>0) then
-		trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame, Animation=self.finish + 100, Speed=self.speed, Alpha=self.alpha, Hide=true});
+		trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame, Animation=self.finish + 100, Speed=self.speed, Alpha=self.alpha, Hide=true, State=0});
 	end	
 	if (self.soundend>0) then
 		trigger:AddAction(cPowaAuraPlaySoundAction, {Sound=self.soundend});
@@ -289,7 +289,7 @@ function cPowaAura:ProcessTriggerQueue()
 	end
 	for i = 1, #self.TriggerActionQueue do
 		local action = self.TriggerActionQueue[i];
-		PowaAuras:ShowText("Firing Action ", action.Id, " (", action.Type, ") on Trigger ", action.TriggerId, "(", action.Type,") for Aura ", action.AuraId);
+		PowaAuras:ShowText("Firing Action ", action.Id, " (", action.Type, ") on Trigger ", action.TriggerId, " (", self.Triggers[action.TriggerId].Type,") for Aura ", action.AuraId);
 		action:Fire();
 	end
 
@@ -477,34 +477,31 @@ end
 	
 -- Get Frame and Texture, creating only if required
 function cPowaAura:CreateFrames()
-	local frame    = self:GetSingleFrame();
-	local texture  = self:GetSingleTexture(frame);
+	local frame, texture, frame2, texture2;
+	frame    = self:GetSingleFrame();
+	texture  = self:GetSingleTexture(frame);
 	if (self.anim2>0) then
-		local frame2   = self:GetSingleFrame(true);
-		local texture2 = self:GetSingleTexture(frame2, true);
+		frame2   = self:GetSingleFrame(true);
+		texture2 = self:GetSingleTexture(frame2, true);
 	end
 
 	return frame, texture, frame2, texture2;
 end
 
 
+function cPowaAura:HideFrame(frame)	
+	if (frame == nil) then return end;
+	frame:StopAnimating();
+	frame:Hide();
+end
+
 function cPowaAura:Hide()	
 	--PowaAuras:UnitTestInfo("Aura.Hide ", self.id);
 	
 	if (self.Timer) then self.Timer:Hide(); end
 	if (self.Stacks) then self.Stacks:Hide(); end
-	
-	local frame = self:GetFrame();
-	if (frame) then
-		frame:StopAnimating();
-		frame:Hide();
-	end
-	
-	local frame2 = self:GetFrame(true);
-	if (frame2) then
-		frame2:StopAnimating();
-		frame2:Hide();
-	end
+	self:HideFrame(self:GetFrame());
+	self:HideFrame(self:GetFrame(true));
 
 	self.Showing = false;
 end
