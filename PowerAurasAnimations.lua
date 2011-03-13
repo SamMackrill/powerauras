@@ -5,6 +5,7 @@ function PowaAuras:CalculateDurations(speed)
 	return 1.25 - speed / 2, 1.526 / math.max(speed,0.05) - 0.513;
 end
 
+
 function PowaAuras:AddAnimation(action, frame, animation, group, speed, alpha, beginSpin, hide, state, loop)
 
 	local animationGroup = frame:CreateAnimationGroup(group);
@@ -100,7 +101,9 @@ function PowaAuras:AddAnimation(action, frame, animation, group, speed, alpha, b
 			height = height * efficiency;
 			--self:ShowText("\nHeight=", height);
 		end
-
+	elseif (animation==1000) then -- Ping
+		self:AddJumpScaleAndReturn(animationGroup, 1.5, 0.3, PowaMisc.AnimationFps, 1)
+		self:AddBrightenAndReturn(animationGroup, 1.2, alpha, 0.3, PowaMisc.AnimationFps, 1);
 	end
 	
 	if (beginSpin) then

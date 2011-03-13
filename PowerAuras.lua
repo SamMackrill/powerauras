@@ -400,7 +400,7 @@ end
 
 -->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-function PowaAuras:CreateTimerFrame(auraId, index, updatePing)
+function PowaAuras:CreateTimerFrame(auraId, index)
 	local frame = CreateFrame("Frame", nil, UIParent);
 	self.TimerFrame[auraId][index] = frame;
 	local aura = self.Auras[auraId];
@@ -412,32 +412,29 @@ function PowaAuras:CreateTimerFrame(auraId, index, updatePing)
 	frame.texture:SetBlendMode("ADD");
 	frame.texture:SetAllPoints(frame);
 	frame.texture:SetTexture(aura.Timer:GetTexture());
-	if (updatePing) then
-		--self:ShowText("Creating Ping animation ", auraId, " ", index);
-		frame.PingAnimationGroup = frame:CreateAnimationGroup("Ping");
-		self:AddJumpScaleAndReturn(frame.PingAnimationGroup, 1.1, 1.1, 0.3, PowaMisc.AnimationFps, 1)
-		self:AddBrightenAndReturn(frame.PingAnimationGroup, 1.2, aura.alpha, 0.3, PowaMisc.AnimationFps, 1);
-	end
-	
+	return frame, texture;
 end
 
-function PowaAuras:CreateTimerFrameIfMissing(auraId, updatePing)
+function PowaAuras:CreateTimerFrameIfMissing(auraId)
 	local aura = self.Auras[auraId];
 	if (not self.Frames[auraId] and aura.Timer:IsRelative()) then
 		aura.Timer.Showing = false;
 		return;
 	end
+	local frame1, frame2;
 	if (not self.TimerFrame[auraId]) then
 		--self:Message("Creating missing TimerFrames for aura "..tostring(auraId));		
 		self.TimerFrame[auraId] = {};
-		self:CreateTimerFrame(auraId, 1, updatePing);
-		self:CreateTimerFrame(auraId, 2, updatePing);
+		frame1 = self:CreateTimerFrame(auraId, 1);
+		frame2 = self:CreateTimerFrame(auraId, 2);
+	else
+		frame1, frame2 = self.TimerFrame[auraId][1], self.TimerFrame[auraId][2];
 	end
 	self:UpdateOptionsTimer(auraId);
-	return self.TimerFrame[auraId][1], self.TimerFrame[auraId][2];
+	return frame1, frame2;
 end
 
-function PowaAuras:CreateStacksFrameIfMissing(auraId, updatePing)
+function PowaAuras:CreateStacksFrameIfMissing(auraId)
 	local aura = self.Auras[auraId];
 	if (not self.Frames[auraId] and aura.Stacks:IsRelative()) then
 		aura.Stacks.Showing = false;
@@ -460,12 +457,6 @@ function PowaAuras:CreateStacksFrameIfMissing(auraId, updatePing)
 			[1] = frame.texture
 		};
 		
-		if (updatePing) then
-			--self:ShowText("Creating Ping animation ", auraId, " ", index);
-			frame.PingAnimationGroup = frame:CreateAnimationGroup("Ping");
-			self:AddJumpScaleAndReturn(frame.PingAnimationGroup, 1.1, 1.1, 0.3, PowaMisc.AnimationFps, 1)
-			self:AddBrightenAndReturn(frame.PingAnimationGroup, 1.2, aura.alpha, 0.3, PowaMisc.AnimationFps, 1);
-		end
 	end
 	self:UpdateOptionsStacks(auraId);
 	return self.StacksFrames[auraId];
@@ -1135,14 +1126,14 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 		if (aura.Debug) then
 			self:Message("Show Timer");
 		end
-		PowaAuras:CreateTimerFrameIfMissing(aura.id, aura.Timer.UpdatePing);
+		PowaAuras:CreateTimerFrameIfMissing(aura.id);
 		if (aura.timerduration) then
 			aura.Timer.CustomDuration = aura.timerduration;
 		end
 		aura.Timer.Start = GetTime();
 	end
 	if (aura.Stacks and aura.Stacks.enabled) then
-		PowaAuras:CreateStacksFrameIfMissing(aura.id, aura.Stacks.UpdatePing);
+		PowaAuras:CreateStacksFrameIfMissing(aura.id);
 		aura.Stacks:ShowValue(aura, aura.Stacks.lastShownValue)
 	end
 	

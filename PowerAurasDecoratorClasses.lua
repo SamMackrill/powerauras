@@ -59,16 +59,20 @@ function cPowaStacks:GetTexture()
 	return "Interface\\Addons\\PowerAuras\\TimerTextures\\"..texture.."\\Timers"..postfix..".tga";
 end
 
+function cPowaStacks:GetFrame()
+	return PowaAuras.StacksFrames[self.id];
+end
+
 function cPowaStacks:ShowValue(aura, newvalue)
-	local frame = PowaAuras.StacksFrames[self.id];
+	local frame = self:GetFrame();
+	if (PowaAuras.ModTest) then
+		newvalue = random(0,25000);
+	end
 	if (frame==nil or newvalue==nil) then
 		return;
 	end
 	
 	--PowaAuras:ShowText("Stacks Showvalue id=", self.id, " newvalue=", newvalue);
-	if (PowaAuras.ModTest) then
-		newvalue = random(0,25000);
-	end
 	
 	-- Create textures dynamically to support > 9 stacks.
 	local texcount = #(frame.textures);
@@ -128,10 +132,6 @@ function cPowaStacks:ShowValue(aura, newvalue)
 		--PowaAuras:Message("Show Stacks Frame for ", self.id);
 		frame:Show(); 
 	end
-	if (self.UpdatePing and frame.PingAnimationGroup) then
-		--PowaAuras:ShowText("Stacks UpdatePing");
-		frame.PingAnimationGroup:Play();
-	end
 
 end
 
@@ -157,11 +157,12 @@ function cPowaStacks:SetStackCount(count)
 	end
 
 	if (not count or count==0) then
-		local frame = PowaAuras.StacksFrames[self.id];
+		local frame = self:GetFrame();
 		if (frame and frame:IsVisible()) then
 			frame:Hide();
 		end
 		self.Showing = false;
+		self.lastShownValue = nil;
 		return;
 	end
 	
@@ -185,7 +186,7 @@ function cPowaStacks:Update()
 		PowaAuras:DisplayText("Stacks Update UpdateValueTo=",self.UpdateValueTo);
 	end
 	self.lastShownValue=self.UpdateValueTo;
-	PowaAuras:CreateStacksFrameIfMissing(self.id, self.UpdatePing);
+	PowaAuras:CreateStacksFrameIfMissing(self.id);
 	self:ShowValue(aura, self.UpdateValueTo);
 	self.Showing = true;
 	self.UpdateValueTo = nil;
@@ -194,8 +195,9 @@ end
 function cPowaStacks:Hide()
 	--PowaAuras:ShowText("Hide Stacks Frame for ", self.id, " ", self.Showing, " ", PowaAuras.StacksFrames[self.id]);
 	if (not self.Showing) then return; end
-	if (PowaAuras.StacksFrames[self.id]) then
-		PowaAuras.StacksFrames[self.id]:Hide();
+	local frame = self:GetFrame();
+	if (frame) then
+		frame:Hide();
 	end
 	self.Showing = false;
 	self.UpdateValueTo = nil;
@@ -355,7 +357,7 @@ function cPowaTimer:Update(elapsed)
 		
 	if (newvalue and newvalue > 0) then --- Time has value to display
 
-		PowaAuras:CreateTimerFrameIfMissing(self.id, self.UpdatePing);
+		PowaAuras:CreateTimerFrameIfMissing(self.id);
 	
 		local split = 60;
 		if (self.Seconds99) then
@@ -418,16 +420,8 @@ end
 function cPowaTimer:SetDurationInfo(endtime)
 	if (self.DurationInfo ~= endtime) then
 		self.DurationInfo = endtime;
-		--PowaAuras:ShowText("Timer refresh ", self.id, " DurationInfo", self.DurationInfo, " time=", self.DurationInfo - GetTime());
-		if (PowaAuras.TimerFrame[self.id]) then
-			for frameIndex = 1,2 do
-				local timerFrame = PowaAuras.TimerFrame[self.id][frameIndex];
-				if (timerFrame and self.UpdatePing and timerFrame.PingAnimationGroup) then
-					--PowaAuras:ShowText("Timer UpdatePing");
-					timerFrame.PingAnimationGroup:Play();
-				end
-			end
-		end
+		local aura = PowaAuras.Auras[self.id];
+		aura:CheckTriggers("TimerRefresh");
 	end
 end
 
