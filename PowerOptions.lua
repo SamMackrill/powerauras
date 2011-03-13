@@ -855,6 +855,8 @@ function PowaAuras:ExportDialogInit(self)
 	-- Add needed functions.
 	-- Fired when the frame state needs updating.
 	self.SetStatus = function(self, status)
+		-- Can we send/receive data?
+		if(not PowaAuras.Comms:IsRegistered()) then status = 6; end
 		-- Change it.
 		self.sendStatus = status or self.sendStatus or 1;
 		-- Hide buttons, update labels and change values depending on status.
@@ -903,6 +905,11 @@ function PowaAuras:ExportDialogInit(self)
 				PowaAuras:SetDialogTimeout(self, 0);
 				self.AcceptButton:Enable();
 				self.CancelButton:Enable();
+			elseif(self.sendStatus == 6) then
+				-- Status 6 - Addon comms failure.
+				-- Don't need this for the import dialog, as that only pops up if comms work in the first place.
+				self.Title:SetText(PowaAuras.Text.aideCommsRegisterFailure);
+				PowaAuras:SetDialogTimeout(self, 0);
 			end
 		end	
 	end
