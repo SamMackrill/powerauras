@@ -2945,8 +2945,7 @@ function PowaAuras:UpdateOptionsStacks(auraId)
 	if (not (self.VariablesLoaded and self.SetupDone)) then return; end  
 	
 	local stacks = self.Auras[auraId].Stacks;
-	
-    local frame = self.StacksFrames[auraId];	
+    local frame = stacks:GetFrame();	
 	frame:SetAlpha(math.min(stacks.a, 0.99));
 	frame:SetWidth(20 * stacks.h);
 	frame:SetHeight(20 * stacks.h);
@@ -2978,7 +2977,6 @@ function PowaAuras:TimerAlphaSliderChanged()
 	PowaTimerAlphaSliderText:SetText(self.Text.nomAlpha.." : "..format("%.2f", SliderValue) );
 
 	self.Auras[self.CurrentAuraId].Timer.a = SliderValue;
-	--self:CreateTimerFrameIfMissing(self.CurrentAuraId);
 end
 
 function PowaAuras:TimerSizeSliderChanged()
@@ -2989,7 +2987,6 @@ function PowaAuras:TimerSizeSliderChanged()
 	PowaTimerSizeSliderText:SetText(self.Text.nomTaille.." : "..format("%.2f", SliderValue) );
 
 	self.Auras[self.CurrentAuraId].Timer.h = SliderValue;
-	--self:CreateTimerFrameIfMissing(self.CurrentAuraId);
 end
 
 function PowaAuras:TimerCoordSliderChanged()
@@ -3000,7 +2997,6 @@ function PowaAuras:TimerCoordSliderChanged()
 	PowaTimerCoordSliderText:SetText(self.Text.nomPos.." Y : "..SliderValue);
 
 	self.Auras[self.CurrentAuraId].Timer.y = SliderValue;
-	--self:CreateTimerFrameIfMissing(self.CurrentAuraId);
 end
 
 function PowaAuras:TimerCoordXSliderChanged()
@@ -3011,7 +3007,6 @@ function PowaAuras:TimerCoordXSliderChanged()
 	PowaTimerCoordXSliderText:SetText(self.Text.nomPos.." X : "..SliderValue);
 
 	self.Auras[self.CurrentAuraId].Timer.x = SliderValue;
-	--self:CreateTimerFrameIfMissing(self.CurrentAuraId);
 end
 
 function PowaAuras:PowaTimerInvertAuraSliderChanged(slider)
@@ -3028,7 +3023,6 @@ function PowaAuras:PowaTimerInvertAuraSliderChanged(slider)
 	getglobal(slider:GetName().."Text"):SetText(text.." : "..slider:GetValue().." sec");
 
 	self.Auras[self.CurrentAuraId].InvertAuraBelow = slider:GetValue();
-	--self:CreateTimerFrameIfMissing(self.CurrentAuraId);
 end
 
 function PowaAuras:TimerDurationSliderChanged()
@@ -3038,7 +3032,6 @@ function PowaAuras:TimerDurationSliderChanged()
 	PowaTimerDurationSliderText:SetText(self.Text.nomTimerDuration.." : "..SliderValue.." sec");
 
 	self.Auras[self.CurrentAuraId].timerduration = SliderValue;
-	--self:CreateTimerFrameIfMissing(self.CurrentAuraId);
 end
 
 function PowaAuras.DropDownMenu_OnClickTimerRelative(self)
@@ -3062,7 +3055,6 @@ function PowaAuras:TimerChecked(control, setting)
 	end
 	aura.Timer:Dispose();
 	aura.Timer:SetShowOnAuraHide(aura);
-	--self:CreateTimerFrameIfMissing(self.CurrentAuraId);
 end
 
 function PowaAuras:SettingChecked(control, setting)
@@ -3082,7 +3074,6 @@ function PowaAuras:TimerTransparentChecked(control)
 		self.Auras[self.CurrentAuraId].Timer.Transparent = false;
 	end
 	self.Auras[self.CurrentAuraId].Timer:Dispose();
-	--self:CreateTimerFrameIfMissing(self.CurrentAuraId);
 end
 
 --==== Stacks ====
@@ -3309,7 +3300,8 @@ local function OptionsOK()
 		for auraId, aura in pairs(PowaAuras.Auras) do
 			if (aura.Stacks and aura.Stacks.Texture == "Default") then
 				aura.Stacks:Hide();
-				PowaAuras.StacksFrames[auraId].texture:SetTexture(aura.Stacks:GetTexture());
+				local frame = aura.Stacks:GetFrame();
+				frame.texture:SetTexture(aura.Stacks:GetTexture());
 			end
 		end
 	end
@@ -3424,7 +3416,6 @@ function PowaAuras.DropDownMenu_OnClickTimerTexture(self)
 	if (aura==nil or aura.Timer==nil) then return; end
 	aura.Timer.Texture = self.value;
 	aura.Timer:Dispose();
-	--PowaAuras:CreateTimerFrameIfMissing(PowaAuras.CurrentAuraId);
 end
 
 function PowaAuras.DropDownStacksMenu_Initialize(owner)
