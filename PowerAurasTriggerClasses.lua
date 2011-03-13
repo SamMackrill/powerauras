@@ -47,11 +47,17 @@ function cPowaTrigger:Check(value, qualifier)
 	if (not self.Compare(value, self.Value)) then
 		if (self.Once and self.Set) then self:ResetActions(); end
 		self.Set = false;
-		return false;
+	else
+		if (self.Once) then
+			if (self.Set) then
+				return false;
+			else
+			PowaAuras:ShowText("Once Match! value=", value, " CompareTo=", self.Value);
+			end
+		end
+		self.Set = true;
 	end
-	if (self.Once and self.Set) then return false; end
-	self.Set = true; 
-	return true;
+	return self.Set;
 end
 
 function cPowaTrigger:CheckQulifier(qualifier)
@@ -231,12 +237,13 @@ cPowaAuraColourAction = PowaClass(cPowaTriggerAction, { Type = "Colour" });
 
 function cPowaAuraColourAction:Fire()
 	self.OldR, self.OldG, self.OldB = self.Parameters.Texture:GetVertexColor();
-	PowaAuras:ShowText("Set colour: R=", self.Parameters.R, " G=", self.Parameters.G, " B=", self.Parameters.B);
+	PowaAuras:ShowText("Set colour: R=", self.Parameters.R, " G=", self.Parameters.G, " B=", self.Parameters.B, " on texture ", self.Parameters.Texture);
 	self.Parameters.Texture:SetVertexColor(self.Parameters.R,self.Parameters.G,self.Parameters.B);
 end
 
 function cPowaAuraColourAction:Reset()
 	if (not self.Parameters.Revert) then return; end
+	PowaAuras:ShowText("Revert colour: R=", self.OldR, " G=", self.OldG, " B=", self.OldB);
 	self.Parameters.Texture:SetVertexColor(self.OldR, self.OldG, self.OldB);
 end
 
