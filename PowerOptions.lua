@@ -105,7 +105,7 @@ function PowaAuras:IconClick(owner, button)
 			else
 				owner:SetAlpha(1.0);
 			end
-			PowaAuras:OptionTest();
+			PowaAuras:ToggleTesting();
 		end
 	elseif (self.CurrentAuraId ~= aura.id) then -- clicked a different button
 		self:SetCurrent(owner, aura.id);
@@ -3488,8 +3488,8 @@ function PowaAuras.Ternary_CheckTooltip(button)
 end
 
 
-function PowaAuras:OptionTest()
-	--self:Message("OptionTest for ", self.CurrentAuraId);
+function PowaAuras:ToggleTesting()
+	--self:Message("ToggleTesting for ", self.CurrentAuraId);
 	local aura = self.Auras[self.CurrentAuraId];
 	if (not aura or aura.buffname == "" or aura.buffname == " ") then
 		return;
@@ -3505,7 +3505,7 @@ function PowaAuras:OptionTest()
 	end
 end
 
-function PowaAuras:OptionTestAll()
+function PowaAuras:TestAllAuras()
 
 	PowaAuras:OptionHideAll(true);
 	--self:ShowText("Test All Active Frames now=", now);

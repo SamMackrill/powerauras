@@ -53,12 +53,12 @@ cPowaAura = PowaClass(function(aura, id, base)
 
 	if (base) then
 		local tempForSettings = PowaAuras.AuraClasses[base.bufftype];
-		--PowaAuras:ShowText("base.Timer ", base.Timer, " isSecondary ", base.isSecondary);
-		if (base.Timer and not aura.isSecondary) then
+		--PowaAuras:ShowText("base.Timer ", base.Timer);
+		if (base.Timer) then
 			aura.Timer = cPowaTimer(aura, base.Timer);
 		end				
 		
-		if (base.Stacks and not base.isSecondary and tempForSettings:StacksAllowed()) then
+		if (base.Stacks and tempForSettings:StacksAllowed()) then
 			aura.Stacks = cPowaStacks(aura, base.Stacks);
 		end				
 	end
@@ -104,7 +104,6 @@ cPowaAura.ExportSettings = {
 	anim2 = 0,
 	speed = 1.00,
 	finish = 1,
-	isSecondary = false,
 	beginSpin = false,
 
 	duration = 0,
@@ -258,14 +257,14 @@ function cPowaAura:CreateTriggers()
 	if (self.anim1>0) then
 		trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame, Animation=self.anim1, Speed=self.speed, Alpha=self.alpha, Loop=true});
 	end
-	if (self.anim2) then
+	if (self.anim2>0) then
 		local speed;
-		if (aura.speed > 0.5) then
-			speed = aura.speed - 0.1; --- legerement plus lent
+		if (self.speed > 0.5) then
+			speed = self.speed - 0.1; --- legerement plus lent
 		else
-			speed = aura.speed / 2; --- legerement plus lent
+			speed = self.speed / 2; --- legerement plus lent
 		end
-		trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame2, Animation=self.anim2, Speed=speed, Alpha=self.alpha * 0.5, Loop=true});
+		trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame2, Animation=self.anim2, Speed=speed, Alpha=self.alpha * 0.5, Loop=true, Secondary=true});
 	end
 	
 end
@@ -416,9 +415,11 @@ function cPowaAura:GetSingleFrame(secondary)
 		
 		frame.aura = self;
 	end
+	return frame;
 end
 
 function cPowaAura:GetSingleTexture(frame, secondary)
+	if (frame==nil) then return; end
 	local texture = self:GetTexture(secondary);
 	if (texture==nil) then
 		--PowaAuras:UnitTestInfo("New Texture", self.id);
@@ -460,41 +461,38 @@ function cPowaAura:GetSingleTexture(frame, secondary)
 		end
 	end	
 	self:SetTexture(texture, secondary);
+	return texture;
 end
 
 	
 -- Get Frame and Texture, creating only if required
 function cPowaAura:CreateFrames()
 	local frame    = self:GetSingleFrame();
-	local frame2   = self:GetSingleFrame(true);
 	local texture  = self:GetSingleTexture(frame);
-	local texture2 = self:GetSingleTexture(frame2, true);
+	if (self.anim2>0) then
+		local frame2   = self:GetSingleFrame(true);
+		local texture2 = self:GetSingleTexture(frame2, true);
+	end
 
 	return frame, texture, frame2, texture2;
 end
 
 
-function cPowaAura:Hide(skipEndAnimationStop)	
+function cPowaAura:Hide()	
 	--PowaAuras:UnitTestInfo("Aura.Hide ", self.id);
 	
-	if (self.    and self.BeginAnimation:IsPlaying()) then
-		self.BeginAnimation:Stop();
-	end
-	if (self.MainAnimation and self.MainAnimation:IsPlaying()) then
-		self.MainAnimation:Stop();
-	end
-	if (not skipEndAnimationStop and (self.EndAnimation and self.EndAnimation:IsPlaying())) then
-		self.EndAnimation:Stop();
-	end
-
-	if (self.Timer and (PowaAuras.ModTest or self.off)) then self.Timer:Hide(); end -- Hide Aura
+	if (self.Timer) then self.Timer:Hide(); end
 	if (self.Stacks) then self.Stacks:Hide(); end
+	
 	local frame = self:GetFrame();
 	if (frame) then
+		frame:StopAnimating();
 		frame:Hide();
 	end
+	
 	local frame2 = self:GetFrame(true);
 	if (frame2) then
+		frame2:StopAnimating();
 		frame2:Hide();
 	end
 

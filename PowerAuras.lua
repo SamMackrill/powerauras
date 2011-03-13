@@ -833,7 +833,6 @@ function PowaAuras:TestThisEffect(auraId, giveReason, ignoreCascade)
 		self:Message("Test Aura for Hide or Show = ",auraId);
 		self:Message("Active= ", aura.Active);
 		self:Message("Showing= ", aura.Showing);
-		self:Message("HideRequest= ", aura.HideRequest);
 	end
 	
 	-- Prevent crash if class not set-up properly
@@ -930,16 +929,13 @@ function PowaAuras:CheckMultiple(aura, reason, giveReason)
 	return true, self:InsertText(self.Text.nomReasonMulti, aura.multiids);	
 end
 
-function PowaAuras:SetAuraHideRequest(aura, secondaryAura)
+function PowaAuras:SetAuraHideRequest(aura)
 	if (aura.Debug) then
 		self:Message("SetAuraHideRequest ", aura.buffname);
 	end
 	aura.HideRequest = true;
 	if (not aura.InvertTimeHides) then
 		aura.ForceTimeInvert = nil;
-	end
-	if (secondaryAura and secondaryAura.Active) then
-		secondaryAura.HideRequest = true;
 	end
 end
 
@@ -981,9 +977,10 @@ local function startFrameMoving(frame)
 	frame.isMoving = true;
 	--PowaAuras:ShowText("startMove id=", frame.aura.id);
 	frame:StartMoving();
-	local secondaryAura = PowaAuras.SecondaryAuras[frame.aura.id];
-	if (secondaryAura~=nil) then
-		secondaryAura.HideRequest = true;
+	frame:StopAnimating();
+	local secondaryFrame = frame.aura:GetFrame(true);
+	if (secondaryFrame~=nil) then
+		secondaryFrame:Hide();
 	end
 end
 
@@ -1115,16 +1112,15 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 	
 	local frame, texture, frame2, texture2 = aura:CreateFrames();	
 
-	self:InitialiseFrame(aura, frame, aura.alpha);
+	self:InitialiseFrame(aura, frame, texture, aura.alpha);
 	if (aura.anim2 == 0) then --- no secondary aura
 		if (frame2) then
 			frame2:Hide();
 		end
-		self.SecondaryAuras[aura.id] = nil;
 		self.SecondaryFrames[aura.id] = nil;
 		self.SecondaryTextures[aura.id] = nil;
 	else
-		self:InitialiseFrame(frame2, texture2, aura.alpha * 0.5);
+		self:InitialiseFrame(aura, frame2, texture2, aura.alpha * 0.5);
 		--[[
 		if (aura.speed > 0.5) then
 			secondaryAura.speed = aura.speed - 0.1; --- legerement plus lent
@@ -1178,7 +1174,7 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 	
 end
 
-function PowaAuras:InitialiseFrame(aura, frame, alpha)
+function PowaAuras:InitialiseFrame(aura, frame, texture, alpha)
 	if (aura.owntex == true) then
 		if (aura.icon=="") then
 			texture:SetTexture("Interface\\Icons\\Inv_Misc_QuestionMark");
@@ -1326,8 +1322,6 @@ function PowaAuras:ShowSecondaryAuraForFirstTime(aura)
 	secondaryFrame:SetWidth(secondaryFrame.baseL);
 	secondaryFrame:SetHeight(secondaryFrame.baseH);
 
-
---[[
 	if (aura.UseOldAnimations) then
 
 		secondaryFrame.statut = 1;
@@ -1361,7 +1355,7 @@ function PowaAuras:ShowSecondaryAuraForFirstTime(aura)
 		end
 
 	end
-	]]--
+
 	secondaryAura.Showing = true;
 	secondaryAura.HideRequest = false;
 end
@@ -1433,6 +1427,7 @@ function PowaAuras:UpdateAura(aura, elapsed)
 		
 			aura:CheckTriggers("AuraEnd");
 
+			--[[
 			if (self.ModTest == false and not aura.EndSoundPlayed) then
 				
 				if (aura.customsoundend ~= "") then
@@ -1461,6 +1456,7 @@ function PowaAuras:UpdateAura(aura, elapsed)
 				end
 				aura.EndSoundPlayed = true;
 			end
+			]]--
 			
 			if (aura.Stacks) then
 				aura.Stacks:Hide();
@@ -1469,10 +1465,6 @@ function PowaAuras:UpdateAura(aura, elapsed)
 				self:Message("Hide Requested for ",aura.id);
 			end
 			
-		end
-
-		if (aura.UseOldAnimations) then
-			self:UpdateAuraAnimation(aura, elapsed, frame);
 		end
 
 		if (aura.Active and aura.Stacks and aura.Stacks.enabled) then
