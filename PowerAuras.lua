@@ -1055,7 +1055,7 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 	if (aura.Debug) then
 		self:Message("ShowAuraForFirstTime ", aura.id);
 	end
-	local auraId = aura.id;
+	self:Message("ShowAuraForFirstTime ", aura.id);
 	
 	--[[
 	if (not aura.UseOldAnimations and aura.EndAnimation and aura.EndAnimation:IsPlaying()) then
