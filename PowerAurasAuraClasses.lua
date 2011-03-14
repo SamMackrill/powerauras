@@ -248,16 +248,15 @@ function cPowaAura:CreateTriggers()
 		trigger:AddAction(cPowaAuraStateAction, {Name="AnimationSate", Value=2});
 		trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame, HideFrame=frame2, Animation=self.finish + 100, Speed=self.speed, Alpha=self.alpha, Hide=true, State=0, StateName="AnimationSate"});
 	else
-		trigger:AddAction(cPowaAuraStateAction, {Name="AnimationSate", Value=0});
+		trigger:AddAction(cPowaAuraHideAction, {Name="Hide"});
 	end
 	if (self.soundend>0) then
 		trigger:AddAction(cPowaAuraPlaySoundAction, {Sound=self.soundend});
 	end			
 	if (self.customsoundend~="") then
 		trigger:AddAction(cPowaAuraPlaySoundAction, {CustomSound=self.customsoundend});
-	end		
-	trigger=self:CreateTrigger(cPowaStateTrigger, 0, "AnimationSate", "=");
-	
+	end
+		
 	trigger=self:CreateTrigger(cPowaStateTrigger, 1, "AnimationSate", "=");
 	--trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! State Changed to %v"});
 	if (self.anim1>0) then
