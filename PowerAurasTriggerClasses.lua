@@ -135,6 +135,16 @@ function cPowaAuraMessageAction:Fire()
 end
 
 --[[
+=====cPowaAuraHideAction========
+===========================
+--]]
+cPowaAuraHideAction = PowaClass(cPowaTriggerAction, { Type = "Hide" });
+
+function cPowaAuraHideAction:Fire()
+	local aura = PowaAuras.Auras[self.AuraId];
+	local aura:Hide();
+end
+--[[
 =====cPowaAuraAnimationAction========
 ===========================
 --]]
