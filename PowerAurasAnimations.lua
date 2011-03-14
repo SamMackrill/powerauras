@@ -17,7 +17,7 @@ function PowaAuras:AddAnimation(action, frame, animation, group, speed, alpha, b
 	end
 	animationGroup:SetScript("OnFinished",
 	function(self, forced)
-		PowaAuras:ShowText("EndAnimation OnFinished ", self:GetName(), " Action=", self.Action.Id);
+		--PowaAuras:ShowText("EndAnimation OnFinished ", self:GetName(), " Action=", self.Action.Id);
 		if (self.Action) then
 			self.Action:Finished();
 		end
