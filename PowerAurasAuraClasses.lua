@@ -229,9 +229,11 @@ function cPowaAura:CreateTriggers()
 	local frame, texture, frame2, texture2 = self:CreateFrames();
 	
 	local trigger=self:CreateTrigger(cPowaAuraStartTrigger);
-	trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Show Aura"});
+	--trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Show Aura"});
 	if (self.begin>0) then
 		trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame, HideFrame=frame2, Animation=self.begin, Speed=self.speed, Alpha=self.alpha, BeginSpin=self.beginSpin, State=1, StateName="AnimationSate"});
+	else
+		trigger:AddAction(cPowaAuraStateAction, {Name="AnimationSate", Value=1});
 	end			
 	if (self.sound>0) then
 		trigger:AddAction(cPowaAuraPlaySoundAction, {Sound=self.sound});
@@ -241,29 +243,32 @@ function cPowaAura:CreateTriggers()
 	end			
 	
 	trigger=self:CreateTrigger(cPowaAuraEndTrigger);
-	trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Hide Aura"});
-	trigger:AddAction(cPowaAuraStateAction, {Name="AnimationSate", Value=2});
+	--trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Hide Aura"});
 	if (self.finish>0) then
+		trigger:AddAction(cPowaAuraStateAction, {Name="AnimationSate", Value=2});
 		trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame, HideFrame=frame2, Animation=self.finish + 100, Speed=self.speed, Alpha=self.alpha, Hide=true, State=0, StateName="AnimationSate"});
-	end	
+	else
+		trigger:AddAction(cPowaAuraStateAction, {Name="AnimationSate", Value=0});
+	end
 	if (self.soundend>0) then
 		trigger:AddAction(cPowaAuraPlaySoundAction, {Sound=self.soundend});
 	end			
 	if (self.customsoundend~="") then
 		trigger:AddAction(cPowaAuraPlaySoundAction, {CustomSound=self.customsoundend});
 	end		
+	trigger=self:CreateTrigger(cPowaStateTrigger, 0, "AnimationSate", "=");
 	
 	trigger=self:CreateTrigger(cPowaStateTrigger, 1, "AnimationSate", "=");
-	trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! State Changed to %v"});
+	--trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! State Changed to %v"});
 	if (self.anim1>0) then
 		trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame, Animation=self.anim1, Speed=self.speed, Alpha=self.alpha, Loop=true});
 	end
 	if (self.anim2>0) then
 		local speed;
 		if (self.speed > 0.5) then
-			speed = self.speed - 0.1; --- legerement plus lent
+			speed = self.speed - 0.1;
 		else
-			speed = self.speed / 2; --- legerement plus lent
+			speed = self.speed / 2;
 		end
 		trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame2, Animation=self.anim2, Speed=speed, Alpha=self.alpha * 0.5, Loop=true, Secondary=true});
 	end
@@ -316,23 +321,13 @@ function cPowaAura:ProcessTriggerQueue()
 
 	wipe(self.TriggerActionQueue);
 end
-	
-	
---[[
-function cPowaAura:SetTriggerCheck(ttype, value)
-	-- Set the value.
-	self.TriggerChecks[ttype] = value;
-	self.TriggerDoCheck = true;
-end
-]]--
-
 
 function cPowaAura:CheckTriggers(triggerType, value, qualifier)
-	--PowaAuras:ShowText("Checking all ",triggerType, " auras");
+	PowaAuras:ShowText("Checking all ",triggerType, " auras");
 	for i = 1, #self.Triggers do
 		local trigger = self.Triggers[i];
 		if (trigger.Type==triggerType) then
-			--PowaAuras:ShowText("Trigger ", i, " Fire! : ", self.id, " - ",trigger.Type); 
+			PowaAuras:ShowText("Trigger ", i, " Fire! : ", self.id, " - ",trigger.Type); 
 			if (trigger:Check(value, qualifier)) then
 				trigger:QueueActions(self);
 			end
@@ -350,15 +345,6 @@ function cPowaAura:RemoveTrigger(id)
 	self.TriggersByType[self.Triggers[id].Type][id] = nil;
 	self.Triggers[id] = nil;
 	return true;
-end
-
-function cPowaAura:ApplyAction(action, triggerId, force)
-	if(not self.TriggerActions[action] or self.TriggerActions[action] == triggerId or force) then
-		self.TriggerActions[action] = triggerId;
-		return true;
-	else
-		return false;
-	end
 end
 
 function cPowaAura:RemoveAction(action, triggerId, force)

@@ -5,7 +5,7 @@ Base class for Trigger Types.
 --]]
 cPowaTrigger = PowaClass(function(trigger, auraId, triggerId, value, qualifier, compare)
 	if(not auraId or not triggerId or not PowaAuras.Auras[auraId]) then return; end
-	PowaAuras:ShowText("Constructing Trigger type ", trigger.Type);
+	--PowaAuras:ShowText("Constructing Trigger type ", trigger.Type);
 	trigger.Id               = triggerId;
 	trigger.AuraId           = auraId;
 	trigger.Actions          = {};
@@ -19,7 +19,7 @@ function cPowaTrigger:QueueActions(aura)
 	for i = 1, #self.Actions do
 		local action = self.Actions[i];
 		action.TriggerValue = self.Value;
-		PowaAuras:ShowText("Queuing Action ", action.Id, " on Trigger ", self.Id, " for Aura ", aura.id);
+		--PowaAuras:ShowText("Queuing Action ", action.Id, " on Trigger ", self.Id, " for Aura ", aura.id);
 		aura.TriggerActionQueue[#aura.TriggerActionQueue+1] = action;
 	end
 end
@@ -33,7 +33,7 @@ end
 
 function cPowaTrigger:AddAction(actionClass, parameters)
 	local action = actionClass(self.AuraId, self.Id, #self.Actions + 1, parameters);
-	PowaAuras:ShowText("Creating ", action.Type, " Action - Aura=", self.AuraId, " Trigger=", self.Id, " Action=", action.Id);
+	--PowaAuras:ShowText("Creating ", action.Type, " Action - Aura=", self.AuraId, " Trigger=", self.Id, " Action=", action.Id);
 	self.Actions[action.Id] = action;
 	return action;	
 end
@@ -48,7 +48,7 @@ function cPowaTrigger:Check(value, qualifier)
 			if (self.Set) then
 				return false;
 			else
-			PowaAuras:ShowText("Once Match! value=", value, " CompareTo=", self.Value);
+			--PowaAuras:ShowText("Once Match! value=", value, " CompareTo=", self.Value);
 			end
 		end
 		self.Set = true;
@@ -217,7 +217,7 @@ function cPowaAuraPlaySoundAction:Init()
 			if (string.find(PowaAuras.Sound[self.Parameters.Sound], "%.")) then
 				self.Sound = PowaGlobalMisc.PathToSounds .. PowaAuras.Sound[self.Parameters.Sound]; -- PAC sound
 			else	
-				self.Sound = PowaAuras.Sound[self.Parameters.Sound]; -- Buildin WoW sound
+				self.Sound = PowaAuras.Sound[self.Parameters.Sound]; -- Built-in WoW sound
 			end
 		end
 	end	
@@ -232,13 +232,13 @@ cPowaAuraColourAction = PowaClass(cPowaTriggerAction, { Type = "Colour" });
 
 function cPowaAuraColourAction:Fire()
 	self.OldR, self.OldG, self.OldB = self.Parameters.Texture:GetVertexColor();
-	PowaAuras:ShowText("Set colour: R=", self.Parameters.R, " G=", self.Parameters.G, " B=", self.Parameters.B, " on texture ", self.Parameters.Texture);
+	--PowaAuras:ShowText("Set colour: R=", self.Parameters.R, " G=", self.Parameters.G, " B=", self.Parameters.B, " on texture ", self.Parameters.Texture);
 	self.Parameters.Texture:SetVertexColor(self.Parameters.R,self.Parameters.G,self.Parameters.B);
 end
 
 function cPowaAuraColourAction:Reset()
 	if (not self.Parameters.Revert) then return; end
-	PowaAuras:ShowText("Revert colour: R=", self.OldR, " G=", self.OldG, " B=", self.OldB);
+	--PowaAuras:ShowText("Revert colour: R=", self.OldR, " G=", self.OldG, " B=", self.OldB);
 	self.Parameters.Texture:SetVertexColor(self.OldR, self.OldG, self.OldB);
 end
 
