@@ -15,14 +15,6 @@ cPowaTrigger = PowaClass(function(trigger, auraId, triggerId, value, qualifier, 
 	trigger.CompareOperator  = compare;
 end);
 
-function cPowaTrigger:QueueActions(aura)
-	for i = 1, #self.Actions do
-		local action = self.Actions[i];
-		action.TriggerValue = self.Value;
-		--PowaAuras:ShowText("Queuing Action ", action.Id, " on Trigger ", self.Id, " for Aura ", aura.id);
-		aura.TriggerActionQueue[#aura.TriggerActionQueue+1] = action;
-	end
-end
 
 function cPowaTrigger:ResetActions()
 	for i = 1, #self.Actions do
@@ -40,7 +32,9 @@ end
 
 function cPowaTrigger:Check(value, qualifier)
 	if (not self:CheckQulifier(qualifier)) then return false; end
-	if (not self:Compare(self.CompareOperator, value, self.Value)) then
+	local result = self:Compare(self.CompareOperator, value, self.Value);
+	PowaAuras:ShowText("Check result=", result);
+	if (not result) then
 		if (self.Once and self.Set) then self:ResetActions(); end
 		self.Set = false;
 	else
@@ -62,7 +56,7 @@ function cPowaTrigger:CheckQulifier(qualifier)
 end
 
 function cPowaTrigger:Compare(op, v1, v2)
-	--PowaAuras:ShowText("CompareAlwaysTrue");
+	PowaAuras:ShowText("Compare ", v1, op, v2);
 	if (op==nil) then return true; end
 	if (op=="=") then return (v1==v2); end
 	if (op==">") then return (v1>v2); end
@@ -141,9 +135,11 @@ end
 cPowaAuraHideAction = PowaClass(cPowaTriggerAction, { Type = "Hide" });
 
 function cPowaAuraHideAction:Fire()
+	PowaAuras:ShowText("HideAction: Fire!");
 	local aura = PowaAuras.Auras[self.AuraId];
-	local aura:Hide();
+	aura:Hide();
 end
+
 --[[
 =====cPowaAuraAnimationAction========
 ===========================
@@ -151,16 +147,13 @@ end
 cPowaAuraAnimationAction = PowaClass(cPowaTriggerAction, { Type = "Animation" });
 
 function cPowaAuraAnimationAction:Fire()
-	--PowaAuras:ShowText("Animation Play: ", self.AnimationGroup:GetName() );
+	PowaAuras:ShowText("Animation Play: ", self.AnimationGroup:GetName() );
 	if (self.Parameters.HideFrame) then
 		self.Parameters.HideFrame:StopAnimating();
 		self.Parameters.HideFrame:Hide();
 	end
-	--PowaAuras:ShowText("  StopAnimating" );
 	self.Parameters.Frame:StopAnimating();
-	--PowaAuras:ShowText("  Show Frame" );
 	self.Parameters.Frame:Show();
-	--PowaAuras:ShowText("  Play" );
 	self.AnimationGroup:Play();
 end
 
@@ -193,7 +186,7 @@ end
 cPowaAuraStateAction = PowaClass(cPowaTriggerAction, { Type = "State" });
 
 function cPowaAuraStateAction:Fire()
-	--PowaAuras:ShowText("Change State to ", self.Parameters.Value );
+	PowaAuras:ShowText("Change State of ", self.Parameters.Name, " to ", self.Parameters.Value );
 	local aura = PowaAuras.Auras[self.AuraId];
 	aura:SetState(self.Parameters.Name, self.Parameters.Value);
 end
