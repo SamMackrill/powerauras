@@ -346,18 +346,16 @@ function PowaAuras:FindAllChildren()
 	--self:ShowText("FindAllChildren");
 	for _, aura in pairs(self.Auras) do
 		aura.Children = nil;
-	end
-	for _, aura in pairs(self.Auras) do
 		self:FindChildren(aura);
 	end
-	--for _, aura in pairs(self.Auras) do
-	--	if (aura.Children) then
-	--		self:ShowText("Aura "..aura.id.." Children:");
-	--		for childId in pairs(aura.Children) do
-	--			self:ShowText("  "..childId);
-	--		end
-	--	end
-	--end
+	for _, aura in pairs(self.Auras) do
+		if (aura.Children) then
+			self:ShowText("Aura "..aura.id.." Children:");
+			for childId in pairs(aura.Children) do
+				self:ShowText("  "..childId);
+			end
+		end
+	end
 end
 
 function PowaAuras:FindChildren(aura)
@@ -470,17 +468,19 @@ function PowaAuras:CreateEffectLists()
 	
 	self.Events = self:CopyTable(self.AlwaysEvents);
 	for id, aura in pairs(self.Auras) do
-		--print("Aura", aura.id);
 		if (not aura.off or self.UsedInMultis[id]) then
+		    self:DisplayText("CreateEffectLists Aura", id);
 			aura:AddEffectAndEvents();
 		end
 	end 
 
-	if (PowaMisc.debug == true) then
+	--if (PowaMisc.debug == true) then
 		for k in pairs(self.AurasByType) do
-			self:DisplayText(k .. " : " .. #self.AurasByType[k]);
+			if (#self.AurasByType[k]>0) then
+				self:DisplayText(k .. " : " .. #self.AurasByType[k]);
+			end
 		end
-	end
+	--end
 
 end
 
@@ -566,7 +566,7 @@ function PowaAuras:AddChildrenToCascade(aura, originalId)
 	if (not aura or not aura.Children) then return; end
 	for id in pairs(aura.Children) do
 		if (not self.Cascade[id] and id~=originalId) then
-			--self:ShowText("Cascade adding aura."..id);
+			self:ShowText(GetTime()," Cascade from ", aura.id, " adding aura."..id);
 			self.Cascade[id] = true;
 			self:AddChildrenToCascade(self.Auras[id], originalId or aura.id);
 		end
@@ -695,7 +695,7 @@ function PowaAuras:OnUpdate(elapsed)
 
 		--self:UnitTestInfo("Check Cascade auras");
 		for k in pairs(self.Cascade) do
-			--self:ShowText("Checking Cascade aura."..k);
+			self:ShowText(GetTime()," Checking Cascade aura."..k);
 			self:TestThisEffect(k, false, true);
 		end
 		wipe(self.Cascade);		
@@ -737,13 +737,7 @@ function PowaAuras:OnUpdate(elapsed)
 		if (self:UpdateAura(aura, elapsed)) then
 			self:UpdateTimer(aura, timerElapsed, skipTimerUpdate);
 		end
-	end	
-
-	--[[
-	for _, aura in pairs(self.SecondaryAuras) do
-		self:UpdateAura(aura, elapsed);
-	end	
-	]]--
+	end
 	
 	self.ResetTargetTimers = false;
 
@@ -812,8 +806,10 @@ function PowaAuras:TestThisEffect(auraId, giveReason, ignoreCascade)
 			--self:ShowText("aura:Hide because off", auraId);
 			aura:Hide();
 		end
-		if (not giveReason) then return false; end
-		return false, self.Text.nomReasonAuraOff;
+		if (not self.UsedInMultis[aura.id]) then
+			if (not giveReason) then return false; end
+			return false, self.Text.nomReasonAuraOff;
+		end
 	end
 	
 	local debugEffectTest = PowaAuras.DebugCycle or aura.Debug;
@@ -874,7 +870,7 @@ function PowaAuras:TestThisEffect(auraId, giveReason, ignoreCascade)
 			if (debugEffectTest) then
 				self:Message("HideAura ", aura.buffname, " (",auraId,") ", reason);
 			end
-			aura:SetHideRequest(aura);
+			aura:SetHideRequest();
 		end
 		if (aura.Active) then
 			if (not ignoreCascade) then
@@ -1055,7 +1051,7 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 	if (aura.Debug) then
 		self:Message("ShowAuraForFirstTime ", aura.id);
 	end
-	self:Message("ShowAuraForFirstTime ", aura.id);
+	self:Message(GetTime()," ShowAuraForFirstTime ", aura.id);
 	
 	--[[
 	if (not aura.UseOldAnimations and aura.EndAnimation and aura.EndAnimation:IsPlaying()) then
@@ -1343,7 +1339,7 @@ function PowaAuras:DisplayAura(auraId)
 	if (not (self.VariablesLoaded and self.SetupDone)) then return; end   --- de-actived
 
 	local aura = self.Auras[auraId];
-	if (aura==nil or aura.off) then return; end
+	if (aura==nil or (aura.off and not self.UsedInMultis[id])) then return; end
 
 	--self:ShowText("DisplayAura aura ", aura.id);
 	
@@ -1371,7 +1367,9 @@ function PowaAuras:UpdateAura(aura, elapsed)
 		if (aura.Timer and aura.Timer.Showing) then
 			aura.Timer:Hide(); -- Aura off
 		end
-		return false;
+		if (not self.UsedInMultis[aura.id]) then
+			return false;
+		end
 	end
 	
 	if (PowaAuras.DebugCycle) then
