@@ -780,8 +780,9 @@ function PowaAuras:ACTIONBAR_UPDATE_USABLE(...)
 	self.DoCheck.CheckIt = true;
 end
 	
-function PowaAuras:SPELL_UPDATE_COOLDOWN(...)
+function PowaAuras:SPELL_UPDATE_USABLE(...)
 	if (self.ModTest) then return; end
+	--self:DisplayText("SPELL_UPDATE_USABLE ", unit);
 	self.DoCheck.SpellCooldowns = true;
 	self.DoCheck.CheckIt = true;
 end

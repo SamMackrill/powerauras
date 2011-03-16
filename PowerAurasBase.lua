@@ -18,6 +18,7 @@ PowaAuras = {
 	TextureCount = 186;
 	
 	DebugEvents = false;
+	DebugTriggers = false;
 	--DebugAura = 3;
 	
 	-- Internal counters
