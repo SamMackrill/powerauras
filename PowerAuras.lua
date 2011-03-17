@@ -159,7 +159,7 @@ function PowaAuras:LoadAuras()
 	self:CalculateAuraSequence();
 	--self:ShowText(#self.AuraSequence," Auras loaded");
 	
-	self:CreateTriggers();
+	self:CreateAllAuraTriggers();
 	
 	-- Copy to Saved Sets
 	PowaSet = self.Auras;
@@ -170,10 +170,10 @@ function PowaAuras:LoadAuras()
 	
 end
 
-function PowaAuras:CreateTriggers()
+function PowaAuras:CreateAllAuraTriggers()
 	for i = 1, #self.AuraSequence do
 		local aura = self.AuraSequence[i];
-		aura:CreateTriggers();
+		aura:CreateDefaultTriggers();
 	end
 end
 
