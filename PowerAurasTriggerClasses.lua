@@ -16,6 +16,7 @@ cPowaTrigger = PowaClass(function(trigger, auraId, triggerId, parameters)
 	trigger.Qualifier        = parameters.Qualifier;
 	trigger.CompareOperator  = parameters.Compare;
 	trigger.Set              = false;
+	trigger.NextActionId     = 1;
 end);
 
 
@@ -27,12 +28,23 @@ function cPowaTrigger:ResetActions()
 end
 
 function cPowaTrigger:AddAction(actionClass, parameters)
-	local action = actionClass(self.AuraId, self.Id, #self.Actions + 1, parameters);
+	local action = actionClass(self.AuraId, self.Id, self.NextActionId, parameters);
+	self.NextActionId = self.NextActionId + 1;
 	if (PowaAuras.DebugTriggers) then
 		PowaAuras:DisplayText("Creating ", action.Type, " Action - Aura=", self.AuraId, " Trigger=", self.Id, " Action=", action.Id);
 	end
-	self.Actions[action.Id] = action;
+	table.insert(self.Actions, action);
 	return action;	
+end
+
+function cPowaTrigger:DeleteAction(action)
+	if (not action) then return; end
+	for index, a in pairs (self.Actions) do
+		if (action.Id==a.Id) then
+			table.remove(self.Actions, index);
+			return;
+		end
+	end
 end
 
 function cPowaTrigger:Check(value, qualifier)
@@ -78,13 +90,7 @@ function cPowaTrigger:Compare(op, v1, v2)
 	return true;
 end
 
---[[
-function cPowaTrigger:RemoveAction(id)
-	-- Remove action if exists.
-	if(not self.Actions[id]) then return; end
-	self.Actions[id] = nil;
-end
-]]--
+
 
 --[[
 =====cPowaTimerTrigger=====
