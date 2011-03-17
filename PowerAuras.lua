@@ -179,7 +179,10 @@ end
 function PowaAuras:CalculateAuraSequence()
 	wipe(self.AuraSequence);	
 	for id, aura in pairs(self.Auras) do
-		table.insert(self.AuraSequence, aura);
+		if (not aura.off or self.UsedInMultis[id]) then
+			--self:ShowText("Adding aura ",id, " to AuraSequence");
+			table.insert(self.AuraSequence, aura);
+		end
 	end
 end
 
@@ -348,14 +351,14 @@ function PowaAuras:FindAllChildren()
 		aura.Children = nil;
 		self:FindChildren(aura);
 	end
-	for _, aura in pairs(self.Auras) do
-		if (aura.Children) then
-			self:ShowText("Aura "..aura.id.." Children:");
-			for childId in pairs(aura.Children) do
-				self:ShowText("  "..childId);
-			end
-		end
-	end
+	--for _, aura in pairs(self.Auras) do
+	--	if (aura.Children) then
+	--		self:ShowText("Aura "..aura.id.." Children:");
+	--		for childId in pairs(aura.Children) do
+	--			self:ShowText("  "..childId);
+	--		end
+	--	end
+	--end
 end
 
 function PowaAuras:FindChildren(aura)
@@ -469,18 +472,18 @@ function PowaAuras:CreateEffectLists()
 	self.Events = self:CopyTable(self.AlwaysEvents);
 	for id, aura in pairs(self.Auras) do
 		if (not aura.off or self.UsedInMultis[id]) then
-		    self:DisplayText("CreateEffectLists Aura", id);
+		    --self:ShowText("CreateEffectLists Aura", id);
 			aura:AddEffectAndEvents();
 		end
 	end 
 
-	--if (PowaMisc.debug == true) then
+	if (PowaMisc.debug == true) then
 		for k in pairs(self.AurasByType) do
 			if (#self.AurasByType[k]>0) then
 				self:DisplayText(k .. " : " .. #self.AurasByType[k]);
 			end
 		end
-	--end
+	end
 
 end
 
@@ -566,7 +569,7 @@ function PowaAuras:AddChildrenToCascade(aura, originalId)
 	if (not aura or not aura.Children) then return; end
 	for id in pairs(aura.Children) do
 		if (not self.Cascade[id] and id~=originalId) then
-			self:ShowText(GetTime()," Cascade from ", aura.id, " adding aura."..id);
+			--self:ShowText(GetTime()," Cascade from ", aura.id, " adding aura."..id);
 			self.Cascade[id] = true;
 			self:AddChildrenToCascade(self.Auras[id], originalId or aura.id);
 		end
@@ -695,7 +698,7 @@ function PowaAuras:OnUpdate(elapsed)
 
 		--self:UnitTestInfo("Check Cascade auras");
 		for k in pairs(self.Cascade) do
-			self:ShowText(GetTime()," Checking Cascade aura."..k);
+			--self:ShowText(GetTime()," Checking Cascade aura."..k);
 			self:TestThisEffect(k, false, true);
 		end
 		wipe(self.Cascade);		
@@ -734,8 +737,8 @@ function PowaAuras:OnUpdate(elapsed)
 	for i = 1, #self.AuraSequence do
 		local aura = self.AuraSequence[i];
 		--self:Message("UpdateAura Call id=", aura.id, " ", aura);
-		if (self:UpdateAura(aura, elapsed)) then
-			self:UpdateTimer(aura, timerElapsed, skipTimerUpdate);
+		if (aura:UpdateAura()) then
+			aura:UpdateTimer(timerElapsed, skipTimerUpdate);
 		end
 	end
 	
@@ -794,7 +797,11 @@ end
 
 function PowaAuras:TestThisEffect(auraId, giveReason, ignoreCascade)
 	--self:UnitTestInfo("TestThisEffect", auraId);
-	--self:ShowText("TestThisEffect", auraId);
+	
+	--if (ignoreCascade) then
+	--	self:ShowText(GetTime()," TestThisEffect (from cascade) ", auraId);
+	--	giveReason = true;
+	--end
 
 	local aura = self.Auras[auraId];
 	if (not aura) then
@@ -804,7 +811,7 @@ function PowaAuras:TestThisEffect(auraId, giveReason, ignoreCascade)
 	if (aura.off) then
 		if (aura.Showing) then
 			--self:ShowText("aura:Hide because off", auraId);
-			aura:Hide();
+			aura:Hide("TestThisEffect off and showing");
 		end
 		if (not self.UsedInMultis[aura.id]) then
 			if (not giveReason) then return false; end
@@ -831,7 +838,11 @@ function PowaAuras:TestThisEffect(auraId, giveReason, ignoreCascade)
 	
 	--self:ShowText("Test Aura for Hide or Show = ",auraId, " showing=",aura.Showing);
 	aura.InactiveDueToMulti = nil;
-	local shouldShow, reason = aura:ShouldShow(giveReason or debugEffectTest);
+	local shouldShow, reason = aura:ShouldShow(giveReason or debugEffectTest, false, ignoreCascade);
+	--if (ignoreCascade) then
+	--	self:ShowText(GetTime()," Test Aura for Hide or Show = ",auraId, " showing=",aura.Showing);
+	--	self:ShowText(GetTime()," shouldShow=", shouldShow, " Reason=", reason);
+	--end
 	if (shouldShow==-1) then
 		if (debugEffectTest) then
 			self:Message("TestThisEffect unchanged");
@@ -870,9 +881,10 @@ function PowaAuras:TestThisEffect(auraId, giveReason, ignoreCascade)
 			if (debugEffectTest) then
 				self:Message("HideAura ", aura.buffname, " (",auraId,") ", reason);
 			end
-			aura:SetHideRequest();
+			aura:SetHideRequest("TestThisEffect: false & showing");
 		end
 		if (aura.Active) then
+			--self:ShowText(GetTime()," Aura set inactive ", auraId, " cas=", ignoreCascade);
 			if (not ignoreCascade) then
 				self:AddChildrenToCascade(aura);
 			end
@@ -904,7 +916,7 @@ function PowaAuras:CheckMultiple(aura, reason, giveReason)
 		local state;
 		if linkedAura then
 			--self:ShowText("Multicheck. Aura ",k);	
-			result, reason = linkedAura:ShouldShow(giveReason, reverse);
+			result, reason = linkedAura:ShouldShow(giveReason, reverse, true);
 			if (result==false or (result==-1 and not linkedAura.Showing and not linkedAura.HideRequest)) then
 				if (not giveReason) then return false; end
 				return result, reason;
@@ -1051,44 +1063,7 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 	if (aura.Debug) then
 		self:Message("ShowAuraForFirstTime ", aura.id);
 	end
-	self:Message(GetTime()," ShowAuraForFirstTime ", aura.id);
-	
-	--[[
-	if (not aura.UseOldAnimations and aura.EndAnimation and aura.EndAnimation:IsPlaying()) then
-		if (aura.Debug) then
-			self:Message("Hide aura as already playing");
-		end
-		aura:Hide();
-	end
-	]]--
-	
-	--[[
-	aura.EndSoundPlayed = nil;
-	
-	if (not self.ModTest) then
-		if (aura.customsound ~= "") then
-			local pathToSound;
-			if (string.find(aura.customsound, "\\")) then
-				pathToSound = aura.customsound;
-			else 
-				pathToSound = PowaGlobalMisc.PathToSounds .. aura.customsound;
-			end
-			--self:ShowText("Playing custom sound ",pathToSound);		
-			PlaySoundFile(pathToSound, PowaMisc.SoundChannel);
-		elseif (aura.sound > 0) then
-			if (PowaAuras.Sound[aura.sound]~=nil and string.len(PowaAuras.Sound[aura.sound])>0) then
-				if (string.find(PowaAuras.Sound[aura.sound], "%.")) then
-					--self:ShowText("Playing sound ",PowaGlobalMisc.PathToSounds,PowaAuras.Sound[aura.sound]);		
-					PlaySoundFile(PowaGlobalMisc.PathToSounds .. PowaAuras.Sound[aura.sound], PowaMisc.SoundChannel);
-				else
-					--self:ShowText("Playing WoW sound ",PowaAuras.Sound[aura.sound]);		
-					PlaySound(PowaAuras.Sound[aura.sound], PowaMisc.SoundChannel);
-				end
-			end
-		end	
-	end
-	]]--
-	
+
 	local frame, texture, frame2, texture2 = aura:CreateFrames();	
 
 	self:InitialiseFrame(aura, frame, texture, aura.alpha);
@@ -1217,122 +1192,6 @@ function PowaAuras:InitialiseFrame(aura, frame, texture, alpha)
 	frame:SetHeight(frame.baseH);
 end
 
---[[
-function PowaAuras:ShowSecondaryAuraForFirstTime(aura)
-	--self:UnitTestInfo("ShowSecondaryAuraForFirstTime", aura.id);
-
-
-
-	-- new secondary Aura
-	local secondaryAura = self:AuraFactory(aura.bufftype, aura.id, aura);
-	self.SecondaryAuras[aura.id] = secondaryAura;
-	
-	secondaryAura.isSecondary = true;
-	secondaryAura.alpha = aura.alpha * 0.5;
-	secondaryAura.anim1 = aura.anim2;
-	if (aura.speed > 0.5) then
-		secondaryAura.speed = aura.speed - 0.1; --- legerement plus lent
-	else
-		secondaryAura.speed = aura.speed / 2; --- legerement plus lent
-	end
-
-	local auraId = aura.id;
-	local frame = self.Frames[auraId];
-	local texture = self.Textures[auraId];
-
-	local secondaryFrame, secondaryTexture = secondaryAura:CreateFrames();
-	
-	if (aura.owntex == true) then
-		secondaryTexture:SetTexture(aura.icon);
-	elseif (aura.wowtex == true) then
-		secondaryTexture:SetTexture(self.WowTextures[aura.texture]);
-	elseif (aura.customtex == true) then
-		secondaryTexture:SetTexture(self:CustomTexPath(aura.customname));
-	elseif (aura.textaura == true) then
-		secondaryTexture:SetText(aura.aurastext);	  	
-	else
-		secondaryTexture:SetTexture("Interface\\Addons\\PowerAuras\\Auras\\Aura"..aura.texture..".tga");
-	end
-	
-	if (aura.randomcolor) then
-		if texture:GetObjectType() == "Texture" then
-			secondaryTexture:SetVertexColor( texture:GetVertexColor() );
-		elseif texture:GetObjectType() == "FontString" then
-			secondaryTexture:SetVertexColor(texture:GetTextColor());
-		end
-	else
-		secondaryTexture:SetVertexColor(aura.r,aura.g,aura.b);
-	end
-	
-	if (aura.texmode == 1) then
-		if (aura.textaura ~= true) then
-			secondaryTexture:SetBlendMode("ADD");
-		end
-		secondaryFrame:SetFrameStrata(aura.strata);
-	else
-		if (aura.textaura ~= true) then
-			secondaryTexture:SetBlendMode("DISABLE");
-		end
-		secondaryFrame:SetFrameStrata("BACKGROUND");
-	end
-
-	if (aura.textaura ~= true) then
-		if (aura.symetrie == 1) then 
-			secondaryTexture:SetTexCoord(1, 0, 0, 1); --- inverse X
-		elseif (aura.symetrie == 2) then 
-			secondaryTexture:SetTexCoord(0, 1, 1, 0); --- inverse Y
-		elseif (aura.symetrie == 3) then 
-			secondaryTexture:SetTexCoord(1, 0, 1, 0); --- inverse XY
-		else 
-			secondaryTexture:SetTexCoord(0, 1, 0, 1); 
-		end
-	end
-
-	secondaryFrame.baseL = frame.baseL;
-	secondaryFrame.baseH = frame.baseH;
-	secondaryFrame:SetPoint("CENTER",aura.x, aura.y);
-	secondaryFrame:SetWidth(secondaryFrame.baseL);
-	secondaryFrame:SetHeight(secondaryFrame.baseH);
-
-	if (aura.UseOldAnimations) then
-
-		secondaryFrame.statut = 1;
-		
-		if (aura.begin > 0) then 
-			secondaryFrame.beginAnim = 2;
-		else 
-			secondaryFrame.beginAnim = 0; 
-		end
-
-		if (not aura.begin or aura.begin==0) then
-			secondaryAura.animation = self:AnimationMainFactory(aura.anim2, secondaryAura, secondaryFrame);
-		else
-			secondaryFrame:SetAlpha(0.0); -- Hide secondary until primary begin animation finishes
-		end
-		--self:UnitTestInfo("secondaryFrame:Show()", aura.id);
-		secondaryFrame:Show(); -- Show Secondary Aura Frame
-		--self:Message("Show #2");
-	else	
-		if (not secondaryAura.MainAnimation) then
-			secondaryAura.MainAnimation = self:AddMainAnimation(secondaryAura, secondaryFrame);
-		end	
-	
-		if (not aura.BeginAnimation) then
-			--self:UnitTestInfo("secondaryFrame:Show()", aura.id);
-			secondaryFrame:Show(); -- Show Secondary Aura Frame
-			--self:Message("Show #2");
-			if (secondaryAura.MainAnimation) then
-				secondaryAura.MainAnimation:Play();
-			end
-		end
-
-	end
-
-	secondaryAura.Showing = true;
-	secondaryAura.HideRequest = false;
-end
-]]--
-
 function PowaAuras:DisplayAura(auraId)
 	--self:UnitTestInfo("DisplayAura", auraId);
 	--self:ShowText("DisplayAura aura ", auraId);
@@ -1345,198 +1204,6 @@ function PowaAuras:DisplayAura(auraId)
 	
 	self:ShowAuraForFirstTime(aura);
 end
-
-
-function PowaAuras:UpdateAura(aura, elapsed)
-	--self:ShowText("UpdateAura ", aura.id, " ", elapsed);
-	if (aura == nil) then
-		--self:UnitTestInfo("UpdateAura: Don't show, aura missing");
-		--self:ShowText("UpdateAura: Don't show, aura missing");
-		return false;
-	end
-	
-	aura:ProcessTriggerQueue();
-	
-	--if (aura.Debug) then
-	--	self:Message("UpdateAura ", aura.id, " ", elapsed);
-	--end
-	if (aura.off) then
-		if (aura.Showing) then
-			aura:Hide();
-		end
-		if (aura.Timer and aura.Timer.Showing) then
-			aura.Timer:Hide(); -- Aura off
-		end
-		if (not self.UsedInMultis[aura.id]) then
-			return false;
-		end
-	end
-	
-	if (PowaAuras.DebugCycle) then
-		self:DisplayText("====Aura"..aura.id.."====");
-		self:DisplayText("aura.HideRequest=",aura.HideRequest);
-		self:DisplayText("aura.Showing=",aura.Showing);
-	end
-
-	--self:ShowText("aura.Showing ", aura.Showing);
-	if (aura.Showing) then
-		local frame = aura:GetFrame();
-		if (frame == nil) then
-			----self:UnitTestInfo("UpdateAura: Don't show, frame missing");
-			self:ShowText("UpdateAura: Don't show, frame missing");
-			return false;
-		end
-		--self:ShowText("UpdateAura ", aura, " ", elapsed, " HideRequest=", aura.HideRequest);
-		
-		if (not aura.HideRequest and not self.ModTest and aura.TimeToHide) then
-			if (GetTime() >= aura.TimeToHide) then --- If duration has expired then hide this aura
-				----self:UnitTestInfo("UpdateAura: Hide, duration expired");
-				--self:ShowText("UpdateAura: Hide, duration expired");
-				aura:SetHideRequest();
-				aura.TimeToHide = nil;
-			end
-		end
-		
-		if (aura.HideRequest) then
-		
-			aura:CheckTriggers("AuraEnd");
-
-			--[[
-			if (self.ModTest == false and not aura.EndSoundPlayed) then
-				
-				if (aura.customsoundend ~= "") then
-					if (aura.Debug) then
-						self:Message("Playing Custom end sound ", aura.customsoundend);
-					end
-					local pathToSound;
-					if (string.find(aura.customsoundend, "\\")) then
-						pathToSound = aura.customsoundend;
-					else 
-						pathToSound = PowaGlobalMisc.PathToSounds..aura.customsoundend;
-					end
-					--self:ShowText("Playing sound "..pathToSound);		
-					PlaySoundFile(pathToSound, PowaMisc.SoundChannel);
-				elseif (aura.soundend > 0) then
-					if (PowaAuras.Sound[aura.soundend]~=nil and string.len(PowaAuras.Sound[aura.soundend])>0) then
-						if (aura.Debug) then
-							self:Message("Playing end sound ", PowaAuras.Sound[aura.soundend]);
-						end
-						if (string.find(PowaAuras.Sound[aura.soundend], "%.")) then
-							PlaySoundFile(PowaGlobalMisc.PathToSounds..PowaAuras.Sound[aura.soundend], PowaMisc.SoundChannel);
-						else
-							PlaySound(PowaAuras.Sound[aura.soundend], PowaMisc.SoundChannel);
-						end
-					end
-				end
-				aura.EndSoundPlayed = true;
-			end
-			]]--
-			
-			if (aura.Stacks) then
-				aura.Stacks:Hide();
-			end
-			if (aura.Debug) then
-				self:Message("Hide Requested for ",aura.id);
-			end
-			
-		end
-
-		if (aura.Active and aura.Stacks and aura.Stacks.enabled) then
-			if (self.ModTest) then
-				if (aura.Stacks.SetStackCount) then
-					aura.Stacks:SetStackCount(random(1,12));
-				else
-					self:Message("aura.Stacks:SetStackCount nil!! ",aura.id);			
-				end
-			end
-		
-			aura.Stacks:Update();
-		end
-
-	end
-
-	aura.HideRequest = false;
-	return true;
-end
-
-function PowaAuras:UpdateTimer(aura, timerElapsed, skipTimerUpdate)
-
-	--if (aura.Debug) then
-	--	--PowaAuras:UnitTestInfo("UpdateTimer ",self.id, " ", aura.Timer, " skip=",skipTimerUpdate);
-	--end
-	
-	if (not aura.Timer or skipTimerUpdate) then
-		return;
-	end
-	
-	if (PowaAuras.DebugCycle) then
-		self:DisplayText("aura.Timer id=",aura.id);
-		self:DisplayText("ShowOnAuraHide=",aura.Timer.ShowOnAuraHide);
-		self:DisplayText("ForceTimeInvert=",aura.ForceTimeInvert);
-		self:DisplayText("InvertTimeHides=",aura.InvertTimeHides);
-		self:DisplayText("ModTest=",self.ModTest);
-		self:DisplayText("aura.Active=",aura.Active);
-	end
-	local timerHide;
-	--if (aura.Timer.ShowOnAuraHide and not self.ModTest and ((not aura.ForceTimeInvert and not aura.InvertTimeHides) or (aura.ForceTimeInvert and not aura.inverse)) ) then
-	if (aura.Timer.ShowOnAuraHide and not self.ModTest and (not aura.ForceTimeInvert and not aura.InvertTimeHides) ) then
-		timerHide = aura.Active;
-	else
-		timerHide = not aura.Active;
-	end
-	if (PowaAuras.DebugCycle) then
-		self:Message("timerHide=",timerHide);
-		self:Message("InactiveDueToState=",aura.InactiveDueToState);
-	end
-	if (timerHide or (aura.InactiveDueToState and not aura.Active) or aura.InactiveDueToMulti) then
-		aura.Timer:Hide(); -- Request or state
-		if (aura.ForceTimeInvert) then
-			aura.Timer:Update(timerElapsed);				
-		end
-	else
-		aura.Timer:Update(timerElapsed);
-	end
-	
-end
-
---[[
-function PowaAuras:UpdateAuraAnimation(aura, elapsed, frame)
-	if (not aura.Showing) then return; end
-	if (not aura.animation or elapsed==0) then return; end
-	if (aura.isSecondary) then
-		-- Secondary animation only shows during primary main animation
-		primaryAnimation = PowaAuras.Auras[aura.id].animation;
-		if (primaryAnimation.IsBegin or primaryAnimation.IsEnd) then
-			return;
-		end
-	end
-			
-	local finished = aura.animation:Update(math.min(elapsed, 0.03));
-	
-	if (not finished) then return end
-	
-	if (aura.animation.IsBegin) then
-		--self:ShowText("Create main animation for primary aura");
-		aura.animation = self:AnimationMainFactory(aura.anim1, aura, frame);
-		--self:ShowText("Create main animation for primary aura");
-		local secondaryAura = self.SecondaryAuras[aura.id];
-		if (secondaryAura) then
-			local secondaryAuraFrame = self.SecondaryFrames[aura.id];
-			if (secondaryAuraFrame) then
-				--self:ShowText("Create main animation for secondary aura");
-				secondaryAura.animation = self:AnimationMainFactory(aura.anim2, secondaryAura, secondaryAuraFrame);
-				--self:ShowText("animation=", secondaryAura.animation);
-			end
-		end
-		return;
-	end
-	
-	if (aura.animation.IsEnd) then
-		aura:Hide();
-	end
-
-end
-]]--
 
 function PowaAuras:SetupStaticPopups()
 	
