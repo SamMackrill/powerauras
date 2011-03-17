@@ -242,11 +242,9 @@ function cPowaAura:ClearTriggers()
 		end
 	
 	end
-	--wipe(self.Triggers);
-	--wipe(self.TriggersByType);
 end
 
-function cPowaAura:CreateTriggers()
+function cPowaAura:CreateDefaultTriggers()
 	self:ClearTriggers();
 	if (self.off) then return; end
 	local frame, texture, frame2, texture2 = self:CreateFrames();

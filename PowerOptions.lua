@@ -3575,6 +3575,7 @@ function PowaAuras:RedisplayAura(auraId) ---Re-show aura after options changed
 	local showing = aura.Showing;
 	aura:Hide("RedisplayAura");
 	aura:RecreateFrames();
+	aura:CreateDefaultTriggers();
 	if (showing) then
 		self:DisplayAura(aura.id);
 	end
