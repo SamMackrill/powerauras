@@ -121,7 +121,8 @@ end
 function PowaAuras:LoadAuras()
 	--self:ShowText("LoadAuras");
 	self.Auras = {};
-	self.AuraSequence = {};	
+	self.AuraSequence = {};
+	self.TriggerIndex = 1;
 	
 	for k, v in pairs(PowaGlobalSet) do
 		--self:UnitTestDebug("PowaGlobalSet",k,v.buffname);

@@ -41,6 +41,10 @@ cPowaAura = PowaClass(function(aura, id, base)
 	aura.Triggers = {};
 	aura.TriggersByType = {};
 	aura.TriggerActionQueue = {}; -- Active Actions for processing.
+	
+	aura.NextTriggerId = 1;
+	
+
 	--aura.TriggerChecks = {};
 	--aura.TriggerDoCheck = false;
 	
@@ -225,9 +229,23 @@ function cPowaAura:StacksAllowed()
 end
 
 function cPowaAura:ClearTriggers()
-	wipe(self.Triggers);
-	wipe(self.TriggersByType);
+	for index, trigger in pairs (self.Triggers) do
+		if (string.sub(trigger.Name, 3) == "PA_") then
+			for index, action in pairs (trigger.Actions) do
+				if (string.sub(action.Name, 3) == "PA_") then
+					trigger:DeleteAction(action);
+				end
+			end
+			if (#trigger.Actions==0) then
+				self:DeleteTrigger(trigger);
+			end
+		end
+	
+	end
+	--wipe(self.Triggers);
+	--wipe(self.TriggersByType);
 end
+
 function cPowaAura:CreateTriggers()
 	self:ClearTriggers();
 	if (self.off) then return; end
@@ -299,20 +317,33 @@ function cPowaAura:CreateTriggers()
 end
 
 function cPowaAura:CreateTrigger(tType, parameters)
-	-- Get a place to put this trigger in.
-	local id = #self.Triggers + 1;
-	-- Make the trigger class.
-	local trigger = tType(self.id, id, parameters);
+	local trigger = tType(self.id, self.NextTriggerId, parameters);
+	self.NextTriggerId = self.NextTriggerId + 1;
 	if (PowaAuras.DebugTriggers) then
-		PowaAuras:DisplayText("Creating ", parameters.Name, " ", trigger.Type, " Trigger (", self.id, "_", id, ") initial value=", parameters.Value, " compare=", parameters.Compare);
+		PowaAuras:DisplayText("Creating ", parameters.Name, " ", trigger.Type, " Trigger (", self.id, "_", trigger.Id, ") initial value=", parameters.Value, " compare=", parameters.Compare);
 	end
-	self.Triggers[id] = trigger;
-	--self.TriggersByType[trigger.Type][id] = true;
+	table.insert(self.Triggers, trigger);
 	if (not self.TriggersByType[trigger.Type]) then
 		self.TriggersByType[trigger.Type] = {};
 	end
-	self.TriggersByType[trigger.Type][#self.TriggersByType[trigger.Type]+1] = trigger; 
+	table.insert(self.TriggersByType[trigger.Type], trigger); 
 	return trigger;
+end
+
+function cPowaAura:DeleteTrigger(trigger)
+	if(not trigger) then return; end
+	for index, t in pairs (self.TriggersByType[trigger.Type]) do
+		if (trigger.Id==t.Id) then
+			table.remove(self.TriggersByType[trigger.Type], index);
+			break;
+		end
+	end
+	for index, t in pairs (self.Triggers) do
+		if (trigger.Id==t.Id) then
+			table.remove(self.Triggers, index);
+			break;
+		end
+	end
 end
 
 function cPowaAura:ProcessTriggerQueue()
@@ -371,17 +402,8 @@ function cPowaAura:QueueActions(trigger)
 	end
 end
 
---[[
-function cPowaAura:RemoveTrigger(id)
-	-- Remove trigger.
-	if(not self.Triggers[id]) then return false; end
-	UIErrorsFrame:AddMessage("Removing " .. self.Triggers[id].Type .. "Trigger (" .. self.id .. ", " .. id .. ")", 1.0, 0.0, 0.0);
-	-- Remove.
-	self.TriggersByType[self.Triggers[id].Type][id] = nil;
-	self.Triggers[id] = nil;
-	return true;
-end
 
+--[[
 function cPowaAura:RemoveAction(action, triggerId, force)
 	if(self.TriggerActions[action] and self.TriggerActions[action] == triggerId or force) then
 		self.TriggerActions[action] = nil;
