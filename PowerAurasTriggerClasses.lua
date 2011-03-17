@@ -3,7 +3,7 @@
 Base class for Trigger Types.
 ===========================
 --]]
-cPowaTrigger = PowaClass(function(trigger, auraId, triggerId, value, qualifier, compare)
+cPowaTrigger = PowaClass(function(trigger, auraId, triggerId, parameters)
 	if(not auraId or not triggerId or not PowaAuras.Auras[auraId]) then return; end
 	if (PowaAuras.DebugTriggers) then
 		PowaAuras:DisplayText("Constructing Trigger type ", trigger.Type);
@@ -11,10 +11,11 @@ cPowaTrigger = PowaClass(function(trigger, auraId, triggerId, value, qualifier, 
 	trigger.Id               = triggerId;
 	trigger.AuraId           = auraId;
 	trigger.Actions          = {};
-	trigger.Value            = value;
-	trigger.Qualifier        = qualifier;
+	trigger.Name             = parameters.Name;
+	trigger.Value            = parameters.Value;
+	trigger.Qualifier        = parameters.Qualifier;
+	trigger.CompareOperator  = parameters.Compare;
 	trigger.Set              = false;
-	trigger.CompareOperator  = compare;
 end);
 
 
@@ -115,6 +116,8 @@ cPowaTriggerAction = PowaClass(function(action, auraId, triggerId, actionId, par
 	action.Id           = actionId;
 	action.AuraId       = auraId;
 	action.TriggerId    = triggerId;
+	action.Name         = parameters.Name;
+	parameters.Name     = nil;
 	action.Parameters   = parameters;
 	action:Init();
 end);
@@ -207,10 +210,10 @@ cPowaAuraStateAction = PowaClass(cPowaTriggerAction, { Type = "State" });
 
 function cPowaAuraStateAction:Fire()
 	if (PowaAuras.DebugTriggers) then
-		PowaAuras:DisplayText("Change State of ", self.Parameters.Name, " to ", self.Parameters.Value );
+		PowaAuras:DisplayText("Change State of ", self.Parameters.StateName, " to ", self.Parameters.StateValue );
 	end
 	local aura = PowaAuras.Auras[self.AuraId];
-	aura:SetState(self.Parameters.Name, self.Parameters.Value);
+	aura:SetState(self.Parameters.StateName, self.Parameters.StateValue);
 end
 
 

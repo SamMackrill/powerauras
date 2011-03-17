@@ -224,47 +224,47 @@ function cPowaAura:StacksAllowed()
 	return (self.CanHaveStacks and not self.inverse);
 end
 
-function cPowaAura:CreateTriggers()
+function cPowaAura:ClearTriggers()
 	wipe(self.Triggers);
 	wipe(self.TriggersByType);
+end
+function cPowaAura:CreateTriggers()
+	self:ClearTriggers();
 	if (self.off) then return; end
 	local frame, texture, frame2, texture2 = self:CreateFrames();
 	
-	local trigger=self:CreateTrigger(cPowaAuraStartTrigger);
+	local trigger=self:CreateTrigger(cPowaAuraStartTrigger, {Name="PA_AuraStart"});
 	--trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Show Aura"});
 	if (self.begin>0) then
-		trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame, HideFrame=frame2, Animation=self.begin, Speed=self.speed, Alpha=self.alpha, BeginSpin=self.beginSpin, State=1, StateName="AnimationState"});
-	else
-		trigger:AddAction(cPowaAuraStateAction, {Name="AnimationState", Value=1});
-	end			
-	if (self.sound>0) then
-		trigger:AddAction(cPowaAuraPlaySoundAction, {Sound=self.sound});
+		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_Start", Frame=frame, HideFrame=frame2, Animation=self.begin, Speed=self.speed, Alpha=self.alpha, BeginSpin=self.beginSpin, State=1, StateName="AnimationState"});
+	elseif (self.anim1>0 or self.anim2>0) then
+		trigger:AddAction(cPowaAuraStateAction, {Name="PA_StartState", StateName="AnimationState", StateValue=1});
 	end			
 	if (self.customsound~="") then
-		trigger:AddAction(cPowaAuraPlaySoundAction, {CustomSound=self.customsound});
+		trigger:AddAction(cPowaAuraPlaySoundAction, {Name="PA_Sound", CustomSound=self.customsound});
+	elseif (self.sound>0) then
+		trigger:AddAction(cPowaAuraPlaySoundAction, {Name="PA_Sound", Sound=self.sound});
 	end			
 	
-	trigger=self:CreateTrigger(cPowaAuraEndTrigger);
+	trigger=self:CreateTrigger(cPowaAuraEndTrigger, {Name="PA_AuraEnd"});
 	--trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Hide Aura"});
 	if (self.finish>0) then
-		trigger:AddAction(cPowaAuraStateAction, {Name="AnimationState", Value=2});
-		trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame, HideFrame=frame2, Animation=self.finish + 100, Speed=self.speed, Alpha=self.alpha, Hide=true, State=0, StateName="AnimationState"});
+		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_End", Frame=frame, HideFrame=frame2, Animation=self.finish + 100, Speed=self.speed, Alpha=self.alpha, Hide=true, State=0, StateName="AnimationState"});
 	else
-		trigger:AddAction(cPowaAuraHideAction, {});
-		trigger:AddAction(cPowaAuraStateAction, {Name="AnimationState", Value=0});
+		trigger:AddAction(cPowaAuraHideAction, {Name="PA_Hide"});
+		trigger:AddAction(cPowaAuraStateAction, {Name="PA_State", StateName="AnimationState", StateValue=0});
 	end
-	if (self.soundend>0) then
-		trigger:AddAction(cPowaAuraPlaySoundAction, {Sound=self.soundend});
-	end			
 	if (self.customsoundend~="") then
-		trigger:AddAction(cPowaAuraPlaySoundAction, {CustomSound=self.customsoundend});
-	end
+		trigger:AddAction(cPowaAuraPlaySoundAction, {Name="PA_Sound", CustomSound=self.customsoundend});
+	elseif (self.soundend>0) then
+		trigger:AddAction(cPowaAuraPlaySoundAction, {Name="PA_Sound", Sound=self.soundend});
+	end			
 		
 	if (self.anim1>0 or self.anim2>0) then
-		trigger=self:CreateTrigger(cPowaStateTrigger, 1, "AnimationState", "=");
+		trigger=self:CreateTrigger(cPowaStateTrigger, {Name="PA_MainAnim", Value=1, Qualifier="AnimationState", Compare="="});
 		--trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! State Changed to %v"});
 		if (self.anim1>0) then
-			trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame, Animation=self.anim1, Speed=self.speed, Alpha=self.alpha, Loop=true});
+			trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_Main1", Frame=frame, Animation=self.anim1, Speed=self.speed, Alpha=self.alpha, Loop=true});
 		end
 		if (self.anim2>0) then
 			local speed;
@@ -273,16 +273,16 @@ function cPowaAura:CreateTriggers()
 			else
 				speed = self.speed / 2;
 			end
-			trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame2, Animation=self.anim2, Speed=speed, Alpha=self.alpha * 0.5, Loop=true, Secondary=true});
+			trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_Main2", Frame=frame2, Animation=self.anim2, Speed=speed, Alpha=self.alpha * 0.5, Loop=true, Secondary=true});
 		end
 	end
 	
 	if (self.Timer) then
 		local frame1, frame2 = PowaAuras:CreateTimerFrameIfMissing(self.id)
 		if(self.Timer.UpdatePing) then
-			trigger=self:CreateTrigger(cPowaAuraTimerRefreshTrigger);
-			if (frame1) then trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame1, Animation=1000, Alpha=self.alpha, Speed=1}); end
-			if (frame2) then trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame2, Animation=1000, Alpha=self.alpha, Speed=1}); end
+			trigger=self:CreateTrigger(cPowaAuraTimerRefreshTrigger, {Name="PA_TimerPing"});
+			if (frame1) then trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_TimerPing1", Frame=frame1, Animation=1000, Alpha=self.alpha, Speed=1}); end
+			if (frame2) then trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_TimerPing2", Frame=frame2, Animation=1000, Alpha=self.alpha, Speed=1}); end
 		end
 		--trigger=self:CreateTrigger(cPowaAuraTimerTrigger, 12, nil, "<");
 		--if (frame1 and frame1.texture) then trigger:AddAction(cPowaAuraColourAction, {Texture=frame1.texture, R=255, G=0, B=0, Revert=true}); end
@@ -292,19 +292,19 @@ function cPowaAura:CreateTriggers()
 
 	if (self.Stacks and self.Stacks.UpdatePing) then
 		local frame = PowaAuras:CreateStacksFrameIfMissing(self.id)
-		trigger=self:CreateTrigger(cPowaStacksTrigger);
-		trigger:AddAction(cPowaAuraAnimationAction, {Frame=frame, Animation=1000, Alpha=self.alpha, Speed=1});
+		trigger=self:CreateTrigger(cPowaStacksTrigger, {Name="PA_StacksPing"});
+		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_StacksPing", Frame=frame, Animation=1000, Alpha=self.alpha, Speed=1});
 	end
 	
 end
 
-function cPowaAura:CreateTrigger(tType, value, qualifier, compare)
+function cPowaAura:CreateTrigger(tType, parameters)
 	-- Get a place to put this trigger in.
 	local id = #self.Triggers + 1;
 	-- Make the trigger class.
-	local trigger = tType(self.id, id, value, qualifier, compare);
+	local trigger = tType(self.id, id, parameters);
 	if (PowaAuras.DebugTriggers) then
-		PowaAuras:DisplayText("Creating ", trigger.Type, "Trigger (", self.id, "_", id, ") initial value=", value, " compare=", compare);
+		PowaAuras:DisplayText("Creating ", parameters.Name, " ", trigger.Type, " Trigger (", self.id, "_", id, ") initial value=", parameters.Value, " compare=", parameters.Compare);
 	end
 	self.Triggers[id] = trigger;
 	--self.TriggersByType[trigger.Type][id] = true;
