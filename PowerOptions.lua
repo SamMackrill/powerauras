@@ -105,7 +105,7 @@ function PowaAuras:IconClick(owner, button)
 			else
 				owner:SetAlpha(1.0);
 			end
-			PowaAuras:OptionTest();
+			PowaAuras:ToggleTesting();
 		end
 	elseif (self.CurrentAuraId ~= aura.id) then -- clicked a different button
 		self:SetCurrent(owner, aura.id);
@@ -207,7 +207,6 @@ function PowaAuras:MainListClick(owner)
 				aura.off = allEnabled;
 				auraIcon:SetText(offText);
 			end
-			self.SecondaryAuras[i] = nil;
 		end
 		
 		self.DoCheck.All = true;
@@ -288,9 +287,8 @@ function PowaAuras:TriageIcones(nPage)
 	for i = min, max do
 		local aura = self.Auras[i];
 		if (aura) then
-			aura:Hide();
+			aura:Hide("TriageIcones");
 		end
-		self.SecondaryAuras[i] = nil;
 	end
 
 	local a = min;
@@ -355,7 +353,7 @@ function PowaAuras:Dispose(tableName, key, key2)
 		key = key2;
 	end
 	if (t[key].Hide) then
-		t[key]:Hide();
+		t[key]:Hide("General Dispose");
 	end
 	t[key] = nil;
 end
@@ -364,7 +362,7 @@ function PowaAuras:DeleteAura(aura)
 	if (not aura) then return; end
 	--self:Message("DeleteAura ", aura.id);
 
-	aura:Hide();
+	aura:Hide("DeleteAura");
 
 	if (aura.Timer) then aura.Timer:Dispose(); end
 	if (aura.Stacks) then aura.Stacks:Dispose(); end
@@ -430,9 +428,8 @@ function PowaAuras:OptionNewEffect()
 	self:CalculateAuraSequence();
 
 	aura.Active = true;
-	aura:CreateFrames();
+	aura:RecreateFrames();
 	
-	self.SecondaryAuras[i] = nil; -- Force recreate
 	self:DisplayAura(i);
 
 	self:UpdateMainOption();
@@ -855,6 +852,8 @@ function PowaAuras:ExportDialogInit(self)
 	-- Add needed functions.
 	-- Fired when the frame state needs updating.
 	self.SetStatus = function(self, status)
+		-- Can we send/receive data?
+		if(not PowaAuras.Comms:IsRegistered()) then status = 6; end
 		-- Change it.
 		self.sendStatus = status or self.sendStatus or 1;
 		-- Hide buttons, update labels and change values depending on status.
@@ -903,6 +902,11 @@ function PowaAuras:ExportDialogInit(self)
 				PowaAuras:SetDialogTimeout(self, 0);
 				self.AcceptButton:Enable();
 				self.CancelButton:Enable();
+			elseif(self.sendStatus == 6) then
+				-- Status 6 - Addon comms failure.
+				-- Don't need this for the import dialog, as that only pops up if comms work in the first place.
+				self.Title:SetText(PowaAuras.Text.aideCommsRegisterFailure);
+				PowaAuras:SetDialogTimeout(self, 0);
 			end
 		end	
 	end
@@ -946,7 +950,7 @@ function PowaAuras:ExportDialogInit(self)
 	PowaComms:AddHandler("EXPORT_REJECT", function(_, data, from)
 		-- Were we sending to this person?
 		if(PowaAuraExportDialog.sendTo == from) then
-			if(PowaMisc.debug) then PowaAuras:ShowText("Comms: EXPORT_REJECT from " .. from); end
+			if(PowaMisc.debug) then PowaAuras:DisplayText("Comms: EXPORT_REJECT from " .. from); end
 			PowaAuraExportDialog.sendTo = nil;
 			PowaAuraExportDialog.errorReason = tonumber((data or 1), 10);
 			PowaAuraExportDialog:SetStatus(3);
@@ -957,7 +961,7 @@ function PowaAuras:ExportDialogInit(self)
 	PowaComms:AddHandler("EXPORT_ACCEPT", function(_, _, from)
 		-- Were we sending to this person?
 		if(PowaAuraExportDialog.sendTo == from) then
-			if(PowaMisc.debug) then PowaAuras:ShowText("Comms: EXPORT_ACCEPT from " .. from); end
+			if(PowaMisc.debug) then PowaAuras:DisplayText("Comms: EXPORT_ACCEPT from " .. from); end
 			PowaAuraExportDialog:SetStatus(4);
 			-- Let's get busy!
 			PowaComms:SendAddonMessage("EXPORT_DATA", PowaAuraExportDialog.sendString, from);
@@ -1118,17 +1122,17 @@ function PowaAuras:PlayerImportDialogInit(self)
 	PowaComms:AddHandler("EXPORT_REQUEST", function(_, data, from)
 		-- If we're busy, reject. If we're in combat, reject. If we're autoblocking, reject.
 		if(PowaAuraPlayerImportDialog.receiveFrom) then
-			if(PowaMisc.debug) then PowaAuras:ShowText("Comms: Rejected EXPORT_REQUEST - Busy."); end
+			if(PowaMisc.debug) then PowaAuras:DisplayText("Comms: Rejected EXPORT_REQUEST - Busy."); end
 			PowaComms:SendAddonMessage("EXPORT_REJECT", 4, from);
 			return;
 		end
 		if(InCombatLockdown()) then
-			if(PowaMisc.debug) then PowaAuras:ShowText("Comms: Rejected EXPORT_REQUEST - In combat."); end
+			if(PowaMisc.debug) then PowaAuras:DisplayText("Comms: Rejected EXPORT_REQUEST - In combat."); end
 			PowaComms:SendAddonMessage("EXPORT_REJECT", 1, from);
 			return;
 		end
 		if(PowaGlobalMisc.BlockIncomingAuras == true) then
-			if(PowaMisc.debug) then PowaAuras:ShowText("Comms: Rejected EXPORT_REQUEST - BlockIncomingAuras = true."); end
+			if(PowaMisc.debug) then PowaAuras:DisplayText("Comms: Rejected EXPORT_REQUEST - BlockIncomingAuras = true."); end
 			PowaComms:SendAddonMessage("EXPORT_REJECT", 2, from);
 			return;
 		end
@@ -1144,7 +1148,7 @@ function PowaAuras:PlayerImportDialogInit(self)
 	PowaComms:AddHandler("EXPORT_DATA", function(_, data, from)
 		-- Were we receiving from this person?
 		if(PowaAuraPlayerImportDialog.receiveFrom == from) then
-			if(PowaMisc.debug) then PowaAuras:ShowText("Comms: Receiving EXPORT_DATA"); end
+			if(PowaMisc.debug) then PowaAuras:DisplayText("Comms: Receiving EXPORT_DATA"); end
 			-- Status code 4 - we are pro.
 			PowaAuraPlayerImportDialog:SetStatus(4);
 			-- Store the data.
@@ -2892,8 +2896,7 @@ function PowaAuras:EditorShow()
 	if (aura) then
 		if (not aura.Showing) then 
 			aura.Active = true;
-			aura:CreateFrames();
-			self.SecondaryAuras[aura.id] = nil; -- Force recreate
+			aura:RecreateFrames();
 			self:DisplayAura(aura.id);
 		end
 		self:InitPage(aura);
@@ -2949,8 +2952,7 @@ function PowaAuras:UpdateOptionsStacks(auraId)
 	if (not (self.VariablesLoaded and self.SetupDone)) then return; end  
 	
 	local stacks = self.Auras[auraId].Stacks;
-	
-    local frame = self.StacksFrames[auraId];	
+    local frame = stacks:GetFrame();	
 	frame:SetAlpha(math.min(stacks.a, 0.99));
 	frame:SetWidth(20 * stacks.h);
 	frame:SetHeight(20 * stacks.h);
@@ -2982,7 +2984,6 @@ function PowaAuras:TimerAlphaSliderChanged()
 	PowaTimerAlphaSliderText:SetText(self.Text.nomAlpha.." : "..format("%.2f", SliderValue) );
 
 	self.Auras[self.CurrentAuraId].Timer.a = SliderValue;
-	--self:CreateTimerFrameIfMissing(self.CurrentAuraId);
 end
 
 function PowaAuras:TimerSizeSliderChanged()
@@ -2993,7 +2994,6 @@ function PowaAuras:TimerSizeSliderChanged()
 	PowaTimerSizeSliderText:SetText(self.Text.nomTaille.." : "..format("%.2f", SliderValue) );
 
 	self.Auras[self.CurrentAuraId].Timer.h = SliderValue;
-	--self:CreateTimerFrameIfMissing(self.CurrentAuraId);
 end
 
 function PowaAuras:TimerCoordSliderChanged()
@@ -3004,7 +3004,6 @@ function PowaAuras:TimerCoordSliderChanged()
 	PowaTimerCoordSliderText:SetText(self.Text.nomPos.." Y : "..SliderValue);
 
 	self.Auras[self.CurrentAuraId].Timer.y = SliderValue;
-	--self:CreateTimerFrameIfMissing(self.CurrentAuraId);
 end
 
 function PowaAuras:TimerCoordXSliderChanged()
@@ -3015,7 +3014,6 @@ function PowaAuras:TimerCoordXSliderChanged()
 	PowaTimerCoordXSliderText:SetText(self.Text.nomPos.." X : "..SliderValue);
 
 	self.Auras[self.CurrentAuraId].Timer.x = SliderValue;
-	--self:CreateTimerFrameIfMissing(self.CurrentAuraId);
 end
 
 function PowaAuras:PowaTimerInvertAuraSliderChanged(slider)
@@ -3032,7 +3030,6 @@ function PowaAuras:PowaTimerInvertAuraSliderChanged(slider)
 	getglobal(slider:GetName().."Text"):SetText(text.." : "..slider:GetValue().." sec");
 
 	self.Auras[self.CurrentAuraId].InvertAuraBelow = slider:GetValue();
-	--self:CreateTimerFrameIfMissing(self.CurrentAuraId);
 end
 
 function PowaAuras:TimerDurationSliderChanged()
@@ -3042,7 +3039,6 @@ function PowaAuras:TimerDurationSliderChanged()
 	PowaTimerDurationSliderText:SetText(self.Text.nomTimerDuration.." : "..SliderValue.." sec");
 
 	self.Auras[self.CurrentAuraId].timerduration = SliderValue;
-	--self:CreateTimerFrameIfMissing(self.CurrentAuraId);
 end
 
 function PowaAuras.DropDownMenu_OnClickTimerRelative(self)
@@ -3066,7 +3062,6 @@ function PowaAuras:TimerChecked(control, setting)
 	end
 	aura.Timer:Dispose();
 	aura.Timer:SetShowOnAuraHide(aura);
-	--self:CreateTimerFrameIfMissing(self.CurrentAuraId);
 end
 
 function PowaAuras:SettingChecked(control, setting)
@@ -3086,7 +3081,6 @@ function PowaAuras:TimerTransparentChecked(control)
 		self.Auras[self.CurrentAuraId].Timer.Transparent = false;
 	end
 	self.Auras[self.CurrentAuraId].Timer:Dispose();
-	--self:CreateTimerFrameIfMissing(self.CurrentAuraId);
 end
 
 --==== Stacks ====
@@ -3313,7 +3307,8 @@ local function OptionsOK()
 		for auraId, aura in pairs(PowaAuras.Auras) do
 			if (aura.Stacks and aura.Stacks.Texture == "Default") then
 				aura.Stacks:Hide();
-				PowaAuras.StacksFrames[auraId].texture:SetTexture(aura.Stacks:GetTexture());
+				local frame = aura.Stacks:GetFrame();
+				frame.texture:SetTexture(aura.Stacks:GetTexture());
 			end
 		end
 	end
@@ -3428,7 +3423,6 @@ function PowaAuras.DropDownMenu_OnClickTimerTexture(self)
 	if (aura==nil or aura.Timer==nil) then return; end
 	aura.Timer.Texture = self.value;
 	aura.Timer:Dispose();
-	--PowaAuras:CreateTimerFrameIfMissing(PowaAuras.CurrentAuraId);
 end
 
 function PowaAuras.DropDownStacksMenu_Initialize(owner)
@@ -3492,33 +3486,31 @@ function PowaAuras.Ternary_CheckTooltip(button)
 end
 
 
-function PowaAuras:OptionTest()
-	--self:Message("OptionTest for ", self.CurrentAuraId);
+function PowaAuras:ToggleTesting()
+	--self:Message("ToggleTesting for ", self.CurrentAuraId);
 	local aura = self.Auras[self.CurrentAuraId];
 	if (not aura or aura.buffname == "" or aura.buffname == " ") then
 		return;
 	end
 
 	if (aura.Showing) then 
-		self:SetAuraHideRequest(aura);
+		aura:SetHideRequest("ToggleTesting");
 		aura.Active = false;
 	else
 		aura.Active = true;
-		aura:CreateFrames();
-		self.SecondaryAuras[aura.id] = nil; -- Force recreate
+		aura:RecreateFrames();
 		self:DisplayAura(aura.id);
 	end
 end
 
-function PowaAuras:OptionTestAll()
+function PowaAuras:TestAllAuras()
 
 	PowaAuras:OptionHideAll(true);
 	--self:ShowText("Test All Active Frames now=", now);
 	for id, aura in pairs(self.Auras) do
 		if (not aura.off) then 
 			aura.Active = true;
-			aura:CreateFrames();
-			self.SecondaryAuras[aura.id] = nil; -- Force recreate
+			aura:RecreateFrames();
 			self:DisplayAura(aura.id);
 		end
 	end
@@ -3532,11 +3524,11 @@ function PowaAuras:OptionHideAll(now) --- Hide all auras
 		self:ResetDragging(aura, self.Frames[aura.id]);
 		if now then
 			--self:ShowText("Hide aura id=", id);
-			aura:Hide();
+			aura:Hide("OptionHideAll");
 			if (aura.Timer) then aura.Timer:Hide(); end 
 			if (aura.Stacks) then aura.Stacks:Hide(); end
 		else
-			self:SetAuraHideRequest(aura);
+			aura:SetHideRequest("OptionHideAll");
 			if (aura.Timer)  then aura.Timer.HideRequest  = true; end
 		end
 	end	
@@ -3547,12 +3539,11 @@ function PowaAuras:RedisplayAuras()
 	for id, aura in pairs(self.Auras) do
 		aura.Active = false;
 		if (aura.Showing) then
-			aura:Hide();
+			aura:Hide("RedisplayAuras");
 			if (aura.Timer) then aura.Timer:Hide(); end
 			if (aura.Stacks) then aura.Stacks:Hide(); end
 			aura.Active = true;
-			aura:CreateFrames();
-			self.SecondaryAuras[aura.id] = nil; -- Force recreate
+			aura:RecreateFrames();
 			self:DisplayAura(aura.id);
 		end
 	end	
@@ -3582,12 +3573,9 @@ function PowaAuras:RedisplayAura(auraId) ---Re-show aura after options changed
 	end
 	--self:ShowText("RedisplayAura auraId=", aura.id, " showing=", aura.Showing);
 	local showing = aura.Showing;
-	aura:Hide();
-	aura.BeginAnimation = nil;
-	aura.MainAnimation = nil;
-	aura.EndAnimation = nil;
-	aura:CreateFrames();
-	self.SecondaryAuras[aura.id] = nil; -- Force recreate
+	aura:Hide("RedisplayAura");
+	aura:RecreateFrames();
+	aura:CreateDefaultTriggers();
 	if (showing) then
 		self:DisplayAura(aura.id);
 	end
