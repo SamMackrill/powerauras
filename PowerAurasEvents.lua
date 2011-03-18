@@ -60,7 +60,7 @@ function PowaAuras:VARIABLES_LOADED(...)
 	if (not PowaMisc.Disabled) then
 		self:RegisterEvents(PowaAuras_Frame);
 	end
-	
+
 	self.VariablesLoaded = true;
 end
 
@@ -95,6 +95,10 @@ function PowaAuras:Setup()
 
 	self.WeAreMounted = (IsMounted() == 1 and true or self:IsDruidTravelForm());
 	self.WeAreInVehicle = (UnitInVehicle("player")~=nil);
+	
+	if(self.WoWBuild >= 13726) then
+		self.Comms:Register();
+	end
 
 	self.ActiveTalentGroup = GetActiveTalentGroup();
 	
@@ -780,8 +784,9 @@ function PowaAuras:ACTIONBAR_UPDATE_USABLE(...)
 	self.DoCheck.CheckIt = true;
 end
 	
-function PowaAuras:SPELL_UPDATE_COOLDOWN(...)
+function PowaAuras:SPELL_UPDATE_USABLE(...)
 	if (self.ModTest) then return; end
+	--self:DisplayText("SPELL_UPDATE_USABLE ", unit);
 	self.DoCheck.SpellCooldowns = true;
 	self.DoCheck.CheckIt = true;
 end
