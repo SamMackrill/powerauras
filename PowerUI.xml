@@ -2,4 +2,447 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.blizzard.com/wow/ui/
     ..\..\FrameXML\UI.xsd">
+	<!-- Templates
+		All templates are prefixed with Powa, and use a Template suffix.
+		> TabButton         -  Button template for tabs.
+		> TabSidebarButton  -  Button template for a tabbed sidebar.
+		> TabFrame          -  Handles tabs with ease.
+		> TabDialog         -  Basic dialog frame, best used inside of a tab.
+	-->	
+	<Button name="PowaTabButtonTemplate" virtual="true" text="Tab">
+		<Size>
+			<AbsDimension x="128" y="29" />
+		</Size>
+		<NormalFont style="GameFontNormalSmall" />
+		<HighlightFont style="GameFontHighlightSmall"/>
+		<DisabledFont style="GameFontHighlightSmall"/>
+		<NormalTexture file="Interface\PaperDollInfoFrame\UI-Character-InActiveTab" />
+		<HighlightTexture file="Interface\PaperDollInfoFrame\UI-Character-Tab-RealHighlight" alphaMode="ADD">
+			<Anchors>
+				<Anchor point="TOPLEFT">
+					<Offset>
+						<AbsDimension x="0" y="-4"/>
+					</Offset>
+				</Anchor>
+				<Anchor point="BOTTOMRIGHT">
+					<Offset>
+						<AbsDimension x="0" y="1"/>
+					</Offset>
+				</Anchor>
+				<TexCoords left="0" right="1" top="0.2" bottom="0.6" />
+			</Anchors>
+		</HighlightTexture>
+		<ButtonText name="$parentText">
+			<Size>
+				<AbsDimension x="0" y="10"/>
+			</Size>
+			<Anchors>
+				<Anchor point="CENTER">
+					<Offset>
+						<AbsDimension x="0" y="-2"/>
+					</Offset>
+				</Anchor>
+			</Anchors>
+		</ButtonText>
+	</Button>
+	
+	<Button name="PowaTabSidebarButtonTemplate" virtual="true">
+		<Size>
+			<AbsDimension x="156" y="24"/>
+		</Size>
+		<NormalFont style="GameFontNormalSmall" />
+		<HighlightFont style="GameFontHighlightSmall" />
+		<DisabledFont style="GameFontHighlightSmall" />
+		<ButtonText name="$parentText">
+			<Size>
+				<AbsDimension x="0" y="10"/>
+			</Size>
+			<Anchors>
+				<Anchor point="CENTER">
+					<Offset>
+						<AbsDimension x="0" y="0"/>
+					</Offset>
+				</Anchor>
+			</Anchors>
+		</ButtonText>
+		<HighlightTexture file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar-Blue" alphaMode="ADD" />
+		<DisabledTexture file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar-Blue" alphamode="ADD" />
+	</Button>
+	
+	<Frame name="PowaTabFrameTemplate" virtual="true">
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+			<BackgroundInsets>
+				<AbsInset left="4" right="4" top="4" bottom="4" />
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="16" />
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="16" />
+			</EdgeSize>
+		</Backdrop>
+		<Scripts>
+			<OnLoad>
+				self:SetBackdropColor(0, 0, 0, 0.75);
+				self:SetBackdropBorderColor(0.4, 0.4, 0.4);
+				
+				PowaTabFrame_Init(self);
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	
+	<Frame name="PowaTabDialogTemplate" virtual="true">
+		<Frames>
+			<Button name="$parentAcceptButton" parentKey="AcceptButton" inherits="UIPanelButtonTemplate2" text="Save">
+				<Size>
+					<AbsDimension x="118" y="22" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT">
+						<Offset x="-10" y="5" />
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentCancelButton" parentKey="CancelButton" inherits="UIPanelButtonTemplate2" text="Cancel">
+				<Size>
+					<AbsDimension x="118" y="22" />
+				</Size>
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="$parentAcceptButton" relativePoint="LEFT">
+						<Offset x="-10" y="0" />
+					</Anchor>
+				</Anchors>
+			</Button>
+		</Frames>
+	</Frame>
+	
+	<!-- Editor Frame -->
+	<Frame name="PowaEditor" toplevel="true" movable="true" parent="UIParent" hidden="false" frameStrata="MEDIUM" enableMouse="true" enableKeyboard="true">
+		<Size>
+          <AbsDimension x="550" y="650" />
+        </Size>
+        <Anchors>
+			<Anchor point="CENTER" relativeTo="UIParent">
+				<Offset>
+					<AbsDimension x="0" y="50" />
+				</Offset>
+			</Anchor>
+        </Anchors>
+		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+			<BackgroundInsets>
+				<AbsInset left="11" right="12" top="12" bottom="11" />
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="32" />
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="32" />
+			</EdgeSize>
+		</Backdrop>
+		<Scripts>
+			<OnMouseDown>
+				if(button == "LeftButton" and not self.isMoving) then
+					self:StartMoving();
+					self.isMoving = true;
+				end
+			</OnMouseDown>
+			<OnMouseUp>
+				if(button == "LeftButton" and self.isMoving) then
+					self:StopMovingOrSizing();
+					self.isMoving = false;
+				end
+			</OnMouseUp>
+			<OnHide>
+				if(self.isMoving) then
+					self:StopMovingOrSizing();
+					self.isMoving = false;
+				end
+			</OnHide>
+		</Scripts>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture file="Interface\DialogFrame\UI-DialogBox-Header">
+					<Size>
+						<AbsDimension x="300" y="68" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOP" relativePoint="TOP" x="0" y="13"/>
+					</Anchors>					
+				</Texture>
+				<FontString name="$parentTitle" inherits="GameFontNormal" text="Aura Editor" justifyH="CENTER" justifyV="TOP">
+					<Size>
+						<AbsDimension x="300" y="68" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOP" relativePoint="TOP" x="0" y="-2"/>
+					</Anchors>
+				</FontString>
+				<Texture file="Interface\DialogFrame\UI-DialogBox-Corner">
+					<Size x="32" y="32" />	
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeTo="$parent">
+							<Offset>
+								<AbsDimension x="-4" y="-4" />
+							</Offset>
+						</Anchor>		
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentCloseButton" inherits="UIPanelCloseButton">
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Frame name="$parentDisplay" inherits="PowaTabFrameTemplate">
+				<Size>
+				  <AbsDimension y="320" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parent">
+						<Offset>
+							<AbsDimension x="0" y="-55" />
+						</Offset>
+					</Anchor>
+					<Anchor point="LEFT" relativeTo="$parent">
+						<Offset>
+							<AbsDimension x="15" y="0" />
+						</Offset>
+					</Anchor>
+					<Anchor point="RIGHT" relativeTo="$parent">
+						<Offset>
+							<AbsDimension x="-15" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Frames>
+					<Frame name="$parentAura" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent">
+								<Offset>
+									<AbsDimension x="0" y="0" />
+								</Offset>
+							</Anchor>
+							<Anchor point="BOTTOMRIGHT" relativeTo="$parent">
+								<Offset>
+									<AbsDimension x="0" y="0" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Frames>
+							<Frame>
+								<Size>
+								  <AbsDimension y="320" />
+								</Size>
+								<Anchors>
+									<Anchor point="TOPLEFT" relativeTo="$parent">
+										<Offset>
+											<AbsDimension x="0" y="0" />
+										</Offset>
+									</Anchor>
+									<Anchor point="BOTTOMRIGHT" relativeTo="$parent">
+										<Offset>
+											<AbsDimension x="0" y="0" />
+										</Offset>
+									</Anchor>
+								</Anchors>
+								<Frames>
+									<Frame name="$parentSidebar">
+										<Layers>
+											<Layer level="ARTWORK">
+												<Texture>
+													<Anchors>
+														<Anchor point="TOPLEFT" relativeTo="$parent">
+															<Offset>
+																<AbsDimension x="4" y="-4" />
+															</Offset>
+														</Anchor>
+														<Anchor point="BOTTOMRIGHT" relativeTo="$parent">
+															<Offset>
+																<AbsDimension x="-8" y="4" />
+															</Offset>
+														</Anchor>
+													</Anchors>
+													<Color r="0" g="0" b="0" a="0.535" />
+												</Texture>
+												<Texture file="Interface\COMMON\ShadowOverlay-Left">
+													<Size>
+														<AbsDimension x="16" />
+													</Size>
+													<Anchors>
+														<Anchor point="TOPRIGHT" relativeTo="$parent">
+															<Offset>
+																<AbsDimension x="8" y="-4" />
+															</Offset>
+														</Anchor>
+														<Anchor point="BOTTOMRIGHT" relativeTo="$parent">
+															<Offset>
+																<AbsDimension x="8" y="4" />
+															</Offset>
+														</Anchor>
+													</Anchors>
+													<Color r="0" g="0" b="0" a="0.75" />
+												</Texture>
+											</Layer>
+										</Layers>
+									</Frame>
+									<Frame name="$parentMain">
+										<Anchors>
+											<Anchor point="TOPLEFT" relativeTo="$parent" />
+											<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
+										</Anchors>
+										<Frames>
+											<Frame name="$parentConfig">
+												<Anchors>
+													<Anchor point="TOPLEFT" relativeTo="$parent" />
+													<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
+												</Anchors>
+												<Layers>
+													<Layer level="ARTWORK">
+														<FontString parentKey="StringSource" inherits="GameFontHighlight" text="UI_AURA_CLICK" justifyH="CENTER" justifyV="CENTER">
+															<Size>
+																<AbsDimension x="156" />
+															</Size>
+															<Anchors>
+																<Anchor point="TOP" relativeTo="PowaEditorDisplayAuraSidebar" relativePoint="TOP" x="0" y="-110"/>
+															</Anchors>
+														</FontString>
+													</Layer>
+												</Layers>
+												<Frames>
+													<Button name="$parentIcon" parentKey="Icon">
+														<Size>
+															<AbsDimension x="96" y="96" />
+														</Size>
+														<Anchors>
+															<Anchor point="TOP" relativeTo="PowaEditorDisplayAuraSidebar">
+																<Offset>
+																	<AbsDimension x="0" y="-10" />
+																</Offset>
+															</Anchor>
+														</Anchors>
+														<Layers>
+															<Layer level="OVERLAY">
+																<Texture file="Interface\ICONS\TEMP" name="$parentTexture" parentKey="Texture">
+																	<Size>
+																		<AbsDimension x="96" y="96" />
+																	</Size>
+																	<Anchors>
+																		<Anchor point="TOPLEFT" relativeTo="$parent">
+																			<Offset>
+																				<AbsDimension x="0" y="0" />
+																			</Offset>
+																		</Anchor>
+																		<Anchor point="BOTTOMRIGHT" relativeTo="$parent">
+																			<Offset>
+																				<AbsDimension x="0" y="0" />
+																			</Offset>
+																		</Anchor>
+																	</Anchors>
+																</Texture>
+															</Layer>
+														</Layers>
+														<Scripts>
+															<OnClick>
+																PowaEditorDisplayAuraMain:SelectTab(2);
+															</OnClick>
+														</Scripts>
+													</Button>												
+												</Frames>
+											</Frame>
+											<Frame name="$parentSelector" inherits="PowaTabDialogTemplate">
+												<Anchors>
+													<Anchor point="TOPLEFT" relativeTo="$parent" />
+													<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
+												</Anchors>
+												<Frames>
+													<Frame name="$parent1">
+														<Anchors>
+															<Anchor point="TOPLEFT" relativeTo="$parent" />
+															<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
+														</Anchors>
+													</Frame>
+													<Frame name="$parent2">
+														<Anchors>
+															<Anchor point="TOPLEFT" relativeTo="$parent" />
+															<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
+														</Anchors>
+													</Frame>
+													<Frame name="$parent3">
+														<Anchors>
+															<Anchor point="TOPLEFT" relativeTo="$parent" />
+															<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
+														</Anchors>
+													</Frame>
+													<Frame name="$parent4">
+														<Anchors>
+															<Anchor point="TOPLEFT" relativeTo="$parent" />
+															<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
+														</Anchors>
+													</Frame>
+												</Frames>
+												<Scripts>
+													<OnLoad>
+														-- Uses the tab sidebar template.
+														PowaTabFrame_Init(self, 2);
+														self:RegisterTab(PowaEditorDisplayAuraMainSelector1, "Normal Textures");
+														self:RegisterTab(PowaEditorDisplayAuraMainSelector2, "WoW Textures");
+														self:RegisterTab(PowaEditorDisplayAuraMainSelector3, "Custom Textures");
+														self:RegisterTab(PowaEditorDisplayAuraMainSelector4, "Ability Icon");
+														-- Dialog accept/close handlers.
+														self.AcceptButton:SetScript("OnClick", function()
+															print("Save");
+															PowaEditorDisplayAuraMain:SelectTab(1);
+														end);
+														self.CancelButton:SetScript("OnClick", function()
+															print("Cancel");
+															PowaEditorDisplayAuraMain:SelectTab(1);
+														end);
+													</OnLoad>
+												</Scripts>
+											</Frame>
+										</Frames>
+										<Scripts>
+											<OnLoad>
+												-- This is actually a tab enabled frame, but we hide all the tabs.
+												PowaTabFrame_Init(self, 1);
+												self:RegisterTab(PowaEditorDisplayAuraMainConfig, "Editor [DND]", true);
+												self:RegisterTab(PowaEditorDisplayAuraMainSelector, "Selector [DND]", true);
+											</OnLoad>
+										</Scripts>
+									</Frame>
+								</Frames>
+								<Scripts>
+									<OnLoad>
+										PowaLayoutFrame_Init(self, 1);
+										self:SetColumns(2, { [1] = { X = 0.3, Y = 1 }, [2] = { X = 0.7 } });
+										self:SetItem(PowaEditorDisplayAuraSidebar);
+										self:SetItem(PowaEditorDisplayAuraMain, { Left = 4, Right = 4, Top = 4, Bottom = 5 });
+									</OnLoad>
+								</Scripts>
+							</Frame>
+						</Frames>
+					</Frame>
+					<Frame name="$parentTimer" inherits="BasicFrameTemplate" hidden="true" />
+					<Frame name="$parentStacks" inherits="BasicFrameTemplate" hidden="true" />
+				</Frames>
+				<Scripts>
+					<OnLoad>
+						self:SetBackdropColor(0, 0, 0, 0.75);
+						self:SetBackdropBorderColor(0.4, 0.4, 0.4);
+						
+						PowaTabFrame_Init(self);
+						self:RegisterTab(PowaEditorDisplayAura, "Aura");
+						self:RegisterTab(PowaEditorDisplayTimer, "Timer");
+						self:RegisterTab(PowaEditorDisplayStacks, "Stacks");
+					</OnLoad>
+				</Scripts>
+			</Frame>
+		</Frames>
+	</Frame>
 </Ui>

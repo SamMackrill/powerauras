@@ -1,3 +1,216 @@
+-- wroustea@guerrillamailblock.com
+-- (Ignore that, just a disposable email I used for a battle.net account for a wow trial)
+
+-- Initializes a tab button, linking it to a frame and a tab.
+function PowaTabButton_Init(tab, id, text, parent)
+	-- Stores status for tab.
+	tab.Selected = false;
+	tab.Text = _G[tab:GetName() .. "Text"];
+	tab.Id = id;
+	tab:SetText(text);
+	tab:SetParent(parent);
+	tab:SetScript("OnClick", function()
+		tab:GetParent():SelectTab(tab.Id);
+	end);
+	-- Selects/deselects the tab. Modifies appearance only (frame handled by the tab frame)
+	tab.SetSelected = function(self, selected)
+		if(selected == true) then
+			self:SetHighlightTexture(nil);
+			self:SetNormalFontObject("GameFontHighlightSmall");
+			self:SetNormalTexture("Interface\\PaperDollInfoFrame\\UI-Character-ActiveTab");
+			self:GetNormalTexture():SetTexCoord(0, 1, 0.606875, 0.05);
+			self:Disable();
+		else
+			self:SetNormalTexture("Interface\\PaperDollInfoFrame\\UI-Character-InActiveTab");
+			self:GetNormalTexture():SetTexCoord(0, 1, 1, 0);
+			self:SetHighlightTexture("Interface\\PaperDollInfoFrame\\UI-Character-Tab-RealHighlight", "ADD");
+			self:GetHighlightTexture():SetPoint("TOPLEFT", self, "TOPLEFT", 0, -4);
+			self:GetHighlightTexture():SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 0, 1);
+			self:GetHighlightTexture():SetTexCoord(0, 1, 0.2, 0.6);
+			self:SetNormalFontObject("GameFontNormalSmall");
+			self:Enable();
+		end
+	end
+end
+
+-- Sidebar equivalent of the tab button.
+function PowaTabSidebarButton_Init(tab, id, text, parent)
+	-- Stores status for tab.
+	tab.Selected = false;
+	tab.Text = _G[tab:GetName() .. "Text"];
+	tab.Id = id;
+	tab:SetText(text);
+	tab:SetParent(parent);
+	tab:SetScript("OnClick", function()
+		tab:GetParent():SelectTab(tab.Id);
+	end);
+	-- Selects/deselects the tab. Modifies appearance only (frame handled by the tab frame)
+	tab.SetSelected = function(self, selected)
+		if(selected == true) then
+			-- self:SetHighlightTexture(nil);
+			self:Disable();
+		else
+			-- self:SetHighlightTexture("Interface\\FriendsFrame\\UI-FriendsFrame-HighlightBar-Blue");
+			self:Enable();
+		end
+	end
+end
+
+-- Initializes a tab frame. The tab frame is the frame that holds the tabs, and their respective frames.
+function PowaTabFrame_Init(frame, tabType)
+	-- Current tab.
+	frame.Tab = 1;
+	-- Stores the name of the frames each tab represents.
+	frame.Tabs = {};
+	frame.TabType = tabType or 1;
+	-- Registers a tab for display.
+	frame.RegisterTab = function(self, tab, text, hidden)
+		if(not tab) then PowaAuras:ShowText("Cannot register tab, tab does not exist."); return; end
+		-- Register the tab.
+		tinsert(self.Tabs, tab);
+		-- Does this tab have its own button?
+		if(not tab.TabButton) then
+			-- Make a new tab button.
+			local tabButton;
+			if(self.TabType == 1) then
+				tabButton = CreateFrame("Button", frame:GetName() .. "TabButton" .. #(self.Tabs), self, "PowaTabButtonTemplate");
+				tab.TabButton = tabButton;
+				PowaTabButton_Init(tab.TabButton, #(self.Tabs), text, self);
+			else
+				tabButton = CreateFrame("Button", frame:GetName() .. "TabButton" .. #(self.Tabs), self, "PowaTabSidebarButtonTemplate");
+				tab.TabButton = tabButton;
+				PowaTabSidebarButton_Init(tab.TabButton, #(self.Tabs), text, self);
+			end
+		end
+		PowaAuras:ShowText("Registering tab: " .. text .. " (" .. #(self.Tabs) .. ")");
+		-- Update tabs.
+		tab.TabDisabled = (hidden or false);
+		self:UpdateTabs();
+	end
+	-- Hides a tab. If the tab being hidden is selected, the selection is reset to #1.
+	frame.HideTab = function(self, tab)
+		if(not self.Tabs[tab]) then PowaAuras:ShowText("Cannot hide tab, tab does not exist."); return; end
+		PowaAuras:ShowText("Hiding tab: " .. tab);
+		-- Disable it.
+		self.Tabs[tab].TabDisabled = true;
+		-- Update selection if needed.
+		if(tab == self.Tab) then self.Tab = (#(self.Tabs) > 0 and 1 or 0); end
+		self:UpdateTabs();
+	end
+	-- Shows a tab.
+	frame.ShowTab = function(self, tab)
+		if(not self.Tabs[tab]) then PowaAuras:ShowText("Cannot show tab, tab does not exist."); return; end
+		PowaAuras:ShowText("Showing tab: " .. tab);
+		-- Enable it.
+		self.Tabs[tab].TabDisabled = false;	
+		self:UpdateTabs();
+	end
+	-- Selects a tab.
+	frame.SelectTab = function(self, tab)
+		if(not self.Tabs[tab]) then PowaAuras:ShowText("Cannot select tab, tab does not exist."); return; end
+		PowaAuras:ShowText("Selecting tab: " .. tab);
+		self.Tab = tab;
+		self:UpdateTabs();	
+	end
+	-- Internal function for updating tab display.
+	frame.UpdateTabs = function(self)
+		-- If no tab is selected, select #1.
+		if(self.Tab == 0) then self.Tab = 1; end
+		-- Go over tabs
+		local i = 1;
+		for tabId, tab in pairs(self.Tabs) do
+			if(tab) then
+				if(tab.TabDisabled == false) then
+					if(self.TabType == 1) then
+						tab.TabButton:SetPoint("BOTTOMLEFT", self, "TOPLEFT", (i-1)*115, -2);
+					else
+						tab.TabButton:SetPoint("TOPRIGHT", self, "TOPLEFT", 0, -((i-1)*24));						
+					end
+					tab.TabButton:SetSelected((tabId == self.Tab));
+					tab.TabButton:Show();
+				else
+					tab.TabButton:Hide();					
+				end
+				-- Allow the tab to be shown, even if it's disabled.
+				if(self.Tab ~= tabId) then
+					tab:Hide();
+				else
+					-- Each tab is individually responsible for positioning its frame.
+					tab:Show();
+				end			
+				i=i+1;
+			end
+		end
+	end
+end
+
+-- Initializes a frame to support automatic layouts.
+function PowaLayoutFrame_Init(frame)
+	frame.Columns = 1;
+	frame.ColumnSizes = {};
+	frame.Items = {};
+	-- Sets the columns for the grid. Defaults to 1, can specify a sizes table.
+	frame.SetColumns = function(self, columns, sizes)
+		self.Columns = columns;
+		self.ColumnSizes = sizes or {};
+		self:UpdateLayout();
+	end
+	-- Adds/removes items to the grid.
+	frame.SetItem = function(self, child, padding)
+		-- Insert it into the items table.
+		child.LayoutPadding = padding or { Left = 0, Right = 0, Top = 0, Bottom = 0 };
+		tinsert(self.Items, child);
+		self:UpdateLayout();
+		return #(self.Items); -- Should be the ID...
+	end
+	frame.UnsetItem = function(self, itemId)
+		tremove(self.Items, itemId);
+		self:UpdateLayout();
+	end
+	-- Updates the layout of the frame.
+	frame.UpdateLayout = function(self)
+		local itemCount, item, column, offsetY, offsetX, modY, colWidth, colHeight = #(self.Items), nil, 0, 0, 0, 0, 0, 0;
+		for i=1,itemCount do
+			item = self.Items[i];
+			if(self.Columns == column) then
+				column = 1;
+				offsetX = 0;
+				offsetY = offsetY-modY;
+				modY = 0;
+			else
+				column = column+1;			
+			end
+			--[[ 
+				colWidth will either be an absolute width,  a decimal which represents a fluid width based on the 
+				container width), or nil (which will just be the item width).
+				
+				Padding is subtracted from width.
+			--]]
+			colWidth = (self.ColumnSizes[column]["X"] 
+				and (self.ColumnSizes[column]["X"] > 1 
+					and self.ColumnSizes[column]["X"] 
+					or self:GetWidth() * self.ColumnSizes[column]["X"]) 
+				or item:GetWidth())-item.LayoutPadding["Right"]-item.LayoutPadding["Left"];
+			colHeight = (self.ColumnSizes[column]["Y"] 
+				and (self.ColumnSizes[column]["Y"] > 1 
+					and self.ColumnSizes[column]["Y"] 
+					or self:GetHeight() * self.ColumnSizes[column]["Y"]) 
+				or item:GetHeight())-item.LayoutPadding["Bottom"]-item.LayoutPadding["Top"];
+			-- Update offset to take into account the padding.
+			offsetX = offsetX+item.LayoutPadding["Left"];
+			offsetY = offsetY-item.LayoutPadding["Top"];
+			-- Set point.
+			item:ClearAllPoints();
+			item:SetPoint("TOPLEFT", self, "TOPLEFT", offsetX, offsetY);
+			item:SetWidth(colWidth);
+			item:SetHeight(colHeight);
+			-- Update offsets.
+			modY = (modY > colHeight and modY or colHeight);
+			offsetX = offsetX+colWidth;
+		end
+	end
+end
+
 -- Most of this was just a test. Ignore 90% of it.
 
 -- -- -- We reuse widgets to cut down on used memory/frames.

@@ -764,6 +764,13 @@ PowaAuras:MergeTables(PowaAuras.Text,
 
 	aideBlockIncomingAuras = "Prevent anybody sending you auras",
 	nomBlockIncomingAuras = "Block Incoming Auras",
+	
+	-- New UI strings
+	UI_Accept = "Accept",
+	UI_Cancel = "Cancel",
+	UI_Close = "Close",
+	UI_Save = "Save",
+	UI_Aura_Click = "Click the aura to change it.",
 
 });
 
