@@ -87,7 +87,7 @@ function PowaTabFrame_Init(frame, tabType, offset)
 				tab.TabButton = nil;
 			end
 		end
-		PowaAuras:ShowText("Registering tab: " .. text .. " (" .. #(self.Tabs) .. ")");
+		PowaAuras:ShowText("Registering tab: " .. (text or "") .. " (" .. #(self.Tabs) .. ")");
 		-- Update tabs.
 		tab.TabDisabled = (hidden or false);
 		self:UpdateTabs();
