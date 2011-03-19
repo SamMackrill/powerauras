@@ -11,7 +11,7 @@
 		> TabFrame          -  Tabbed frame template [DEPRECATED: Use BorderedFrame instead and call PowaTabFrame_Init() in your OnLoad script.]
 		> TabSidebarButton  -  Button template for a tabbed sidebar.
 	-->	
-	<Frame name="PowaBorderedFrameTemplate" virtual="true">
+	<Frame name="PowaBorderedFrameTemplate" virtual="true" lolattr="true">
         <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
 			<BackgroundInsets>
 				<AbsInset left="4" right="4" top="4" bottom="4" />
@@ -330,7 +330,7 @@
 					</Anchor>
 				</Anchors>
 				<Frames>
-					<Frame name="$parentAura" hidden="true">
+					<Frame name="$parentAura" parentKey="Aura" hidden="true">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="$parent">
 								<Offset>
@@ -344,237 +344,221 @@
 							</Anchor>
 						</Anchors>
 						<Frames>
-							<Frame>
+							<Frame name="$parentSidebar" parentKey="Sidebar">
+								<Layers>
+									<Layer level="ARTWORK">
+										<Texture>
+											<Anchors>
+												<Anchor point="TOPLEFT" relativeTo="$parent">
+													<Offset>
+														<AbsDimension x="4" y="-4" />
+													</Offset>
+												</Anchor>
+												<Anchor point="BOTTOMRIGHT" relativeTo="$parent">
+													<Offset>
+														<AbsDimension x="-8" y="4" />
+													</Offset>
+												</Anchor>
+											</Anchors>
+											<Color r="0" g="0" b="0" a="0.535" />
+										</Texture>
+										<Texture file="Interface\COMMON\ShadowOverlay-Left">
+											<Size>
+												<AbsDimension x="16" />
+											</Size>
+											<Anchors>
+												<Anchor point="TOPRIGHT" relativeTo="$parent">
+													<Offset>
+														<AbsDimension x="8" y="-4" />
+													</Offset>
+												</Anchor>
+												<Anchor point="BOTTOMRIGHT" relativeTo="$parent">
+													<Offset>
+														<AbsDimension x="8" y="4" />
+													</Offset>
+												</Anchor>
+											</Anchors>
+											<Color r="0" g="0" b="0" a="0.75" />
+										</Texture>
+									</Layer>
+								</Layers>
+							</Frame>
+							<Frame name="$parentMain" parentKey="Main">
 								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="$parent">
-										<Offset>
-											<AbsDimension x="0" y="0" />
-										</Offset>
-									</Anchor>
-									<Anchor point="BOTTOMRIGHT" relativeTo="$parent">
-										<Offset>
-											<AbsDimension x="0" y="0" />
-										</Offset>
-									</Anchor>
+									<Anchor point="TOPLEFT" relativeTo="$parent" />
+									<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
 								</Anchors>
 								<Frames>
-									<Frame name="$parentSidebar">
+									<Frame name="$parentConfig" parentKey="Config">
+										<Size>
+											<AbsDimension x="350" />
+										</Size>
+										<Anchors>
+											<Anchor point="TOPLEFT" relativeTo="$parent" />
+											<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
+										</Anchors>
 										<Layers>
 											<Layer level="ARTWORK">
-												<Texture>
-													<Anchors>
-														<Anchor point="TOPLEFT" relativeTo="$parent">
-															<Offset>
-																<AbsDimension x="4" y="-4" />
-															</Offset>
-														</Anchor>
-														<Anchor point="BOTTOMRIGHT" relativeTo="$parent">
-															<Offset>
-																<AbsDimension x="-8" y="4" />
-															</Offset>
-														</Anchor>
-													</Anchors>
-													<Color r="0" g="0" b="0" a="0.535" />
-												</Texture>
-												<Texture file="Interface\COMMON\ShadowOverlay-Left">
+												<FontString parentKey="StringSource" inherits="GameFontHighlight" text="UI_AURA_CLICK" justifyH="CENTER" justifyV="CENTER">
 													<Size>
-														<AbsDimension x="16" />
+														<AbsDimension x="156" />
 													</Size>
 													<Anchors>
-														<Anchor point="TOPRIGHT" relativeTo="$parent">
-															<Offset>
-																<AbsDimension x="8" y="-4" />
-															</Offset>
-														</Anchor>
-														<Anchor point="BOTTOMRIGHT" relativeTo="$parent">
-															<Offset>
-																<AbsDimension x="8" y="4" />
-															</Offset>
-														</Anchor>
+														<Anchor point="TOP" relativeTo="PowaEditorDisplayAuraSidebar" relativePoint="TOP" x="0" y="-110"/>
 													</Anchors>
-													<Color r="0" g="0" b="0" a="0.75" />
-												</Texture>
+												</FontString>
 											</Layer>
 										</Layers>
+										<Frames>
+											<!-- Displays the icon on the sidebar. Parented to this frame for ease of use. -->
+											<Button name="$parentIcon" parentKey="Icon">
+												<Size>
+													<AbsDimension x="96" y="96" />
+												</Size>
+												<Anchors>
+													<Anchor point="TOP" relativeTo="PowaEditorDisplayAuraSidebar">
+														<Offset>
+															<AbsDimension x="0" y="-10" />
+														</Offset>
+													</Anchor>
+												</Anchors>
+												<Layers>
+													<Layer level="OVERLAY">
+														<Texture file="Interface\ICONS\TEMP" name="$parentTexture" parentKey="Texture">
+															<Size>
+																<AbsDimension x="96" y="96" />
+															</Size>
+															<Anchors>
+																<Anchor point="TOPLEFT" relativeTo="$parent">
+																	<Offset>
+																		<AbsDimension x="0" y="0" />
+																	</Offset>
+																</Anchor>
+																<Anchor point="BOTTOMRIGHT" relativeTo="$parent">
+																	<Offset>
+																		<AbsDimension x="0" y="0" />
+																	</Offset>
+																</Anchor>
+															</Anchors>
+														</Texture>
+													</Layer>
+												</Layers>
+												<Scripts>
+													<OnClick>
+														PowaEditorDisplayAuraMain:SelectTab(2);
+													</OnClick>
+												</Scripts>
+											</Button>
+											<Slider name="$parentOpacity" parentKey="Opacity" inherits="PowaSliderTemplate" />
+											<Slider name="$parentSize" parentKey="Size" inherits="PowaSliderTemplate" />
+											<Slider name="$parentX" parentKey="X" inherits="PowaSliderTemplate" />
+											<Slider name="$parentY" parentKey="Y" inherits="PowaSliderTemplate" />
+											<Slider name="$parentSymmetry" parentKey="Symmetry" inherits="PowaSliderTemplate" />
+											<Slider name="$parentDeformation" parentKey="Deformation" inherits="PowaSliderTemplate" />
+										</Frames>
+										<Scripts>
+											<OnLoad>
+												-- Layout needed.
+												PowaLayoutFrame_Init(self);
+												self:SetColumns(2, { [1] = { X = 0.5 }, [2] = { X = 0.5 } });
+												
+												self:SetItem(self.Opacity, { Margins = { 0, 0, 4, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
+												self:SetItem(self.Size, { Margins = { 0, 0, 4, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
+												self:SetItem(self.X, { Margins = { 0, 0, 4, 0 }, Padding = { 2, 2, 0, 0 } });
+												self:SetItem(self.Y, { Margins = { 0, 0, 4, 0 }, Padding = { 2, 2, 0, 0 } });
+												self:SetItem(self.Symmetry, { Margins = { 0, 0, 4, 0 }, Padding = { 2, 2, 0, 0 } });
+												self:SetItem(self.Deformation, { Margins = { 0, 0, 4, 0 }, Padding = { 2, 2, 0, 0 } });
+											</OnLoad>
+										</Scripts>
 									</Frame>
-									<Frame name="$parentMain">
+									<Frame name="$parentSelector" parentKey="Selector" inherits="PowaTabDialogTemplate">
 										<Anchors>
 											<Anchor point="TOPLEFT" relativeTo="$parent" />
 											<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
 										</Anchors>
 										<Frames>
-											<Frame name="$parentConfig">
-												<Size>
-													<AbsDimension x="350" />
-												</Size>
+											<Frame name="$parent1" parentKey="Default">
 												<Anchors>
 													<Anchor point="TOPLEFT" relativeTo="$parent" />
 													<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
 												</Anchors>
-												<Layers>
-													<Layer level="ARTWORK">
-														<FontString parentKey="StringSource" inherits="GameFontHighlight" text="UI_AURA_CLICK" justifyH="CENTER" justifyV="CENTER">
-															<Size>
-																<AbsDimension x="156" />
-															</Size>
-															<Anchors>
-																<Anchor point="TOP" relativeTo="PowaEditorDisplayAuraSidebar" relativePoint="TOP" x="0" y="-110"/>
-															</Anchors>
-														</FontString>
-													</Layer>
-												</Layers>
-												<Frames>
-													<!-- Displays the icon on the sidebar. Parented to this frame for ease of use. -->
-													<Button name="$parentIcon" parentKey="Icon">
-														<Size>
-															<AbsDimension x="96" y="96" />
-														</Size>
-														<Anchors>
-															<Anchor point="TOP" relativeTo="PowaEditorDisplayAuraSidebar">
-																<Offset>
-																	<AbsDimension x="0" y="-10" />
-																</Offset>
-															</Anchor>
-														</Anchors>
-														<Layers>
-															<Layer level="OVERLAY">
-																<Texture file="Interface\ICONS\TEMP" name="$parentTexture" parentKey="Texture">
-																	<Size>
-																		<AbsDimension x="96" y="96" />
-																	</Size>
-																	<Anchors>
-																		<Anchor point="TOPLEFT" relativeTo="$parent">
-																			<Offset>
-																				<AbsDimension x="0" y="0" />
-																			</Offset>
-																		</Anchor>
-																		<Anchor point="BOTTOMRIGHT" relativeTo="$parent">
-																			<Offset>
-																				<AbsDimension x="0" y="0" />
-																			</Offset>
-																		</Anchor>
-																	</Anchors>
-																</Texture>
-															</Layer>
-														</Layers>
-														<Scripts>
-															<OnClick>
-																PowaEditorDisplayAuraMain:SelectTab(2);
-															</OnClick>
-														</Scripts>
-													</Button>
-													<Slider name="$parentOpacity" inherits="PowaSliderTemplate" />
-													<Slider name="$parentSize" inherits="PowaSliderTemplate" />
-													<Slider name="$parentX" inherits="PowaSliderTemplate" />
-													<Slider name="$parentY" inherits="PowaSliderTemplate" />
-													<Slider name="$parentSymmetry" inherits="PowaSliderTemplate" />
-													<Slider name="$parentDeformation" inherits="PowaSliderTemplate" />
-												</Frames>
-												<Scripts>
-													<OnLoad>
-														-- Layout needed.
-														PowaLayoutFrame_Init(self);
-														print(self:GetWidth());
-														self:SetColumns(2, { [1] = { X = 0.5 }, [2] = { X = 0.5 } });
-														
-														self:SetItem(PowaEditorDisplayAuraMainConfigOpacity, { Margins = { 0, 0, 4, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
-														self:SetItem(PowaEditorDisplayAuraMainConfigSize, { Margins = { 0, 0, 4, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
-														self:SetItem(PowaEditorDisplayAuraMainConfigX, { Margins = { 0, 0, 4, 0 }, Padding = { 2, 2, 0, 0 } });
-														self:SetItem(PowaEditorDisplayAuraMainConfigY, { Margins = { 0, 0, 4, 0 }, Padding = { 2, 2, 0, 0 } });
-														self:SetItem(PowaEditorDisplayAuraMainConfigSymmetry, { Margins = { 0, 0, 4, 0 }, Padding = { 2, 2, 0, 0 } });
-														self:SetItem(PowaEditorDisplayAuraMainConfigDeformation, { Margins = { 0, 0, 4, 0 }, Padding = { 2, 2, 0, 0 } });
-													</OnLoad>
-												</Scripts>
 											</Frame>
-											<Frame name="$parentSelector" inherits="PowaTabDialogTemplate">
+											<Frame name="$parent2" parentKey="WoW">
 												<Anchors>
 													<Anchor point="TOPLEFT" relativeTo="$parent" />
 													<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
 												</Anchors>
-												<Frames>
-													<Frame name="$parent1">
-														<Anchors>
-															<Anchor point="TOPLEFT" relativeTo="$parent" />
-															<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
-														</Anchors>
-													</Frame>
-													<Frame name="$parent2">
-														<Anchors>
-															<Anchor point="TOPLEFT" relativeTo="$parent" />
-															<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
-														</Anchors>
-													</Frame>
-													<Frame name="$parent3">
-														<Anchors>
-															<Anchor point="TOPLEFT" relativeTo="$parent" />
-															<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
-														</Anchors>
-													</Frame>
-													<Frame name="$parent4">
-														<Anchors>
-															<Anchor point="TOPLEFT" relativeTo="$parent" />
-															<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
-														</Anchors>
-													</Frame>
-													<Frame name="$parent5">
-														<Anchors>
-															<Anchor point="TOPLEFT" relativeTo="$parent" />
-															<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
-														</Anchors>
-													</Frame>
-												</Frames>
-												<Scripts>
-													<OnLoad>
-														-- Uses the tab sidebar template.
-														PowaTabFrame_Init(self, 2);
-														self:RegisterTab(PowaEditorDisplayAuraMainSelector1, "Normal Textures");
-														self:RegisterTab(PowaEditorDisplayAuraMainSelector2, "WoW Textures");
-														self:RegisterTab(PowaEditorDisplayAuraMainSelector3, "Custom Textures");
-														self:RegisterTab(PowaEditorDisplayAuraMainSelector4, "Text Aura");
-														self:RegisterTab(PowaEditorDisplayAuraMainSelector5, "Ability Icon");
-														-- Dialog accept/close handlers.
-														self.AcceptButton:SetScript("OnClick", function()
-															print("Save");
-															PowaEditorDisplayAuraMain:SelectTab(1);
-														end);
-														self.CancelButton:SetScript("OnClick", function()
-															print("Cancel");
-															PowaEditorDisplayAuraMain:SelectTab(1);
-														end);
-													</OnLoad>
-												</Scripts>
+											</Frame>
+											<Frame name="$parent3" parentKey="Custom">
+												<Anchors>
+													<Anchor point="TOPLEFT" relativeTo="$parent" />
+													<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
+												</Anchors>
+											</Frame>
+											<Frame name="$parent4" parentKey="Text">
+												<Anchors>
+													<Anchor point="TOPLEFT" relativeTo="$parent" />
+													<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
+												</Anchors>
+											</Frame>
+											<Frame name="$parent5" parentKey="Icon">
+												<Anchors>
+													<Anchor point="TOPLEFT" relativeTo="$parent" />
+													<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
+												</Anchors>
 											</Frame>
 										</Frames>
 										<Scripts>
 											<OnLoad>
-												-- This is actually a tab enabled frame, but we hide all the tabs.
-												PowaTabFrame_Init(self, 3);
-												self:RegisterTab(PowaEditorDisplayAuraMainConfig, "Editor [DND]");
-												self:RegisterTab(PowaEditorDisplayAuraMainSelector, "Selector [DND]");
+												-- Uses the tab sidebar template.
+												PowaTabFrame_Init(self, 2);
+												self:RegisterTab(self.Default, "Normal Textures");
+												self:RegisterTab(self.WoW, "WoW Textures");
+												self:RegisterTab(self.Custom, "Custom Textures");
+												self:RegisterTab(self.Text, "Text Aura");
+												self:RegisterTab(self.Icon, "Ability Icon");
+												-- Dialog accept/close handlers.
+												self.AcceptButton:SetScript("OnClick", function()
+													print("Save");
+													PowaEditorDisplayAuraMain:SelectTab(1);
+												end);
+												self.CancelButton:SetScript("OnClick", function()
+													print("Cancel");
+													PowaEditorDisplayAuraMain:SelectTab(1);
+												end);
 											</OnLoad>
 										</Scripts>
 									</Frame>
 								</Frames>
 								<Scripts>
 									<OnLoad>
-										PowaLayoutFrame_Init(self);
-										self:SetColumns(2, { [1] = { X = 0.3, Y = 1 }, [2] = { X = 0.7, Y = 1 } });
-										self:SetItem(PowaEditorDisplayAuraSidebar);
-										self:SetItem(PowaEditorDisplayAuraMain, { Padding = { 4, 4, 4, 4 } });
+										-- This is actually a tab enabled frame, but we hide all the tabs.
+										PowaTabFrame_Init(self, 3);
+										self:RegisterTab(self.Config);
+										self:RegisterTab(self.Selector);
 									</OnLoad>
 								</Scripts>
 							</Frame>
 						</Frames>
+						<Scripts>
+							<OnLoad>
+								PowaLayoutFrame_Init(self);
+								self:SetColumns(2, { [1] = { X = 0.3, Y = 1 }, [2] = { X = 0.7, Y = 1 } });
+								self:SetItem(self.Sidebar);
+								self:SetItem(self.Main, { Padding = { 4, 4, 4, 4 } });
+							</OnLoad>
+						</Scripts>
 					</Frame>
-					<Frame name="$parentTimer" inherits="BasicFrameTemplate" hidden="true" />
-					<Frame name="$parentStacks" inherits="BasicFrameTemplate" hidden="true" />
+					<Frame name="$parentTimer" parentKey="Timer" inherits="BasicFrameTemplate" hidden="true" />
+					<Frame name="$parentStacks" parentKey="Stacks" inherits="BasicFrameTemplate" hidden="true" />
 				</Frames>
 				<Scripts>
 					<OnLoad>						
 						PowaTabFrame_Init(self, 1);
-						self:RegisterTab(PowaEditorDisplayAura, "Aura");
-						self:RegisterTab(PowaEditorDisplayTimer, "Timer");
-						self:RegisterTab(PowaEditorDisplayStacks, "Stacks");
+						self:RegisterTab(self.Aura, "Aura");
+						self:RegisterTab(self.Timer, "Timer");
+						self:RegisterTab(self.Stacks, "Stacks");
+						print(self.lolattr);
 					</OnLoad>
 				</Scripts>
 			</Frame>
