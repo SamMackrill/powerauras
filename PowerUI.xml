@@ -4,11 +4,139 @@
     ..\..\FrameXML\UI.xsd">
 	<!-- Templates
 		All templates are prefixed with Powa, and use a Template suffix.
+		> BorderedFrame     -  Simple frame with a darkened tooltip border.
+		> Slider            -  Slider with editbox and +/- buttons.
 		> TabButton         -  Button template for tabs.
-		> TabSidebarButton  -  Button template for a tabbed sidebar.
-		> TabFrame          -  Handles tabs with ease.
 		> TabDialog         -  Basic dialog frame, best used inside of a tab.
+		> TabFrame          -  Tabbed frame template [DEPRECATED: Use BorderedFrame instead and call PowaTabFrame_Init() in your OnLoad script.]
+		> TabSidebarButton  -  Button template for a tabbed sidebar.
 	-->	
+	<Frame name="PowaBorderedFrameTemplate" virtual="true">
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+			<BackgroundInsets>
+				<AbsInset left="4" right="4" top="4" bottom="4" />
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="16" />
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="16" />
+			</EdgeSize>
+			<Color r="0.0" g="0.0" b="0.0" a="0.75" />
+			<BorderColor r="0.4" g="0.4" b="0.4" a="1.0" />
+		</Backdrop>
+	</Frame>
+	
+	<Frame name="PowaSliderTemplate" virtual="true">
+		<Size>
+			<AbsDimension x="75" y="45" />
+		</Size>
+		<Frames>
+			<EditBox name="$parentValue" parentKey="Value" autofocus="false" font="GameFontHighlightSmall" justifyH="CENTER">
+				<Size>
+					<AbsDimension x="70" y="14" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOM" relativePoint="BOTTOM" />
+				</Anchors>
+				<Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground" edgeFile="Interface\ChatFrame\ChatFrameBackground" tile="true">
+					<EdgeSize>
+						<AbsValue val="1" />
+					</EdgeSize>
+					<TileSize>
+						<AbsValue val="5" />
+					</TileSize>
+					<Color r="0.0" g="0.0" b="0.0" a="0.5" />
+					<BorderColor r="0.3" g="0.3" b="0.3" a="0.8" />
+				</Backdrop>
+				<Scripts>
+					<OnEscapePressed>
+						self:SetText(format((self:GetParent().Format or "%.0f"), self:GetParent().Slider:GetValue()));
+						self:ClearFocus();
+					</OnEscapePressed>
+					<OnEnterPressed>
+						if(tonumber(self:GetText(), 10)) then
+							self:GetParent().Slider:SetValue(tonumber(self:GetText(), 10));
+						else
+							self:SetText(format((self:GetParent().Format or "%.0f"), self:GetParent().Slider:GetValue()));
+						end
+						self:ClearFocus();						
+					</OnEnterPressed>
+					<OnLoad>
+						-- Setting justifyH in the XML doesn't work.
+						self:SetJustifyH("CENTER");
+					</OnLoad>
+				</Scripts>
+			</EditBox>
+			<Slider name="$parentSlider" parentKey="Slider" minValue="1" maxValue="100" defaultValue="50" orientation="HORIZONTAL" enableMouse="true">
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset x="0" y="-14" />
+					</Anchor>
+					<Anchor point="BOTTOMRIGHT">
+						<Offset x="0" y="14" />			
+					</Anchor>
+				</Anchors>
+				<HitRectInsets>
+					<AbsInset left="0" right="0" top="-10" bottom="-10" />
+				</HitRectInsets>
+				<Backdrop bgFile="Interface\Buttons\UI-SliderBar-Background" edgeFile="Interface\Buttons\UI-SliderBar-Border" tile="true">
+					<EdgeSize>
+						<AbsValue val="8" />
+					</EdgeSize>
+					<TileSize>
+						<AbsValue val="8" />
+					</TileSize>
+					<BackgroundInsets>
+						<AbsInset left="3" right="3" top="14" bottom="20" />
+					</BackgroundInsets>
+				</Backdrop>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString name="$parentText" parentKey="Text" text="TEST" inherits="GameFontNormalSmall">
+							<Size>
+								<AbsDimension y="14" />
+							</Size>
+							<Anchors>
+								<Anchor point="BOTTOM" relativePoint="TOP" />
+							</Anchors>
+						</FontString>
+						<FontString name="$parentLow" parentKey="Low" inherits="GameFontHighlightSmall">
+							<Size>
+								<AbsDimension y="14" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" />
+							</Anchors>
+						</FontString>
+						<FontString name="$parentHigh" parentKey="High" inherits="GameFontHighlightSmall">
+							<Size>
+								<AbsDimension y="14" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" />
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnValueChanged>
+						self:GetParent().Value:SetText(format((self:GetParent().Format or "%.0f"), self:GetValue()));
+					</OnValueChanged>
+					<OnLoad>
+						self.Low:SetText(select(1, self:GetMinMaxValues()));
+						self.High:SetText(select(2, self:GetMinMaxValues()));
+					</OnLoad>
+				</Scripts>
+				<ThumbTexture name="$parentThumb" file="Interface\Buttons\UI-SliderBar-Button-Horizontal">
+					<Size>
+						<AbsDimension x="32" y="32" />
+					</Size>
+				</ThumbTexture>
+			</Slider>
+		</Frames>
+	</Frame>
+	
 	<Button name="PowaTabButtonTemplate" virtual="true" text="Tab">
 		<Size>
 			<AbsDimension x="128" y="29" />
@@ -46,6 +174,34 @@
 		</ButtonText>
 	</Button>
 	
+	<Frame name="PowaTabDialogTemplate" virtual="true">
+		<Frames>
+			<Button name="$parentAcceptButton" parentKey="AcceptButton" inherits="UIPanelButtonTemplate2" text="Save">
+				<Size>
+					<AbsDimension x="118" y="22" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT">
+						<Offset x="-5" y="5" />
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentCancelButton" parentKey="CancelButton" inherits="UIPanelButtonTemplate2" text="Cancel">
+				<Size>
+					<AbsDimension x="118" y="22" />
+				</Size>
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="$parentAcceptButton" relativePoint="LEFT">
+						<Offset x="-10" y="0" />
+					</Anchor>
+				</Anchors>
+			</Button>
+		</Frames>
+	</Frame>
+	
+	<Frame name="PowaTabFrameTemplate" inherits="PowaBorderedFrameTemplate" virtual="true">
+	</Frame>
+	
 	<Button name="PowaTabSidebarButtonTemplate" virtual="true">
 		<Size>
 			<AbsDimension x="156" y="24"/>
@@ -68,53 +224,6 @@
 		<HighlightTexture file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar-Blue" alphaMode="ADD" />
 		<DisabledTexture file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar-Blue" alphamode="ADD" />
 	</Button>
-	
-	<Frame name="PowaTabFrameTemplate" virtual="true">
-        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-			<BackgroundInsets>
-				<AbsInset left="4" right="4" top="4" bottom="4" />
-			</BackgroundInsets>
-			<TileSize>
-				<AbsValue val="16" />
-			</TileSize>
-			<EdgeSize>
-				<AbsValue val="16" />
-			</EdgeSize>
-		</Backdrop>
-		<Scripts>
-			<OnLoad>
-				self:SetBackdropColor(0, 0, 0, 0.75);
-				self:SetBackdropBorderColor(0.4, 0.4, 0.4);
-				
-				PowaTabFrame_Init(self);
-			</OnLoad>
-		</Scripts>
-	</Frame>
-	
-	<Frame name="PowaTabDialogTemplate" virtual="true">
-		<Frames>
-			<Button name="$parentAcceptButton" parentKey="AcceptButton" inherits="UIPanelButtonTemplate2" text="Save">
-				<Size>
-					<AbsDimension x="118" y="22" />
-				</Size>
-				<Anchors>
-					<Anchor point="BOTTOMRIGHT">
-						<Offset x="-10" y="5" />
-					</Anchor>
-				</Anchors>
-			</Button>
-			<Button name="$parentCancelButton" parentKey="CancelButton" inherits="UIPanelButtonTemplate2" text="Cancel">
-				<Size>
-					<AbsDimension x="118" y="22" />
-				</Size>
-				<Anchors>
-					<Anchor point="RIGHT" relativeTo="$parentAcceptButton" relativePoint="LEFT">
-						<Offset x="-10" y="0" />
-					</Anchor>
-				</Anchors>
-			</Button>
-		</Frames>
-	</Frame>
 	
 	<!-- Editor Frame -->
 	<Frame name="PowaEditor" toplevel="true" movable="true" parent="UIParent" hidden="false" frameStrata="MEDIUM" enableMouse="true" enableKeyboard="true">
@@ -199,9 +308,9 @@
 					</Anchor>
 				</Anchors>
 			</Button>
-			<Frame name="$parentDisplay" inherits="PowaTabFrameTemplate">
+			<Frame name="$parentDisplay" inherits="PowaBorderedFrameTemplate">
 				<Size>
-				  <AbsDimension y="320" />
+				  <AbsDimension y="250" />
 				</Size>
 				<Anchors>
 					<Anchor point="TOP" relativeTo="$parent">
@@ -236,9 +345,6 @@
 						</Anchors>
 						<Frames>
 							<Frame>
-								<Size>
-								  <AbsDimension y="320" />
-								</Size>
 								<Anchors>
 									<Anchor point="TOPLEFT" relativeTo="$parent">
 										<Offset>
@@ -298,6 +404,9 @@
 										</Anchors>
 										<Frames>
 											<Frame name="$parentConfig">
+												<Size>
+													<AbsDimension x="350" />
+												</Size>
 												<Anchors>
 													<Anchor point="TOPLEFT" relativeTo="$parent" />
 													<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
@@ -315,6 +424,7 @@
 													</Layer>
 												</Layers>
 												<Frames>
+													<!-- Displays the icon on the sidebar. Parented to this frame for ease of use. -->
 													<Button name="$parentIcon" parentKey="Icon">
 														<Size>
 															<AbsDimension x="96" y="96" />
@@ -352,8 +462,29 @@
 																PowaEditorDisplayAuraMain:SelectTab(2);
 															</OnClick>
 														</Scripts>
-													</Button>												
+													</Button>
+													<Slider name="$parentOpacity" inherits="PowaSliderTemplate" />
+													<Slider name="$parentSize" inherits="PowaSliderTemplate" />
+													<Slider name="$parentX" inherits="PowaSliderTemplate" />
+													<Slider name="$parentY" inherits="PowaSliderTemplate" />
+													<Slider name="$parentSymmetry" inherits="PowaSliderTemplate" />
+													<Slider name="$parentDeformation" inherits="PowaSliderTemplate" />
 												</Frames>
+												<Scripts>
+													<OnLoad>
+														-- Layout needed.
+														PowaLayoutFrame_Init(self);
+														print(self:GetWidth());
+														self:SetColumns(2, { [1] = { X = 0.5 }, [2] = { X = 0.5 } });
+														
+														self:SetItem(PowaEditorDisplayAuraMainConfigOpacity, { Margins = { 0, 0, 4, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
+														self:SetItem(PowaEditorDisplayAuraMainConfigSize, { Margins = { 0, 0, 4, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
+														self:SetItem(PowaEditorDisplayAuraMainConfigX, { Margins = { 0, 0, 4, 0 }, Padding = { 2, 2, 0, 0 } });
+														self:SetItem(PowaEditorDisplayAuraMainConfigY, { Margins = { 0, 0, 4, 0 }, Padding = { 2, 2, 0, 0 } });
+														self:SetItem(PowaEditorDisplayAuraMainConfigSymmetry, { Margins = { 0, 0, 4, 0 }, Padding = { 2, 2, 0, 0 } });
+														self:SetItem(PowaEditorDisplayAuraMainConfigDeformation, { Margins = { 0, 0, 4, 0 }, Padding = { 2, 2, 0, 0 } });
+													</OnLoad>
+												</Scripts>
 											</Frame>
 											<Frame name="$parentSelector" inherits="PowaTabDialogTemplate">
 												<Anchors>
@@ -385,6 +516,12 @@
 															<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
 														</Anchors>
 													</Frame>
+													<Frame name="$parent5">
+														<Anchors>
+															<Anchor point="TOPLEFT" relativeTo="$parent" />
+															<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
+														</Anchors>
+													</Frame>
 												</Frames>
 												<Scripts>
 													<OnLoad>
@@ -393,7 +530,8 @@
 														self:RegisterTab(PowaEditorDisplayAuraMainSelector1, "Normal Textures");
 														self:RegisterTab(PowaEditorDisplayAuraMainSelector2, "WoW Textures");
 														self:RegisterTab(PowaEditorDisplayAuraMainSelector3, "Custom Textures");
-														self:RegisterTab(PowaEditorDisplayAuraMainSelector4, "Ability Icon");
+														self:RegisterTab(PowaEditorDisplayAuraMainSelector4, "Text Aura");
+														self:RegisterTab(PowaEditorDisplayAuraMainSelector5, "Ability Icon");
 														-- Dialog accept/close handlers.
 														self.AcceptButton:SetScript("OnClick", function()
 															print("Save");
@@ -410,19 +548,19 @@
 										<Scripts>
 											<OnLoad>
 												-- This is actually a tab enabled frame, but we hide all the tabs.
-												PowaTabFrame_Init(self, 1);
-												self:RegisterTab(PowaEditorDisplayAuraMainConfig, "Editor [DND]", true);
-												self:RegisterTab(PowaEditorDisplayAuraMainSelector, "Selector [DND]", true);
+												PowaTabFrame_Init(self, 3);
+												self:RegisterTab(PowaEditorDisplayAuraMainConfig, "Editor [DND]");
+												self:RegisterTab(PowaEditorDisplayAuraMainSelector, "Selector [DND]");
 											</OnLoad>
 										</Scripts>
 									</Frame>
 								</Frames>
 								<Scripts>
 									<OnLoad>
-										PowaLayoutFrame_Init(self, 1);
-										self:SetColumns(2, { [1] = { X = 0.3, Y = 1 }, [2] = { X = 0.7 } });
+										PowaLayoutFrame_Init(self);
+										self:SetColumns(2, { [1] = { X = 0.3, Y = 1 }, [2] = { X = 0.7, Y = 1 } });
 										self:SetItem(PowaEditorDisplayAuraSidebar);
-										self:SetItem(PowaEditorDisplayAuraMain, { Left = 4, Right = 4, Top = 4, Bottom = 5 });
+										self:SetItem(PowaEditorDisplayAuraMain, { Padding = { 4, 4, 4, 4 } });
 									</OnLoad>
 								</Scripts>
 							</Frame>
@@ -432,11 +570,8 @@
 					<Frame name="$parentStacks" inherits="BasicFrameTemplate" hidden="true" />
 				</Frames>
 				<Scripts>
-					<OnLoad>
-						self:SetBackdropColor(0, 0, 0, 0.75);
-						self:SetBackdropBorderColor(0.4, 0.4, 0.4);
-						
-						PowaTabFrame_Init(self);
+					<OnLoad>						
+						PowaTabFrame_Init(self, 1);
 						self:RegisterTab(PowaEditorDisplayAura, "Aura");
 						self:RegisterTab(PowaEditorDisplayTimer, "Timer");
 						self:RegisterTab(PowaEditorDisplayStacks, "Stacks");
