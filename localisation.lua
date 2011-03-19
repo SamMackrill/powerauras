@@ -245,7 +245,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 
 	nomCustomAuraPath = "Path to custom aura textures:",
 	aideCustomAuraPath = "Set this to your own path (within the WoW install) to prevent your own textures being overwritten by updating Power Auras",
-	
+
 	nomSoundEnding = "Ending Sound:",
 	nomSoundEnd = "Sound to play",
 	nomSound2End = "More sounds to play",
