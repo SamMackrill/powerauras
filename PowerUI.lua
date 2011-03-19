@@ -57,12 +57,14 @@ function PowaTabSidebarButton_Init(tab, id, text, parent)
 end
 
 -- Initializes a tab frame. The tab frame is the frame that holds the tabs, and their respective frames.
-function PowaTabFrame_Init(frame, tabType)
+function PowaTabFrame_Init(frame, tabType, offset)
 	-- Current tab.
 	frame.Tab = 1;
 	-- Stores the name of the frames each tab represents.
 	frame.Tabs = {};
 	frame.TabType = tabType or 1;
+	-- Optional offset for tabs.
+	frame.Offset = offset or 0;
 	-- Registers a tab for display.
 	frame.RegisterTab = function(self, tab, text, hidden)
 		if(not tab) then PowaAuras:ShowText("Cannot register tab, tab does not exist."); return; end
@@ -76,10 +78,13 @@ function PowaTabFrame_Init(frame, tabType)
 				tabButton = CreateFrame("Button", frame:GetName() .. "TabButton" .. #(self.Tabs), self, "PowaTabButtonTemplate");
 				tab.TabButton = tabButton;
 				PowaTabButton_Init(tab.TabButton, #(self.Tabs), text, self);
-			else
+			elseif(self.TabType == 2) then
 				tabButton = CreateFrame("Button", frame:GetName() .. "TabButton" .. #(self.Tabs), self, "PowaTabSidebarButtonTemplate");
 				tab.TabButton = tabButton;
 				PowaTabSidebarButton_Init(tab.TabButton, #(self.Tabs), text, self);
+			elseif(self.TabType == 3) then
+				-- No tab button.
+				tab.TabButton = nil;
 			end
 		end
 		PowaAuras:ShowText("Registering tab: " .. text .. " (" .. #(self.Tabs) .. ")");
@@ -116,19 +121,19 @@ function PowaTabFrame_Init(frame, tabType)
 	frame.UpdateTabs = function(self)
 		-- If no tab is selected, select #1.
 		if(self.Tab == 0) then self.Tab = 1; end
-		-- Go over tabs
+		-- Go over tabs for offset positioning.
 		local i = 1;
 		for tabId, tab in pairs(self.Tabs) do
 			if(tab) then
-				if(tab.TabDisabled == false) then
+				if(tab.TabDisabled == false and tab.TabButton) then
 					if(self.TabType == 1) then
-						tab.TabButton:SetPoint("BOTTOMLEFT", self, "TOPLEFT", (i-1)*115, -2);
+						tab.TabButton:SetPoint("BOTTOMLEFT", self, "TOPLEFT", ((i-1)*115)+self.Offset, -2);
 					else
-						tab.TabButton:SetPoint("TOPRIGHT", self, "TOPLEFT", 0, -((i-1)*24));						
+						tab.TabButton:SetPoint("TOPRIGHT", self, "TOPLEFT", 0, -((i-1)*24)-self.Offset);						
 					end
 					tab.TabButton:SetSelected((tabId == self.Tab));
 					tab.TabButton:Show();
-				else
+				elseif(tab.TabButton) then
 					tab.TabButton:Hide();					
 				end
 				-- Allow the tab to be shown, even if it's disabled.
@@ -156,9 +161,20 @@ function PowaLayoutFrame_Init(frame)
 		self:UpdateLayout();
 	end
 	-- Adds/removes items to the grid.
-	frame.SetItem = function(self, child, padding)
+	frame.SetItem = function(self, child, options)
+		-- Each frame has its own layout options.
+		child.LayoutOpts = {
+			Padding = { 0, 0, 0, 0 }, -- Padding modifies element offsets and reduces frame size to compensate.
+			Margins = { 0, 0, 0, 0 }, -- Margins modify element offsets, but not frame size.
+			Columns = 1,              -- Column span. Defaults to 1.
+		}
+		-- Overwrite any.
+		if(options) then
+			for k, v in pairs(options) do
+				child.LayoutOpts[k] = v;
+			end
+		end
 		-- Insert it into the items table.
-		child.LayoutPadding = padding or { Left = 0, Right = 0, Top = 0, Bottom = 0 };
 		tinsert(self.Items, child);
 		self:UpdateLayout();
 		return #(self.Items); -- Should be the ID...
@@ -169,44 +185,47 @@ function PowaLayoutFrame_Init(frame)
 	end
 	-- Updates the layout of the frame.
 	frame.UpdateLayout = function(self)
-		local itemCount, item, column, offsetY, offsetX, modY, colWidth, colHeight = #(self.Items), nil, 0, 0, 0, 0, 0, 0;
+		local itemCount, column, columnOffset, offsetY, offsetX, modY = #(self.Items), 0, 1, 0, 0, 0;
 		for i=1,itemCount do
-			item = self.Items[i];
-			if(self.Columns == column) then
+			local item, colWidth, colHeight = self.Items[i], 0, 0;
+			if(self.Columns < (column+columnOffset)) then
 				column = 1;
 				offsetX = 0;
 				offsetY = offsetY-modY;
 				modY = 0;
 			else
-				column = column+1;			
+				column= column + columnOffset;
 			end
-			--[[ 
-				colWidth will either be an absolute width,  a decimal which represents a fluid width based on the 
-				container width), or nil (which will just be the item width).
-				
-				Padding is subtracted from width.
-			--]]
-			colWidth = (self.ColumnSizes[column]["X"] 
-				and (self.ColumnSizes[column]["X"] > 1 
-					and self.ColumnSizes[column]["X"] 
-					or self:GetWidth() * self.ColumnSizes[column]["X"]) 
-				or item:GetWidth())-item.LayoutPadding["Right"]-item.LayoutPadding["Left"];
-			colHeight = (self.ColumnSizes[column]["Y"] 
-				and (self.ColumnSizes[column]["Y"] > 1 
-					and self.ColumnSizes[column]["Y"] 
-					or self:GetHeight() * self.ColumnSizes[column]["Y"]) 
-				or item:GetHeight())-item.LayoutPadding["Bottom"]-item.LayoutPadding["Top"];
-			-- Update offset to take into account the padding.
-			offsetX = offsetX+item.LayoutPadding["Left"];
-			offsetY = offsetY-item.LayoutPadding["Top"];
+			-- Calculate column height and width, obeying column span rules.
+			-- If the size is <= 1, then it's a fluid value based on container width. If no size is specified, default to item size.
+			if(column+(item.LayoutOpts["Columns"]-1) <= self.Columns) then
+				for i=column, column+(item.LayoutOpts["Columns"]-1) do
+					colWidth = colWidth + (self.ColumnSizes[i]["X"] or 0);
+					colHeight = (colHeight > (self.ColumnSizes[i]["Y"] or 0) and colHeight or (self.ColumnSizes[i]["Y"] or 0));
+				end
+			else
+				colWidth = (self.ColumnSizes[column]["X"] or 0);
+				colHeight = (self.ColumnSizes[column]["Y"] or 0);
+			end
+			-- Update column height/width.
+			colWidth = (colWidth == 0 and item:GetWidth() or colWidth <= 1 and (self:GetWidth() * colWidth));
+			colHeight = (colHeight == 0 and item:GetHeight() or colHeight <= 1 and (self:GetHeight() * colHeight));
+			-- Update sizes, subtracting padding.
+			item:SetWidth(colWidth - item.LayoutOpts["Padding"][1] - item.LayoutOpts["Padding"][2]);
+			item:SetHeight(colHeight - item.LayoutOpts["Padding"][3] - item.LayoutOpts["Padding"][4]);
+			-- Update X offset to take into account the left padding and margins.
+			-- Do not modify the Y offset as this will push all further items down. Instead just modify the offset in the SetPoint call.
+			offsetX = offsetX + item.LayoutOpts["Padding"][1] + item.LayoutOpts["Margins"][1];
 			-- Set point.
 			item:ClearAllPoints();
-			item:SetPoint("TOPLEFT", self, "TOPLEFT", offsetX, offsetY);
-			item:SetWidth(colWidth);
-			item:SetHeight(colHeight);
-			-- Update offsets.
+			item:SetPoint("TOPLEFT", self, "TOPLEFT", offsetX, (offsetY - item.LayoutOpts["Padding"][3] - item.LayoutOpts["Margins"][3]));
+			-- Update offsets once more for right/bottom padding and margins.
+			offsetX = offsetX + colWidth + item.LayoutOpts["Padding"][2] + item.LayoutOpts["Margins"][2];
+			-- Use colHeight for vertical offset. The Y offset of each row is determined based on the largest object in the previous row.
+			colHeight = colHeight + item.LayoutOpts["Padding"][4] + item.LayoutOpts["Margins"][4] + item.LayoutOpts["Padding"][3] + item.LayoutOpts["Margins"][3];
 			modY = (modY > colHeight and modY or colHeight);
-			offsetX = offsetX+colWidth;
+			
+			columnOffset = item.LayoutOpts["Columns"];
 		end
 	end
 end
