@@ -6,11 +6,11 @@
 		All templates are prefixed with Powa, and use a Template suffix.
 		> BorderedFrame     -  Simple frame with a darkened tooltip border.
 		> EditBox           -  Simple bordered editbox template.
+		> LabelledEditBox   -  EditBox with a label on the side.
 		> BrowserFrame      -  BorderedFrame with an editbox and a couple of buttons for browsing pages of auras.
 		> Slider            -  Slider with editbox and +/- buttons.
 		> TabButton         -  Button template for tabs.
 		> TabDialog         -  Basic dialog frame, best used inside of a tab.
-		> TabFrame          -  Tabbed frame template [DEPRECATED: Use BorderedFrame instead and call PowaTabFrame_Init() in your OnLoad script.]
 		> TabSidebarButton  -  Button template for a tabbed sidebar.
 	-->	
 	<Frame name="PowaBorderedFrameTemplate" virtual="true">
@@ -60,10 +60,38 @@
 		</Scripts>
 	</EditBox>
 	
+	<Frame name="PowaLabelledEditBox" virtual="true">
+		<Size>
+			<AbsDimension x="140" y="22" />
+		</Size>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString inherits="GameFontNormalSmall" parentKey="Title" justifyH="RIGHT" justifyV="CENTER">
+					<Size>
+						<AbsDimension x="70" y="17" />
+					</Size>
+					<Anchors>
+						<Anchor point="RIGHT" relativePoint="CENTER" x="-3" y="-1" />
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<EditBox name="$parentEditBox" inherits="PowaEditBoxTemplate" parentKey="EditBox">
+				<Size>
+					<AbsDimension x="70" y="17" />
+				</Size>
+				<Anchors>
+					<Anchor point="LEFT" relativePoint="CENTER" x="1" y="0" />
+				</Anchors>
+			</EditBox>
+		</Frames>	
+	</Frame>
+	
 	<Frame name="PowaBrowserFrameTemplate" virtual="true" inherits="PowaBorderedFrameTemplate">
 		<Layers>
 			<Layer level="OVERLAY">
-				<FontString inherits="GameFontHighlightSmall" text="Page" justifyH="RIGHT" justifyV="CENTER">
+				<FontString inherits="GameFontNormalSmall" text="Page" justifyH="RIGHT" justifyV="CENTER">
 					<Size>
 						<AbsDimension x="70" y="17" />
 					</Size>
@@ -146,7 +174,7 @@
 			<AbsDimension x="75" y="45" />
 		</Size>
 		<Frames>
-			<EditBox name="$parentValue" inherits="PowaEditBoxTemplate" parentKey="Value" autofocus="false" font="GameFontHighlightSmall" justifyH="CENTER">
+			<EditBox name="$parentValue" inherits="PowaEditBoxTemplate" parentKey="Value">
 				<Size>
 					<AbsDimension x="70" y="14" />
 				</Size>
@@ -155,15 +183,24 @@
 				</Anchors>
 				<Scripts>
 					<OnEscapePressed>
-						self:SetText(format((self:GetParent().Format or "%.0f"), self:GetParent().Slider:GetValue()));
+						self:SetText(self:GetParent().Slider:GetValue());
 						self:ClearFocus();
 					</OnEscapePressed>
 					<OnEnterPressed>
-						if(tonumber(self:GetText(), 10)) then
-							self:GetParent().Slider:SetValue(tonumber(self:GetText(), 10));
-						else
-							self:SetText(format((self:GetParent().Format or "%.0f"), self:GetParent().Slider:GetValue()));
+						-- Get the value.
+						local value = nil;
+						if(self:GetParent().OnValueSet) then
+							value = self:GetText();
+						elseif(tonumber(self:GetText(), 10)) then
+							value = tonumber(self:GetText(), 10);
 						end
+						-- If it exists, set it. Otherwise, default to the current one.
+						if(value) then
+							self:GetParent().Slider:SetValue(value);
+						end
+						-- Now reset the box.
+						self:SetText(self:GetParent().Slider:GetValue());
+						-- Done.
 						self:ClearFocus();						
 					</OnEnterPressed>
 				</Scripts>
@@ -221,11 +258,34 @@
 				</Layers>
 				<Scripts>
 					<OnValueChanged>
-						self:GetParent().Value:SetText(format((self:GetParent().Format or "%.0f"), self:GetValue()));
+						self:GetParent().Value:SetText(self:GetValue());
+						if(self:GetParent().OnValueChanged) then
+							-- Don't run the value through the OnValueGet mutator.
+							self:GetParent():OnValueChanged(value);
+						end
 					</OnValueChanged>
 					<OnLoad>
 						self.Low:SetText(select(1, self:GetMinMaxValues()));
 						self.High:SetText(select(2, self:GetMinMaxValues()));
+						
+						-- Hook set/get value functions.
+						self.__SetValue = self.SetValue;
+						self.__GetValue = self.GetValue;
+						
+						self.SetValue = function(self, value)
+							if(self:GetParent().OnValueSet) then
+								return self:__SetValue(self:GetParent():OnValueSet(value));
+							else
+								return self:__SetValue(value);
+							end
+						end
+						self.GetValue = function(self)
+							if(self:GetParent().OnValueGet) then
+								return self:GetParent():OnValueGet(self:__GetValue());
+							else
+								return self:__GetValue();
+							end
+						end
 					</OnLoad>
 				</Scripts>
 				<ThumbTexture name="$parentThumb" file="Interface\Buttons\UI-SliderBar-Button-Horizontal">
@@ -297,9 +357,6 @@
 				</Anchors>
 			</Button>
 		</Frames>
-	</Frame>
-	
-	<Frame name="PowaTabFrameTemplate" inherits="PowaBorderedFrameTemplate" virtual="true">
 	</Frame>
 	
 	<Button name="PowaTabSidebarButtonTemplate" virtual="true">
@@ -549,12 +606,111 @@
 													</OnClick>
 												</Scripts>
 											</Button>
-											<Slider name="$parentOpacity" parentKey="Opacity" inherits="PowaSliderTemplate" />
-											<Slider name="$parentSize" parentKey="Size" inherits="PowaSliderTemplate" />
-											<Slider name="$parentX" parentKey="X" inherits="PowaSliderTemplate" />
-											<Slider name="$parentY" parentKey="Y" inherits="PowaSliderTemplate" />
-											<Slider name="$parentSymmetry" parentKey="Symmetry" inherits="PowaSliderTemplate" />
-											<Slider name="$parentDeformation" parentKey="Deformation" inherits="PowaSliderTemplate" />
+											<Frame name="$parentOpacity" parentKey="Opacity" inherits="PowaSliderTemplate">
+												<Scripts>
+													<OnLoad>
+														self.Slider.TooltipTitle = PowaAuras.Text.UI_TexOpacity;
+														self.Slider.TooltipText = PowaAuras.Text.UI_TexOpacityDesc;
+														PowaTooltip_Init(self.Slider);
+														
+														PowaSlider_Init(self);
+														self:SetUnit("%");
+														self:SetMinMaxValues(0, 100);
+														self:SetValueStep(1);
+														self:SetValue(75);
+														self:SetTitle(PowaAuras.Text.UI_TexOpacity);
+													</OnLoad>
+												</Scripts>
+											</Frame>
+											<Frame name="$parentScale" parentKey="Scale" inherits="PowaSliderTemplate">
+												<Scripts>
+													<OnLoad>
+														self.Slider.TooltipTitle = PowaAuras.Text.UI_TexScale;
+														self.Slider.TooltipText = PowaAuras.Text.UI_TexScaleDesc;
+														PowaTooltip_Init(self.Slider);
+														
+														PowaSlider_Init(self);
+														self:SetUnit("%");
+														self:SetMinMaxValues(1, 500);
+														self:SetValueStep(1);
+														self:SetValue(75);
+														self:SetTitle(PowaAuras.Text.UI_TexScale);
+													</OnLoad>
+												</Scripts>
+											</Frame>
+											<Frame name="$parentX" parentKey="X" inherits="PowaLabelledEditBox">
+												<Scripts>
+													<OnLoad>
+														self.TooltipTitle = PowaAuras.Text.UI_TexX;
+														self.TooltipText = PowaAuras.Text.UI_TexXDesc;
+														PowaTooltip_Init(self);
+														
+														self.Title:SetText(PowaAuras.Text.UI_TexX .. ":");
+														self.EditBox:SetText(0);
+													</OnLoad>
+												</Scripts>
+											</Frame>
+											<Frame name="$parentY" parentKey="Y" inherits="PowaLabelledEditBox">
+												<Scripts>
+													<OnLoad>
+														self.TooltipTitle = PowaAuras.Text.UI_TexY;
+														self.TooltipText = PowaAuras.Text.UI_TexYDesc;
+														PowaTooltip_Init(self);
+														
+														self.Title:SetText(PowaAuras.Text.UI_TexY .. ":");
+														self.EditBox:SetText(0);
+													</OnLoad>
+												</Scripts>
+											</Frame>
+											<Frame name="$parentFlip" parentKey="Flip" inherits="PowaSliderTemplate">
+												<Scripts>
+													<OnLoad>
+														self.Slider.TooltipTitle = PowaAuras.Text.UI_TexFlip;
+														self.Slider.TooltipText = PowaAuras.Text.UI_TexFlipDesc;
+														PowaTooltip_Init(self.Slider);
+														
+														PowaSlider_Init(self);
+														self.OnValueGet = function(_, value)
+															if(value == 1) then return "None";
+															elseif(value == 2) then return "X";
+															elseif(value == 3) then return "Y";
+															elseif(value == 4) then return "XY";
+															else return value; end
+														end
+														self.OnValueSet = function(_, value)
+															if(tonumber(value, 10)) then return tonumber(value, 10); end
+															
+															if(value == "None" or value == "") then return 1;
+															elseif(value == "X") then return 2;
+															elseif(value == "Y") then return 3;
+															elseif(value == "XY") then return 4;
+															else return 1; end
+														end
+														self:SetMinMaxValues(1, 4, "None", "XY");
+														self:SetValueStep(1);
+														self:SetValue(1);
+														self:SetTitle(PowaAuras.Text.UI_TexFlip);
+													</OnLoad>
+												</Scripts>
+											</Frame>
+											<Frame name="$parentDeform" parentKey="Deform" inherits="PowaSliderTemplate">
+												<Scripts>
+													<OnLoad>
+														self.Slider.TooltipTitle = PowaAuras.Text.UI_TexDeform;
+														self.Slider.TooltipText = PowaAuras.Text.UI_TexDeformDesc;
+														PowaTooltip_Init(self.Slider);
+														
+														PowaSlider_Init(self);
+														self.OnValueGet = function(_, value)
+															return format("%.2f", value);
+														end
+														self:SetMinMaxValues(0.1, 2.0);
+														self:SetValueStep(0.05);
+														self:SetValue(1.0);
+														self:SetTitle(PowaAuras.Text.UI_TexDeform);
+													</OnLoad>
+												</Scripts>
+											</Frame>
 										</Frames>
 										<Scripts>
 											<OnLoad>
@@ -563,11 +719,11 @@
 												self:SetColumns(2, { [1] = { X = 0.5 }, [2] = { X = 0.5 } });
 												
 												self:SetItem(self.Opacity, { Margins = { 0, 0, 4, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
-												self:SetItem(self.Size, { Margins = { 0, 0, 4, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
-												self:SetItem(self.X, { Margins = { 0, 0, 4, 0 }, Padding = { 2, 2, 0, 0 } });
-												self:SetItem(self.Y, { Margins = { 0, 0, 4, 0 }, Padding = { 2, 2, 0, 0 } });
-												self:SetItem(self.Symmetry, { Margins = { 0, 0, 4, 0 }, Padding = { 2, 2, 0, 0 } });
-												self:SetItem(self.Deformation, { Margins = { 0, 0, 4, 0 }, Padding = { 2, 2, 0, 0 } });
+												self:SetItem(self.Scale, { Margins = { 0, 0, 4, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
+												self:SetItem(self.X, { Margins = { 0, 0, 12, 0 }, Padding = { 2, 2, 0, 0 } });
+												self:SetItem(self.Flip, { Margins = { 0, 0, 4, 0 }, Padding = { 2, 2, 0, 0 } });
+												self:SetItem(self.Y, { Margins = { 0, 0, 12, 0 }, Padding = { 2, 2, 0, 0 } });
+												self:SetItem(self.Deform, { Margins = { 0, 0, 4, 0 }, Padding = { 2, 2, 0, 0 } });
 											</OnLoad>
 										</Scripts>
 									</Frame>
@@ -597,10 +753,10 @@
 												</Layers>
 												<Scripts>
 													<OnLoad>
-														PowaBrowserFrame_Init(self, 1, 500, function()
+														PowaBrowserFrame_Init(self, 1, nil, function()
 															-- Automatic sizing trick. Set it to auto initially, then read the size and cap if needed!
 															self.Texture:SetSize(0, 0);
-															self.Texture:SetTexture("Interface\\AddOns\\PowerAuras\\Auras\\Aura" .. self.Page .. ".tga");
+															print(self.Texture:SetTexture("Interface\\AddOns\\PowerAuras\\Auras\\Aura" .. self.Page .. ".tga"));
 															self.Texture:SetSize(
 																(self.Texture:GetWidth() > 128 and 128 or self.Texture:GetWidth()),
 																(self.Texture:GetHeight() > 128 and 128 or self.Texture:GetHeight())

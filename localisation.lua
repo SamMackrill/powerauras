@@ -771,7 +771,20 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	UI_Close = "Close",
 	UI_Save = "Save",
 	UI_Aura_Click = "Click the aura to change it.",
-
+	
+	
+	UI_TexOpacity     = "Opacity",
+	UI_TexOpacityDesc = "Changes the opacity of the aura texture. Lower values make the aura more transparent, higher ones make it more opaque.",
+	UI_TexScale       = "Scale",
+	UI_TexScaleDesc   = "Changes the scale of the texture. Higher values make it bigger, lower values make it smaller.",
+	UI_TexX           = "Position (X)",
+	UI_TexXDesc       = "Changes the horizontal positioning of the texture.",
+	UI_TexY           = "Position (Y)",
+	UI_TexYDesc       = "Changes the vertical positioning of the texture.",
+	UI_TexFlip        = "Flip",
+	UI_TexFlipDesc    = "Allows you to flip the aura texture from left to right, top to bottom or both.", 
+	UI_TexDeform      = "Deformation",
+	UI_TexDeformDesc  = "Stretches the texture across either the horizontal or vertical axes.",
 });
 
 --end

@@ -1,6 +1,68 @@
 -- wroustea@guerrillamailblock.com
 -- (Ignore that, just a disposable email I used for a battle.net account for a wow trial)
 
+-- Adds tooltip support to a frame.
+function PowaTooltip_Init(frame, anchor, x, y)
+	-- Allow a tip refresh.
+	frame.RefreshTooltip = function()
+		-- Hide tip.
+		GameTooltip:Hide();
+		-- Reparent.
+		GameTooltip:SetOwner(frame, anchor or "ANCHOR_RIGHT", x or 0, y or 0);
+		-- Set back up.
+		GameTooltip:SetText(frame.TooltipTitle or "");
+		GameTooltip:AddLine(frame.TooltipText or "", 1, 1, 1, true);
+		-- Show tip.
+		GameTooltip:Show();
+	end
+	-- Use the RefreshTooltip function as a display method.
+	frame:SetScript("OnEnter", frame.RefreshTooltip);
+	-- Hide on leave.
+	frame:SetScript("OnLeave", function()
+		GameTooltip:Hide();
+	end);
+end
+
+function PowaSlider_Init(frame)
+	-- Add functions to slider.
+	frame.GetMinValue = function(self)
+		return select(1, self.Slider:GetMinMaxValues());
+	end
+	frame.GetMaxValue = function(self)
+		return select(2, self.Slider:GetMinMaxValues());
+	end
+	frame.SetMinMaxValues = function(self, min, max, labelMin, labelMax)
+		self.Slider:SetMinMaxValues(min, max);
+		self.Slider.Low:SetText((labelMin or min) .. (self.Unit or ""));
+		self.Slider.High:SetText((labelMax or max) .. (self.Unit or ""));
+	end
+	frame.SetTitle = function(self, title)
+		self.Slider.Text:SetText(title);	
+	end
+	-- Use slider functions for this one.
+	frame.SetValue = function(self, value)
+		self.Slider:SetValue(value);
+	end
+	frame.GetValue = function(self)
+		self.Slider:GetValue();
+	end
+	frame.SetValueStep = function(self, value)
+		self.Slider:SetValueStep(value);
+	end
+	frame.GetValueStep = function(self)
+		self.Slider:GetValueStep();
+	end
+	frame.SetUnit = function(self, unit)
+		-- Manual calls to SetMinValue/SetMaxValue are needed afterwards!
+		self.Unit = unit;
+	end
+	-- Value mutators. OnValueGet is called when GetValue is used, OnValueSet is called when SetValue is used.
+	-- Each should return the value to get/set.
+	-- frame.OnValueSet
+	-- frame.OnValueGet
+	-- frame.OnValueChanged
+end
+
 -- Initializes a tab button, linking it to a frame and a tab.
 function PowaTabButton_Init(tab, id, text, parent)
 	-- Stores status for tab.
@@ -233,23 +295,24 @@ end
 function PowaBrowserFrame_Init(frame, min, max, update)
 	-- Set up some values.
 	frame.Page = 1;
+	-- Setting either max/min to nil will result in no page limits.
 	frame.MaxPage = max;
 	frame.MinPage = min;
 	-- Sets the page.
 	frame.SetPage = function(self, page)
 		-- Page boundaries.
-		if(page < self.MinPage) then page = self.MinPage; end
-		if(page > self.MaxPage) then page = self.MaxPage; end
+		if(self.MinPage and page < self.MinPage) then page = self.MinPage; end
+		if(self.MaxPage and page > self.MaxPage) then page = self.MaxPage; end
 		-- Update page contents.
 		self.Page = page;
 		self:UpdatePage();
 		-- Enable/Disable buttons.
-		if(self.Page > self.MinPage) then
+		if(not self.MinPage or self.Page > self.MinPage) then
 			self.PrevPageButton:Enable();
 		else
 			self.PrevPageButton:Disable();		
 		end
-		if(self.Page < self.MaxPage) then
+		if(not self.MaxPage or self.Page < self.MaxPage) then
 			self.NextPageButton:Enable();
 		else
 			self.NextPageButton:Disable();		
@@ -265,10 +328,10 @@ function PowaBrowserFrame_Init(frame, min, max, update)
 		self:SetPage(self.Page-1);
 	end
 	frame.FirstPage = function(self)
-		self:SetPage(self.MinPage);
+		self:SetPage(self.MinPage or 1);
 	end
 	frame.LastPage = function(self)
-		self:SetPage(self.MaxPage);	
+		self:SetPage(self.MaxPage or 1);	
 	end
 	-- Min/Max pages.
 	frame.SetMinPage = function(self, page)
