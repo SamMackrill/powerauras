@@ -179,7 +179,34 @@ cPowaAura.ExportSettings = {
 	tooltipCheck = "",
 	UseOldAnimations = false,
 }
+
+--[[
+	Possible new settings list. Would need to remain backwards compatible.
+	Anything not in here may have been removed, renamed or just hasn't been added yet.
+
+cPowaAura.ExportSettings = {
+	Enabled = false,    -- On/Off.
 	
+	Activation = {},    -- Would be a table of all activation classes?
+	
+	TexGlow = 1,
+	TexSource = 1,      -- 1 = Normal, 2 = WoW, 3 = Custom, 4 = Text, 5 = Own.
+	-- realaura = 1,    -- No idea what this is.
+	TexNum = 1,         -- Texture or font number.
+	TexPath = "",       -- Texture or font path.
+	TexText = "",       -- Text being displayed.
+	-- icon = "",       -- Ability icon path? Store in TexPath.
+	TexStrata = "LOW",  -- Was strata ever implemented? Could do it now.
+
+	Duration = 0,       -- Duration of aura based on timer.
+	
+	-- Sound Settings
+	SoundNum = 0,          -- Sound number.
+	SoundPath = "",	       -- Path to sound file.
+	SoundRepeatDelay = 0;  -- Repeats the sound after a certain duration has passed. 0 means no repeat.
+}
+--]]
+
 function cPowaAura:Init()
 	self:SetFixedIcon();
 end
