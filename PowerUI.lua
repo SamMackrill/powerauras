@@ -24,8 +24,8 @@ function PowaTabButton_Init(tab, id, text, parent)
 			self:SetNormalTexture("Interface\\PaperDollInfoFrame\\UI-Character-InActiveTab");
 			self:GetNormalTexture():SetTexCoord(0, 1, 1, 0);
 			self:SetHighlightTexture("Interface\\PaperDollInfoFrame\\UI-Character-Tab-RealHighlight", "ADD");
-			self:GetHighlightTexture():SetPoint("TOPLEFT", self, "TOPLEFT", 0, -4);
-			self:GetHighlightTexture():SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 0, 1);
+			self:GetHighlightTexture():SetPoint("TOPLEFT", self, "TOPLEFT", 0, -7);
+			self:GetHighlightTexture():SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 0, 0);
 			self:GetHighlightTexture():SetTexCoord(0, 1, 0.2, 0.6);
 			self:SetNormalFontObject("GameFontNormalSmall");
 			self:Enable();
@@ -228,6 +228,63 @@ function PowaLayoutFrame_Init(frame)
 			columnOffset = item.LayoutOpts["Columns"];
 		end
 	end
+end
+
+function PowaBrowserFrame_Init(frame, min, max, update)
+	-- Set up some values.
+	frame.Page = 1;
+	frame.MaxPage = max;
+	frame.MinPage = min;
+	-- Sets the page.
+	frame.SetPage = function(self, page)
+		-- Page boundaries.
+		if(page < self.MinPage) then page = self.MinPage; end
+		if(page > self.MaxPage) then page = self.MaxPage; end
+		-- Update page contents.
+		self.Page = page;
+		self:UpdatePage();
+		-- Enable/Disable buttons.
+		if(self.Page > self.MinPage) then
+			self.PrevPageButton:Enable();
+		else
+			self.PrevPageButton:Disable();		
+		end
+		if(self.Page < self.MaxPage) then
+			self.NextPageButton:Enable();
+		else
+			self.NextPageButton:Disable();		
+		end
+		-- Update page editbox.
+		self.EditBox:SetText(page);
+	end
+	-- Quick page functions.
+	frame.NextPage = function(self)
+		self:SetPage(self.Page+1);
+	end
+	frame.PrevPage = function(self)
+		self:SetPage(self.Page-1);
+	end
+	frame.FirstPage = function(self)
+		self:SetPage(self.MinPage);
+	end
+	frame.LastPage = function(self)
+		self:SetPage(self.MaxPage);	
+	end
+	-- Min/Max pages.
+	frame.SetMinPage = function(self, page)
+		-- Update page.
+		self.MinPage = page;
+		self:SetPage(self.Page);
+	end
+	frame.SetMaxPage = function(self, page)
+		-- Update page.
+		self.MaxPage = page;
+		self:SetPage(self.Page);
+	end
+	-- This is supplied in the init function.
+	frame.UpdatePage = update;
+	-- Set page to 1.
+	frame:SetPage(1);
 end
 
 -- Most of this was just a test. Ignore 90% of it.
