@@ -5,13 +5,15 @@
 	<!-- Templates
 		All templates are prefixed with Powa, and use a Template suffix.
 		> BorderedFrame     -  Simple frame with a darkened tooltip border.
+		> EditBox           -  Simple bordered editbox template.
+		> BrowserFrame      -  BorderedFrame with an editbox and a couple of buttons for browsing pages of auras.
 		> Slider            -  Slider with editbox and +/- buttons.
 		> TabButton         -  Button template for tabs.
 		> TabDialog         -  Basic dialog frame, best used inside of a tab.
 		> TabFrame          -  Tabbed frame template [DEPRECATED: Use BorderedFrame instead and call PowaTabFrame_Init() in your OnLoad script.]
 		> TabSidebarButton  -  Button template for a tabbed sidebar.
 	-->	
-	<Frame name="PowaBorderedFrameTemplate" virtual="true" lolattr="true">
+	<Frame name="PowaBorderedFrameTemplate" virtual="true">
         <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
 			<BackgroundInsets>
 				<AbsInset left="4" right="4" top="4" bottom="4" />
@@ -25,6 +27,118 @@
 			<Color r="0.0" g="0.0" b="0.0" a="0.75" />
 			<BorderColor r="0.4" g="0.4" b="0.4" a="1.0" />
 		</Backdrop>
+	</Frame>	
+	
+	<EditBox name="PowaEditBoxTemplate" virtual="true" autofocus="false" font="GameFontHighlightSmall" justifyH="CENTER">
+		<Size>
+			<AbsDimension x="70" y="14" />
+		</Size>
+		<Anchors>
+			<Anchor point="BOTTOM" relativePoint="BOTTOM" />
+		</Anchors>
+		<Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground" edgeFile="Interface\ChatFrame\ChatFrameBackground" tile="true">
+			<EdgeSize>
+				<AbsValue val="1" />
+			</EdgeSize>
+			<TileSize>
+				<AbsValue val="5" />
+			</TileSize>
+			<Color r="0.0" g="0.0" b="0.0" a="0.5" />
+			<BorderColor r="0.3" g="0.3" b="0.3" a="0.8" />
+		</Backdrop>
+		<Scripts>
+			<OnEscapePressed>
+				self:ClearFocus();
+			</OnEscapePressed>
+			<OnEnterPressed>
+				self:ClearFocus();
+			</OnEnterPressed>
+			<OnLoad>
+				-- Setting justifyH in the XML doesn't work.
+				self:SetJustifyH("CENTER");
+			</OnLoad>
+		</Scripts>
+	</EditBox>
+	
+	<Frame name="PowaBrowserFrameTemplate" virtual="true" inherits="PowaBorderedFrameTemplate">
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString inherits="GameFontHighlightSmall" text="Page" justifyH="RIGHT" justifyV="CENTER">
+					<Size>
+						<AbsDimension x="70" y="17" />
+					</Size>
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOM" x="-1" y="9" />
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentPrevPageButton" parentKey="PrevPageButton">
+				<Size>
+					<AbsDimension x="32" y="33" />
+				</Size>
+				<Anchors>
+					<Anchor point="LEFT">
+						<Offset>
+							<AbsDimension x="5" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<NormalTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Up" />
+				<PushedTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Down" />
+				<DisabledTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Disabled" />
+				<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD" />
+				<Scripts>
+					<OnClick>
+						self:GetParent():PrevPage();
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentNextPageButton" parentKey="NextPageButton">
+				<Size>
+					<AbsDimension x="32" y="33" />
+				</Size>
+				<Anchors>
+					<Anchor point="RIGHT">
+						<Offset>
+							<AbsDimension x="-5" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<NormalTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Up" />
+				<PushedTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Down" />
+				<DisabledTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Disabled" />
+				<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD" />
+				<Scripts>
+					<OnClick>
+						self:GetParent():NextPage();
+					</OnClick>
+				</Scripts>
+			</Button>
+			<EditBox name="$parentEditBox" inherits="PowaEditBoxTemplate" parentKey="EditBox">
+				<Size>
+					<AbsDimension x="45" y="17" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativePoint="BOTTOM" x="1" y="9" />
+				</Anchors>
+				<Scripts>
+					<OnEscapePressed>
+						self:SetText(self:GetParent().Page);
+						self:ClearFocus();
+					</OnEscapePressed>
+					<OnEnterPressed>
+						if(tonumber(self:GetText(), 10)) then
+							self:GetParent():SetPage(tonumber(self:GetText(), 10));
+						else
+							self:SetText(self:GetParent().Page);
+						end
+						self:ClearFocus();						
+					</OnEnterPressed>
+				</Scripts>
+			</EditBox>
+		</Frames>
 	</Frame>
 	
 	<Frame name="PowaSliderTemplate" virtual="true">
@@ -32,23 +146,13 @@
 			<AbsDimension x="75" y="45" />
 		</Size>
 		<Frames>
-			<EditBox name="$parentValue" parentKey="Value" autofocus="false" font="GameFontHighlightSmall" justifyH="CENTER">
+			<EditBox name="$parentValue" inherits="PowaEditBoxTemplate" parentKey="Value" autofocus="false" font="GameFontHighlightSmall" justifyH="CENTER">
 				<Size>
 					<AbsDimension x="70" y="14" />
 				</Size>
 				<Anchors>
 					<Anchor point="BOTTOM" relativePoint="BOTTOM" />
 				</Anchors>
-				<Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground" edgeFile="Interface\ChatFrame\ChatFrameBackground" tile="true">
-					<EdgeSize>
-						<AbsValue val="1" />
-					</EdgeSize>
-					<TileSize>
-						<AbsValue val="5" />
-					</TileSize>
-					<Color r="0.0" g="0.0" b="0.0" a="0.5" />
-					<BorderColor r="0.3" g="0.3" b="0.3" a="0.8" />
-				</Backdrop>
 				<Scripts>
 					<OnEscapePressed>
 						self:SetText(format((self:GetParent().Format or "%.0f"), self:GetParent().Slider:GetValue()));
@@ -62,10 +166,6 @@
 						end
 						self:ClearFocus();						
 					</OnEnterPressed>
-					<OnLoad>
-						-- Setting justifyH in the XML doesn't work.
-						self:SetJustifyH("CENTER");
-					</OnLoad>
 				</Scripts>
 			</EditBox>
 			<Slider name="$parentSlider" parentKey="Slider" minValue="1" maxValue="100" defaultValue="50" orientation="HORIZONTAL" enableMouse="true">
@@ -149,12 +249,12 @@
 			<Anchors>
 				<Anchor point="TOPLEFT">
 					<Offset>
-						<AbsDimension x="0" y="-4"/>
+						<AbsDimension x="0" y="-7"/>
 					</Offset>
 				</Anchor>
 				<Anchor point="BOTTOMRIGHT">
 					<Offset>
-						<AbsDimension x="0" y="1"/>
+						<AbsDimension x="0" y="0"/>
 					</Offset>
 				</Anchor>
 				<TexCoords left="0" right="1" top="0.2" bottom="0.6" />
@@ -477,31 +577,57 @@
 											<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
 										</Anchors>
 										<Frames>
-											<Frame name="$parent1" parentKey="Default">
+											<Frame name="$parentDefault" inherits="PowaBrowserFrameTemplate" parentKey="Default">
+												<Anchors>
+													<Anchor point="TOPLEFT" relativeTo="$parent">
+														<Offset x="5" y="-5" />
+													</Anchor>
+													<Anchor point="BOTTOMRIGHT" relativeTo="$parent">
+														<Offset x="-5" y="30" />
+													</Anchor>
+												</Anchors>
+												<Layers>
+													<Layer level="OVERLAY">
+														<Texture parentKey="Texture">
+															<Anchors>
+																<Anchor point="CENTER" relativePoint="CENTER" x="0" y="13" />
+															</Anchors>
+														</Texture>
+													</Layer>
+												</Layers>
+												<Scripts>
+													<OnLoad>
+														PowaBrowserFrame_Init(self, 1, 500, function()
+															-- Automatic sizing trick. Set it to auto initially, then read the size and cap if needed!
+															self.Texture:SetSize(0, 0);
+															self.Texture:SetTexture("Interface\\AddOns\\PowerAuras\\Auras\\Aura" .. self.Page .. ".tga");
+															self.Texture:SetSize(
+																(self.Texture:GetWidth() > 128 and 128 or self.Texture:GetWidth()),
+																(self.Texture:GetHeight() > 128 and 128 or self.Texture:GetHeight())
+															);
+														end);
+													</OnLoad>
+												</Scripts>
+											</Frame>
+											<Frame name="$parentWoW" parentKey="WoW">
 												<Anchors>
 													<Anchor point="TOPLEFT" relativeTo="$parent" />
 													<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
 												</Anchors>
 											</Frame>
-											<Frame name="$parent2" parentKey="WoW">
+											<Frame name="$parentCustom" parentKey="Custom">
 												<Anchors>
 													<Anchor point="TOPLEFT" relativeTo="$parent" />
 													<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
 												</Anchors>
 											</Frame>
-											<Frame name="$parent3" parentKey="Custom">
+											<Frame name="$parentText" parentKey="Text">
 												<Anchors>
 													<Anchor point="TOPLEFT" relativeTo="$parent" />
 													<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
 												</Anchors>
 											</Frame>
-											<Frame name="$parent4" parentKey="Text">
-												<Anchors>
-													<Anchor point="TOPLEFT" relativeTo="$parent" />
-													<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
-												</Anchors>
-											</Frame>
-											<Frame name="$parent5" parentKey="Icon">
+											<Frame name="$parentIcon" parentKey="Icon">
 												<Anchors>
 													<Anchor point="TOPLEFT" relativeTo="$parent" />
 													<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
