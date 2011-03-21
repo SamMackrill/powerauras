@@ -785,6 +785,10 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	UI_TexFlipDesc    = "Allows you to flip the aura texture from left to right, top to bottom or both.", 
 	UI_TexDeform      = "Deformation",
 	UI_TexDeformDesc  = "Stretches the texture across either the horizontal or vertical axes.",
+	UI_TexStrata      = "Strata",
+	UI_TexStrataDesc  = "Changes the frame strata (layer) of the texture. Setting this higher will make it overlay other auras and UI elements.",
+	UI_TexGlow        = "Glow",
+	UI_TexGlowDesc    = "If enabled, any darkened areas in the texture will become more transparent.",
 });
 
 --end

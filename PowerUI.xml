@@ -5,6 +5,7 @@
 	<!-- Templates
 		All templates are prefixed with Powa, and use a Template suffix.
 		> BorderedFrame     -  Simple frame with a darkened tooltip border.
+		> Checkbox          -  Checkbox template.
 		> EditBox           -  Simple bordered editbox template.
 		> LabelledEditBox   -  EditBox with a label on the side.
 		> BrowserFrame      -  BorderedFrame with an editbox and a couple of buttons for browsing pages of auras.
@@ -27,7 +28,40 @@
 			<Color r="0.0" g="0.0" b="0.0" a="0.75" />
 			<BorderColor r="0.4" g="0.4" b="0.4" a="1.0" />
 		</Backdrop>
-	</Frame>	
+	</Frame>
+	
+	<Frame name="PowaCheckboxTemplate" virtual="true">
+		<Size>
+			<AbsDimension x="128" y="26" />
+		</Size>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString inherits="GameFontNormalSmall" parentKey="Text" justifyH="LEFT" justifyV="CENTER">
+					<Size>
+						<AbsDimension x="102" y="26" />
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT" relativePoint="CENTER" x="1" y="1" />
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<CheckButton parentKey="Checkbox">
+				<Size>
+					<AbsDimension x="26" y="26" />
+				</Size>
+				<Anchors>
+					<Anchor point="RIGHT" relativePoint="CENTER" x="-1" y="0" />
+				</Anchors>
+				<NormalTexture file="Interface\Buttons\UI-CheckBox-Up" />
+				<PushedTexture file="Interface\Buttons\UI-CheckBox-Down" />
+				<HighlightTexture file="Interface\Buttons\UI-CheckBox-Highlight" alphaMode="ADD" />
+				<CheckedTexture file="Interface\Buttons\UI-CheckBox-Check" />
+				<DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled" />
+			</CheckButton>
+		</Frames>
+	</Frame>
 	
 	<EditBox name="PowaEditBoxTemplate" virtual="true" autofocus="false" font="GameFontHighlightSmall" justifyH="CENTER">
 		<Size>
@@ -467,7 +501,7 @@
 			</Button>
 			<Frame name="$parentDisplay" inherits="PowaBorderedFrameTemplate">
 				<Size>
-				  <AbsDimension y="250" />
+				  <AbsDimension y="260" />
 				</Size>
 				<Anchors>
 					<Anchor point="TOP" relativeTo="$parent">
@@ -711,6 +745,21 @@
 													</OnLoad>
 												</Scripts>
 											</Frame>
+											<Frame name="$parentStrata" parentKey="Strata" inherits="PowaSliderTemplate">
+												<Scripts>
+													<OnLoad>
+														self.Slider.TooltipTitle = PowaAuras.Text.UI_TexStrata;
+														self.Slider.TooltipText = PowaAuras.Text.UI_TexStrataDesc;
+														PowaTooltip_Init(self.Slider);
+														
+														PowaSlider_Init(self);
+														self:SetMinMaxValues(1, 100);
+														self:SetValueStep(1);
+														self:SetValue(50);
+														self:SetTitle(PowaAuras.Text.UI_TexStrata);
+													</OnLoad>
+												</Scripts>
+											</Frame>
 										</Frames>
 										<Scripts>
 											<OnLoad>
@@ -718,12 +767,13 @@
 												PowaLayoutFrame_Init(self);
 												self:SetColumns(2, { [1] = { X = 0.5 }, [2] = { X = 0.5 } });
 												
-												self:SetItem(self.Opacity, { Margins = { 0, 0, 4, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
-												self:SetItem(self.Scale, { Margins = { 0, 0, 4, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
-												self:SetItem(self.X, { Margins = { 0, 0, 12, 0 }, Padding = { 2, 2, 0, 0 } });
-												self:SetItem(self.Flip, { Margins = { 0, 0, 4, 0 }, Padding = { 2, 2, 0, 0 } });
-												self:SetItem(self.Y, { Margins = { 0, 0, 12, 0 }, Padding = { 2, 2, 0, 0 } });
-												self:SetItem(self.Deform, { Margins = { 0, 0, 4, 0 }, Padding = { 2, 2, 0, 0 } });
+												self:SetItem(self.Opacity, { Margin = { 0, 0, 4, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
+												self:SetItem(self.Scale, { Margin = { 0, 0, 4, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
+												self:SetItem(self.X, { Margin = { 0, 0, 12, 0 }, Padding = { 2, 2, 0, 0 } });
+												self:SetItem(self.Flip, { Margin = { 0, 0, 4, 0 }, Padding = { 2, 2, 0, 0 } });
+												self:SetItem(self.Y, { Margin = { 0, 0, 12, 0 }, Padding = { 2, 2, 0, 0 } });
+												self:SetItem(self.Deform, { Margin = { 0, 0, 4, 0 }, Padding = { 2, 2, 0, 0 } });
+												self:SetItem(self.Strata, { Margin = { 0.5, 0, 4, 0 }, Padding = { 4, 0, 0, 0 } });
 											</OnLoad>
 										</Scripts>
 									</Frame>
@@ -746,9 +796,17 @@
 													<Layer level="OVERLAY">
 														<Texture parentKey="Texture">
 															<Anchors>
-																<Anchor point="CENTER" relativePoint="CENTER" x="0" y="13" />
+																<Anchor point="CENTER" relativePoint="CENTER" x="0" y="0" />
 															</Anchors>
 														</Texture>
+														<FontString parentKey="Error" hidden="true" inherits="GameFontHighlight" justifyH="CENTER" justifyV="CENTER">
+															<Size>
+																<AbsDimension x="256" />
+															</Size>
+															<Anchors>
+																<Anchor point="CENTER" relativePoint="CENTER" x="0" y="0"/>
+															</Anchors>
+														</FontString>
 													</Layer>
 												</Layers>
 												<Scripts>
@@ -756,22 +814,60 @@
 														PowaBrowserFrame_Init(self, 1, nil, function()
 															-- Automatic sizing trick. Set it to auto initially, then read the size and cap if needed!
 															self.Texture:SetSize(0, 0);
-															print(self.Texture:SetTexture("Interface\\AddOns\\PowerAuras\\Auras\\Aura" .. self.Page .. ".tga"));
+															self.Texture:SetTexture("Interface\\AddOns\\PowerAuras\\Auras\\Aura" .. self.Page .. ".tga")
+															-- SetTexture is SUPPOSED to return nil if it fails. It doesn't.
+															-- GetTexture will return nil though.
+															if(not self.Texture:GetTexture()) then
+																-- No size = no texture.
+																-- We could cap the pages on the first error, but there's no point.
+																self.Error:SetText("There was an error loading the texture: \n" .. "PowerAuras\\Auras\\Aura" .. self.Page .. ".tga");
+																self.Error:Show();																
+															else
+																self.Error:Hide();
+																-- Automatic sizing does not work for BLP files, so just use a static 128 if no size is reported.
+																self.Texture:SetSize(
+																	((self.Texture:GetWidth() > 128 or self.Texture:GetWidth() == 0) and 128 or self.Texture:GetWidth()),
+																	((self.Texture:GetHeight() > 128 or self.Texture:GetHeight() == 0) and 128 or self.Texture:GetHeight())
+																);
+															end
+														end);
+													</OnLoad>
+												</Scripts>
+											</Frame>
+											<Frame name="$parentWoW" inherits="PowaBrowserFrameTemplate" parentKey="WoW">
+												<Anchors>
+													<Anchor point="TOPLEFT" relativeTo="$parent">
+														<Offset x="5" y="-5" />
+													</Anchor>
+													<Anchor point="BOTTOMRIGHT" relativeTo="$parent">
+														<Offset x="-5" y="30" />
+													</Anchor>
+												</Anchors>
+												<Layers>
+													<Layer level="OVERLAY">
+														<Texture parentKey="Texture">
+															<Anchors>
+																<Anchor point="CENTER" relativePoint="CENTER" x="0" y="0" />
+															</Anchors>
+														</Texture>
+													</Layer>
+												</Layers>
+												<Scripts>
+													<OnLoad>
+														PowaBrowserFrame_Init(self, 0, #(PowaAuras.WowTextures), function(self, page)
+															-- Automatic sizing trick. Set it to auto initially, then read the size and cap if needed!
+															self.Texture:SetSize(0, 0);
+															self.Texture:SetTexture(PowaAuras.WowTextures[page]);
+															-- Automatic sizing does not work for BLP files, so just use a static 128 if no size is reported.
 															self.Texture:SetSize(
-																(self.Texture:GetWidth() > 128 and 128 or self.Texture:GetWidth()),
-																(self.Texture:GetHeight() > 128 and 128 or self.Texture:GetHeight())
+																((self.Texture:GetWidth() > 128 or self.Texture:GetWidth() == 0) and 128 or self.Texture:GetWidth()),
+																((self.Texture:GetHeight() > 128 or self.Texture:GetHeight() == 0) and 128 or self.Texture:GetHeight())
 															);
 														end);
 													</OnLoad>
 												</Scripts>
 											</Frame>
-											<Frame name="$parentWoW" parentKey="WoW">
-												<Anchors>
-													<Anchor point="TOPLEFT" relativeTo="$parent" />
-													<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
-												</Anchors>
-											</Frame>
-											<Frame name="$parentCustom" parentKey="Custom">
+											<Frame name="$parentCustom" inherits="PowaBrowserFrameTemplate" parentKey="Custom">
 												<Anchors>
 													<Anchor point="TOPLEFT" relativeTo="$parent" />
 													<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
@@ -840,7 +936,6 @@
 						self:RegisterTab(self.Aura, "Aura");
 						self:RegisterTab(self.Timer, "Timer");
 						self:RegisterTab(self.Stacks, "Stacks");
-						print(self.lolattr);
 					</OnLoad>
 				</Scripts>
 			</Frame>
