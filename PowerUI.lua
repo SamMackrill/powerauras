@@ -226,8 +226,8 @@ function PowaLayoutFrame_Init(frame)
 	frame.SetItem = function(self, child, options)
 		-- Each frame has its own layout options.
 		child.LayoutOpts = {
-			Padding = { 0, 0, 0, 0 }, -- Padding modifies element offsets and reduces frame size to compensate.
-			Margins = { 0, 0, 0, 0 }, -- Margins modify element offsets, but not frame size.
+			Padding = { 0, 0, 0, 0 }, -- Padding modifies element offsets by reducing frame size to compensate.
+			Margin = { 0, 0, 0, 0 },  -- Margins modify element offsets, but not frame size.
 			Columns = 1,              -- Column span. Defaults to 1.
 		}
 		-- Overwrite any.
@@ -249,17 +249,34 @@ function PowaLayoutFrame_Init(frame)
 	frame.UpdateLayout = function(self)
 		local itemCount, column, columnOffset, offsetY, offsetX, modY = #(self.Items), 0, 1, 0, 0, 0;
 		for i=1,itemCount do
+			-- Some locals for width, height and the item...
 			local item, colWidth, colHeight = self.Items[i], 0, 0;
+			-- Store padding/margins in locals, as it's a long thing to write out and we need to calculate stuff from it a lot.
+			local paddingLeft, paddingRight, paddingTop, paddingBottom = item.LayoutOpts["Padding"][1], 
+				item.LayoutOpts["Padding"][2], item.LayoutOpts["Padding"][3], item.LayoutOpts["Padding"][4];
+			local marginLeft, marginRight, marginTop, marginBottom = item.LayoutOpts["Margin"][1], 
+				item.LayoutOpts["Margin"][2], item.LayoutOpts["Margin"][3], item.LayoutOpts["Margin"][4];
+			-- Calculate the padding/margins if they're fluid values.
+			-- The only difference in these fluid values is they are not fluid if they equal 1.
+			paddingLeft = (paddingLeft > 0 and paddingLeft < 1 and self:GetWidth() * paddingLeft or paddingLeft);
+			paddingRight = (paddingRight> 0 and paddingRight < 1 and self:GetWidth() * paddingRight or paddingRight);
+			paddingTop = (paddingTop > 0 and paddingTop < 1 and self:GetWidth() * paddingTop or paddingTop);
+			paddingBottom = (paddingBottom > 0 and paddingBottom < 1 and self:GetWidth() * paddingBottom or paddingBottom);
+			marginLeft = (marginLeft > 0 and marginLeft < 1 and self:GetWidth() * marginLeft or marginLeft);
+			marginRight = (marginRight > 0 and marginRight < 1 and self:GetWidth() * marginRight or marginRight);
+			marginTop = (marginTop > 0 and marginTop < 1 and self:GetWidth() * marginTop or marginTop);
+			marginBottom = (marginBottom > 0 and marginBottom < 1 and self:GetWidth() * marginBottom or marginBottom);
+			-- Update column offset.
 			if(self.Columns < (column+columnOffset)) then
 				column = 1;
 				offsetX = 0;
 				offsetY = offsetY-modY;
 				modY = 0;
 			else
-				column= column + columnOffset;
+				column = column+columnOffset;
 			end
 			-- Calculate column height and width, obeying column span rules.
-			-- If the size is <= 1, then it's a fluid value based on container width. If no size is specified, default to item size.
+			-- If the size is <= 1, then it's a fluid value based on container size. If no size is specified, default to item size.
 			if(column+(item.LayoutOpts["Columns"]-1) <= self.Columns) then
 				for i=column, column+(item.LayoutOpts["Columns"]-1) do
 					colWidth = colWidth + (self.ColumnSizes[i]["X"] or 0);
@@ -269,24 +286,27 @@ function PowaLayoutFrame_Init(frame)
 				colWidth = (self.ColumnSizes[column]["X"] or 0);
 				colHeight = (self.ColumnSizes[column]["Y"] or 0);
 			end
+			if(item.LayoutOpts["Columns"] > 1) then
+				print(colWidth, colHeight, paddingLeft, paddingRight, paddingTop, paddingBottom, marginLeft, marginRight, marginTop, marginBottom);
+			end
 			-- Update column height/width.
 			colWidth = (colWidth == 0 and item:GetWidth() or colWidth <= 1 and (self:GetWidth() * colWidth));
 			colHeight = (colHeight == 0 and item:GetHeight() or colHeight <= 1 and (self:GetHeight() * colHeight));
 			-- Update sizes, subtracting padding.
-			item:SetWidth(colWidth - item.LayoutOpts["Padding"][1] - item.LayoutOpts["Padding"][2]);
-			item:SetHeight(colHeight - item.LayoutOpts["Padding"][3] - item.LayoutOpts["Padding"][4]);
+			item:SetWidth(colWidth - paddingLeft - paddingRight);
+			item:SetHeight(colHeight - paddingTop - paddingBottom);
 			-- Update X offset to take into account the left padding and margins.
 			-- Do not modify the Y offset as this will push all further items down. Instead just modify the offset in the SetPoint call.
-			offsetX = offsetX + item.LayoutOpts["Padding"][1] + item.LayoutOpts["Margins"][1];
+			offsetX = offsetX + paddingLeft + marginLeft;
 			-- Set point.
 			item:ClearAllPoints();
-			item:SetPoint("TOPLEFT", self, "TOPLEFT", offsetX, (offsetY - item.LayoutOpts["Padding"][3] - item.LayoutOpts["Margins"][3]));
+			item:SetPoint("TOPLEFT", self, "TOPLEFT", offsetX, (offsetY - paddingTop - marginTop));
 			-- Update offsets once more for right/bottom padding and margins.
-			offsetX = offsetX + colWidth + item.LayoutOpts["Padding"][2] + item.LayoutOpts["Margins"][2];
+			offsetX = offsetX + colWidth + paddingRight + marginRight;
 			-- Use colHeight for vertical offset. The Y offset of each row is determined based on the largest object in the previous row.
-			colHeight = colHeight + item.LayoutOpts["Padding"][4] + item.LayoutOpts["Margins"][4] + item.LayoutOpts["Padding"][3] + item.LayoutOpts["Margins"][3];
+			colHeight = colHeight + paddingBottom + marginBottom + paddingTop + marginTop;
 			modY = (modY > colHeight and modY or colHeight);
-			
+			-- Column offset update.
 			columnOffset = item.LayoutOpts["Columns"];
 		end
 	end
@@ -305,7 +325,7 @@ function PowaBrowserFrame_Init(frame, min, max, update)
 		if(self.MaxPage and page > self.MaxPage) then page = self.MaxPage; end
 		-- Update page contents.
 		self.Page = page;
-		self:UpdatePage();
+		self:UpdatePage(page);
 		-- Enable/Disable buttons.
 		if(not self.MinPage or self.Page > self.MinPage) then
 			self.PrevPageButton:Enable();
