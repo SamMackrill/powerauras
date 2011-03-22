@@ -5,7 +5,17 @@
 -- You can initialize a widget by calling PowaAuras.UI.[widget]().
 PowaAuras.UI = {
 	CreateWidget = function(self, widget, data, ctor)
-		self[widget] = setmetatable(data or {}, { __call = ctor; });
+		self[widget] = setmetatable(data or {}, { 
+				__call = function(self, widget, ...)
+					-- Constructor. Copy anything we have over automatically...
+					for k,v in pairs(self) do
+						widget[k] = v;
+					end
+					-- Run passed ctor.
+					return ctor(widget, ...);
+				end
+			}
+		);
 		return true;
 	end,
 }
@@ -24,12 +34,11 @@ PowaAuras.UI:CreateWidget("Tooltip", {
 			GameTooltip:Show();
 		end
 	},
-	function(self, frame, title, text, children)
+	function(frame, title, text, children)
 		-- Store data.
 		frame.TooltipTitle = PowaAuras.Text[title];
 		frame.TooltipText = PowaAuras.Text[text];
 		-- Use the RefreshTooltip function as a display method.
-		frame.Refresh = self.Refresh;
 		frame:SetScript("OnEnter", frame.Refresh);
 		-- Hide on leave.
 		frame:SetScript("OnLeave", function()
@@ -55,8 +64,8 @@ PowaAuras.UI:CreateWidget("Slider", {
 		end,
 		SetMinMaxValues = function(self, min, max, labelMin, labelMax)
 			self.Slider:SetMinMaxValues(min, max);
-			self.Slider.Low:SetText((labelMin and PowaAuras.Text[labelMin] or min) .. (self.Unit or ""));
-			self.Slider.High:SetText((labelMax and PowaAuras.Text[labelMax] or max) .. (self.Unit or ""));
+			self.Slider.Low:SetText((labelMin or min) .. (self.Unit or ""));
+			self.Slider.High:SetText((labelMax or max) .. (self.Unit or ""));
 		end,
 		SetTitle = function(self, title)
 			self.Slider.Text:SetText(PowaAuras.Text[title]);	
@@ -78,17 +87,7 @@ PowaAuras.UI:CreateWidget("Slider", {
 			self.Unit = unit;
 		end
 	},
-	function(self, frame, min, max, default, step, title, unit, minLabel, maxLabel, tooltipDesc)
-		-- Move functions over...
-		frame.GetMinValue = self.GetMinValue;
-		frame.GetMaxValue = self.GetMaxValue;
-		frame.SetMinMaxValues = self.SetMinMaxValues;
-		frame.SetTitle = self.SetTitle;
-		frame.SetValue = self.SetValue;
-		frame.GetValue = self.GetValue;
-		frame.SetValueStep = self.SetValueStep;
-		frame.GetValueStep = self.GetValueStep;
-		frame.SetUnit = self.SetUnit;
+	function(frame, min, max, default, step, title, unit, minLabel, maxLabel, tooltipDesc)
 		-- Call them.
 		frame:SetUnit(unit or "");
 		frame:SetMinMaxValues(min, max, minLabel, maxLabel);
@@ -307,6 +306,7 @@ function PowaLayoutFrame_Init(frame)
 			mB = (mB > 0 and mB < 1 and self:GetWidth() * mB or mB);
 			-- Update column offset.
 			if(self.Columns < (c+cO)) then
+				-- We've gone down a row. Reset column to #1, reset X offset and lower the Y offset.
 				c = 1;
 				oX = 0;
 				oY = oY-mY;
@@ -339,12 +339,14 @@ function PowaLayoutFrame_Init(frame)
 			-- Update offsets once more for margins only.
 			oX = oX + cW + mL + mR;
 			-- Use cH for vertical offset. The Y offset of each row is determined based on the largest object in the previous row.
+			-- So if we directly write to oY, then we're going to offset everything else on this row too.
 			cH = cH + mB + mT;
 			mY = (mY > cH and mY or cH);
 			-- Column offset update.
 			cO = item.LayoutOpts["Columns"];
 		end
 	end
+	-- Debugs an item on a layout frame by placing a crapton of textures over it denoting padding, margins, etc.
 	frame.DebugItem = function(self, item, fcW, fcH, cW, cH, pL, pR, pT, pB, mL, mR, mT, mB, oX, oY)
 		local name = item:GetName();
 		for i=1, 9 do
