@@ -698,7 +698,7 @@
 													<OnLoad>
 														-- Add mutators to slider widgets BEFORE initializing them.
 														self.OnValueGet = function(_, value)
-															if(value == 1) then return "None";
+															if(value == 1) then return "";
 															elseif(value == 2) then return "X";
 															elseif(value == 3) then return "Y";
 															elseif(value == 4) then return "XY";
@@ -707,13 +707,13 @@
 														self.OnValueSet = function(_, value)
 															if(tonumber(value, 10)) then return tonumber(value, 10); end
 															
-															if(value == "None" or value == "") then return 1;
+															if(value == "") then return 1;
 															elseif(value == "X") then return 2;
 															elseif(value == "Y") then return 3;
 															elseif(value == "XY") then return 4;
 															else return 1; end
 														end
-														PowaAuras.UI.Slider(self, 1, 4, 1, 1, "UI_Aura_TexFlip", "", "UI_Aura_TexFlipLow", "UI_Aura_TexFlipHigh");
+														PowaAuras.UI.Slider(self, 1, 4, 1, 1, "UI_Aura_TexFlip", "", "None", "XY");
 													</OnLoad>
 												</Scripts>
 											</Frame>
