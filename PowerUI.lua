@@ -191,7 +191,6 @@ function PowaTabFrame_Init(frame, tabType, offset)
 				tab.TabButton = nil;
 			end
 		end
-		PowaAuras:ShowText("Registering tab: " .. (text or "") .. " (" .. #(self.Tabs) .. ")");
 		-- Update tabs.
 		tab.TabDisabled = (hidden or false);
 		self:UpdateTabs();
@@ -199,7 +198,6 @@ function PowaTabFrame_Init(frame, tabType, offset)
 	-- Hides a tab. If the tab being hidden is selected, the selection is reset to #1.
 	frame.HideTab = function(self, tab)
 		if(not self.Tabs[tab]) then PowaAuras:ShowText("Cannot hide tab, tab does not exist."); return; end
-		PowaAuras:ShowText("Hiding tab: " .. tab);
 		-- Disable it.
 		self.Tabs[tab].TabDisabled = true;
 		-- Update selection if needed.
@@ -209,7 +207,6 @@ function PowaTabFrame_Init(frame, tabType, offset)
 	-- Shows a tab.
 	frame.ShowTab = function(self, tab)
 		if(not self.Tabs[tab]) then PowaAuras:ShowText("Cannot show tab, tab does not exist."); return; end
-		PowaAuras:ShowText("Showing tab: " .. tab);
 		-- Enable it.
 		self.Tabs[tab].TabDisabled = false;	
 		self:UpdateTabs();
@@ -217,7 +214,6 @@ function PowaTabFrame_Init(frame, tabType, offset)
 	-- Selects a tab.
 	frame.SelectTab = function(self, tab)
 		if(not self.Tabs[tab]) then PowaAuras:ShowText("Cannot select tab, tab does not exist."); return; end
-		PowaAuras:ShowText("Selecting tab: " .. tab);
 		self.Tab = tab;
 		self:UpdateTabs();	
 	end
