@@ -675,16 +675,21 @@
 														
 														self.Title:SetText(PowaAuras.Text.UI_TexX .. ":");
 														self:SetText(0);
+														self:SetJustifyH("CENTER");
 													</OnLoad>
 												</Scripts>
 											</EditBox>
 											<EditBox name="$parentY" parentKey="Y" inherits="PowaLabelledEditBox">
+												<HitRectInsets>
+													<AbsInsets left="0" right="0" top="-17" bottom="0" />
+												</HitRectInsets>
 												<Scripts>
 													<OnLoad>
 														PowaAuras.UI.Tooltip(self, "UI_TexY", "UI_Aura_TexYDesc");
 														
 														self.Title:SetText(PowaAuras.Text.UI_TexY .. ":");
 														self:SetText(0);
+														self:SetJustifyH("CENTER");
 													</OnLoad>
 												</Scripts>
 											</EditBox>
@@ -735,16 +740,15 @@
 											<OnLoad>
 												-- Layout needed.
 												PowaLayoutFrame_Init(self);
-												self.Debug = true;
 												self:SetColumns(2, { [1] = { X = 0.5 }, [2] = { X = 0.5 } });
 												
 												self:SetItem(self.Opacity, { Margin = { 0, 0, 4, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
 												self:SetItem(self.Scale, { Margin = { 0, 0, 4, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
-												self:SetItem(self.X, { Margin = { 4, 0, 21, 0 }, Padding = { 0.125, 0.125, 0, 0 } });
-												self:SetItem(self.Flip, { Margin = { 0, 0, 4, 0 }, Padding = { 2, 2, 0, 0 } });
-												self:SetItem(self.Y, { Margin = { 0, 0, 21, 0 }, Padding = { 2, 2, 0, 0 } });
-												self:SetItem(self.Deform, { Margin = { 0, 0, 4, 0 }, Padding = { 2, 2, 0, 0 } });
-												self:SetItem(self.Strata, { Margin = { 0.5, 0, 4, 0 }, Padding = { 4, 0, 0, 0 } });
+												self:SetItem(self.X, { Margin = { 0, 0, 21, 0 }, Padding = { 0.0625, 0.0625, 0, 0 } });
+												self:SetItem(self.Flip, { Margin = { 0, 0, 4, 0 }, Padding = { 2, -2, 0, 0 } });
+												self:SetItem(self.Y, { Margin = { 0, 0, 21, 0 }, Padding = { 0.0625, 0.0625, 0, 0 } });
+												self:SetItem(self.Deform, { Margin = { 0, 0, 4, 0 }, Padding = { 2, -2, 0, 0 } });
+												self:SetItem(self.Strata, { Margin = { 0.5, 0, 4, 0 }, Padding = { 2, -2, 0, 0 } });
 												
 												self.Src:SetText("UI_Aura_TexClick");
 											</OnLoad>
