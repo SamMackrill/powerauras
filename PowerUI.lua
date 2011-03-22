@@ -1,67 +1,109 @@
 -- wroustea@guerrillamailblock.com
 -- (Ignore that, just a disposable email I used for a battle.net account for a wow trial)
 
--- Adds tooltip support to a frame.
-function PowaTooltip_Init(frame, anchor, x, y)
-	-- Allow a tip refresh.
-	frame.RefreshTooltip = function()
-		-- Hide tip.
-		GameTooltip:Hide();
-		-- Reparent.
-		GameTooltip:SetOwner(frame, anchor or "ANCHOR_RIGHT", x or 0, y or 0);
-		-- Set back up.
-		GameTooltip:SetText(frame.TooltipTitle or "");
-		GameTooltip:AddLine(frame.TooltipText or "", 1, 1, 1, true);
-		-- Show tip.
-		GameTooltip:Show();
-	end
-	-- Use the RefreshTooltip function as a display method.
-	frame:SetScript("OnEnter", frame.RefreshTooltip);
-	-- Hide on leave.
-	frame:SetScript("OnLeave", function()
-		GameTooltip:Hide();
-	end);
-end
+-- Each widget has its own init function, and a shared pool of closures available to all widgets.
+-- You can initialize a widget by calling PowaAuras.UI.[widget]().
+PowaAuras.UI = {
+	CreateWidget = function(self, widget, data, ctor)
+		self[widget] = setmetatable(data or {}, { __call = ctor; });
+		return true;
+	end,
+}
 
-function PowaSlider_Init(frame)
-	-- Add functions to slider.
-	frame.GetMinValue = function(self)
-		return select(1, self.Slider:GetMinMaxValues());
+-- Tooltip definition.
+PowaAuras.UI:CreateWidget("Tooltip", {
+		Refresh = function(self)
+			-- Hide tip.
+			GameTooltip:Hide();
+			-- Reparent.
+			GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0);
+			-- Set back up.
+			GameTooltip:SetText(self.TooltipTitle or "");
+			GameTooltip:AddLine(self.TooltipText or "", 1, 1, 1, true);
+			-- Show tip.
+			GameTooltip:Show();
+		end
+	},
+	function(self, frame, title, text, children)
+		-- Store data.
+		frame.TooltipTitle = PowaAuras.Text[title];
+		frame.TooltipText = PowaAuras.Text[text];
+		-- Use the RefreshTooltip function as a display method.
+		frame.Refresh = self.Refresh;
+		frame:SetScript("OnEnter", frame.Refresh);
+		-- Hide on leave.
+		frame:SetScript("OnLeave", function()
+			GameTooltip:Hide();
+		end);
+		-- Add to children too.
+		if(children) then
+			for _, child in pairs(children) do
+				frame[child]:SetScript("OnEnter", function() frame:Refresh(); end);
+				frame[child]:SetScript("OnLeave", function() GameTooltip:Hide(); end);
+			end
+		end
 	end
-	frame.GetMaxValue = function(self)
-		return select(2, self.Slider:GetMinMaxValues());
+);
+
+-- Slider definition.
+PowaAuras.UI:CreateWidget("Slider", {
+		GetMinValue = function(self)
+			return select(1, self.Slider:GetMinMaxValues());
+		end,
+		GetMaxValue = function(self)
+			return select(2, self.Slider:GetMinMaxValues());
+		end,
+		SetMinMaxValues = function(self, min, max, labelMin, labelMax)
+			self.Slider:SetMinMaxValues(min, max);
+			self.Slider.Low:SetText((labelMin and PowaAuras.Text[labelMin] or min) .. (self.Unit or ""));
+			self.Slider.High:SetText((labelMax and PowaAuras.Text[labelMax] or max) .. (self.Unit or ""));
+		end,
+		SetTitle = function(self, title)
+			self.Slider.Text:SetText(PowaAuras.Text[title]);	
+		end,
+		SetValue = function(self, value)
+			self.Slider:SetValue(value);
+		end,
+		GetValue = function(self)
+			self.Slider:GetValue();
+		end,
+		SetValueStep = function(self, value)
+			self.Slider:SetValueStep(value);
+		end,
+		GetValueStep = function(self)
+			self.Slider:GetValueStep();
+		end,
+		SetUnit = function(self, unit)
+			-- Manual calls to SetMinMaxValues are needed afterwards!
+			self.Unit = unit;
+		end
+	},
+	function(self, frame, min, max, default, step, title, unit, minLabel, maxLabel, tooltipDesc)
+		-- Move functions over...
+		frame.GetMinValue = self.GetMinValue;
+		frame.GetMaxValue = self.GetMaxValue;
+		frame.SetMinMaxValues = self.SetMinMaxValues;
+		frame.SetTitle = self.SetTitle;
+		frame.SetValue = self.SetValue;
+		frame.GetValue = self.GetValue;
+		frame.SetValueStep = self.SetValueStep;
+		frame.GetValueStep = self.GetValueStep;
+		frame.SetUnit = self.SetUnit;
+		-- Call them.
+		frame:SetUnit(unit or "");
+		frame:SetMinMaxValues(min, max, minLabel, maxLabel);
+		frame:SetValue(default);
+		frame:SetValueStep(step);
+		frame:SetTitle(title);
+		-- Add tooltips to the slider, background frame and editbox.
+		PowaAuras.UI.Tooltip(frame, title, title .. "Desc" or tooltipDesc, { "Slider", "Value" });
 	end
-	frame.SetMinMaxValues = function(self, min, max, labelMin, labelMax)
-		self.Slider:SetMinMaxValues(min, max);
-		self.Slider.Low:SetText((labelMin or min) .. (self.Unit or ""));
-		self.Slider.High:SetText((labelMax or max) .. (self.Unit or ""));
-	end
-	frame.SetTitle = function(self, title)
-		self.Slider.Text:SetText(title);	
-	end
-	-- Use slider functions for this one.
-	frame.SetValue = function(self, value)
-		self.Slider:SetValue(value);
-	end
-	frame.GetValue = function(self)
-		self.Slider:GetValue();
-	end
-	frame.SetValueStep = function(self, value)
-		self.Slider:SetValueStep(value);
-	end
-	frame.GetValueStep = function(self)
-		self.Slider:GetValueStep();
-	end
-	frame.SetUnit = function(self, unit)
-		-- Manual calls to SetMinValue/SetMaxValue are needed afterwards!
-		self.Unit = unit;
-	end
-	-- Value mutators. OnValueGet is called when GetValue is used, OnValueSet is called when SetValue is used.
-	-- Each should return the value to get/set.
-	-- frame.OnValueSet
-	-- frame.OnValueGet
-	-- frame.OnValueChanged
-end
+);
+
+--[[
+	TODO:
+	> Make UI definitions for all below frames.
+--]]
 
 -- Initializes a tab button, linking it to a frame and a tab.
 function PowaTabButton_Init(tab, id, text, parent)
@@ -338,7 +380,9 @@ function PowaBrowserFrame_Init(frame, min, max, update)
 			self.NextPageButton:Disable();		
 		end
 		-- Update page editbox.
-		self.EditBox:SetText(page);
+		if(self.EditBox) then
+			self.EditBox:SetText(page);
+		end
 	end
 	-- Quick page functions.
 	frame.NextPage = function(self)
