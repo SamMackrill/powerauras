@@ -765,7 +765,56 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideCommsRegisterFailure = "There was an error when setting up addon communications.",
 	aideBlockIncomingAuras = "Prevent anybody sending you auras",
 	nomBlockIncomingAuras = "Block Incoming Auras",
-
+	
+	-- New UI strings.
+	UI_Accept = "Accept", -- Unused currently.
+	UI_Cancel = "Cancel",
+	UI_Close = "Close", -- Unused currently.
+	UI_Save = "Save",
+	
+	UI_Aura = "Aura",
+	UI_Aura_SrcNorm = "Normal Textures",
+	UI_Aura_SrcWoW  = "WoW Textures",
+	UI_Aura_SrcCust = "Custom Textures",
+	UI_Aura_SrcText = "Text Aura",
+	UI_Aura_SrcIcon = "Ability Icon",
+	
+	UI_Aura_TexErr      = "There was an error loading the texture:\n%s",
+	UI_Aura_TexErrCust = "You have not assigned a custom texture to this page yet. Use the textbox below and enter the file name of your custom texture.\n\nCustom textures are being loaded from:\n%s",
+	
+	UI_Aura_TexClick = "Click the aura to change it.",
+	UI_Aura_TexOpacity     = "Opacity",
+	UI_Aura_TexOpacityDesc = "Changes the opacity of the aura texture. Lower values make the aura more transparent, higher ones make it more opaque.",
+	UI_Aura_TexScale       = "Scale",
+	UI_Aura_TexScaleDesc   = "Changes the scale of the texture. Higher values make it bigger, lower values make it smaller.",
+	UI_Aura_TexX           = "Position (X)",
+	UI_Aura_TexXDesc       = "Changes the horizontal positioning of the texture.",
+	UI_Aura_TexY           = "Position (Y)",
+	UI_Aura_TexYDesc       = "Changes the vertical positioning of the texture.",
+	UI_Aura_TexFlip        = "Flip",
+	UI_Aura_TexFlipDesc    = "Allows you to flip the aura texture from left to right, top to bottom or both.",
+	UI_Aura_TexFlipLow     = "None",
+	UI_Aura_TexFlipHigh    = "XY",
+	UI_Aura_TexDeform      = "Deformation",
+	UI_Aura_TexDeformDesc  = "Stretches the texture across either the horizontal or vertical axes.",
+	UI_Aura_TexStrata      = "Strata",
+	UI_Aura_TexStrataDesc  = "Changes the frame strata (layer) of the texture. Setting this higher will make it overlay other auras and UI elements.",
+	UI_Aura_TexGlow        = "Glow",
+	UI_Aura_TexGlowDesc    = "If enabled, any darkened areas in the texture will become more transparent.",
+	UI_Aura_TexColor       = "Color",
+	UI_Aura_TexColorDesc   = "Allows you to apply color tinting to the aura texture. Right click to reset the color tint.",
+	
+	UI_Timer = "Timer",
+	UI_Timer_SrcText = "Text Display",
+	UI_Timer_SrcGfx  = "Graphical Display",
+	
+	UI_Stacks = "Stacks",
+	UI_Stacks_SrcText = "Text Display",
+	UI_Stacks_SrcGfx  = "Graphical Display",
+	
+	UI_Anim = "Animations",
+	UI_Triggers = "Triggers",
+	UI_Sound = "Sound",
 });
 
 --end
