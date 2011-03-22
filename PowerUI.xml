@@ -97,33 +97,23 @@
 		</Scripts>
 	</EditBox>
 	
-	<Frame name="PowaLabelledEditBox" virtual="true">
+	<EditBox name="PowaLabelledEditBox" inherits="PowaEditBoxTemplate" virtual="true">
 		<Size>
-			<AbsDimension x="140" y="22" />
+			<AbsDimension x="70" y="17" />
 		</Size>
 		<Layers>
 			<Layer level="OVERLAY">
-				<FontString inherits="GameFontNormalSmall" parentKey="Title" justifyH="RIGHT" justifyV="CENTER">
+				<FontString inherits="GameFontNormalSmall" parentKey="Title" justifyH="LEFT" justifyV="CENTER">
 					<Size>
 						<AbsDimension x="70" y="17" />
 					</Size>
 					<Anchors>
-						<Anchor point="RIGHT" relativePoint="CENTER" x="-3" y="-1" />
+						<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="0" y="0" />
 					</Anchors>
 				</FontString>
 			</Layer>
 		</Layers>
-		<Frames>
-			<EditBox name="$parentEditBox" inherits="PowaEditBoxTemplate" parentKey="EditBox">
-				<Size>
-					<AbsDimension x="70" y="17" />
-				</Size>
-				<Anchors>
-					<Anchor point="LEFT" relativePoint="CENTER" x="1" y="0" />
-				</Anchors>
-			</EditBox>
-		</Frames>	
-	</Frame>
+	</EditBox>
 	
 	<Frame name="PowaBrowserFrameBaseTemplate" virtual="true" inherits="PowaBorderedFrameTemplate">
 		<Frames>
@@ -678,26 +668,26 @@
 													</OnLoad>
 												</Scripts>
 											</Frame>
-											<Frame name="$parentX" parentKey="X" inherits="PowaLabelledEditBox">
+											<EditBox name="$parentX" parentKey="X" inherits="PowaLabelledEditBox">
 												<Scripts>
 													<OnLoad>
 														PowaAuras.UI.Tooltip(self, "UI_Aura_TexX", "UI_Aura_TexXDesc");
 														
 														self.Title:SetText(PowaAuras.Text.UI_TexX .. ":");
-														self.EditBox:SetText(0);
+														self:SetText(0);
 													</OnLoad>
 												</Scripts>
-											</Frame>
-											<Frame name="$parentY" parentKey="Y" inherits="PowaLabelledEditBox">
+											</EditBox>
+											<EditBox name="$parentY" parentKey="Y" inherits="PowaLabelledEditBox">
 												<Scripts>
 													<OnLoad>
 														PowaAuras.UI.Tooltip(self, "UI_TexY", "UI_Aura_TexYDesc");
 														
 														self.Title:SetText(PowaAuras.Text.UI_TexY .. ":");
-														self.EditBox:SetText(0);
+														self:SetText(0);
 													</OnLoad>
 												</Scripts>
-											</Frame>
+											</EditBox>
 											<Frame name="$parentFlip" parentKey="Flip" inherits="PowaSliderTemplate">
 												<Scripts>
 													<OnLoad>
@@ -745,13 +735,14 @@
 											<OnLoad>
 												-- Layout needed.
 												PowaLayoutFrame_Init(self);
+												self.Debug = true;
 												self:SetColumns(2, { [1] = { X = 0.5 }, [2] = { X = 0.5 } });
 												
 												self:SetItem(self.Opacity, { Margin = { 0, 0, 4, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
 												self:SetItem(self.Scale, { Margin = { 0, 0, 4, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
-												self:SetItem(self.X, { Margin = { 0, 0, 12, 0 }, Padding = { 2, 2, 0, 0 } });
+												self:SetItem(self.X, { Margin = { 4, 0, 21, 0 }, Padding = { 0.125, 0.125, 0, 0 } });
 												self:SetItem(self.Flip, { Margin = { 0, 0, 4, 0 }, Padding = { 2, 2, 0, 0 } });
-												self:SetItem(self.Y, { Margin = { 0, 0, 12, 0 }, Padding = { 2, 2, 0, 0 } });
+												self:SetItem(self.Y, { Margin = { 0, 0, 21, 0 }, Padding = { 2, 2, 0, 0 } });
 												self:SetItem(self.Deform, { Margin = { 0, 0, 4, 0 }, Padding = { 2, 2, 0, 0 } });
 												self:SetItem(self.Strata, { Margin = { 0.5, 0, 4, 0 }, Padding = { 4, 0, 0, 0 } });
 												
@@ -859,18 +850,23 @@
 														<Offset x="-5" y="30" />
 													</Anchor>
 												</Anchors>
-													<Frames>
-														<Frame name="$parentTexName" parentKey="TexName" inherits="PowaLabelledEditBox">
-															<Scripts>
-																<OnLoad>
-																	PowaAuras.UI.Tooltip(self, "UI_TexX", "UI_TexXDesc");
-																	
-																	self.Title:SetText(PowaAuras.Text.UI_TexX .. ":");
-																	self.EditBox:SetText(0);
-																</OnLoad>
-															</Scripts>
-														</Frame>
-													</Frames>
+												<Frames>
+													<EditBox name="$parentTexName" parentKey="TexName" inherits="PowaLabelledEditBox">
+														<Anchors>
+															<Anchor point="BOTTOM" relativeTo="$parent">
+																<Offset x="0" y="9" />
+															</Anchor>
+														</Anchors>
+														<Scripts>
+															<OnLoad>
+																PowaAuras.UI.Tooltip(self, "NYI", "NYI");
+																
+																self.Title:SetText("NYI:");
+																self:SetText(0);
+															</OnLoad>
+														</Scripts>
+													</EditBox>
+												</Frames>
 												<Scripts>
 													<OnLoad>
 														PowaBrowserFrame_Init(self, 1, 1, function(self, page)
