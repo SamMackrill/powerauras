@@ -614,7 +614,7 @@
 										</Anchors>
 										<Layers>
 											<Layer level="ARTWORK">
-												<FontString parentKey="StringSource" inherits="GameFontHighlight" text="UI_AURA_CLICK" justifyH="CENTER" justifyV="CENTER">
+												<FontString parentKey="Src" inherits="GameFontHighlight" justifyH="CENTER" justifyV="CENTER">
 													<Size>
 														<AbsDimension x="156" />
 													</Size>
@@ -639,7 +639,7 @@
 												</Anchors>
 												<Layers>
 													<Layer level="OVERLAY">
-														<Texture file="Interface\ICONS\TEMP" name="$parentTexture" parentKey="Texture">
+														<Texture file="Interface\AddOns\PowerAuras\Auras\Aura1" name="$parentTexture" parentKey="Texture">
 															<Size>
 																<AbsDimension x="96" y="96" />
 															</Size>
@@ -667,14 +667,14 @@
 											<Frame name="$parentOpacity" parentKey="Opacity" inherits="PowaSliderTemplate">
 												<Scripts>
 													<OnLoad>
-														PowaAuras.UI.Slider(self, 1, 100, 1, 75, "UI_Aura_TexOpacity", "%");
+														PowaAuras.UI.Slider(self, 1, 100, 75, 1, "UI_Aura_TexOpacity", "%");
 													</OnLoad>
 												</Scripts>
 											</Frame>
 											<Frame name="$parentScale" parentKey="Scale" inherits="PowaSliderTemplate">
 												<Scripts>
 													<OnLoad>
-														PowaAuras.UI.Slider(self, 1, 500, 1, 75, "UI_Aura_TexScale", "%");
+														PowaAuras.UI.Slider(self, 1, 500, 75, 1, "UI_Aura_TexScale", "%");
 													</OnLoad>
 												</Scripts>
 											</Frame>
@@ -754,6 +754,8 @@
 												self:SetItem(self.Y, { Margin = { 0, 0, 12, 0 }, Padding = { 2, 2, 0, 0 } });
 												self:SetItem(self.Deform, { Margin = { 0, 0, 4, 0 }, Padding = { 2, 2, 0, 0 } });
 												self:SetItem(self.Strata, { Margin = { 0.5, 0, 4, 0 }, Padding = { 4, 0, 0, 0 } });
+												
+												self.Src:SetText("UI_Aura_TexClick");
 											</OnLoad>
 										</Scripts>
 									</Frame>
@@ -801,7 +803,7 @@
 																-- No texture = no texture.
 																-- We could cap the pages on the first error, but there's no point.
 																-- In addition, one of your textures is broken anyways.
-																self.Error:SetText("There was an error loading the texture: \n" .. "PowerAuras\\Auras\\Aura" .. self.Page .. ".tga");
+																self.Error:SetText(format(PowaAuras.Text["UI_Aura_TexErr"], "PowerAuras\\Auras\\Aura" .. self.Page .. ".tga"));
 																self.Error:Show();																
 															else
 																self.Error:Hide();
@@ -894,18 +896,16 @@
 											<OnLoad>
 												-- Uses the tab sidebar template.
 												PowaTabFrame_Init(self, 2);
-												self:RegisterTab(self.Default, "Normal Textures");
-												self:RegisterTab(self.WoW, "WoW Textures");
-												self:RegisterTab(self.Custom, "Custom Textures");
-												self:RegisterTab(self.Text, "Text Aura");
-												self:RegisterTab(self.Icon, "Ability Icon");
+												self:RegisterTab(self.Default, "UI_Aura_SrcNorm");
+												self:RegisterTab(self.WoW, "UI_Aura_SrcWoW");
+												self:RegisterTab(self.Custom, "UI_Aura_SrcCust");
+												self:RegisterTab(self.Text, "UI_Aura_SrcText");
+												self:RegisterTab(self.Icon, "UI_Aura_SrcIcon");
 												-- Dialog accept/close handlers.
 												self.AcceptButton:SetScript("OnClick", function()
-													print("Save");
 													PowaEditorDisplayAuraMain:SelectTab(1);
 												end);
 												self.CancelButton:SetScript("OnClick", function()
-													print("Cancel");
 													PowaEditorDisplayAuraMain:SelectTab(1);
 												end);
 											</OnLoad>
@@ -936,11 +936,10 @@
 				</Frames>
 				<Scripts>
 					<OnLoad>
-						print("Test!", locTest or "nil");
 						PowaTabFrame_Init(self, 1);
-						self:RegisterTab(self.Aura, PowaAuras.Text["UI_Aura"]);
-						self:RegisterTab(self.Timer, PowaAuras.Text["UI_Aura"]);
-						self:RegisterTab(self.Stacks, PowaAuras.Text["UI_Stacks"]);
+						self:RegisterTab(self.Aura, "UI_Aura");
+						self:RegisterTab(self.Timer, "UI_Timer");
+						self:RegisterTab(self.Stacks, "UI_Stacks");
 					</OnLoad>
 				</Scripts>
 			</Frame>
