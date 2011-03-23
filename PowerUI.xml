@@ -10,6 +10,7 @@
 		> Checkbox          -  Checkbox template.
 		> EditBox           -  Simple bordered editbox template.
 		> LabelledEditBox   -  EditBox with a label on the side.
+		> ColorWidget       -  Small color box thing. You know the one.
 		> BrowserFrameBase  -  BrowserFrame template as below minus the page editbox.
 		> BrowserFrame      -  BorderedFrame with an editbox and a couple of buttons for browsing pages of auras.
 		> Slider            -  Slider with editbox and +/- buttons.
@@ -33,46 +34,88 @@
 		</Backdrop>
 	</Frame>
 	
-	<Frame name="PowaCheckboxTemplate" virtual="true">
+	<CheckButton name="PowaCheckboxTemplate" virtual="true">
 		<Size>
-			<AbsDimension x="128" y="26" />
+			<AbsDimension x="64" y="24" />
 		</Size>
-		<Layers>
-			<Layer level="OVERLAY">
-				<FontString inherits="GameFontNormalSmall" parentKey="Text" justifyH="LEFT" justifyV="CENTER">
-					<Size>
-						<AbsDimension x="102" y="26" />
-					</Size>
-					<Anchors>
-						<Anchor point="LEFT" relativePoint="CENTER" x="1" y="1" />
-					</Anchors>
-				</FontString>
-			</Layer>
-		</Layers>
-		<Frames>
-			<CheckButton parentKey="Checkbox">
-				<Size>
-					<AbsDimension x="26" y="26" />
-				</Size>
-				<Anchors>
-					<Anchor point="RIGHT" relativePoint="CENTER" x="-1" y="0" />
-				</Anchors>
-				<NormalTexture file="Interface\Buttons\UI-CheckBox-Up" />
-				<PushedTexture file="Interface\Buttons\UI-CheckBox-Down" />
-				<HighlightTexture file="Interface\Buttons\UI-CheckBox-Highlight" alphaMode="ADD" />
-				<CheckedTexture file="Interface\Buttons\UI-CheckBox-Check" />
-				<DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled" />
-			</CheckButton>
-		</Frames>
-	</Frame>
+		<NormalFont style="GameFontNormalSmall" />
+		<DisabledFont style="GameFontDisableSmall" />
+		<HighlightFont style="GameFontHighlightSmall" />
+		<NormalTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled" blend="DISABLE">
+			<Size>
+				<AbsDimension x="20" y="20" />
+			</Size>
+			<Anchors>
+				<Anchor point="LEFT" relativePoint="LEFT" x="4" y="-1" />
+			</Anchors>
+		</NormalTexture>
+		<CheckedTexture file="Interface\Buttons\UI-CheckBox-Check" blend="DISABLE">
+			<Size>
+				<AbsDimension x="20" y="20" />
+			</Size>
+			<Anchors>
+				<Anchor point="LEFT" relativePoint="LEFT" x="4" y="-1" />
+			</Anchors>
+		</CheckedTexture>
+		<Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground" edgeFile="Interface\ChatFrame\ChatFrameBackground" tile="true">
+			<EdgeSize>
+				<AbsValue val="1" />
+			</EdgeSize>
+			<TileSize>
+				<AbsValue val="5" />
+			</TileSize>
+			<Color r="0.0" g="0.0" b="0.0" a="0.5" />
+			<BorderColor r="0.3" g="0.3" b="0.3" a="0.8" />
+		</Backdrop>
+		<ButtonText name="$parentText" parentKey="Text" font="GameFontNormalSmall" justifyH="LEFT" justifyV="CENTER">
+			<Size>
+				<AbsDimension x="40" y="24"/>
+			</Size>
+			<Anchors>
+				<Anchor point="LEFT">
+					<Offset>
+						<AbsDimension x="28" y="0"/>
+					</Offset>
+				</Anchor>
+			</Anchors>
+		</ButtonText>
+		<Scripts>
+			<OnClick>
+				if(self:GetChecked()) then
+					if(self:IsMouseOver()) then
+						self:SetBackdropBorderColor(1, 0.82, 0, 1);
+					else
+						self:SetBackdropBorderColor(1, 0.82, 0, 0.8);
+					end
+				else
+					if(self:IsMouseOver()) then
+						self:SetBackdropBorderColor(0.3, 0.3, 0.3, 1);
+					else
+						self:SetBackdropBorderColor(0.3, 0.3, 0.3, 0.8);
+					end
+				end
+			</OnClick>
+			<OnEnter>
+				if(self:GetChecked()) then
+					self:SetBackdropBorderColor(1, 0.82, 0, 1);
+				else
+					self:SetBackdropBorderColor(0.3, 0.3, 0.3, 1);
+				end
+			</OnEnter>
+			<OnLeave>
+				if(self:GetChecked()) then
+					self:SetBackdropBorderColor(1, 0.82, 0, 0.8);
+				else
+					self:SetBackdropBorderColor(0.3, 0.3, 0.3, 0.8);
+				end			
+			</OnLeave>
+		</Scripts>
+	</CheckButton>
 	
 	<EditBox name="PowaEditBoxTemplate" virtual="true" autofocus="false" font="GameFontHighlightSmall" justifyH="CENTER">
 		<Size>
 			<AbsDimension x="70" y="14" />
 		</Size>
-		<Anchors>
-			<Anchor point="BOTTOM" relativePoint="BOTTOM" />
-		</Anchors>
 		<Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground" edgeFile="Interface\ChatFrame\ChatFrameBackground" tile="true">
 			<EdgeSize>
 				<AbsValue val="1" />
@@ -97,23 +140,136 @@
 		</Scripts>
 	</EditBox>
 	
-	<EditBox name="PowaLabelledEditBox" inherits="PowaEditBoxTemplate" virtual="true">
+	<Frame name="PowaLabelledEditBox" virtual="true">
 		<Size>
 			<AbsDimension x="70" y="17" />
 		</Size>
+		<Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground" edgeFile="Interface\ChatFrame\ChatFrameBackground" tile="true">
+			<EdgeSize>
+				<AbsValue val="1" />
+			</EdgeSize>
+			<TileSize>
+				<AbsValue val="5" />
+			</TileSize>
+			<Color r="0.0" g="0.0" b="0.0" a="0.5" />
+			<BorderColor r="0.3" g="0.3" b="0.3" a="0.8" />
+		</Backdrop>
 		<Layers>
 			<Layer level="OVERLAY">
-				<FontString inherits="GameFontNormalSmall" parentKey="Title" justifyH="LEFT" justifyV="CENTER">
+				<FontString name="$parentTitle" inherits="GameFontNormalSmall" parentKey="Title" justifyH="LEFT" justifyV="CENTER">
 					<Size>
-						<AbsDimension x="70" y="17" />
+						<AbsDimension y="17" />
 					</Size>
 					<Anchors>
-						<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="0" y="0" />
+						<Anchor point="LEFT" relativePoint="LEFT" x="3" y="0" />
 					</Anchors>
 				</FontString>
 			</Layer>
 		</Layers>
-	</EditBox>
+		<Frames>
+			<EditBox name="$parentEditBox" parentKey="EditBox" autofocus="false" font="GameFontHighlightSmall">
+				<Size>
+					<AbsDimension x="70" y="17" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parentTitle" x="3" y="0" />
+					<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="0" y="0" />
+				</Anchors>
+				<Scripts>
+					<OnEscapePressed>
+						self:ClearFocus();
+					</OnEscapePressed>
+					<OnEnterPressed>
+						self:ClearFocus();
+					</OnEnterPressed>
+				</Scripts>
+			</EditBox>
+		</Frames>
+	</Frame>
+	
+	<Button name="PowaColorWidgetTemplate" virtual="true">
+		<Size>
+			<AbsDimension x="64" y="16" />
+		</Size>
+		<NormalFont style="GameFontNormalSmall" />
+		<DisabledFont style="GameFontDisableSmall" />
+		<HighlightFont style="GameFontHighlightSmall" />
+		<NormalTexture file="Interface\Buttons\WHITE8X8" blend="DISABLE">
+			<Size>
+				<AbsDimension x="16" y="16" />
+			</Size>
+			<Anchors>
+				<Anchor point="LEFT" relativePoint="LEFT" x="4" y="0" />
+			</Anchors>
+		</NormalTexture>
+		<Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground" edgeFile="Interface\ChatFrame\ChatFrameBackground" tile="true">
+			<EdgeSize>
+				<AbsValue val="1" />
+			</EdgeSize>
+			<TileSize>
+				<AbsValue val="5" />
+			</TileSize>
+			<Color r="0.0" g="0.0" b="0.0" a="0.5" />
+			<BorderColor r="0.3" g="0.3" b="0.3" a="0.8" />
+		</Backdrop>
+		<ButtonText name="$parentText" parentKey="Text" font="GameFontNormalSmall" justifyH="LEFT" justifyV="CENTER">
+			<Size>
+				<AbsDimension x="40" y="24"/>
+			</Size>
+			<Anchors>
+				<Anchor point="LEFT">
+					<Offset>
+						<AbsDimension x="28" y="0"/>
+					</Offset>
+				</Anchor>
+			</Anchors>
+		</ButtonText>
+		<Scripts>
+			<OnLoad>
+				self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
+			</OnLoad>
+			<OnClick>
+				if(button == "LeftButton") then
+					-- Set up colours/funcs.
+					local r, g, b = 1, 1, 1;
+					if(self.GetColors) then r, g, b = self:GetColors(); end
+					ColorPickerFrame:SetColorRGB(r, g, b);
+					ColorPickerFrame.hasOpacity = nil;
+					ColorPickerFrame.previousValues = { r, g, b, 1 };
+					-- Set functions.
+					if(not self.ColorChanged) then
+						self.ColorChanged = function(restore)
+							-- Get colors.
+							local r, g, b = ColorPickerFrame:GetColorRGB();
+							if(restore) then r, g, b = unpack(restore); end
+							-- Run custom OnColorChanged function.
+							if(self.OnColorChanged) then
+								self:OnColorChanged(r, g, b);
+							end
+							-- Tint the widget.
+							self:GetNormalTexture():SetVertexColor(r, g, b, 1);
+						end
+					end
+					ColorPickerFrame.func, ColorPickerFrame.cancelFunc = self.ColorChanged, self.ColorChanged;
+					-- Show.
+					ColorPickerFrame:Hide();
+					ColorPickerFrame:Show();
+				else
+					-- Reset to default.
+					self:GetNormalTexture():SetVertexColor(1, 1, 1, 1);
+					if(self.OnColorChanged) then
+						self:OnColorChanged(1, 1, 1);
+					end					
+				end
+			</OnClick>
+			<OnEnter>
+				self:SetBackdropBorderColor(0.3, 0.3, 0.3, 1);
+			</OnEnter>
+			<OnLeave>
+				self:SetBackdropBorderColor(0.3, 0.3, 0.3, 0.8);
+			</OnLeave>
+		</Scripts>
+	</Button>
 	
 	<Frame name="PowaBrowserFrameBaseTemplate" virtual="true" inherits="PowaBorderedFrameTemplate">
 		<Frames>
@@ -179,41 +335,67 @@
 	</Frame>
 	
 	<Frame name="PowaBrowserFrameTemplate" virtual="true" inherits="PowaBrowserFrameBaseTemplate">
-		<Layers>
-			<Layer level="OVERLAY">
-				<FontString inherits="GameFontNormalSmall" text="Page" justifyH="RIGHT" justifyV="CENTER">
-					<Size>
-						<AbsDimension x="70" y="17" />
-					</Size>
-					<Anchors>
-						<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOM" x="-1" y="9" />
-					</Anchors>
-				</FontString>
-			</Layer>
-		</Layers>
 		<Frames>
-			<EditBox name="$parentEditBox" inherits="PowaEditBoxTemplate" parentKey="EditBox">
+			<Frame name="$parentPageBox" parentKey="PageBox">
 				<Size>
-					<AbsDimension x="45" y="17" />
+					<AbsDimension x="70" y="17" />
 				</Size>
 				<Anchors>
-					<Anchor point="BOTTOMLEFT" relativePoint="BOTTOM" x="1" y="9" />
+					<Anchor point="BOTTOM" relativePoint="BOTTOM" x="0" y="9" />
 				</Anchors>
+				<Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground" edgeFile="Interface\ChatFrame\ChatFrameBackground" tile="true">
+					<EdgeSize>
+						<AbsValue val="1" />
+					</EdgeSize>
+					<TileSize>
+						<AbsValue val="5" />
+					</TileSize>
+					<Color r="0.0" g="0.0" b="0.0" a="0.5" />
+					<BorderColor r="0.3" g="0.3" b="0.3" a="0.8" />
+				</Backdrop>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString name="$parentTitle" inherits="GameFontNormalSmall" parentKey="Title" justifyH="LEFT" justifyV="CENTER">
+							<Size>
+								<AbsDimension y="17" />
+							</Size>
+							<Anchors>
+								<Anchor point="LEFT" relativePoint="LEFT" x="3" y="0" />
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Frames>
+					<EditBox name="$parentEditBox" parentKey="EditBox" autofocus="false" font="GameFontHighlightSmall" letters="4">
+						<Size>
+							<AbsDimension x="70" y="17" />
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parentTitle" x="3" y="0" />
+							<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="0" y="0" />
+						</Anchors>
+						<Scripts>
+							<OnEscapePressed>
+								self:SetText(self:GetParent():GetParent().Page);
+								self:ClearFocus();
+							</OnEscapePressed>
+							<OnEnterPressed>
+								if(tonumber(self:GetText(), 10)) then
+									self:GetParent():GetParent():SetPage(tonumber(self:GetText(), 10));
+								else
+									self:SetText(self:GetParent():GetParent().Page);
+								end
+								self:ClearFocus();
+							</OnEnterPressed>
+						</Scripts>
+					</EditBox>
+				</Frames>
 				<Scripts>
-					<OnEscapePressed>
-						self:SetText(self:GetParent().Page);
-						self:ClearFocus();
-					</OnEscapePressed>
-					<OnEnterPressed>
-						if(tonumber(self:GetText(), 10)) then
-							self:GetParent():SetPage(tonumber(self:GetText(), 10));
-						else
-							self:SetText(self:GetParent().Page);
-						end
-						self:ClearFocus();						
-					</OnEnterPressed>
+					<OnLoad>
+						self.Title:SetText("Page:");
+					</OnLoad>
 				</Scripts>
-			</EditBox>
+			</Frame>
 		</Frames>
 	</Frame>
 	
@@ -587,6 +769,34 @@
 										</Texture>
 									</Layer>
 								</Layers>
+								<Frames>
+									<CheckButton name="$parentGlow" parentKey="Glow" inherits="PowaCheckboxTemplate">
+										<Size>
+											<AbsDimension x="64" y="24" />
+										</Size>
+										<Anchors>
+											<Anchor point="BOTTOM" relativeTo="$parent" x="0" y="35" />
+										</Anchors>
+										<Scripts>
+											<OnLoad>
+												self.Text:SetText("Glow");
+											</OnLoad>
+										</Scripts>
+									</CheckButton>
+									<Button name="$parentColor" parentKey="Color" inherits="PowaColorWidgetTemplate">
+										<Size>
+											<AbsDimension x="64" y="24" />
+										</Size>
+										<Anchors>
+											<Anchor point="BOTTOM" relativeTo="$parent" x="0" y="9" />
+										</Anchors>
+										<Scripts>
+											<OnShow>
+												self.Text:SetText("Color");
+											</OnShow>
+										</Scripts>
+									</Button>
+								</Frames>
 							</Frame>
 							<Frame name="$parentMain" parentKey="Main">
 								<Anchors>
@@ -606,7 +816,7 @@
 											<Layer level="ARTWORK">
 												<FontString parentKey="Src" inherits="GameFontHighlight" justifyH="CENTER" justifyV="CENTER">
 													<Size>
-														<AbsDimension x="156" />
+														<AbsDimension x="128" />
 													</Size>
 													<Anchors>
 														<Anchor point="TOP" relativeTo="PowaEditorDisplayAuraSidebar" relativePoint="TOP" x="0" y="-110"/>
@@ -668,31 +878,33 @@
 													</OnLoad>
 												</Scripts>
 											</Frame>
-											<EditBox name="$parentX" parentKey="X" inherits="PowaLabelledEditBox">
+											<Frame name="$parentX" parentKey="X" inherits="PowaLabelledEditBox">
 												<Scripts>
 													<OnLoad>
-														PowaAuras.UI.Tooltip(self, "UI_Aura_TexX", "UI_Aura_TexXDesc");
+														PowaAuras.UI.Tooltip(self, "UI_Aura_TexX", "UI_Aura_TexXDesc", { "EditBox" });
 														
-														self.Title:SetText(PowaAuras.Text.UI_TexX .. ":");
-														self:SetText(0);
-														self:SetJustifyH("CENTER");
+														self.Title:SetText(PowaAuras.Text.UI_Aura_TexX .. ":");
+														self.EditBox:SetText(0);
 													</OnLoad>
 												</Scripts>
-											</EditBox>
-											<EditBox name="$parentY" parentKey="Y" inherits="PowaLabelledEditBox">
-												<HitRectInsets>
-													<AbsInsets left="0" right="0" top="-17" bottom="0" />
-												</HitRectInsets>
+											</Frame>
+											<Frame name="$parentY" parentKey="Y" inherits="PowaLabelledEditBox">
 												<Scripts>
 													<OnLoad>
-														PowaAuras.UI.Tooltip(self, "UI_TexY", "UI_Aura_TexYDesc");
+														PowaAuras.UI.Tooltip(self, "UI_Aura_TexY", "UI_Aura_TexYDesc", { "EditBox" });
 														
-														self.Title:SetText(PowaAuras.Text.UI_TexY .. ":");
-														self:SetText(0);
-														self:SetJustifyH("CENTER");
+														self.Title:SetText(PowaAuras.Text.UI_Aura_TexY .. ":");
+														self.EditBox:SetText(0);
 													</OnLoad>
 												</Scripts>
-											</EditBox>
+											</Frame>
+											<Frame name="$parentRotate" parentKey="Rotate" inherits="PowaSliderTemplate">
+												<Scripts>
+													<OnLoad>
+														PowaAuras.UI.Slider(self, 0, 360, 0, 1, "UI_Aura_TexRotate");
+													</OnLoad>
+												</Scripts>
+											</Frame>
 											<Frame name="$parentFlip" parentKey="Flip" inherits="PowaSliderTemplate">
 												<Scripts>
 													<OnLoad>
@@ -731,7 +943,7 @@
 											<Frame name="$parentStrata" parentKey="Strata" inherits="PowaSliderTemplate">
 												<Scripts>
 													<OnLoad>
-														PowaAuras.UI.Slider(self, 1, 100, 50, 1, "UI_Aura_TexStrata");
+														PowaAuras.UI.Slider(self, -(2^16), 2^16, 0, 1, "UI_Aura_TexStrata");
 													</OnLoad>
 												</Scripts>
 											</Frame>
@@ -744,13 +956,14 @@
 												
 												self:SetItem(self.Opacity, { Margin = { 0, 0, 4, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
 												self:SetItem(self.Scale, { Margin = { 0, 0, 4, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
-												self:SetItem(self.X, { Margin = { 0, 0, 21, 0 }, Padding = { 0.0625, 0.0625, 0, 0 } });
-												self:SetItem(self.Flip, { Margin = { 0, 0, 4, 0 }, Padding = { 2, -2, 0, 0 } });
-												self:SetItem(self.Y, { Margin = { 0, 0, 21, 0 }, Padding = { 0.0625, 0.0625, 0, 0 } });
-												self:SetItem(self.Deform, { Margin = { 0, 0, 4, 0 }, Padding = { 2, -2, 0, 0 } });
-												self:SetItem(self.Strata, { Margin = { 0.5, 0, 4, 0 }, Padding = { 2, -2, 0, 0 } });
+												self:SetItem(self.Rotate, { Margin = { 0, 0, 4, 0 }, Padding = { 2, 4, 0, 0 } });
+												self:SetItem(self.Flip, { Margin = { 0, 0, 4, 0 }, Padding = { 4, -2, 0, 0 } });
+												self:SetItem(self.X, { Margin = { 0, 0, 10, 0 }, Padding = { 2, 4, 0, 0 } });
+												self:SetItem(self.Deform, { Margin = { 0, 0, 4, 0 }, Padding = { 4, -2, 0, 0 } });
+												self:SetItem(self.Y, { Margin = { 0, 0, -20, 0 }, Padding = { 2, 4, 0, 0 } });
+												self:SetItem(self.Strata, { Margin = { 0, 0, 4, 0 }, Padding = { 4, -2, 0, 0 } });
 												
-												self.Src:SetText("UI_Aura_TexClick");
+												self.Src:SetText(PowaAuras.Text["UI_Aura_TexClick"]);
 											</OnLoad>
 										</Scripts>
 									</Frame>
@@ -776,7 +989,7 @@
 																<Anchor point="CENTER" relativePoint="CENTER" x="0" y="0" />
 															</Anchors>
 														</Texture>
-														<FontString parentKey="Error" hidden="true" inherits="GameFontHighlight" justifyH="CENTER" justifyV="CENTER">
+														<FontString parentKey="Error" hidden="true" nonSpaceWrap="true" inherits="GameFontHighlight" justifyH="CENTER" justifyV="CENTER">
 															<Size>
 																<AbsDimension x="256" />
 															</Size>
@@ -788,7 +1001,7 @@
 												</Layers>
 												<Scripts>
 													<OnLoad>
-														PowaBrowserFrame_Init(self, 1, nil, function()
+														PowaBrowserFrame_Init(self, 1, 9999, function()
 															-- Automatic sizing trick. Set it to auto initially, then read the size and cap if needed!
 															self.Texture:SetSize(0, 0);
 															self.Texture:SetTexture("Interface\\AddOns\\PowerAuras\\Auras\\Aura" .. self.Page .. ".tga")
@@ -796,8 +1009,6 @@
 															-- GetTexture will return nil though.
 															if(not self.Texture:GetTexture()) then
 																-- No texture = no texture.
-																-- We could cap the pages on the first error, but there's no point.
-																-- In addition, one of your textures is broken anyways.
 																self.Error:SetText(format(PowaAuras.Text["UI_Aura_TexErr"], "PowerAuras\\Auras\\Aura" .. self.Page .. ".tga"));
 																self.Error:Show();																
 															else
@@ -854,29 +1065,96 @@
 														<Offset x="-5" y="30" />
 													</Anchor>
 												</Anchors>
+												<Layers>
+													<Layer level="OVERLAY">
+														<Texture parentKey="Texture">
+															<Anchors>
+																<Anchor point="CENTER" relativePoint="CENTER" x="0" y="0" />
+															</Anchors>
+														</Texture>
+														<FontString parentKey="Error" hidden="true" nonSpaceWrap="true" inherits="GameFontHighlight" justifyH="CENTER" justifyV="CENTER">
+															<Size>
+																<AbsDimension x="256" />
+															</Size>
+															<Anchors>
+																<Anchor point="CENTER" relativePoint="CENTER" x="0" y="0"/>
+															</Anchors>
+														</FontString>
+													</Layer>
+												</Layers>
 												<Frames>
-													<EditBox name="$parentTexName" parentKey="TexName" inherits="PowaLabelledEditBox">
+													<Frame name="$parentTexName" parentKey="TexName" inherits="PowaLabelledEditBox">
 														<Anchors>
-															<Anchor point="BOTTOM" relativeTo="$parent">
-																<Offset x="0" y="9" />
-															</Anchor>
+															<Anchor point="BOTTOMLEFT" relativeTo="$parent" x="9" y="9" />
+															<Anchor point="BOTTOMRIGHT" relativeTo="$parent" x="-9" y="9" />
 														</Anchors>
 														<Scripts>
-															<OnLoad>
-																PowaAuras.UI.Tooltip(self, "NYI", "NYI");
-																
-																self.Title:SetText("NYI:");
-																self:SetText(0);
+															<OnLoad>																
+																self.Title:SetText("Texture:");
+																self.EditBox:SetText("");
+																self.EditBox:SetScript("OnEnterPressed", function(editbox)
+																		local text, page = editbox:GetText(), self:GetParent().Page;
+																		if(text ~= "") then
+																			-- Store it.
+																			if(not PowaGlobalMisc["CustomTextures"][page]) then
+																				tinsert(PowaGlobalMisc["CustomTextures"], page, text);
+																			else
+																				PowaGlobalMisc["CustomTextures"][page] = text;
+																			end
+																			-- Update page count.
+																			self:GetParent():SetMaxPage(#(PowaGlobalMisc["CustomTextures"])+1);
+																		elseif(text == "") then
+																			-- Blank means remove.
+																			tremove(PowaGlobalMisc["CustomTextures"], page);
+																			self:GetParent():SetMaxPage(#(PowaGlobalMisc["CustomTextures"])+1);																			
+																		end
+																		editbox:ClearFocus();
+																	end
+																);
 															</OnLoad>
 														</Scripts>
-													</EditBox>
+													</Frame>
 												</Frames>
 												<Scripts>
 													<OnLoad>
-														PowaBrowserFrame_Init(self, 1, 1, function(self, page)
-															print("CUSTOM PAGE: " .. page);
+														-- Initialize the frame.
+														PowaBrowserFrame_Init(self, 1, #(PowaGlobalMisc["CustomTextures"])+1, function(self, page)
+															-- Texture on this page?
+															if(PowaGlobalMisc["CustomTextures"][page]) then
+																local texpath, texture = PowaGlobalMisc["PathToAuras"], PowaGlobalMisc["CustomTextures"][page];
+																-- Yes, wow.
+																self.Error:Hide();
+																self.TexName.EditBox:SetText(texture);
+																-- Set the texture up.
+																self.Texture:SetSize(0, 0);
+																self.Texture:SetTexture(texpath .. texture)
+																if(not self.Texture:GetTexture()) then
+																	-- No texture = no texture.
+																	self.Error:SetText(format(PowaAuras.Text["UI_Aura_TexErr"], texpath .. texture));
+																	self.Error:Show();		
+																	self.Texture:Hide();														
+																else
+																	self.Error:Hide();
+																	-- Automatic sizing does not work for BLP files, so just use a static 128 if no size is reported.
+																	self.Texture:SetSize(
+																		((self.Texture:GetWidth() > 128 or self.Texture:GetWidth() == 0) and 128 or self.Texture:GetWidth()),
+																		((self.Texture:GetHeight() > 128 or self.Texture:GetHeight() == 0) and 128 or self.Texture:GetHeight())
+																	);
+																	self.Texture:Show();
+																end
+															else
+																-- Nope.
+																self.Texture:Hide();
+																self.Error:SetText(format(PowaAuras.Text["UI_Aura_TexErrCust"], PowaGlobalMisc["PathToAuras"]));
+																self.Error:Show();
+																self.TexName.EditBox:SetText("");
+															end
 														end);
 													</OnLoad>
+													<OnShow>
+														-- Temporary workaround. Will remove later.
+														self:SetMaxPage(#(PowaGlobalMisc["CustomTextures"])+1);
+													</OnShow>
 												</Scripts>
 											</Frame>
 											<Frame name="$parentText" parentKey="Text">
