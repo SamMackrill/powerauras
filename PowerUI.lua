@@ -4,7 +4,7 @@
 -- Each widget has its own init function, and a shared pool of closures available to all widgets.
 -- You can initialize a widget by calling PowaAuras.UI.[widget]().
 PowaAuras.UI = {
-	CreateWidget = function(self, widget, data, ctor)
+	DefineWidget = function(self, widget, data, ctor)
 		self[widget] = setmetatable(data or {}, { 
 				__call = function(self, widget, ...)
 					-- Constructor. Copy anything we have over automatically...
@@ -21,7 +21,7 @@ PowaAuras.UI = {
 }
 
 -- Tooltip definition.
-PowaAuras.UI:CreateWidget("Tooltip", {
+PowaAuras.UI:DefineWidget("Tooltip", {
 		Refresh = function(self)
 			-- Hide tip.
 			GameTooltip:Hide();
@@ -55,7 +55,7 @@ PowaAuras.UI:CreateWidget("Tooltip", {
 );
 
 -- Slider definition.
-PowaAuras.UI:CreateWidget("Slider", {
+PowaAuras.UI:DefineWidget("Slider", {
 		GetMinValue = function(self)
 			return select(1, self.Slider:GetMinMaxValues());
 		end,
@@ -447,8 +447,8 @@ function PowaBrowserFrame_Init(frame, min, max, update)
 			self.NextPageButton:Disable();		
 		end
 		-- Update page editbox.
-		if(self.EditBox) then
-			self.EditBox:SetText(page);
+		if(self.PageBox) then
+			self.PageBox.EditBox:SetText(page);
 		end
 	end
 	-- Quick page functions.
