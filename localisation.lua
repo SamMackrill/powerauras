@@ -812,6 +812,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	UI_Stacks_SrcText      = "Text Display",
 	UI_Stacks_SrcGfx       = "Graphical Display",
 	
+	UI_Activation          = "Activation",
+	UI_Rules               = "Rules",
 	UI_Anim                = "Animations",
 	UI_Triggers            = "Triggers",
 	UI_Sound               = "Sound",
