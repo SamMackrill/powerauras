@@ -304,6 +304,16 @@ function cPowaAura:CreateDefaultTriggers()
 		--if (frame1 and frame1.texture) then trigger:AddAction(cPowaAuraColourAction, {Texture=frame1.texture, R=255, G=0, B=0, Revert=true}); end
 		--if (frame2 and frame2.texture) then trigger:AddAction(cPowaAuraColourAction, {Texture=frame2.texture, R=255, G=0, B=0, Revert=true}); end
 		--trigger:AddAction(cPowaAuraPlaySoundAction, {Sound=11});
+		
+		if (self.InvertAuraBelow>0) then
+			if (self.InvertTimeHides) then
+				trigger=self:CreateTrigger(cPowaAuraTimerTrigger,  {Name="PA_InvertOnTimer", Value=self.InvertTimeHides, Compare="<"});
+				trigger:AddAction(cPowaAuraHideAction, {Name="PA_Hide"});
+			else
+			--	trigger=self:CreateTrigger(cPowaAuraTimerTrigger, {Name="PA_InvertOnTimer", Value=self.InvertTimeHides, Compare=">"});
+			--	trigger:AddAction(cPowaAuraShowAction, {Name="PA_Show"});
+			end
+		end		
 	end
 
 	if (self.Stacks and self.Stacks.UpdatePing) then
