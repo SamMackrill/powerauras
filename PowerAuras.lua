@@ -17,10 +17,10 @@ PowaMisc =
 		DefaultStacksTexture = "Original",
 		TimerRoundUp = true,
 		AllowInspections = true,
-		AnimationFps = 30,
+		AnimationFps = 30,                           -- DEPRECATED: 4.1 seems to be dropping support for FPS in animations.
 		UseGTFO = nil,
-		UserSetMaxTextures = PowaAuras.TextureCount,
-		OverrideMaxTextures = false,
+		UserSetMaxTextures = PowaAuras.TextureCount, -- DEPRECATED: No longer needed.
+		OverrideMaxTextures = false,                 -- DEPRECATED: No longer needed.
 		Locked = false,
 		SoundChannel = "Master",
 	};
@@ -30,6 +30,7 @@ PowaMisc =
 		PathToSounds = "Interface\\AddOns\\PowerAuras\\Sounds\\",
 		PathToAuras = "Interface\\Addons\\PowerAuras\\Custom\\",
 		BlockIncomingAuras = false,
+		CustomTextures = {},
 	};
 
 PowaAuras.PowaMiscDefault = PowaAuras:CopyTable(PowaMisc);
