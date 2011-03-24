@@ -332,14 +332,22 @@ function cPowaAura:CreateDefaultTriggers()
 		--if (frame2 and frame2.texture) then trigger:AddAction(cPowaAuraColourAction, {Texture=frame2.texture, R=255, G=0, B=0, Revert=true}); end
 		--trigger:AddAction(cPowaAuraPlaySoundAction, {Sound=11});
 		
-		if (self.InvertAuraBelow>0) then
-			if (self.InvertTimeHides) then
-				trigger=self:CreateTrigger(cPowaAuraTimerTrigger,  {Name="PA_InvertOnTimer", Value=self.InvertTimeHides, Compare="<"});
-				trigger:AddAction(cPowaAuraHideAction, {Name="PA_Hide"});
-			else
+		
+		if (self.timerduration>0) then	
+			trigger=self:CreateTrigger(cPowaAuraDurationTrigger,  {Name="PA_InvertOnTimer", Duration=true, Value=self.duration, Compare=">", Debug=true});
+			trigger:AddAction(cPowaAuraHideAction, {Name="PA_Hide"});
+		end
+		
+		if (self.InvertAuraBelow>0) then		
+			trigger=self:CreateTrigger(cPowaAuraTimerTrigger,  {Name="PA_InvertOnTimer", Value=self.InvertAuraBelow, Compare=">"});
+			trigger:AddAction(cPowaAuraHideAction, {Name="PA_Hide"});
+			--if (self.InvertTimeHides) then
+			--	trigger=self:CreateTrigger(cPowaAuraTimerTrigger,  {Name="PA_InvertOnTimer", Value=self.InvertAuraBelow, Compare="<", Debug=true});
+			--	trigger:AddAction(cPowaAuraHideAction, {Name="PA_Hide"});
+			--else
 			--	trigger=self:CreateTrigger(cPowaAuraTimerTrigger, {Name="PA_InvertOnTimer", Value=self.InvertTimeHides, Compare=">"});
 			--	trigger:AddAction(cPowaAuraShowAction, {Name="PA_Show"});
-			end
+			--end
 		end		
 	end
 
