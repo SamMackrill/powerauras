@@ -171,14 +171,22 @@ PowaAuras.UI = {
 				-- Update column height/width.
 				cW = (cW == 0 and item:GetWidth() or cW <= 1 and (self:GetWidth() * cW));
 				cH = (cH == 0 and item:GetHeight() or cH <= 1 and (self:GetHeight() * cH));
-				-- Debug layout?
-				if(self.Debug == true) then self:DebugItem(item, cW, cH, cW-pL-pR, cH-pT-pB, pL, pR, pT, pB, mL, mR, mT, mB, oX, oY); end
-				-- Update sizes, subtracting padding.
-				item:SetWidth(cW - pL - pR);
-				item:SetHeight(cH - pT - pB);
-				-- Set point.
-				item:ClearAllPoints();
-				item:SetPoint("TOPLEFT", self, "TOPLEFT", oX+pL+mL, (oY - pT - mT));
+				-- Skip if item is not visible.
+				-- We skip this block as it positions the element, something which is useless.
+				-- However, updating the HORIZONTAL offset is vital to the layout, the vertical not so much.
+				if(item:IsShown()) then
+					-- Debug layout?
+					if(self.Debug == true) then self:DebugItem(item, cW, cH, cW-pL-pR, cH-pT-pB, pL, pR, pT, pB, mL, mR, mT, mB, oX, oY); end
+					-- Update sizes, subtracting padding.
+					item:SetWidth(cW - pL - pR);
+					item:SetHeight(cH - pT - pB);
+					-- Set point.
+					item:ClearAllPoints();
+					item:SetPoint("TOPLEFT", self, "TOPLEFT", oX+pL+mL, (oY - pT - mT));
+				else
+					-- ...So we "forget" the column height ever existed.
+					cH = 0;
+				end
 				-- Update offsets once more for margins only.
 				oX = oX + cW + mL + mR;
 				-- Use cH for vertical offset. The Y offset of each row is determined based on the largest object in the previous row.
@@ -496,6 +504,7 @@ PowaAuras.UI = {
 		);
 		return true;
 	end,
+	AdvancedElements = {},
 }
 
 -- Set up constructors.
@@ -521,15 +530,20 @@ function PowaAuras:SaveSetting(property, value, auraId)
 end
 
 function PowaAuras:RegisterAdvancedElement(element)
-
+	tinsert(PowaAuras.UI.AdvancedElements, (element:GetName() or element));
 end
 
 function PowaAuras:ToggleAdvancedElements(state)
-
+	for i,v in pairs(PowaAuras.UI.AdvancedElements) do
+		if(type(v) == "string") then v = _G[v]; end
+		if(state == true) then v:Show(); else v:Hide(); end
+		if(v:GetParent().UpdateLayout) then v:GetParent():UpdateLayout(); end
+	end
 end
 
 function PowaAuras:ShowAuraEditor()
-
+	-- Make sure advanced things are shown/hidden.
+	PowaAuras:ToggleAdvancedElements(PowaEditor.Advanced:GetChecked());
 end
 
 -- Most of this was just a test. Ignore 90% of it.

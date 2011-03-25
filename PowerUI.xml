@@ -1036,6 +1036,11 @@
 														self:SetItem(self.Separator3, { Margin = { 0, 0, 12, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
 														self:SetItem(self.Deform, { Margin = { 0, 0, 4, 0 }, Padding = { 2, 4, 0, 0 } });
 														self:SetItem(self.Strata, { Margin = { 0, 0, 4, 0 }, Padding = { 4, -2, 0, 0 } });
+														
+														-- Register those last 3 as advanced elements.
+														PowaAuras:RegisterAdvancedElement(self.Separator3);
+														PowaAuras:RegisterAdvancedElement(self.Deform);
+														PowaAuras:RegisterAdvancedElement(self.Strata);
 													</OnLoad>
 												</Scripts>
 											</Frame>
