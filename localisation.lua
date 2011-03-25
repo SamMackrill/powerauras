@@ -784,7 +784,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	
 	UI_Aura_TexClick       = "Click the aura to change it.",
 	UI_Aura_Separator1     = "Style",
-	UI_Aura_Separator2     = "Position (Whai so sliderless?)",
+	UI_Aura_Separator2     = "Position",
 	UI_Aura_Separator3     = "Advanced",
 	UI_Aura_TexOpacity     = "Opacity",
 	UI_Aura_TexOpacityDesc = "Changes the opacity of the aura texture. Lower values make the aura more transparent, higher ones make it more opaque.",
