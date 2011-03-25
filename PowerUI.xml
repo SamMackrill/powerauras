@@ -7,6 +7,7 @@
 	<!-- Templates
 		All templates are prefixed with Powa, and use a Template suffix.
 		> BorderedFrame     -  Simple frame with a darkened tooltip border.
+		> FrameSeparator    -  Acts as a separator for UI elements. Steals some stuff from archaeology textures.
 		> Checkbox          -  Checkbox template.
 		> EditBox           -  Simple bordered editbox template.
 		> LabelledEditBox   -  EditBox with a label on the side.
@@ -32,6 +33,42 @@
 			<Color r="0.0" g="0.0" b="0.0" a="0.75" />
 			<BorderColor r="0.4" g="0.4" b="0.4" a="1.0" />
 		</Backdrop>
+	</Frame>
+	
+	<Frame name="PowaFrameSeparatorTemplate" virtual="true">
+		<Size>
+			<AbsDimension x="42" y="27" />
+		</Size>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture file="Interface\Archeology\ArchaeologyParts" parentKey="LeftTex">
+					<Size>
+						<AbsDimension x="42" y="27" />
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT" />
+					</Anchors>
+					<TexCoords left="0.00195313" right="0.10742188" top="0.70312500" bottom="0.83593750" />
+				</Texture>
+				<Texture file="Interface\Archeology\ArchaeologyParts" parentKey="RightTex">
+					<Size>
+						<AbsDimension x="42" y="27" />
+					</Size>
+					<Anchors>
+						<Anchor point="RIGHT" />
+					</Anchors>
+					<TexCoords left="0.00195313" right="0.10742188" top="0.56250000" bottom="0.69531250" />
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString parentKey="Text" inherits="GameFontNormal" justifyH="CENTER" justifyV="MIDDLE">
+					<Anchors>
+						<Anchor point="LEFT" x="46" y="0" />
+						<Anchor point="RIGHT" x="-46" y="0" />
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
 	</Frame>
 	
 	<CheckButton name="PowaCheckboxTemplate" virtual="true">
@@ -64,7 +101,7 @@
 			<Color r="0.0" g="0.0" b="0.0" a="0.5" />
 			<BorderColor r="0.3" g="0.3" b="0.3" a="0.8" />
 		</Backdrop>
-		<ButtonText name="$parentText" parentKey="Text" font="GameFontNormalSmall" justifyH="LEFT" justifyV="CENTER">
+		<ButtonText name="$parentText" parentKey="Text" font="GameFontNormalSmall" justifyH="LEFT" justifyV="MIDDLE">
 			<Size>
 				<AbsDimension y="24"/>
 			</Size>
@@ -150,7 +187,7 @@
 		</Backdrop>
 		<Layers>
 			<Layer level="OVERLAY">
-				<FontString name="$parentTitle" inherits="GameFontNormalSmall" parentKey="Title" justifyH="LEFT" justifyV="CENTER">
+				<FontString name="$parentTitle" inherits="GameFontNormalSmall" parentKey="Title" justifyH="LEFT" justifyV="MIDDLE">
 					<Size>
 						<AbsDimension y="17" />
 					</Size>
@@ -206,7 +243,7 @@
 			<Color r="0.0" g="0.0" b="0.0" a="0.5" />
 			<BorderColor r="0.3" g="0.3" b="0.3" a="0.8" />
 		</Backdrop>
-		<ButtonText name="$parentText" parentKey="Text" font="GameFontNormalSmall" justifyH="LEFT" justifyV="CENTER">
+		<ButtonText name="$parentText" parentKey="Text" font="GameFontNormalSmall" justifyH="LEFT" justifyV="MIDDLE">
 			<Size>
 				<AbsDimension x="40" y="24"/>
 			</Size>
@@ -349,7 +386,7 @@
 				</Backdrop>
 				<Layers>
 					<Layer level="OVERLAY">
-						<FontString name="$parentTitle" inherits="GameFontNormalSmall" parentKey="Title" justifyH="LEFT" justifyV="CENTER">
+						<FontString name="$parentTitle" inherits="GameFontNormalSmall" parentKey="Title" justifyH="LEFT" justifyV="MIDDLE">
 							<Size>
 								<AbsDimension y="17" />
 							</Size>
@@ -761,9 +798,66 @@
 											</Anchors>
 											<Color r="0" g="0" b="0" a="0.75" />
 										</Texture>
+										<FontString parentKey="Src" inherits="GameFontHighlight" justifyH="CENTER" justifyV="MIDDLE">
+											<Size>
+												<AbsDimension x="128" />
+											</Size>
+											<Anchors>
+												<Anchor point="TOP" relativeTo="PowaEditorDisplayAuraSidebar" relativePoint="TOP" x="0" y="-110"/>
+											</Anchors>
+										</FontString>
 									</Layer>
 								</Layers>
 								<Frames>
+									<Button name="$parentIcon" parentKey="Icon">
+										<Size>
+											<AbsDimension x="96" y="96" />
+										</Size>
+										<Anchors>
+											<Anchor point="TOP">
+												<Offset>
+													<AbsDimension x="0" y="-10" />
+												</Offset>
+											</Anchor>
+										</Anchors>
+										<Layers>
+											<Layer level="OVERLAY">
+												<Texture file="Interface\AddOns\PowerAuras\Auras\Aura1" name="$parentTexture" parentKey="Texture">
+													<Size>
+														<AbsDimension x="96" y="96" />
+													</Size>
+													<Anchors>
+														<Anchor point="TOPLEFT" relativeTo="$parent">
+															<Offset>
+																<AbsDimension x="0" y="0" />
+															</Offset>
+														</Anchor>
+														<Anchor point="BOTTOMRIGHT" relativeTo="$parent">
+															<Offset>
+																<AbsDimension x="0" y="0" />
+															</Offset>
+														</Anchor>
+													</Anchors>
+												</Texture>
+												<FontString parentKey="Src" inherits="GameFontHighlight" justifyH="CENTER" justifyV="MIDDLE">
+													<Size>
+														<AbsDimension x="128" />
+													</Size>
+													<Anchors>
+														<Anchor point="TOP" x="0" y="-110"/>
+													</Anchors>
+												</FontString>
+											</Layer>
+										</Layers>
+										<Scripts>
+											<OnLoad>
+												self.Src:SetText(PowaAuras.Text["UI_Aura_TexClick"]);
+											</OnLoad>
+											<OnClick>
+												PowaEditorDisplayAuraMain:SelectTab(2);
+											</OnClick>
+										</Scripts>
+									</Button>
 									<CheckButton name="$parentGlow" parentKey="Glow" inherits="PowaCheckboxTemplate">
 										<Size>
 											<AbsDimension x="64" y="24" />
@@ -798,169 +892,153 @@
 									<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
 								</Anchors>
 								<Frames>
-									<Frame name="$parentConfig" parentKey="Config">
+									<ScrollFrame name="$parentConfig" inherits="UIPanelScrollFrameTemplate" parentKey="Config">
 										<Size>
 											<AbsDimension x="350" />
 										</Size>
 										<Anchors>
-											<Anchor point="TOPLEFT" relativeTo="$parent" />
-											<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
+											<Anchor point="TOPLEFT" relativeTo="$parent" x="0" y="-2" />
+											<Anchor point="BOTTOMRIGHT" relativeTo="$parent" x="-24" y="2" />
 										</Anchors>
-										<Layers>
-											<Layer level="ARTWORK">
-												<FontString parentKey="Src" inherits="GameFontHighlight" justifyH="CENTER" justifyV="CENTER">
-													<Size>
-														<AbsDimension x="128" />
-													</Size>
-													<Anchors>
-														<Anchor point="TOP" relativeTo="PowaEditorDisplayAuraSidebar" relativePoint="TOP" x="0" y="-110"/>
-													</Anchors>
-												</FontString>
-											</Layer>
-										</Layers>
-										<Frames>
-											<!-- Displays the icon on the sidebar. Parented to this frame for ease of use. -->
-											<Button name="$parentIcon" parentKey="Icon">
+										<ScrollChild>
+											<Frame parentKey="Child">
 												<Size>
-													<AbsDimension x="96" y="96" />
+													<!-- Layout frames now have an IsScrollChild property which will autoadjust the height. -->
+													<AbsDimension x="328" y="0" />
 												</Size>
 												<Anchors>
-													<Anchor point="TOP" relativeTo="PowaEditorDisplayAuraSidebar">
-														<Offset>
-															<AbsDimension x="0" y="-10" />
-														</Offset>
-													</Anchor>
+													<Anchor point="TOPLEFT" />
+													<Anchor point="BOTTOMRIGHT" />
 												</Anchors>
-												<Layers>
-													<Layer level="OVERLAY">
-														<Texture file="Interface\AddOns\PowerAuras\Auras\Aura1" name="$parentTexture" parentKey="Texture">
-															<Size>
-																<AbsDimension x="96" y="96" />
-															</Size>
-															<Anchors>
-																<Anchor point="TOPLEFT" relativeTo="$parent">
-																	<Offset>
-																		<AbsDimension x="0" y="0" />
-																	</Offset>
-																</Anchor>
-																<Anchor point="BOTTOMRIGHT" relativeTo="$parent">
-																	<Offset>
-																		<AbsDimension x="0" y="0" />
-																	</Offset>
-																</Anchor>
-															</Anchors>
-														</Texture>
-													</Layer>
-												</Layers>
-												<Scripts>
-													<OnClick>
-														PowaEditorDisplayAuraMain:SelectTab(2);
-													</OnClick>
-												</Scripts>
-											</Button>
-											<Frame name="$parentOpacity" parentKey="Opacity" inherits="PowaSliderTemplate">
+												<Frames>
+													<Frame parentKey="Separator1" inherits="PowaFrameSeparatorTemplate">
+														<Scripts>
+															<OnLoad>
+																PowaAuras.UI.FrameSeparator(self, "UI_Aura_Separator1");
+															</OnLoad>
+														</Scripts>
+													</Frame>
+													<Frame name="$parentOpacity" parentKey="Opacity" inherits="PowaSliderTemplate">
+														<Scripts>
+															<OnLoad>
+																PowaAuras.UI.Slider(self, 1, 100, 75, 1, "UI_Aura_TexOpacity", "%");
+															</OnLoad>
+														</Scripts>
+													</Frame>
+													<Frame name="$parentScale" parentKey="Scale" inherits="PowaSliderTemplate">
+														<Scripts>
+															<OnLoad>
+																PowaAuras.UI.Slider(self, 1, 500, 75, 1, "UI_Aura_TexScale", "%");
+															</OnLoad>
+														</Scripts>
+													</Frame>
+													<Frame parentKey="Separator2" inherits="PowaFrameSeparatorTemplate">
+														<Scripts>
+															<OnLoad>
+																PowaAuras.UI.FrameSeparator(self, "UI_Aura_Separator2");
+															</OnLoad>
+														</Scripts>
+													</Frame>
+													<Frame name="$parentX" parentKey="X" inherits="PowaLabelledEditBox">
+														<Scripts>
+															<OnLoad>
+																PowaAuras.UI.Tooltip(self, "UI_Aura_TexX", "UI_Aura_TexXDesc", { "EditBox" });
+																
+																self.Title:SetText(PowaAuras.Text.UI_Aura_TexX .. ":");
+																self.EditBox:SetText(0);
+															</OnLoad>
+														</Scripts>
+													</Frame>
+													<Frame name="$parentY" parentKey="Y" inherits="PowaLabelledEditBox">
+														<Scripts>
+															<OnLoad>
+																PowaAuras.UI.Tooltip(self, "UI_Aura_TexY", "UI_Aura_TexYDesc", { "EditBox" });
+																
+																self.Title:SetText(PowaAuras.Text.UI_Aura_TexY .. ":");
+																self.EditBox:SetText(0);
+															</OnLoad>
+														</Scripts>
+													</Frame>
+													<Frame name="$parentRotate" parentKey="Rotate" inherits="PowaSliderTemplate">
+														<Scripts>
+															<OnLoad>
+																PowaAuras.UI.Slider(self, 0, 360, 0, 1, "UI_Aura_TexRotate");
+															</OnLoad>
+														</Scripts>
+													</Frame>
+													<Frame name="$parentFlip" parentKey="Flip" inherits="PowaSliderTemplate">
+														<Scripts>
+															<OnLoad>
+																-- Add mutators to slider widgets BEFORE initializing them.
+																self.OnValueGet = function(_, value)
+																	if(value == 1) then return "";
+																	elseif(value == 2) then return "X";
+																	elseif(value == 3) then return "Y";
+																	elseif(value == 4) then return "XY";
+																	else return value; end
+																end
+																self.OnValueSet = function(_, value)
+																	if(tonumber(value, 10)) then return tonumber(value, 10); end
+																	
+																	if(value == "") then return 1;
+																	elseif(value == "X") then return 2;
+																	elseif(value == "Y") then return 3;
+																	elseif(value == "XY") then return 4;
+																	else return 1; end
+																end
+																PowaAuras.UI.Slider(self, 1, 4, 1, 1, "UI_Aura_TexFlip", "", "None", "XY");
+															</OnLoad>
+														</Scripts>
+													</Frame>
+													<Frame parentKey="Separator3" inherits="PowaFrameSeparatorTemplate">
+														<Scripts>
+															<OnLoad>
+																PowaAuras.UI.FrameSeparator(self, "UI_Aura_Separator3");
+															</OnLoad>
+														</Scripts>
+													</Frame>
+													<Frame name="$parentDeform" parentKey="Deform" inherits="PowaSliderTemplate">
+														<Scripts>
+															<OnLoad>
+																-- Add mutators to slider widgets BEFORE initializing them.
+																self.OnValueGet = function(_, value)
+																	return format("%.2f", value);
+																end
+																PowaAuras.UI.Slider(self, 0.1, 2.0, 1.0, 0.05, "UI_Aura_TexDeform");
+															</OnLoad>
+														</Scripts>
+													</Frame>
+													<Frame name="$parentStrata" parentKey="Strata" inherits="PowaSliderTemplate">
+														<Scripts>
+															<OnLoad>
+																PowaAuras.UI.Slider(self, -(2^16), 2^16, 0, 1, "UI_Aura_TexStrata");
+															</OnLoad>
+														</Scripts>
+													</Frame>
+												</Frames>
 												<Scripts>
 													<OnLoad>
-														PowaAuras.UI.Slider(self, 1, 100, 75, 1, "UI_Aura_TexOpacity", "%");
-													</OnLoad>
-												</Scripts>
-											</Frame>
-											<Frame name="$parentScale" parentKey="Scale" inherits="PowaSliderTemplate">
-												<Scripts>
-													<OnLoad>
-														PowaAuras.UI.Slider(self, 1, 500, 75, 1, "UI_Aura_TexScale", "%");
-													</OnLoad>
-												</Scripts>
-											</Frame>
-											<Frame name="$parentX" parentKey="X" inherits="PowaLabelledEditBox">
-												<Scripts>
-													<OnLoad>
-														PowaAuras.UI.Tooltip(self, "UI_Aura_TexX", "UI_Aura_TexXDesc", { "EditBox" });
+														-- Layout needed.
+														PowaAuras.UI.LayoutFrame(self, 2, { [1] = { X = 0.5 }, [2] = { X = 0.5 } }, true);
 														
-														self.Title:SetText(PowaAuras.Text.UI_Aura_TexX .. ":");
-														self.EditBox:SetText(0);
-													</OnLoad>
-												</Scripts>
-											</Frame>
-											<Frame name="$parentY" parentKey="Y" inherits="PowaLabelledEditBox">
-												<Scripts>
-													<OnLoad>
-														PowaAuras.UI.Tooltip(self, "UI_Aura_TexY", "UI_Aura_TexYDesc", { "EditBox" });
+														self:SetItem(self.Separator1, { Margin = { 0, 0, 0, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
+														self:SetItem(self.Opacity, { Margin = { 0, 0, 0, 0 }, Padding = { 2, 4, 0, 0 } });
+														self:SetItem(self.Scale, { Margin = { 0, 0, 0, 0 }, Padding = { 4, -2, 0, 0 } });
+														self:SetItem(self.Rotate, { Margin = { 0, 0, 4, 0 }, Padding = { 2, 4, 0, 0 } });
+														self:SetItem(self.Flip, { Margin = { 0, 0, 4, 0 }, Padding = { 4, -2, 0, 0 } });
 														
-														self.Title:SetText(PowaAuras.Text.UI_Aura_TexY .. ":");
-														self.EditBox:SetText(0);
+														self:SetItem(self.Separator2, { Margin = { 0, 0, 12, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
+														self:SetItem(self.X, { Margin = { 0, 0, 10, 0 }, Padding = { 2, 4, 0, 0 } });
+														self:SetItem(self.Y, { Margin = { 0, 0, 10, 0 }, Padding = { 4, -2, 0, 0 } });
+														
+														self:SetItem(self.Separator3, { Margin = { 0, 0, 12, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
+														self:SetItem(self.Deform, { Margin = { 0, 0, 4, 0 }, Padding = { 2, 4, 0, 0 } });
+														self:SetItem(self.Strata, { Margin = { 0, 0, 4, 0 }, Padding = { 4, -2, 0, 0 } });
 													</OnLoad>
 												</Scripts>
 											</Frame>
-											<Frame name="$parentRotate" parentKey="Rotate" inherits="PowaSliderTemplate">
-												<Scripts>
-													<OnLoad>
-														PowaAuras.UI.Slider(self, 0, 360, 0, 1, "UI_Aura_TexRotate");
-													</OnLoad>
-												</Scripts>
-											</Frame>
-											<Frame name="$parentFlip" parentKey="Flip" inherits="PowaSliderTemplate">
-												<Scripts>
-													<OnLoad>
-														-- Add mutators to slider widgets BEFORE initializing them.
-														self.OnValueGet = function(_, value)
-															if(value == 1) then return "";
-															elseif(value == 2) then return "X";
-															elseif(value == 3) then return "Y";
-															elseif(value == 4) then return "XY";
-															else return value; end
-														end
-														self.OnValueSet = function(_, value)
-															if(tonumber(value, 10)) then return tonumber(value, 10); end
-															
-															if(value == "") then return 1;
-															elseif(value == "X") then return 2;
-															elseif(value == "Y") then return 3;
-															elseif(value == "XY") then return 4;
-															else return 1; end
-														end
-														PowaAuras.UI.Slider(self, 1, 4, 1, 1, "UI_Aura_TexFlip", "", "None", "XY");
-													</OnLoad>
-												</Scripts>
-											</Frame>
-											<Frame name="$parentDeform" parentKey="Deform" inherits="PowaSliderTemplate">
-												<Scripts>
-													<OnLoad>
-														-- Add mutators to slider widgets BEFORE initializing them.
-														self.OnValueGet = function(_, value)
-															return format("%.2f", value);
-														end
-														PowaAuras.UI.Slider(self, 0.1, 2.0, 1.0, 0.05, "UI_Aura_TexDeform");
-													</OnLoad>
-												</Scripts>
-											</Frame>
-											<Frame name="$parentStrata" parentKey="Strata" inherits="PowaSliderTemplate">
-												<Scripts>
-													<OnLoad>
-														PowaAuras.UI.Slider(self, -(2^16), 2^16, 0, 1, "UI_Aura_TexStrata");
-													</OnLoad>
-												</Scripts>
-											</Frame>
-										</Frames>
-										<Scripts>
-											<OnLoad>
-												-- Layout needed.
-												PowaAuras.UI.LayoutFrame(self);
-												self:SetColumns(2, { [1] = { X = 0.5 }, [2] = { X = 0.5 } });
-												
-												self:SetItem(self.Opacity, { Margin = { 0, 0, 4, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
-												self:SetItem(self.Scale, { Margin = { 0, 0, 4, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
-												self:SetItem(self.Rotate, { Margin = { 0, 0, 4, 0 }, Padding = { 2, 4, 0, 0 } });
-												self:SetItem(self.Flip, { Margin = { 0, 0, 4, 0 }, Padding = { 4, -2, 0, 0 } });
-												self:SetItem(self.X, { Margin = { 0, 0, 10, 0 }, Padding = { 2, 4, 0, 0 } });
-												self:SetItem(self.Deform, { Margin = { 0, 0, 4, 0 }, Padding = { 4, -2, 0, 0 } });
-												self:SetItem(self.Y, { Margin = { 0, 0, -20, 0 }, Padding = { 2, 4, 0, 0 } });
-												self:SetItem(self.Strata, { Margin = { 0, 0, 4, 0 }, Padding = { 4, -2, 0, 0 } });
-												
-												self.Src:SetText(PowaAuras.Text["UI_Aura_TexClick"]);
-											</OnLoad>
-										</Scripts>
-									</Frame>
+										</ScrollChild>
+									</ScrollFrame>
 									<Frame name="$parentSelector" parentKey="Selector" inherits="PowaTabDialogTemplate">
 										<Anchors>
 											<Anchor point="TOPLEFT" relativeTo="$parent" />
@@ -983,7 +1061,7 @@
 																<Anchor point="CENTER" relativePoint="CENTER" x="0" y="0" />
 															</Anchors>
 														</Texture>
-														<FontString parentKey="Error" hidden="true" nonSpaceWrap="true" inherits="GameFontHighlight" justifyH="CENTER" justifyV="CENTER">
+														<FontString parentKey="Error" hidden="true" nonSpaceWrap="true" inherits="GameFontHighlight" justifyH="CENTER" justifyV="MIDDLE">
 															<Size>
 																<AbsDimension x="256" />
 															</Size>
@@ -1003,7 +1081,7 @@
 															-- GetTexture will return nil though.
 															if(not self.Texture:GetTexture()) then
 																-- No texture = no texture.
-																self.Error:SetText(format(PowaAuras.Text["UI_Aura_TexErr"], "PowerAuras\\Auras\\Aura" .. self.Page .. ".tga"));
+																self.Error:SetText(format(PowaAuras.Text["UI_Aura_TexErr"], "Interface\\AddOns\\PowerAuras\\Auras\\Aura" .. self.Page .. ".tga"));
 																self.Error:Show();																
 															else
 																self.Error:Hide();
@@ -1066,7 +1144,7 @@
 																<Anchor point="CENTER" relativePoint="CENTER" x="0" y="0" />
 															</Anchors>
 														</Texture>
-														<FontString parentKey="Error" hidden="true" nonSpaceWrap="true" inherits="GameFontHighlight" justifyH="CENTER" justifyV="CENTER">
+														<FontString parentKey="Error" hidden="true" nonSpaceWrap="true" inherits="GameFontHighlight" justifyH="CENTER" justifyV="MIDDLE">
 															<Size>
 																<AbsDimension x="256" />
 															</Size>

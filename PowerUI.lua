@@ -63,13 +63,24 @@ PowaAuras.UI = {
 			self:SetPage(self.Page);
 		end
 	},
+	-- Frame separator definition.
+	FrameSeparator = {
+		Init = function(frame, text)
+			-- Go go go.
+			frame:SetText(text or "");
+		end,
+		SetText = function(self, text)
+			self.Text:SetText(PowaAuras.Text[text]);
+		end
+	},
 	-- Layout frame definition.
 	LayoutFrame = {
-		Init = function(frame)
-			frame.Columns = 1;
-			frame.ColumnSizes = {};
+		Init = function(frame, columns, columnSizes, isScrollChild, debug)
+			frame.Columns = columns or 1;
+			frame.ColumnSizes = columnSizes or {};
 			frame.Items = {};
-			frame.Debug = false;
+			frame.Debug = debug or false;
+			frame.IsScrollChild = isScrollChild or false;
 		end,
 		SetColumns = function(self, columns, sizes)
 			self.Columns = columns;
@@ -159,6 +170,10 @@ PowaAuras.UI = {
 				-- Column offset update.
 				cO = item.LayoutOpts["Columns"];
 			end
+			-- Is the current parent frame a scrollchild?
+			if(self.IsScrollChild) then
+				self:SetHeight(oY+mY); -- +5 for some padding.
+			end
 		end,
 		DebugItem = function(self, item, fcW, fcH, cW, cH, pL, pR, pT, pB, mL, mR, mT, mB, oX, oY)
 			local name = item:GetName();
@@ -236,7 +251,6 @@ PowaAuras.UI = {
 	-- Slider definition.
 	Slider = {	
 		Init = function(frame, min, max, default, step, title, unit, minLabel, maxLabel, tooltipDesc)
-			print(frame, min, max, default, step, title, unit, minLabel, maxLabel, tooltipDesc);
 			-- Call them.
 			frame:SetUnit(unit or "");
 			frame:SetMinMaxValues(min or 1, max or 100, minLabel, maxLabel);
@@ -453,10 +467,12 @@ PowaAuras.UI = {
 				__call = function(self, widget, ...)
 					-- Constructor. Copy anything we have over automatically...
 					for k,v in pairs(self) do
-						widget[k] = v;
+						if(k ~= "Init") then
+							widget[k] = v;
+						end
 					end
 					-- Run passed ctor.
-					return widget:Init(...);
+					return self.Init(widget, ...);
 				end
 			}
 		);
@@ -466,6 +482,7 @@ PowaAuras.UI = {
 
 -- Set up constructors.
 PowaAuras.UI:DefineWidget("BrowserFrame");
+PowaAuras.UI:DefineWidget("FrameSeparator");
 PowaAuras.UI:DefineWidget("LayoutFrame");
 PowaAuras.UI:DefineWidget("Slider");
 PowaAuras.UI:DefineWidget("TabFrame");
