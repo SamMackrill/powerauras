@@ -945,7 +945,7 @@
 										<Scripts>
 											<OnLoad>
 												-- Layout needed.
-												PowaLayoutFrame_Init(self);
+												PowaAuras.UI.LayoutFrame(self);
 												self:SetColumns(2, { [1] = { X = 0.5 }, [2] = { X = 0.5 } });
 												
 												self:SetItem(self.Opacity, { Margin = { 0, 0, 4, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
@@ -995,7 +995,7 @@
 												</Layers>
 												<Scripts>
 													<OnLoad>
-														PowaBrowserFrame_Init(self, 1, 9999, function()
+														PowaAuras.UI.BrowserFrame(self, 1, 9999, function()
 															-- Automatic sizing trick. Set it to auto initially, then read the size and cap if needed!
 															self.Texture:SetSize(0, 0);
 															self.Texture:SetTexture("Interface\\AddOns\\PowerAuras\\Auras\\Aura" .. self.Page .. ".tga")
@@ -1037,7 +1037,7 @@
 												</Layers>
 												<Scripts>
 													<OnLoad>
-														PowaBrowserFrame_Init(self, 1, #(PowaAuras.WowTextures), function(self, page)
+														PowaAuras.UI.BrowserFrame(self, 1, #(PowaAuras.WowTextures), function(self, page)
 															-- Automatic sizing trick. Set it to auto initially, then read the size and cap if needed!
 															self.Texture:SetSize(0, 0);
 															self.Texture:SetTexture(PowaAuras.WowTextures[page]);
@@ -1112,7 +1112,7 @@
 												<Scripts>
 													<OnLoad>
 														-- Initialize the frame.
-														PowaBrowserFrame_Init(self, 1, #(PowaGlobalMisc["CustomTextures"])+1, function(self, page)
+														PowaAuras.UI.BrowserFrame(self, 1, #(PowaGlobalMisc["CustomTextures"])+1, function(self, page)
 															-- Texture on this page?
 															if(PowaGlobalMisc["CustomTextures"][page]) then
 																local texpath, texture = PowaGlobalMisc["PathToAuras"], PowaGlobalMisc["CustomTextures"][page];
@@ -1167,7 +1167,7 @@
 										<Scripts>
 											<OnLoad>
 												-- Uses the tab sidebar template.
-												PowaTabFrame_Init(self, 2);
+												PowaAuras.UI.TabFrame(self, 2);
 												self:RegisterTab(self.Default, "UI_Aura_SrcNorm");
 												self:RegisterTab(self.WoW, "UI_Aura_SrcWoW");
 												self:RegisterTab(self.Custom, "UI_Aura_SrcCust");
@@ -1187,7 +1187,7 @@
 								<Scripts>
 									<OnLoad>
 										-- This is actually a tab enabled frame, but we hide all the tabs.
-										PowaTabFrame_Init(self, 3);
+										PowaAuras.UI.TabFrame(self, 3);
 										self:RegisterTab(self.Config);
 										self:RegisterTab(self.Selector);
 									</OnLoad>
@@ -1196,7 +1196,7 @@
 						</Frames>
 						<Scripts>
 							<OnLoad>
-								PowaLayoutFrame_Init(self);
+								PowaAuras.UI.LayoutFrame(self);
 								self:SetColumns(2, { [1] = { X = 0.3, Y = 1 }, [2] = { X = 0.7, Y = 1 } });
 								self:SetItem(self.Sidebar);
 								self:SetItem(self.Main, { Padding = { 4, 4, 4, 4 } });
@@ -1208,7 +1208,7 @@
 				</Frames>
 				<Scripts>
 					<OnLoad>
-						PowaTabFrame_Init(self, 1);
+						PowaAuras.UI.TabFrame(self, 1);
 						self:RegisterTab(self.Aura, "UI_Aura");
 						self:RegisterTab(self.Timer, "UI_Timer");
 						self:RegisterTab(self.Stacks, "UI_Stacks");
@@ -1244,7 +1244,7 @@
 				</Frames>
 				<Scripts>
 					<OnLoad>
-						PowaTabFrame_Init(self, 1);
+						PowaAuras.UI.TabFrame(self, 1);
 						self:RegisterTab(self.Rules, "UI_Rules");
 						self:RegisterTab(self.Anim, "UI_Anim");
 						self:RegisterTab(self.Sound, "UI_Sound");
