@@ -63,6 +63,24 @@ PowaAuras.UI = {
 			self:SetPage(self.Page);
 		end
 	},
+	Checkbox = {
+		Init = function(checkbox, property)
+			-- Update text to the localized variant.
+			checkbox:SetText(PowaAuras.Text[checkbox:GetText()]);
+			-- Do we have a property?
+			if(property) then
+				-- Store property.
+				checkbox.Property = property;
+				-- Add OnClick handler for value setting.
+				checkbox:SetScript("OnClick", function(self)
+					PowaAuras:SaveSetting(property, (self:GetChecked() and true or false));
+				end);
+			else
+				-- Use supplied onclick handler.
+				checkbox:SetScript("OnClick", checkbox.OnClick);
+			end
+		end,
+	},
 	-- Frame separator definition.
 	FrameSeparator = {
 		Init = function(frame, text)
@@ -482,6 +500,7 @@ PowaAuras.UI = {
 
 -- Set up constructors.
 PowaAuras.UI:DefineWidget("BrowserFrame");
+PowaAuras.UI:DefineWidget("Checkbox");
 PowaAuras.UI:DefineWidget("FrameSeparator");
 PowaAuras.UI:DefineWidget("LayoutFrame");
 PowaAuras.UI:DefineWidget("Slider");
@@ -489,6 +508,29 @@ PowaAuras.UI:DefineWidget("TabFrame");
 PowaAuras.UI:DefineWidget("TabButton");
 PowaAuras.UI:DefineWidget("TabSidebarButton");
 PowaAuras.UI:DefineWidget("Tooltip");
+
+-- General functions.
+function PowaAuras:SaveSetting(property, value, auraId)
+	local self = PowaAuras;
+	auraId = auraId or self.CurrentAuraId;
+	if(not auraId or not self.Auras[auraId]) then print("No aura ID"); return; end
+	-- We don't save settings yet, this is just for debugging purposes.
+	-- self.Auras[auraId][property] = value;
+	-- self:RedisplayAura(auraId);
+	print("Saved: ", property, value, auraId);
+end
+
+function PowaAuras:RegisterAdvancedElement(element)
+
+end
+
+function PowaAuras:ToggleAdvancedElements(state)
+
+end
+
+function PowaAuras:ShowAuraEditor()
+
+end
 
 -- Most of this was just a test. Ignore 90% of it.
 
