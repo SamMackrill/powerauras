@@ -236,6 +236,7 @@ PowaAuras.UI = {
 	-- Slider definition.
 	Slider = {	
 		Init = function(frame, min, max, default, step, title, unit, minLabel, maxLabel, tooltipDesc)
+			print(frame, min, max, default, step, title, unit, minLabel, maxLabel, tooltipDesc);
 			-- Call them.
 			frame:SetUnit(unit or "");
 			frame:SetMinMaxValues(min or 1, max or 100, minLabel, maxLabel);
@@ -243,7 +244,7 @@ PowaAuras.UI = {
 			frame:SetValueStep(step or 1);
 			frame:SetTitle(title or "");
 			-- Add tooltips to the slider, background frame and editbox.
-			PowaAuras.UI.Tooltip(frame, title, title .. "Desc" or tooltipDesc, { "Slider", "Value" });
+			PowaAuras.UI.Tooltip(frame, title, tooltipDesc or title .. "Desc" , { "Slider", "Value" });
 		end,
 		GetMinValue = function(self)
 			return select(1, self.Slider:GetMinMaxValues());
@@ -296,11 +297,11 @@ PowaAuras.UI = {
 				-- Make a new tab button.
 				local tabButton;
 				if(self.TabType == 1) then
-					tabButton = CreateFrame("Button", frame:GetName() .. "TabButton" .. #(self.Tabs), self, "PowaTabButtonTemplate");
+					tabButton = CreateFrame("Button", nil, self, "PowaTabButtonTemplate");
 					tab.TabButton = tabButton;
 					PowaAuras.UI.TabButton(tab.TabButton, #(self.Tabs), text, self);
 				elseif(self.TabType == 2) then
-					tabButton = CreateFrame("Button", frame:GetName() .. "TabButton" .. #(self.Tabs), self, "PowaTabSidebarButtonTemplate");
+					tabButton = CreateFrame("Button", nil, self, "PowaTabSidebarButtonTemplate");
 					tab.TabButton = tabButton;
 					PowaAuras.UI.TabSidebarButton(tab.TabButton, #(self.Tabs), text, self);
 				elseif(self.TabType == 3) then
@@ -366,7 +367,6 @@ PowaAuras.UI = {
 		Init = function(tab, id, text, parent)
 			-- Stores status for tab.
 			tab.Selected = false;
-			tab.Text = _G[tab:GetName() .. "Text"];
 			tab.Id = id;
 			tab:SetText(text);
 			tab:SetParent(parent);
@@ -398,7 +398,6 @@ PowaAuras.UI = {
 		Init = function(tab, id, text, parent)
 			-- Stores status for tab.
 			tab.Selected = false;
-			tab.Text = _G[tab:GetName() .. "Text"];
 			tab.Id = id;
 			tab:SetText(text);
 			tab:SetParent(parent);
@@ -449,7 +448,7 @@ PowaAuras.UI = {
 	
 	-- Turns the definition tables into metatables with constructor-like functionality.
 	DefineWidget = function(self, widget)
-		if(not self[widget]) then print("No widget definition exists for: " .. widget); end
+		if(not self[widget]) then PowaAuras:ShowText("No widget definition exists for: ", widget); end
 		self[widget] = setmetatable(self[widget], { 
 				__call = function(self, widget, ...)
 					-- Constructor. Copy anything we have over automatically...
@@ -457,7 +456,7 @@ PowaAuras.UI = {
 						widget[k] = v;
 					end
 					-- Run passed ctor.
-					return self:Init(widget, ...);
+					return widget:Init(...);
 				end
 			}
 		);
@@ -466,13 +465,13 @@ PowaAuras.UI = {
 }
 
 -- Set up constructors.
-PowaAuras.UI.DefineWidget("BrowserFrame");
-PowaAuras.UI.DefineWidget("LayoutFrame");
-PowaAuras.UI.DefineWidget("Slider");
-PowaAuras.UI.DefineWidget("TabFrame");
-PowaAuras.UI.DefineWidget("TabButton");
-PowaAuras.UI.DefineWidget("TabSidebarButton");
-PowaAuras.UI.DefineWidget("Tooltip");
+PowaAuras.UI:DefineWidget("BrowserFrame");
+PowaAuras.UI:DefineWidget("LayoutFrame");
+PowaAuras.UI:DefineWidget("Slider");
+PowaAuras.UI:DefineWidget("TabFrame");
+PowaAuras.UI:DefineWidget("TabButton");
+PowaAuras.UI:DefineWidget("TabSidebarButton");
+PowaAuras.UI:DefineWidget("Tooltip");
 
 -- Most of this was just a test. Ignore 90% of it.
 

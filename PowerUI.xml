@@ -544,7 +544,7 @@
 				<TexCoords left="0" right="1" top="0.2" bottom="0.6" />
 			</Anchors>
 		</HighlightTexture>
-		<ButtonText name="$parentText">
+		<ButtonText parentKey="Text">
 			<Size>
 				<AbsDimension x="0" y="10"/>
 			</Size>
@@ -590,7 +590,7 @@
 		<NormalFont style="GameFontNormalSmall" />
 		<HighlightFont style="GameFontHighlightSmall" />
 		<DisabledFont style="GameFontHighlightSmall" />
-		<ButtonText name="$parentText">
+		<ButtonText parentKey="Text">
 			<Size>
 				<AbsDimension x="0" y="10"/>
 			</Size>
