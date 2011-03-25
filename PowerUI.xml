@@ -1093,10 +1093,18 @@
 															else
 																self.Error:Hide();
 																-- Automatic sizing does not work for BLP files, so just use a static 128 if no size is reported.
-																self.Texture:SetSize(
-																	((self.Texture:GetWidth() > 128 or self.Texture:GetWidth() == 0) and 128 or self.Texture:GetWidth()),
-																	((self.Texture:GetHeight() > 128 or self.Texture:GetHeight() == 0) and 128 or self.Texture:GetHeight())
-																);
+																local x, y = self.Texture:GetSize();
+																if(x == 0 or y == 0) then
+																	self.Texture:SetSize(128, 128);
+																else
+																	local newX, newY = (256 >= x and x or 256), 0;
+																	newY = (y*(newX/x));
+																	if(newY > 128) then
+																		self.Texture:SetSize((x*(128/y)), 128);
+																	else
+																		self.Texture:SetSize(newX, newY);																		
+																	end
+																end
 															end
 														end);
 													</OnLoad>
@@ -1127,10 +1135,18 @@
 															self.Texture:SetSize(0, 0);
 															self.Texture:SetTexture(PowaAuras.WowTextures[page]);
 															-- Automatic sizing does not work for BLP files, so just use a static 128 if no size is reported.
-															self.Texture:SetSize(
-																((self.Texture:GetWidth() > 128 or self.Texture:GetWidth() == 0) and 128 or self.Texture:GetWidth()),
-																((self.Texture:GetHeight() > 128 or self.Texture:GetHeight() == 0) and 128 or self.Texture:GetHeight())
-															);
+															local x, y = self.Texture:GetSize();
+															if(x == 0 or y == 0) then
+																self.Texture:SetSize(128, 128);
+															else
+																local newX, newY = (256 >= x and x or 256), 0;
+																newY = (y*(newX/x));
+																if(newY > 128) then
+																	self.Texture:SetSize((x*(128/y)), 128);
+																else
+																	self.Texture:SetSize(newX, newY);																		
+																end
+															end
 														end);
 													</OnLoad>
 												</Scripts>
@@ -1215,10 +1231,18 @@
 																else
 																	self.Error:Hide();
 																	-- Automatic sizing does not work for BLP files, so just use a static 128 if no size is reported.
-																	self.Texture:SetSize(
-																		((self.Texture:GetWidth() > 128 or self.Texture:GetWidth() == 0) and 128 or self.Texture:GetWidth()),
-																		((self.Texture:GetHeight() > 128 or self.Texture:GetHeight() == 0) and 128 or self.Texture:GetHeight())
-																	);
+																	local x, y = self.Texture:GetSize();
+																	if(x == 0 or y == 0) then
+																		self.Texture:SetSize(128, 128);
+																	else
+																		local newX, newY = (256 >= x and x or 256), 0;
+																		newY = (y*(newX/x));
+																		if(newY > 128) then
+																			self.Texture:SetSize((x*(128/y)), 128);
+																		else
+																			self.Texture:SetSize(newX, newY);																		
+																		end
+																	end
 																	self.Texture:Show();
 																end
 															else
