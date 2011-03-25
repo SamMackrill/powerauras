@@ -1274,6 +1274,14 @@
 											</Frame>
 										</Frames>
 										<Scripts>
+											<OnShow>
+												PowaEditorDisplay.Aura.Sidebar.Src:Hide();
+												PowaEditorDisplay.Aura.Sidebar.Icon:Hide();
+											</OnShow>
+											<OnHide>
+												PowaEditorDisplay.Aura.Sidebar.Src:Show();
+												PowaEditorDisplay.Aura.Sidebar.Icon:Show();
+											</OnHide>
 											<OnLoad>
 												-- Uses the tab sidebar template.
 												PowaAuras.UI.TabFrame(self, 2);
