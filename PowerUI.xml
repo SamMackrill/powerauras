@@ -40,6 +40,7 @@
 			<AbsDimension x="42" y="27" />
 		</Size>
 		<Layers>
+			<!--
 			<Layer level="BACKGROUND">
 				<Texture file="Interface\Archeology\ArchaeologyParts" parentKey="LeftTex">
 					<Size>
@@ -60,6 +61,7 @@
 					<TexCoords left="0.00195313" right="0.10742188" top="0.56250000" bottom="0.69531250" />
 				</Texture>
 			</Layer>
+			-->
 			<Layer level="OVERLAY">
 				<FontString parentKey="Text" inherits="GameFontNormal" justifyH="CENTER" justifyV="MIDDLE">
 					<Anchors>
@@ -111,7 +113,7 @@
 			</Anchors>
 		</ButtonText>
 		<Scripts>
-			<OnClick>
+			<PostClick>
 				if(self:GetChecked()) then
 					if(self:IsMouseOver()) then
 						self:SetBackdropBorderColor(1, 0.82, 0, 1);
@@ -125,7 +127,7 @@
 						self:SetBackdropBorderColor(0.3, 0.3, 0.3, 0.8);
 					end
 				end
-			</OnClick>
+			</PostClick>
 			<OnEnter>
 				if(self:GetChecked()) then
 					self:SetBackdropBorderColor(1, 0.82, 0, 1);
@@ -171,7 +173,7 @@
 		</Scripts>
 	</EditBox>
 	
-	<Frame name="PowaLabelledEditBox" virtual="true">
+	<Frame name="PowaLabelledEditBoxTemplate" virtual="true">
 		<Size>
 			<AbsDimension x="70" y="17" />
 		</Size>
@@ -939,7 +941,7 @@
 															</OnLoad>
 														</Scripts>
 													</Frame>
-													<Frame name="$parentX" parentKey="X" inherits="PowaLabelledEditBox">
+													<Frame name="$parentX" parentKey="X" inherits="PowaLabelledEditBoxTemplate">
 														<Scripts>
 															<OnLoad>
 																PowaAuras.UI.Tooltip(self, "UI_Aura_TexX", "UI_Aura_TexXDesc", { "EditBox" });
@@ -949,7 +951,7 @@
 															</OnLoad>
 														</Scripts>
 													</Frame>
-													<Frame name="$parentY" parentKey="Y" inherits="PowaLabelledEditBox">
+													<Frame name="$parentY" parentKey="Y" inherits="PowaLabelledEditBoxTemplate">
 														<Scripts>
 															<OnLoad>
 																PowaAuras.UI.Tooltip(self, "UI_Aura_TexY", "UI_Aura_TexYDesc", { "EditBox" });
@@ -1155,7 +1157,7 @@
 													</Layer>
 												</Layers>
 												<Frames>
-													<Frame name="$parentTexName" parentKey="TexName" inherits="PowaLabelledEditBox">
+													<Frame name="$parentTexName" parentKey="TexName" inherits="PowaLabelledEditBoxTemplate">
 														<Anchors>
 															<Anchor point="BOTTOMLEFT" relativeTo="$parent" x="9" y="9" />
 															<Anchor point="BOTTOMRIGHT" relativeTo="$parent" x="-9" y="9" />
@@ -1330,7 +1332,7 @@
 					</OnLoad>
 				</Scripts>
 			</Frame>
-			<CheckButton name="$parentAdvanced" parentKey="Advanced" inherits="PowaCheckboxTemplate">
+			<CheckButton name="$parentAdvanced" parentKey="Advanced" text="UI_Advanced" inherits="PowaCheckboxTemplate">
 				<Size>
 					<AbsDimension x="92" y="24" />
 				</Size>
@@ -1339,11 +1341,16 @@
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-						self.Text:SetText("Advanced");
+						-- Use our own onclick handler for advanced element showing/hiding.
+						self.OnClick = function(self)
+							-- Amichecked? Am I?
+							PowaAuras:ToggleAdvancedElements(self:GetChecked() and true or false);
+						end
+						PowaAuras.UI.Checkbox(self);
 					</OnLoad>
 				</Scripts>
 			</CheckButton>
-			<CheckButton name="$parentDebug" parentKey="Debug" inherits="PowaCheckboxTemplate">
+			<CheckButton name="$parentDebug" parentKey="Debug" text="UI_Debug" inherits="PowaCheckboxTemplate">
 				<Size>
 					<AbsDimension x="74" y="24" />
 				</Size>
@@ -1352,7 +1359,7 @@
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-						self.Text:SetText("Debug");
+						PowaAuras.UI.Checkbox(self, "Debug");
 					</OnLoad>
 				</Scripts>
 			</CheckButton>

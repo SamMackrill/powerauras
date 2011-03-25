@@ -772,6 +772,11 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	UI_Close               = "Close", -- Unused currently.
 	UI_Save                = "Save",
 	
+	UI_Debug               = "Debug",
+	UI_DebugDesc           = "Enables debugging output for this aura. Don't enable it if you don't need to :)",
+	UI_Advanced            = "Advanced",
+	UI_AdvancedDesc        = "Toggles the displaying of advanced configuration items.",
+	
 	UI_Aura                = "Aura",
 	UI_Aura_SrcNorm        = "Normal Textures",
 	UI_Aura_SrcWoW         = "WoW Textures",
@@ -806,6 +811,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	UI_Aura_TexColorDesc   = "Allows you to apply color tinting to the aura texture. Right click to reset the color tint.",
 	UI_Aura_TexRotate      = "Rotation [NYI]",
 	UI_Aura_TexRotateDesc  = "Allows you to rotate the texture from its center by a given amount of degrees.",
+	UI_Aura_TexLock        = "Lock",
+	UI_Aura_TexLockDesc    = "Locks the aura in place, preventing you from moving the aura by dragging it.",
 	
 	UI_Timer               = "Timer",
 	UI_Timer_SrcText       = "Text Display",
