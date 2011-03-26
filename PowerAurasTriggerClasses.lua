@@ -101,8 +101,7 @@ Timer trigger type class.
 --]]
 cPowaAuraTimerTrigger = PowaClass(cPowaTrigger, { Type = "Timer", Once=true });
 
-cPowaAuraActiveDurationTrigger = PowaClass(cPowaTrigger, { Type = "ActiveDuration", Once=true });
-cPowaAuraShownDurationTrigger = PowaClass(cPowaTrigger, { Type = "ShownDuration", Once=true });
+cPowaAuraDurationTrigger = PowaClass(cPowaTrigger, { Type = "Duration", Once=true });
 
 cPowaAuraTimerRefreshTrigger = PowaClass(cPowaTrigger, { Type = "TimerRefresh" });
 
