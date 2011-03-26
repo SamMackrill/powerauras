@@ -1027,7 +1027,7 @@ end
 
 function PowaAuras:SetForDragging(aura, frame)
 	if (frame==nil or aura==nil or frame.SetForDragging) then return; end
-	--self:ShowText("Set Dragging ", aura.id);
+	self:ShowText("Set Dragging ", aura.id, " frame=", frame);
 	frame:SetMovable(true);
 	frame:EnableMouse(true);
 	frame:SetClampedToScreen(false);
@@ -1042,7 +1042,7 @@ end
 
 function PowaAuras:ResetDragging(aura, frame)
 	if (frame==nil or aura==nil or not frame.SetForDragging) then return; end
-	--self:ShowText("Reset Dragging ", aura.id);
+	self:ShowText("Reset Dragging ", aura.id);
 	frame:SetMovable(false);
 	frame:EnableMouse(false);
 	frame:EnableKeyboard(false);

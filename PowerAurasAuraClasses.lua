@@ -294,7 +294,7 @@ function cPowaAura:CreateDefaultTriggers()
 	if (self.finish>0) then
 		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_End", Frame=frame, HideFrame=frame2, Animation=self.finish + 100, Speed=self.speed, Alpha=self.alpha, Hide=true, State=0, StateName="AnimationState"});
 	else
-		trigger:AddAction(cPowaAuraHideAction, {Name="PA_Hide"});
+		trigger:AddAction(cPowaAuraHideAction, {Name="PA_Hide", All=true});
 		trigger:AddAction(cPowaAuraStateAction, {Name="PA_State", StateName="AnimationState", StateValue=0});
 	end
 	if (self.customsoundend~="") then
@@ -334,16 +334,16 @@ function cPowaAura:CreateDefaultTriggers()
 		
 		
 		if (self.timerduration>0) then	
-			trigger=self:CreateTrigger(cPowaAuraDurationTrigger,  {Name="PA_InvertOnTimer", Duration=true, Value=self.duration, Compare=">", Debug=true});
-			trigger:AddAction(cPowaAuraHideAction, {Name="PA_Hide"});
+			trigger=self:CreateTrigger(cPowaAuraShownDurationTrigger,  {Name="PA_HideAfterDuration", Value=self.timerduration, Compare=">"});
+			trigger:AddAction(cPowaAuraHideAction, {Name="PA_Hide", All=true});
 		end
 		
 		if (self.InvertAuraBelow>0) then		
-			trigger=self:CreateTrigger(cPowaAuraTimerTrigger,  {Name="PA_InvertOnTimer", Value=self.InvertAuraBelow, Compare=">"});
-			trigger:AddAction(cPowaAuraHideAction, {Name="PA_Hide"});
+			trigger=self:CreateTrigger(cPowaAuraTimerTrigger,  {Name="PA_InvertOnTimer", Value=self.InvertAuraBelow, Compare=">", Debug=true});
+			trigger:AddAction(cPowaAuraHideAction, {Name="PA_Hide", All=true});
 			--if (self.InvertTimeHides) then
 			--	trigger=self:CreateTrigger(cPowaAuraTimerTrigger,  {Name="PA_InvertOnTimer", Value=self.InvertAuraBelow, Compare="<", Debug=true});
-			--	trigger:AddAction(cPowaAuraHideAction, {Name="PA_Hide"});
+			--	trigger:AddAction(cPowaAuraHideAction, {Name="PA_Hide", All=true});
 			--else
 			--	trigger=self:CreateTrigger(cPowaAuraTimerTrigger, {Name="PA_InvertOnTimer", Value=self.InvertTimeHides, Compare=">"});
 			--	trigger:AddAction(cPowaAuraShowAction, {Name="PA_Show"});
@@ -390,7 +390,7 @@ function cPowaAura:DeleteTrigger(trigger)
 end
 
 function cPowaAura:ProcessTriggerQueue()
-	if (not self.TriggerActionQueue or #self.TriggerActionQueue==0) then return; end
+	if (not self.TriggerActionQueue or #self.TriggerActionQueue==0 or PowaAuras.ModTest) then return; end
 	if (PowaAuras.DebugTriggers) then
 		PowaAuras:DisplayText("ProcessTriggerQueue ", #self.TriggerActionQueue);
 	end

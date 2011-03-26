@@ -51,9 +51,9 @@ end
 function cPowaTrigger:Check(value, qualifier)
 	if (not self:CheckQulifier(qualifier)) then return false; end
 	local result = self:Compare(self.CompareOperator, value, self.Value);
-	if (PowaAuras.DebugTriggers or self.Debug) then
-		PowaAuras:DisplayText("Check result=", result);
-	end
+	--if (PowaAuras.DebugTriggers or self.Debug) then
+	--	PowaAuras:DisplayText("Check result=", result);
+	--end
 	if (not result) then
 		if (self.Once and self.Set) then self:ResetActions(); end
 		self.Set = false;
@@ -78,9 +78,9 @@ function cPowaTrigger:CheckQulifier(qualifier)
 end
 
 function cPowaTrigger:Compare(op, v1, v2)
-	if (PowaAuras.DebugTriggers or self.Debug) then
-		PowaAuras:DisplayText("Compare: ", v1, " ", op, " ", v2);
-	end
+	--if (PowaAuras.DebugTriggers or self.Debug) then
+	--	PowaAuras:DisplayText("Compare: ", v1, " ", op, " ", v2);
+	--end
 	if (op==nil) then return true; end
 	if (v1==nil or v2==nil) then return false; end
 	if (op=="=") then return (v1==v2); end
@@ -101,7 +101,8 @@ Timer trigger type class.
 --]]
 cPowaAuraTimerTrigger = PowaClass(cPowaTrigger, { Type = "Timer", Once=true });
 
-cPowaAuraDurationTrigger = PowaClass(cPowaTrigger, { Type = "Duration", Once=true });
+cPowaAuraActiveDurationTrigger = PowaClass(cPowaTrigger, { Type = "ActiveDuration", Once=true });
+cPowaAuraShownDurationTrigger = PowaClass(cPowaTrigger, { Type = "ShownDuration", Once=true });
 
 cPowaAuraTimerRefreshTrigger = PowaClass(cPowaTrigger, { Type = "TimerRefresh" });
 
@@ -165,7 +166,24 @@ function cPowaAuraHideAction:Fire()
 		PowaAuras:DisplayText("HideAction: Fire!");
 	end
 	local aura = PowaAuras.Auras[self.AuraId];
-	aura:Hide("cPowaAuraHideAction");
+	if (self.Parameters.All or self.Parameters.Aura) then
+		if (PowaAuras.DebugTriggers or self.Debug) then
+			PowaAuras:DisplayText("  HideAction: Hide Aura");
+		end
+		aura:Hide("cPowaAuraHideAction");
+	end
+	if (aura.Timer and (self.Parameters.All or self.Parameters.Timer)) then
+		if (PowaAuras.DebugTriggers or self.Debug) then
+			PowaAuras:DisplayText("  HideAction: Hide Timer");
+		end
+		aura.Timer:Hide();
+	end
+	if (aura.Stacks and (self.Parameters.All or self.Parameters.Stacks)) then
+		if (PowaAuras.DebugTriggers or self.Debug) then
+			PowaAuras:DisplayText("  HideAction: Hide Stacks");
+		end
+		aura.Stacks:Hide();
+	end
 end
 
 --[[
