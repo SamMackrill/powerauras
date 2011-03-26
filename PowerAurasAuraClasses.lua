@@ -334,7 +334,7 @@ function cPowaAura:CreateDefaultTriggers()
 		
 		
 		if (self.timerduration>0) then	
-			trigger=self:CreateTrigger(cPowaAuraShownDurationTrigger,  {Name="PA_HideAfterDuration", Value=self.timerduration, Compare=">"});
+			trigger=self:CreateTrigger(cPowaAuraDurationTrigger,  {Name="PA_HideAfterDuration", Value=self.timerduration, Compare=">"});
 			trigger:AddAction(cPowaAuraHideAction, {Name="PA_Hide", All=true});
 		end
 		

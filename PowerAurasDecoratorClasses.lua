@@ -422,8 +422,7 @@ function cPowaTimer:Update(elapsed)
 	local newvalue = self:GetDisplayValue(aura, elapsed);
 
 	aura:CheckTriggers("Timer", newvalue);
-	aura:CheckTriggers("ActiveDuration", self.Duration);
-	aura:CheckTriggers("ShownDuration", self.Duration);
+	aura:CheckTriggers("Duration", self.Duration);
 	
 	if (self.Showing or self.ShowRequest) then
 		self:DisplayTime(aura, newvalue);
