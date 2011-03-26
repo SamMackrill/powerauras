@@ -339,7 +339,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideIgnoreItemUseable = "Ignores if item is usable (just if equipped)",
 	nomCheckPet = "Pet",
 	aideCheckPet = "Check to Monitor only Pet Spells",
-	
+
 	nomOnMe = "Cast On Me",
 	aideOnMe = "Only show if being Cast On Me",
 
@@ -580,7 +580,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomReasonTargetNotFriendly = "Target not Friendly",
 
 	nomReasonNoPet = "Player has no Pet",
-	
+
 	nomReasonNotInCombat = "Not in combat",
 	nomReasonInCombat = "In combat",
 	
@@ -636,9 +636,9 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	
 	nomReasonCastingByMe	 = "I am casting $1 on $2", --$1=SpellName $2=TargetName (e.g. "I am casting Holy Light on Fred")
 	nomReasonNotCastingByMe	 = "No matching spell being cast by me",
-	
+
 	nomReasonAnimationDuration  = "Still within custom duration",
-	
+
 	nomReasonItemUsable     = "Item $1 usable",
 	nomReasonItemNotUsable  = "Item $1 not usable",
 	nomReasonItemNotReady   = "Item $1 Not Ready, on cooldown, timer invert",
@@ -719,7 +719,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomReasonUnknownName = "Unit name unknown",
 	nomReasonRoleUnknown = "Role unknown",
 	nomReasonRoleNoMatch = "No matching Role",
-	
+
 	nomUnknownSpellId = "PowerAuras: Aura $1 references an unknown spellId: ", -- $1=SpellID
 
 	nomReasonGTFOAlerts = "GTFO alerts are never always on.",
