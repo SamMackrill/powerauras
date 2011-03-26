@@ -291,7 +291,7 @@ function cPowaTimer:GetTexture()
 	return texture;
 end
 
-function cPowaTimer:hasDependants(aura)
+function cPowaTimer:HasDependants(aura)
 	return (aura.InvertAuraBelow > 0) or (aura.timerduration > 0);
 end
 
@@ -385,7 +385,8 @@ function cPowaTimer:DisplayTime(aura, newvalue)
 		self.lastShownLarge=large;
 	end
 
-	self.Showing = true;		
+	self.Showing = true;
+	self.ShowRequest = false;	
 
 end
 
@@ -421,9 +422,12 @@ function cPowaTimer:Update(elapsed)
 	local newvalue = self:GetDisplayValue(aura, elapsed);
 
 	aura:CheckTriggers("Timer", newvalue);
-	aura:CheckTriggers("Duration", self.Duration);
+	aura:CheckTriggers("ActiveDuration", self.Duration);
+	aura:CheckTriggers("ShownDuration", self.Duration);
 	
-	self:DisplayTime(aura, newvalue);
+	if (self.Showing or self.ShowRequest) then
+		self:DisplayTime(aura, newvalue);
+	end
 end
 
 -- This is used to dectect timer refreshes
@@ -488,6 +492,10 @@ function cPowaTimer:ShowValue(aura, frameIndex, displayValue)
 end
 
 
+function cPowaTimer:Show()
+	self.ShowRequest = true;
+end
+
 function cPowaTimer:HideFrame(i)
 	if (PowaAuras.TimerFrame[self.id] and PowaAuras.TimerFrame[self.id][i]) then
 		--PowaAuras:ShowText("Hide Timer Frame ", i," for ", self.id);
@@ -504,6 +512,7 @@ function cPowaTimer:Hide()
 	self.lastShownLarge = nil;
 	self.lastShownSmall = nil;
 	self.Showing = false;
+	self.ShowRequest = false;	
 	--PowaAuras:ShowText("Hide timer frame");
 end
 
