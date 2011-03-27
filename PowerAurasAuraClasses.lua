@@ -2297,58 +2297,23 @@ function cPowaActionReady:CheckIfShouldShow(giveReason)
 		return false, PowaAuras.Text.nomReasonActionNotFound; 
 	end
 	
-	local actionType, actionId = GetActionInfo(self.slot);
-	local cdstart, cdduration, enabled = 0, 0, 1;
-	if(actionType == "macro" and GetSpellInfo(self.buffname)) then
-		cdstart, cdduration, enabled = GetSpellCooldown(self.buffname);
-		-- PowaAuras:ShowText("cdstart= ",cdstart," duration= ",cdduration," enabled= ",enabled);
-		if (not enabled) then
-			if (self.Timer) then
-				self.Timer:SetDurationInfo(0);
-			end
-			if (not giveReason) then return false; end
-			return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonActionlNotEnabled, spellName);
+	local cdstart, cdduration, enabled = GetActionCooldown(self.slot);
+	-- PowaAuras:ShowText("cdstart= ",cdstart," duration= ",cdduration," enabled= ",enabled);
+	if (not enabled) then
+		if (self.Timer) then
+			self.Timer:SetDurationInfo(0);
 		end
+		if (not giveReason) then return false; end
+		return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonActionlNotEnabled, spellName);
+	end
 
-		-- PowaAuras:ShowText("self.mine= ",self.mine," usable= ",IsUsableSpell(self.buffname));
-		if (not self.mine) then
-			local usable, noMana = IsUsableSpell(self.buffname);
-			if (not usable) then
-				--PowaAuras:ShowText("HIDE!!");
-				if (not giveReason) then return false; end
-				return false, PowaAuras.Text.nomReasonActionNotUsable;
-			end
-		end		
-	elseif(actionType == "macro" and tonumber(self.buffname) and GetItemInfo(self.buffname)) then
-		local itemid = tonumber(self.buffname);
-		cdstart, cdduration, enabled = GetItemCooldown(itemid);
-		-- PowaAuras:ShowText("cdstart= ",cdstart," duration= ",cdduration," enabled= ",enabled);
-		if (not enabled) then
-			if (self.Timer) then
-				self.Timer:SetDurationInfo(0);
-			end
+	-- PowaAuras:ShowText("self.mine= ",self.mine," usable= ",IsUsableSpell(self.buffname));
+	if (not self.mine) then
+		local usable, noMana = IsUsableAction(self.slot);
+		if (not usable) then
+			--PowaAuras:ShowText("HIDE!!");
 			if (not giveReason) then return false; end
-			return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonActionlNotEnabled, spellName);
-		end		
-	else
-		cdstart, cdduration, enabled = GetActionCooldown(self.slot);
-		-- PowaAuras:ShowText("cdstart= ",cdstart," duration= ",cdduration," enabled= ",enabled);
-		if (not enabled) then
-			if (self.Timer) then
-				self.Timer:SetDurationInfo(0);
-			end
-			if (not giveReason) then return false; end
-			return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonActionlNotEnabled, spellName);
-		end
-
-		-- PowaAuras:ShowText("self.mine= ",self.mine," usable= ",IsUsableSpell(self.buffname));
-		if (not self.mine) then
-			local usable, noMana = IsUsableAction(self.slot);
-			if (not usable) then
-				--PowaAuras:ShowText("HIDE!!");
-				if (not giveReason) then return false; end
-				return false, PowaAuras.Text.nomReasonActionNotUsable;
-			end
+			return false, PowaAuras.Text.nomReasonActionNotUsable;
 		end
 	end
 	
@@ -2710,8 +2675,6 @@ function cPowaPowerType:UnitValue(unit)
 		power = math.max(-UnitPower(unit, SPELL_POWER_ECLIPSE), 0);
 	elseif (self.PowerType==SPELL_POWER_SOLAR_ECLIPSE) then
 		power = math.max(UnitPower(unit, SPELL_POWER_ECLIPSE));
-	elseif (self.PowerType==(SPELL_POWER_HAPPINESS or 4)) then
-		power = GetPetHappiness() or 0;
 	else
 		power = UnitPower(unit, self.PowerType);
 	end
@@ -2731,8 +2694,6 @@ function cPowaPowerType:UnitValueMax(unit)
 		maxpower = UnitPowerMax(unit);
 	elseif (self.PowerType==SPELL_POWER_LUNAR_ECLIPSE or self.PowerType==SPELL_POWER_SOLAR_ECLIPSE) then
 		maxpower = 100;
-	elseif (self.PowerType==(SPELL_POWER_HAPPINESS or 4)) then
-		maxpower = 3;
 	else
 		maxpower = UnitPowerMax(unit, self.PowerType);
 	end
@@ -2747,7 +2708,6 @@ function cPowaPowerType:IsCorrectPowerType(unit)
 	if (self.PowerType==SPELL_POWER_HOLY_POWER  and PowaAuras.playerclass == "PALADIN")
 	or (self.PowerType==SPELL_POWER_RUNIC_POWER and PowaAuras.playerclass == "DEATHKNIGHT") 
 	or (self.PowerType==SPELL_POWER_SOUL_SHARDS and PowaAuras.playerclass == "WARLOCK") 
-	or (self.PowerType==(SPELL_POWER_HAPPINESS or 4)   and PowaAuras.playerclass == "HUNTER") 
 	or ((self.PowerType==SPELL_POWER_LUNAR_ECLIPSE or self.PowerType==SPELL_POWER_SOLAR_ECLIPSE)     and PowaAuras.playerclass == "DRUID") then return true; end
 	
 	local unitPowerType = UnitPowerType(unit);
