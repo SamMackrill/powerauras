@@ -226,6 +226,7 @@ function cPowaAura:SetFixedIcon()
 end
 
 function cPowaAura:Dispose()
+	PowaAuras:ShowText("Aura ", self.id, " Dispose");
 	self:Hide("Dispose");
 	PowaAuras:Dispose("Frames", self.id);
 	PowaAuras:Dispose("Textures", self.id);
@@ -621,6 +622,7 @@ function cPowaAura:AddExtraTooltipInfo(tooltip)
 end
 
 function cPowaAura:RecreateFrames()
+	PowaAuras:ShowText("RecreateFrames aura ", self.id);
 	self:Dispose();
 	return self:CreateFrames();
 end
@@ -708,6 +710,7 @@ end
 
 function cPowaAura:HideFrame(frame)	
 	if (frame == nil) then return end;
+	PowaAuras:ResetDragging(self, frame);
 	frame:StopAnimating();
 	frame:Hide();
 end
