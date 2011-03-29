@@ -998,7 +998,7 @@ local function keyUp(frame, key)
 	if (PowaAuras.CurrentAuraId == frame.aura.id) then
 		PowaAuras:InitPage(frame.aura);
 	end
-	PowaAuras:RedisplayAura(frame.aura.id);
+	PowaAuras:RedisplayAura(frame.aura.id, false);
 end
 
 local function enterAura(frame)
@@ -1067,6 +1067,8 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 	end
 
 	local frame, texture, frame2, texture2 = aura:CreateFrames();	
+
+	self:ShowText("ShowAuraForFirstTime ", aura.id, " frame=", frame);
 
 	self:InitialiseFrame(aura, frame, texture, aura.alpha);
 	if (aura.anim2 == 0) then --- no secondary frame
@@ -1196,7 +1198,7 @@ end
 
 function PowaAuras:DisplayAura(auraId)
 	--self:UnitTestInfo("DisplayAura", auraId);
-	--self:ShowText("DisplayAura aura ", auraId);
+	self:ShowText("DisplayAura aura ", auraId);
 	if (not (self.VariablesLoaded and self.SetupDone)) then return; end   --- de-actived
 
 	local aura = self.Auras[auraId];
