@@ -63,6 +63,7 @@ PowaAuras.UI = {
 			self:SetPage(self.Page);
 		end
 	},
+	-- Checkbox definition.
 	Checkbox = {
 		Init = function(self, property, tooltipDesc)
 			-- Update text to the localized variant.
@@ -101,6 +102,7 @@ PowaAuras.UI = {
 			end
 		end
 	},
+	-- EditBox definition.
 	EditBox = {
 		Init = function(self, property, title, tooltipDesc)
 			-- Property handling not yet implemented.
@@ -400,7 +402,7 @@ PowaAuras.UI = {
 			frame.Tabs = {};
 			frame.TabType = tabType or 1;
 			-- Optional offset for tabs.
-			frame.Offset = offset or 0;
+			frame.Offset = offset or (tabType == 4 and 10 or 0);
 		end,
 		RegisterTab = function(self, tab, text, hidden)
 			if(not tab) then PowaAuras:ShowText("Cannot register tab, tab does not exist."); return; end
@@ -421,6 +423,11 @@ PowaAuras.UI = {
 				elseif(self.TabType == 3) then
 					-- No tab button.
 					tab.TabButton = nil;
+				elseif(self.TabType == 4) then
+					-- Icon tab button.
+					tabButton = CreateFrame("Button", nil, self, "PowaTabIconButtonTemplate");
+					tab.TabButton = tabButton;
+					PowaAuras.UI.TabIconButton(tab.TabButton, #(self.Tabs), text, self);
 				end
 			end
 			-- Update tabs.
@@ -456,8 +463,10 @@ PowaAuras.UI = {
 					if(tab.TabDisabled == false and tab.TabButton) then
 						if(self.TabType == 1) then
 							tab.TabButton:SetPoint("BOTTOMLEFT", self, "TOPLEFT", ((i-1)*115)+self.Offset, -2);
-						else
-							tab.TabButton:SetPoint("TOPRIGHT", self, "TOPLEFT", 0, -((i-1)*24)-self.Offset);						
+						elseif(self.TabType == 2) then
+							tab.TabButton:SetPoint("TOPRIGHT", self, "TOPLEFT", 0, -((i-1)*24)-self.Offset);	
+						elseif(self.TabType == 4) then		
+							tab.TabButton:SetPoint("BOTTOMLEFT", self, "TOPLEFT", ((i-1)*38)+self.Offset, -2);			
 						end
 						tab.TabButton:SetSelected((tabId == self.Tab));
 						tab.TabButton:Show();
@@ -504,6 +513,39 @@ PowaAuras.UI = {
 				self:GetHighlightTexture():SetTexCoord(0, 1, 0.2, 0.6);
 				self:SetNormalFontObject("GameFontNormalSmall");
 				self:Enable();
+			end
+		end
+	},
+	-- Tab icon button definition.
+	TabIconButton = {
+		Init = function(tab, id, icon, parent)
+			-- Stores status for tab.
+			tab.Selected = false;
+			tab.Id = id;
+			local tex, w, h, l, r, t, b = "", 16, 16, 0, 1, 0, 1;
+			if(type(icon) == "table") then
+				tex, w, h, l, r, t, b = unpack(icon);
+			else
+				tex = icon;
+			end
+			tab.Icon:SetTexture(tex);
+			tab.Icon:SetTexCoord(l, r, t, b);
+			tab.Icon:SetWidth(w);
+			tab.Icon:SetHeight(h);
+			tab:SetParent(parent);
+			tab:SetScript("OnClick", function()
+				tab:GetParent():SelectTab(tab.Id);
+			end);
+		end,
+		SetSelected = function(self, selected)
+			if(selected == true) then
+				self.Hider:Show();
+				self.Highlight:Hide();
+				self.TabBg:SetTexCoord(0.01562500, 0.79687500, 0.78906250, 0.953125);
+			else
+				self.Hider:Show();
+				self.Highlight:Show();
+				self.TabBg:SetTexCoord(0.01562500, 0.79687500, 0.61328125, 0.7734375);
 			end
 		end
 	},
@@ -599,6 +641,7 @@ PowaAuras.UI:DefineWidget("LayoutFrame");
 PowaAuras.UI:DefineWidget("Slider");
 PowaAuras.UI:DefineWidget("TabFrame");
 PowaAuras.UI:DefineWidget("TabButton");
+PowaAuras.UI:DefineWidget("TabIconButton");
 PowaAuras.UI:DefineWidget("TabSidebarButton");
 PowaAuras.UI:DefineWidget("Tooltip");
 

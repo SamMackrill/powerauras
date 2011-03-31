@@ -443,6 +443,27 @@
 		</ThumbTexture>
 	</Slider>
 	
+	<Frame name="PowaTabDialogTemplate" virtual="true">
+		<Frames>
+			<Button name="$parentAcceptButton" parentKey="AcceptButton" inherits="UIPanelButtonTemplate2" text="Save">
+				<Size>
+					<AbsDimension x="118" y="22" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" x="-5" y="5" />
+				</Anchors>
+			</Button>
+			<Button name="$parentCancelButton" parentKey="CancelButton" inherits="UIPanelButtonTemplate2" text="Cancel">
+				<Size>
+					<AbsDimension x="118" y="22" />
+				</Size>
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="$parentAcceptButton" relativePoint="LEFT" x="-10" y="0" />
+				</Anchors>
+			</Button>
+		</Frames>
+	</Frame>
+	
 	<Button name="PowaTabButtonTemplate" virtual="true" text="Tab">
 		<Size>
 			<AbsDimension x="128" y="29" />
@@ -468,26 +489,46 @@
 		</ButtonText>
 	</Button>
 	
-	<Frame name="PowaTabDialogTemplate" virtual="true">
-		<Frames>
-			<Button name="$parentAcceptButton" parentKey="AcceptButton" inherits="UIPanelButtonTemplate2" text="Save">
-				<Size>
-					<AbsDimension x="118" y="22" />
-				</Size>
-				<Anchors>
-					<Anchor point="BOTTOMRIGHT" x="-5" y="5" />
-				</Anchors>
-			</Button>
-			<Button name="$parentCancelButton" parentKey="CancelButton" inherits="UIPanelButtonTemplate2" text="Cancel">
-				<Size>
-					<AbsDimension x="118" y="22" />
-				</Size>
-				<Anchors>
-					<Anchor point="RIGHT" relativeTo="$parentAcceptButton" relativePoint="LEFT" x="-10" y="0" />
-				</Anchors>
-			</Button>
-		</Frames>
-	</Frame>
+	<Button name="PowaTabIconButtonTemplate" virtual="true">		
+		<Size x="33" y="35" />
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture file="Interface\AddOns\PowerAuras\UI\PaperDollSidebarTabs" parentKey="TabBg">
+					<Size x="50" y="41"/>
+					<TexCoords left="0.01562500" right="0.79687500" top="0.61328125" bottom="0.78125000"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="-9" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture parentKey="Icon">
+					<Size x="32" y="32"/>
+					<Anchors>
+						<Anchor point="CENTER" x="1" y="-2"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="Hider" file="Interface\AddOns\PowerAuras\UI\PaperDollSidebarTabs">
+					<Size x="34" y="19"/>
+					<TexCoords left="0.01562500" right="0.54687500" top="0.11328125" bottom="0.18750000"/>
+					<Anchors>
+						<Anchor point="BOTTOM"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="HIGHLIGHT">
+				<Texture parentKey="Highlight" file="Interface\AddOns\PowerAuras\UI\PaperDollSidebarTabs">
+					<Size x="31" y="31"/>	
+					<TexCoords left="0.01562500" right="0.50000000" top="0.19531250" bottom="0.31640625"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="2" y="-3"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+	</Button>
 	
 	<Button name="PowaTabSidebarButtonTemplate" virtual="true">
 		<Size>
@@ -579,6 +620,31 @@
 					<Anchor point="TOPRIGHT" x="0" y="0" />
 				</Anchors>
 			</Button>
+			<Frame name="$parentTest" inherits="PowaBorderedFrameTemplate">
+				<Size>
+				  <AbsDimension y="260" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOP" x="0" y="-55" />
+					<Anchor point="LEFT" x="15" y="0" />
+					<Anchor point="RIGHT" x="-15" y="0" />
+				</Anchors>
+				<Frames>
+					<Frame parentKey="Auras" />
+					<Frame parentKey="Config" />
+					<Frame parentKey="NewFeatures" />
+					<Frame parentKey="HelpPlz" />
+				</Frames>
+				<Scripts>
+					<OnLoad>
+						PowaAuras.UI.TabFrame(self, 4);
+						self:RegisterTab(self.Auras, "Interface\\GossipFrame\\TrainerGossipIcon");
+						self:RegisterTab(self.Config, "Interface\\GossipFrame\\BinderGossipIcon");
+						self:RegisterTab(self.NewFeatures, { "Interface\\OPTIONSFRAME\\UI-OptionsFrame-NewFeatureIcon", 16, 16, 0, 1, 0, 1 });
+						self:RegisterTab(self.HelpPlz, { "Interface\\WorldMap\\UI-WorldMap-QuestIcon", 12, 17, 0.171875, 0.359375, 0.109375, 0.375 });					
+					</OnLoad>
+				</Scripts>
+			</Frame>
 		</Frames>
 	</Frame>
 	
