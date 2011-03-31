@@ -37,4 +37,32 @@ PowerOptions.xml
 PowerBlizzOptions.xml
 PowerSlots.xml
 
-PowerUI.xml
+# UI base code.
+PowerUI.lua
+
+# Generic elements.
+UI\BorderedFrame.xml
+UI\Checkbox.xml
+UI\ColorWidget.xml
+UI\EditBox.xml
+UI\FrameSeparator.xml
+UI\Slider.xml
+UI\Tooltip.lua
+UI\TreeView.xml
+
+# Browser widgets
+UI\BrowserFrame.xml
+
+# Tab widgets
+UI\TabButton.xml
+UI\TabDialog.xml
+UI\TabIconButton.xml
+UI\TabSidebarButton.xml
+
+# Layout types
+UI\LayoutFrame.lua
+UI\TabFrame.lua
+
+# Actual frames!
+UI\AuraBrowser.xml
+UI\AuraEditor.xml
