@@ -1,11 +1,24 @@
 -- Create definition.
 PowaAuras.UI["LayoutFrame"] = {
-	Init = function(frame, columns, columnSizes, isScrollChild, debug)
-		frame.Columns = columns or 1;
-		frame.ColumnSizes = columnSizes or {};
-		frame.Items = {};
-		frame.Debug = debug or false;
-		frame.IsScrollChild = isScrollChild or false;
+	Init = function(self, columns, columnSizes, isScrollChild, debug)
+		self.Columns = columns or 1;
+		self.ColumnSizes = columnSizes or {};
+		self.Items = {};
+		self.Debug = debug or false;
+		self.IsScrollChild = isScrollChild or false;
+		if(isScrollChild) then
+			-- Autoscrollbar!
+			self.__SetHeight = self.SetHeight;
+			self.SetHeight = function(self, height)
+				self:__SetHeight(height);
+				if(self:GetParent():GetHeight() > height) then
+					self:GetParent().ScrollBar:Hide();
+				end
+			end
+			if(self:GetParent():GetHeight() > self:GetHeight()) then
+				self:GetParent().ScrollBar:Hide();
+			end
+		end
 	end,
 	SetColumns = function(self, columns, sizes)
 		self.Columns = columns;

@@ -73,20 +73,33 @@
 					<Anchor point="TOPRIGHT" x="0" y="0" />
 				</Anchors>
 			</Button>
-			<Frame name="$parentTest" inherits="PowaBorderedFrameTemplate">
+			<Frame name="$parentTabs" parentKey="Tabs" inherits="PowaBorderedFrameTemplate">
 				<Size>
 				  <AbsDimension y="260" />
 				</Size>
 				<Anchors>
-					<Anchor point="TOP" x="0" y="-55" />
+					<Anchor point="TOP" x="0" y="-65" />
 					<Anchor point="LEFT" x="15" y="0" />
 					<Anchor point="RIGHT" x="-15" y="0" />
 				</Anchors>
 				<Frames>
-					<Frame parentKey="Auras" />
-					<Frame parentKey="Config" />
-					<Frame parentKey="NewFeatures" />
-					<Frame parentKey="HelpPlz" />
+					<Frame parentKey="Auras" hidden="true" />
+					<Frame parentKey="Config" hidden="true" />
+					<Frame parentKey="NewFeatures" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="4" y="-4" />
+							<Anchor point="BOTTOMRIGHT" x="-4" y="4" />
+						</Anchors>
+						<Frames>
+							<Frame name="$parentList" inherits="PowaTreeViewTemplate" />
+						</Frames>
+						<Scripts>
+							<OnShow>
+								self.TabButton:SetGlow(false);
+							</OnShow>
+						</Scripts>
+					</Frame>
+					<Frame parentKey="HelpPlz" hidden="true" />
 				</Frames>
 				<Scripts>
 					<OnLoad>
@@ -94,10 +107,15 @@
 						self:RegisterTab(self.Auras, "Interface\\GossipFrame\\TrainerGossipIcon");
 						self:RegisterTab(self.Config, "Interface\\GossipFrame\\BinderGossipIcon");
 						self:RegisterTab(self.NewFeatures, { "Interface\\OPTIONSFRAME\\UI-OptionsFrame-NewFeatureIcon", 16, 16, 0, 1, 0, 1 });
-						self:RegisterTab(self.HelpPlz, { "Interface\\WorldMap\\UI-WorldMap-QuestIcon", 12, 17, 0.171875, 0.359375, 0.109375, 0.375 });					
+						self:RegisterTab(self.HelpPlz, { "Interface\\WorldMap\\UI-WorldMap-QuestIcon", 12, 17, 0.171875, 0.359375, 0.109375, 0.375 });
 					</OnLoad>
 				</Scripts>
 			</Frame>
 		</Frames>
+		<Scripts>
+			<OnLoad>
+				PowaBrowser_OnLoad(self);
+			</OnLoad>
+		</Scripts>
 	</Frame>
 </Ui>

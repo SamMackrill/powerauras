@@ -60,6 +60,9 @@ function PowaAuras:VARIABLES_LOADED(...)
 	if (not PowaMisc.Disabled) then
 		self:RegisterEvents(PowaAuras_Frame);
 	end
+	
+	-- UI stuff.
+	PowaBrowser_OnVariablesLoaded();
 
 	self.VariablesLoaded = true;
 end
