@@ -37,7 +37,7 @@ PowaAuras.UI = {
 			end
 			-- Update page editbox.
 			if(self.PageBox) then
-				self.PageBox.EditBox:SetText(page);
+				self.PageBox:SetText(page);
 			end
 		end,
 		NextPage = function(self)
@@ -101,9 +101,9 @@ PowaAuras.UI = {
 			self:UpdateColors();
 		end,
 	},
-	Editbox = { -- NYU
+	EditBox = {
 		UpdateColors = function(self)
-			if(self:GetChecked()) then
+			if(self:HasFocus()) then
 				if(self:IsMouseOver()) then
 					self:SetBackdropBorderColor(1, 0.82, 0, 1);
 				else
@@ -117,8 +117,22 @@ PowaAuras.UI = {
 				end
 			end		
 		end,
-		Init = function(self, property, tooltipDesc)
-		
+		Init = function(self, property, title, hideTitle, tooltipDesc)
+			-- Property handling not yet implemented.
+			
+			-- Showing a title?
+			if(hideTitle) then
+				self.Title:Hide();
+				self:SetTextInsets(6, 0, 1, 0);
+			else
+				-- Set title, change editbox text inset so that it doesn't collide.
+				self.Title:SetText(PowaAuras.Text[title] .. ":");
+				self:SetTextInsets(self.Title:GetStringWidth()+8, 0, 1, 0);
+			end
+			-- Tooltip me up!
+			PowaAuras.UI.Tooltip(self, title, tooltipDesc or title .. "Desc");
+			-- Update colours...
+			self:UpdateColors();		
 		end,
 	},
 	-- Frame separator definition.
@@ -495,24 +509,6 @@ PowaAuras.UI = {
 	},
 	-- Tooltip definition.
 	Tooltip = {
-		Init = function(frame, title, text, children)
-			-- Store data.
-			frame.TooltipTitle = PowaAuras.Text[title];
-			frame.TooltipText = PowaAuras.Text[text];
-			-- Use the RefreshTooltip function as a display method.
-			frame:SetScript("OnEnter", frame.Refresh);
-			-- Hide on leave.
-			frame:SetScript("OnLeave", function()
-				GameTooltip:Hide();
-			end);
-			-- Add to children too.
-			if(children) then
-				for _, child in pairs(children) do
-					frame[child]:SetScript("OnEnter", function() frame:Refresh(); end);
-					frame[child]:SetScript("OnLeave", function() GameTooltip:Hide(); end);
-				end
-			end
-		end,
 		Refresh = function(self)
 			-- Hide tip.
 			GameTooltip:Hide();
@@ -523,6 +519,33 @@ PowaAuras.UI = {
 			GameTooltip:AddLine(self.TooltipText or "", 1, 1, 1, true);
 			-- Show tip.
 			GameTooltip:Show();
+		end,
+		Leave = function(self)
+			GameTooltip:Hide();
+		end,
+		ApplyScript = function(self, frame, script, callback)
+			-- Prevents overwriting scripts.
+			if(not frame.HasScript) then return; end
+			if(frame:HasScript(script)) then
+				frame:HookScript(script, callback);
+			else
+				frame:SetScript(script, callback);
+			end
+		end,
+		Init = function(frame, title, text, children)
+			-- Store data.
+			frame.TooltipTitle = PowaAuras.Text[title];
+			frame.TooltipText = PowaAuras.Text[text];
+			-- Use the RefreshTooltip function as a display method.
+			frame:ApplyScript(frame, "OnEnter", frame.Refresh);
+			frame:ApplyScript(frame, "OnLeave", frame.Leave);
+			-- Add to children too.
+			if(children) then
+				for _, child in pairs(children) do
+					frame:ApplyScript(frame[child], "OnEnter", function() frame:Refresh(); end);
+					frame:ApplyScript(frame[child], "OnLeave", function() GameTooltip:Hide(); end);
+				end
+			end
 		end
 	},
 	
@@ -550,6 +573,7 @@ PowaAuras.UI = {
 -- Set up constructors.
 PowaAuras.UI:DefineWidget("BrowserFrame");
 PowaAuras.UI:DefineWidget("Checkbox");
+PowaAuras.UI:DefineWidget("EditBox");
 PowaAuras.UI:DefineWidget("FrameSeparator");
 PowaAuras.UI:DefineWidget("LayoutFrame");
 PowaAuras.UI:DefineWidget("Slider");

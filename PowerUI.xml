@@ -124,7 +124,7 @@
 		</Scripts>
 	</CheckButton>
 	
-	<EditBox name="PowaEditBoxTemplate" virtual="true" autofocus="false" font="GameFontHighlightSmall">
+	<EditBox name="PowaEditBoxTemplate" virtual="true" autofocus="false" font="GameFontHighlightSmall" enableMouse="true">
 		<Size>
 			<AbsDimension x="70" y="17" />
 		</Size>
@@ -160,6 +160,18 @@
 			<OnEnterPressed>
 				self:ClearFocus();
 			</OnEnterPressed>
+			<OnEnter>
+				self:UpdateColors();
+			</OnEnter>
+			<OnLeave>
+				self:UpdateColors();
+			</OnLeave>
+			<OnEditFocusGained>
+				self:UpdateColors();
+			</OnEditFocusGained>
+			<OnEditFocusLost>
+				self:UpdateColors();
+			</OnEditFocusLost>
 		</Scripts>
 	</EditBox>
 	
@@ -312,66 +324,31 @@
 	
 	<Frame name="PowaBrowserFrameTemplate" virtual="true" inherits="PowaBrowserFrameBaseTemplate">
 		<Frames>
-			<Frame name="$parentPageBox" parentKey="PageBox">
+			<EditBox name="$parentPageBox" parentKey="PageBox" inherits="PowaEditBoxTemplate">
 				<Size>
 					<AbsDimension x="70" y="17" />
 				</Size>
 				<Anchors>
 					<Anchor point="BOTTOM" relativePoint="BOTTOM" x="0" y="9" />
 				</Anchors>
-				<Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground" edgeFile="Interface\ChatFrame\ChatFrameBackground" tile="true">
-					<EdgeSize>
-						<AbsValue val="1" />
-					</EdgeSize>
-					<TileSize>
-						<AbsValue val="5" />
-					</TileSize>
-					<Color r="0.0" g="0.0" b="0.0" a="0.5" />
-					<BorderColor r="0.3" g="0.3" b="0.3" a="0.8" />
-				</Backdrop>
-				<Layers>
-					<Layer level="OVERLAY">
-						<FontString name="$parentTitle" inherits="GameFontNormalSmall" parentKey="Title" justifyH="LEFT" justifyV="MIDDLE">
-							<Size>
-								<AbsDimension y="17" />
-							</Size>
-							<Anchors>
-								<Anchor point="LEFT" relativePoint="LEFT" x="3" y="0" />
-							</Anchors>
-						</FontString>
-					</Layer>
-				</Layers>
-				<Frames>
-					<EditBox name="$parentEditBox" parentKey="EditBox" autofocus="false" font="GameFontHighlightSmall" letters="4">
-						<Size>
-							<AbsDimension x="70" y="17" />
-						</Size>
-						<Anchors>
-							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parentTitle" x="3" y="0" />
-							<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="0" y="0" />
-						</Anchors>
-						<Scripts>
-							<OnEscapePressed>
-								self:SetText(self:GetParent():GetParent().Page);
-								self:ClearFocus();
-							</OnEscapePressed>
-							<OnEnterPressed>
-								if(tonumber(self:GetText(), 10)) then
-									self:GetParent():GetParent():SetPage(tonumber(self:GetText(), 10));
-								else
-									self:SetText(self:GetParent():GetParent().Page);
-								end
-								self:ClearFocus();
-							</OnEnterPressed>
-						</Scripts>
-					</EditBox>
-				</Frames>
 				<Scripts>
 					<OnLoad>
-						self.Title:SetText("Page:");
+						PowaAuras.UI.EditBox(self, nil, "UI_BrowserPage");
 					</OnLoad>
 				</Scripts>
-			</Frame>
+				<OnEscapePressed>
+					self:SetText(self:GetParent().Page);
+					self:ClearFocus();
+				</OnEscapePressed>
+				<OnEnterPressed>
+					if(tonumber(self:GetText(), 10)) then
+						self:GetParent():SetPage(tonumber(self:GetText(), 10));
+					else
+						self:SetText(self:GetParent().Page);
+					end
+					self:ClearFocus();
+				</OnEnterPressed>
+			</EditBox>
 		</Frames>
 	</Frame>
 	
@@ -990,9 +967,7 @@
 													<EditBox name="$parentX" parentKey="X" inherits="PowaEditBoxTemplate">
 														<Scripts>
 															<OnLoad>
-																PowaAuras.UI.Tooltip(self, "UI_Aura_TexX", "UI_Aura_TexXDesc");
-																
-																self.Title:SetText(PowaAuras.Text.UI_Aura_TexX .. ":");
+																PowaAuras.UI.EditBox(self, "X", "UI_Aura_TexX");
 																self:SetText(0);
 															</OnLoad>
 														</Scripts>
@@ -1000,9 +975,7 @@
 													<EditBox name="$parentY" parentKey="Y" inherits="PowaEditBoxTemplate">
 														<Scripts>
 															<OnLoad>
-																PowaAuras.UI.Tooltip(self, "UI_Aura_TexY", "UI_Aura_TexYDesc");
-																
-																self.Title:SetText(PowaAuras.Text.UI_Aura_TexY .. ":");
+																PowaAuras.UI.EditBox(self, "Y", "UI_Aura_TexY");
 																self:SetText(0);
 															</OnLoad>
 														</Scripts>
@@ -1230,29 +1203,28 @@
 															<Anchor point="BOTTOMRIGHT" relativeTo="$parent" x="-9" y="9" />
 														</Anchors>
 														<Scripts>
-															<OnLoad>																
-																self.Title:SetText("Texture:");
+															<OnLoad>
+																PowaAuras.UI.EditBox(self, nil, "UI_BrowserTex");
 																self:SetText("");
-																self:SetScript("OnEnterPressed", function()
-																		local text, page = self:GetText(), self:GetParent().Page;
-																		if(text ~= "") then
-																			-- Store it.
-																			if(not PowaGlobalMisc["CustomTextures"][page]) then
-																				tinsert(PowaGlobalMisc["CustomTextures"], page, text);
-																			else
-																				PowaGlobalMisc["CustomTextures"][page] = text;
-																			end
-																			-- Update page count.
-																			self:GetParent():SetMaxPage(#(PowaGlobalMisc["CustomTextures"])+1);
-																		elseif(text == "") then
-																			-- Blank means remove.
-																			tremove(PowaGlobalMisc["CustomTextures"], page);
-																			self:GetParent():SetMaxPage(#(PowaGlobalMisc["CustomTextures"])+1);																			
-																		end
-																		self:ClearFocus();
-																	end
-																);
 															</OnLoad>
+															<OnEnterPressed>
+																local text, page = self:GetText(), self:GetParent().Page;
+																if(text ~= "") then
+																	-- Store it.
+																	if(not PowaGlobalMisc["CustomTextures"][page]) then
+																		tinsert(PowaGlobalMisc["CustomTextures"], page, text);
+																	else
+																		PowaGlobalMisc["CustomTextures"][page] = text;
+																	end
+																	-- Update page count.
+																	self:GetParent():SetMaxPage(#(PowaGlobalMisc["CustomTextures"])+1);
+																elseif(text == "") then
+																	-- Blank means remove.
+																	tremove(PowaGlobalMisc["CustomTextures"], page);
+																	self:GetParent():SetMaxPage(#(PowaGlobalMisc["CustomTextures"])+1);																			
+																end
+																self:ClearFocus();
+															</OnEnterPressed>
 														</Scripts>
 													</EditBox>
 												</Frames>
