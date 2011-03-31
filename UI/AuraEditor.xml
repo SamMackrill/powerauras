@@ -214,130 +214,145 @@
 												</Anchors>
 												<Frames>
 													<Frame parentKey="Separator1" inherits="PowaFrameSeparatorTemplate">
+														<Frames>
+															<Slider name="$parentOpacity" minValue="1" maxValue="100" defaultValue="75" valueStep="1" parentKey="Opacity" inherits="PowaSliderTemplate">
+																<Scripts>
+																	<OnLoad>
+																		PowaAuras.UI.Slider(self, "UI_Aura_TexOpacity", "%");
+																	</OnLoad>
+																</Scripts>
+															</Slider>
+															<Slider name="$parentScale" minValue="1" maxValue="500" defaultValue="75" valueStep="1" parentKey="Scale" inherits="PowaSliderTemplate">
+																<Scripts>
+																	<OnLoad>
+																		PowaAuras.UI.Slider(self, "UI_Aura_TexScale", "%");
+																	</OnLoad>
+																</Scripts>
+															</Slider>
+															<Slider name="$parentRotate" minValue="0" maxValue="360" defaultValue="0" valueStep="1" parentKey="Rotate" inherits="PowaSliderTemplate">
+																<Scripts>
+																	<OnLoad>
+																		PowaAuras.UI.Slider(self, "UI_Aura_TexRotate");
+																	</OnLoad>
+																</Scripts>
+															</Slider>
+															<Slider name="$parentFlip" minValue="1" maxValue="4" defaultValue="1" valueStep="1" parentKey="Flip" inherits="PowaSliderTemplate">
+																<Scripts>
+																	<OnLoad>
+																		-- Add mutators to slider widgets BEFORE initializing them.
+																		self.OnValueGet = function(_, value)
+																			if(value == 1) then return "";
+																			elseif(value == 2) then return "X";
+																			elseif(value == 3) then return "Y";
+																			elseif(value == 4) then return "XY";
+																			else return value; end
+																		end
+																		self.OnValueSet = function(_, value)
+																			if(tonumber(value, 10)) then return tonumber(value, 10); end
+																			
+																			if(value == "") then return 1;
+																			elseif(value == "X") then return 2;
+																			elseif(value == "Y") then return 3;
+																			elseif(value == "XY") then return 4;
+																			else return 1; end
+																		end
+																		PowaAuras.UI.Slider(self, "UI_Aura_TexFlip", "", "None", "XY");
+																	</OnLoad>
+																</Scripts>
+															</Slider>
+														</Frames>
 														<Scripts>
 															<OnLoad>
-																PowaAuras.UI.FrameSeparator(self, "UI_Aura_Separator1");
+																PowaAuras.UI.FrameSeparator(self, "UI_Aura_Separator1", "DisplayAuraStyle");
+																-- Add children.
+																self:AddChild(self.Opacity);
+																self:AddChild(self.Scale);
+																self:AddChild(self.Rotate);
+																self:AddChild(self.Flip);
 															</OnLoad>
 														</Scripts>
 													</Frame>
-													<Slider name="$parentOpacity" minValue="1" maxValue="100" defaultValue="75" valueStep="1" parentKey="Opacity" inherits="PowaSliderTemplate">
-														<Scripts>
-															<OnLoad>
-																PowaAuras.UI.Slider(self, "UI_Aura_TexOpacity", "%");
-															</OnLoad>
-														</Scripts>
-													</Slider>
-													<Slider name="$parentScale" minValue="1" maxValue="500" defaultValue="75" valueStep="1" parentKey="Scale" inherits="PowaSliderTemplate">
-														<Scripts>
-															<OnLoad>
-																PowaAuras.UI.Slider(self, "UI_Aura_TexScale", "%");
-															</OnLoad>
-														</Scripts>
-													</Slider>
-													<Slider name="$parentRotate" minValue="0" maxValue="360" defaultValue="0" valueStep="1" parentKey="Rotate" inherits="PowaSliderTemplate">
-														<Scripts>
-															<OnLoad>
-																PowaAuras.UI.Slider(self, "UI_Aura_TexRotate");
-															</OnLoad>
-														</Scripts>
-													</Slider>
-													<Slider name="$parentFlip" minValue="1" maxValue="4" defaultValue="1" valueStep="1" parentKey="Flip" inherits="PowaSliderTemplate">
-														<Scripts>
-															<OnLoad>
-																-- Add mutators to slider widgets BEFORE initializing them.
-																self.OnValueGet = function(_, value)
-																	if(value == 1) then return "";
-																	elseif(value == 2) then return "X";
-																	elseif(value == 3) then return "Y";
-																	elseif(value == 4) then return "XY";
-																	else return value; end
-																end
-																self.OnValueSet = function(_, value)
-																	if(tonumber(value, 10)) then return tonumber(value, 10); end
-																	
-																	if(value == "") then return 1;
-																	elseif(value == "X") then return 2;
-																	elseif(value == "Y") then return 3;
-																	elseif(value == "XY") then return 4;
-																	else return 1; end
-																end
-																PowaAuras.UI.Slider(self, "UI_Aura_TexFlip", "", "None", "XY");
-															</OnLoad>
-														</Scripts>
-													</Slider>
 													<Frame parentKey="Separator2" inherits="PowaFrameSeparatorTemplate">
+														<Frames>
+															<EditBox name="$parentX" parentKey="X" inherits="PowaEditBoxTemplate">
+																<Scripts>
+																	<OnLoad>
+																		PowaAuras.UI.EditBox(self, "X", "UI_Aura_TexX");
+																		self:SetText(0);
+																	</OnLoad>
+																</Scripts>
+															</EditBox>
+															<EditBox name="$parentY" parentKey="Y" inherits="PowaEditBoxTemplate">
+																<Scripts>
+																	<OnLoad>
+																		PowaAuras.UI.EditBox(self, "Y", "UI_Aura_TexY");
+																		self:SetText(0);
+																	</OnLoad>
+																</Scripts>
+															</EditBox>
+														</Frames>
 														<Scripts>
 															<OnLoad>
-																PowaAuras.UI.FrameSeparator(self, "UI_Aura_Separator2");
+																PowaAuras.UI.FrameSeparator(self, "UI_Aura_Separator2", "DisplayAuraPosition");
+																-- Add children.
+																self:AddChild(self.X);
+																self:AddChild(self.Y);
 															</OnLoad>
 														</Scripts>
 													</Frame>
-													<EditBox name="$parentX" parentKey="X" inherits="PowaEditBoxTemplate">
-														<Scripts>
-															<OnLoad>
-																PowaAuras.UI.EditBox(self, "X", "UI_Aura_TexX");
-																self:SetText(0);
-															</OnLoad>
-														</Scripts>
-													</EditBox>
-													<EditBox name="$parentY" parentKey="Y" inherits="PowaEditBoxTemplate">
-														<Scripts>
-															<OnLoad>
-																PowaAuras.UI.EditBox(self, "Y", "UI_Aura_TexY");
-																self:SetText(0);
-															</OnLoad>
-														</Scripts>
-													</EditBox>
 													<Frame parentKey="Separator3" inherits="PowaFrameSeparatorTemplate">
+														<Frames>
+															<Slider name="$parentDeform" minValue="0.1" maxValue="2.0" defaultValue="1.0" valueStep="0.05" parentKey="Deform" inherits="PowaSliderTemplate">
+																<Scripts>
+																	<OnLoad>
+																		-- Add mutators to slider widgets BEFORE initializing them.
+																		self.OnValueGet = function(_, value)
+																			return format("%.2f", value);
+																		end
+																		-- Set 0.1 and 2.0 as the min/max labels in string form to prevent the huge precision mess.
+																		PowaAuras.UI.Slider(self, "UI_Aura_TexDeform", "", "0.1", "2.0");
+																	</OnLoad>
+																</Scripts>
+															</Slider>
+															<Slider name="$parentStrata" minValue="-65536" maxValue="65536" defaultValue="0" valueStep="1" parentKey="Strata" inherits="PowaSliderTemplate">
+																<Scripts>
+																	<OnLoad>
+																		PowaAuras.UI.Slider(self, "UI_Aura_TexStrata");
+																	</OnLoad>
+																</Scripts>
+															</Slider>
+														</Frames>
 														<Scripts>
 															<OnLoad>
-																PowaAuras.UI.FrameSeparator(self, "UI_Aura_Separator3");
+																PowaAuras.UI.FrameSeparator(self, "UI_Aura_Separator3", "DisplayAuraAdvanced");
+																-- Add children.
+																self:AddChild(self.Deform);
+																self:AddChild(self.Strata);
 															</OnLoad>
 														</Scripts>
 													</Frame>
-													<Slider name="$parentDeform" minValue="0.1" maxValue="2.0" defaultValue="1.0" valueStep="0.05" parentKey="Deform" inherits="PowaSliderTemplate">
-														<Scripts>
-															<OnLoad>
-																-- Add mutators to slider widgets BEFORE initializing them.
-																self.OnValueGet = function(_, value)
-																	return format("%.2f", value);
-																end
-																-- Set 0.1 and 2.0 as the min/max labels in string form to prevent the huge precision mess.
-																PowaAuras.UI.Slider(self, "UI_Aura_TexDeform", "", "0.1", "2.0");
-															</OnLoad>
-														</Scripts>
-													</Slider>
-													<Slider name="$parentStrata" minValue="-65536" maxValue="65536" defaultValue="0" valueStep="1" parentKey="Strata" inherits="PowaSliderTemplate">
-														<Scripts>
-															<OnLoad>
-																PowaAuras.UI.Slider(self, "UI_Aura_TexStrata");
-															</OnLoad>
-														</Scripts>
-													</Slider>
 												</Frames>
 												<Scripts>
 													<OnLoad>
 														-- Layout needed.
 														PowaAuras.UI.LayoutFrame(self, 2, { [1] = { X = 0.5 }, [2] = { X = 0.5 } }, true);
 														
-														self:SetItem(self.Separator1, { Margin = { 0, 0, 0, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
-														self:SetItem(self.Opacity, { Margin = { 0, 0, 16, 20 }, Padding = { 2, 4, 0, 0 } });
-														self:SetItem(self.Scale, { Margin = { 0, 0, 16, 20 }, Padding = { 4, -2, 0, 0 } });
-														self:SetItem(self.Rotate, { Margin = { 0, 0, 16, 20 }, Padding = { 2, 4, 0, 0 } });
-														self:SetItem(self.Flip, { Margin = { 0, 0, 16, 20 }, Padding = { 4, -2, 0, 0 } });
+														self:SetItem(self.Separator1, { Margin = { 0, 0, 0, 4 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
+														self:SetItem(self.Separator1.Opacity, { Margin = { 0, 0, 16, 20 }, Padding = { 2, 4, 0, 0 } });
+														self:SetItem(self.Separator1.Scale, { Margin = { 0, 0, 16, 20 }, Padding = { 4, -2, 0, 0 } });
+														self:SetItem(self.Separator1.Rotate, { Margin = { 0, 0, 16, 20 }, Padding = { 2, 4, 0, 0 } });
+														self:SetItem(self.Separator1.Flip, { Margin = { 0, 0, 16, 20 }, Padding = { 4, -2, 0, 0 } });
 														
-														self:SetItem(self.Separator2, { Margin = { 0, 0, 6, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
-														self:SetItem(self.X, { Margin = { 0, 0, 4, 4 }, Padding = { 2, 4, 0, 0 } });
-														self:SetItem(self.Y, { Margin = { 0, 0, 4, 4 }, Padding = { 4, -2, 0, 0 } });
+														self:SetItem(self.Separator2, { Margin = { 0, 0, 6, 4 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
+														self:SetItem(self.Separator2.X, { Margin = { 0, 0, 4, 4 }, Padding = { 2, 4, 0, 0 } });
+														self:SetItem(self.Separator2.Y, { Margin = { 0, 0, 4, 4 }, Padding = { 4, -2, 0, 0 } });
 														
-														self:SetItem(self.Separator3, { Margin = { 0, 0, 6, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
-														self:SetItem(self.Deform, { Margin = { 0, 0, 16, 20 }, Padding = { 2, 4, 0, 0 } });
-														self:SetItem(self.Strata, { Margin = { 0, 0, 16, 20 }, Padding = { 4, -2, 0, 0 } });
+														self:SetItem(self.Separator3, { Margin = { 0, 0, 6, 4 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
+														self:SetItem(self.Separator3.Deform, { Margin = { 0, 0, 16, 20 }, Padding = { 2, 4, 0, 0 } });
+														self:SetItem(self.Separator3.Strata, { Margin = { 0, 0, 16, 20 }, Padding = { 4, -2, 0, 0 } });
 														
-														-- Register those last 3 as advanced elements.
+														-- Register last separator as advanced element.
 														PowaAuras:RegisterAdvancedElement(self.Separator3);
-														PowaAuras:RegisterAdvancedElement(self.Deform);
-														PowaAuras:RegisterAdvancedElement(self.Strata);
 													</OnLoad>
 												</Scripts>
 											</Frame>

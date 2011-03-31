@@ -4,44 +4,33 @@
     ..\..\FrameXML\UI.xsd">
 	<Script file="TreeView.lua" />
 	<Frame name="PowaTreeViewTemplate" virtual="true" inherits="PowaBorderedFrameTemplate">
-		<Frame name="$parentTree">
-			<Size>
-				<AbsDimension x="156" y="0" />
-			</Size>
-			<Anchors>
-				<Anchor point="TOPLEFT" x="4" y="-4" />
-				<Anchor point="BOTTOMLEFT" x="4" y="4" />
-			</Anchors>
-			<Layers>
-				<Layer level="ARTWORK">
-					<Texture>
-						<Anchors>
-							<Anchor point="TOPLEFT" x="4" y="-4" />
-							<Anchor point="BOTTOMRIGHT" x="-8" y="4" />
-						</Anchors>
-						<Color r="0" g="0" b="0" a="0.535" />
-					</Texture>
-					<Texture file="Interface\COMMON\ShadowOverlay-Left">
-						<Size>
-							<AbsDimension x="16" />
-						</Size>
-						<Anchors>
-							<Anchor point="TOPRIGHT" x="8" y="-4" />
-							<Anchor point="BOTTOMRIGHT" x="8" y="4" />
-						</Anchors>
-						<Color r="0" g="0" b="0" a="0.75" />
-					</Texture>
-					<FontString parentKey="Src" inherits="GameFontHighlight" justifyH="CENTER" justifyV="MIDDLE">
-						<Size>
-							<AbsDimension x="128" />
-						</Size>
-						<Anchors>
-							<Anchor point="TOP" relativePoint="TOP" x="0" y="-110"/>
-						</Anchors>
-					</FontString>
-				</Layer>
-			</Layers>
-		</Frame>
-	
+		<Size>
+			<AbsDimension x="156" y="0" />
+		</Size>
+		<Anchors>
+			<Anchor point="TOPLEFT" x="4" y="-4" />
+			<Anchor point="BOTTOMLEFT" x="4" y="4" />
+		</Anchors>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="4" y="-4" />
+						<Anchor point="BOTTOMRIGHT" x="-8" y="4" />
+					</Anchors>
+					<Color r="0" g="0" b="0" a="0.535" />
+				</Texture>
+				<Texture file="Interface\COMMON\ShadowOverlay-Left">
+					<Size>
+						<AbsDimension x="16" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="8" y="-4" />
+						<Anchor point="BOTTOMRIGHT" x="8" y="4" />
+					</Anchors>
+					<Color r="0" g="0" b="0" a="0.75" />
+				</Texture>
+			</Layer>
+		</Layers>	
 	</Frame>
 </Ui>

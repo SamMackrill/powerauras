@@ -31,6 +31,7 @@ PowaMisc =
 		PathToAuras = "Interface\\Addons\\PowerAuras\\Custom\\",
 		BlockIncomingAuras = false,
 		CustomTextures = {},
+		EditorCategoryState = {},
 	};
 
 PowaAuras.PowaMiscDefault = PowaAuras:CopyTable(PowaMisc);
