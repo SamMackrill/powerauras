@@ -1,4 +1,4 @@
--- wroustea@guerrillamailblock.com
+-- a3528830@jnxjn.com
 -- (Ignore that, just a disposable email I used for a battle.net account for a wow trial)
 
 -- Each widget has its own init function, and a shared pool of closures available to all widgets.
@@ -64,21 +64,61 @@ PowaAuras.UI = {
 		end
 	},
 	Checkbox = {
-		Init = function(checkbox, property)
+		UpdateColors = function(self)
+			if(self:GetChecked()) then
+				if(self:IsMouseOver()) then
+					self:SetBackdropBorderColor(1, 0.82, 0, 1);
+				else
+					self:SetBackdropBorderColor(1, 0.82, 0, 0.8);
+				end
+			else
+				if(self:IsMouseOver()) then
+					self:SetBackdropBorderColor(0.3, 0.3, 0.3, 1);
+				else
+					self:SetBackdropBorderColor(0.3, 0.3, 0.3, 0.8);
+				end
+			end
+		end,
+		Init = function(self, property, tooltipDesc)
 			-- Update text to the localized variant.
-			checkbox:SetText(PowaAuras.Text[checkbox:GetText()]);
+			local localeKey = self:GetText();
+			self:SetText(PowaAuras.Text[localeKey]);
 			-- Do we have a property?
-			if(property) then
+			if(type(property) == "string") then
 				-- Store property.
-				checkbox.Property = property;
+				self.Property = property;
 				-- Add OnClick handler for value setting.
-				checkbox:SetScript("OnClick", function(self)
+				self:SetScript("OnClick", function(self)
 					PowaAuras:SaveSetting(property, (self:GetChecked() and true or false));
 				end);
-			else
+			elseif(type(property) == "function") then
 				-- Use supplied onclick handler.
-				checkbox:SetScript("OnClick", checkbox.OnClick);
+				self:SetScript("OnClick", property);
 			end
+			-- Add tooltip.
+			PowaAuras.UI.Tooltip(self, localeKey, tooltipDesc or localeKey .. "Desc");
+			-- Update colours...
+			self:UpdateColors();
+		end,
+	},
+	Editbox = { -- NYU
+		UpdateColors = function(self)
+			if(self:GetChecked()) then
+				if(self:IsMouseOver()) then
+					self:SetBackdropBorderColor(1, 0.82, 0, 1);
+				else
+					self:SetBackdropBorderColor(1, 0.82, 0, 0.8);
+				end
+			else
+				if(self:IsMouseOver()) then
+					self:SetBackdropBorderColor(0.3, 0.3, 0.3, 1);
+				else
+					self:SetBackdropBorderColor(0.3, 0.3, 0.3, 0.8);
+				end
+			end		
+		end,
+		Init = function(self, property, tooltipDesc)
+		
 		end,
 	},
 	-- Frame separator definition.
@@ -408,7 +448,7 @@ PowaAuras.UI = {
 			-- Stores status for tab.
 			tab.Selected = false;
 			tab.Id = id;
-			tab:SetText(text);
+			tab:SetText(PowaAuras.Text[text]);
 			tab:SetParent(parent);
 			tab:SetScript("OnClick", function()
 				tab:GetParent():SelectTab(tab.Id);
@@ -439,7 +479,7 @@ PowaAuras.UI = {
 			-- Stores status for tab.
 			tab.Selected = false;
 			tab.Id = id;
-			tab:SetText(text);
+			tab:SetText(PowaAuras.Text[text]);
 			tab:SetParent(parent);
 			tab:SetScript("OnClick", function()
 				tab:GetParent():SelectTab(tab.Id);

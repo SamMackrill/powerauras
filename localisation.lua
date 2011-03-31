@@ -767,9 +767,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomBlockIncomingAuras = "Block Incoming Auras",
 	
 	-- New UI strings.
-	UI_Accept              = "Accept", -- Unused currently.
 	UI_Cancel              = "Cancel",
-	UI_Close               = "Close", -- Unused currently.
 	UI_Save                = "Save",
 	
 	UI_Debug               = "Debug",
@@ -815,12 +813,9 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	UI_Aura_TexLockDesc    = "Locks the aura in place, preventing you from moving the aura by dragging it.",
 	
 	UI_Timer               = "Timer",
-	UI_Timer_SrcText       = "Text Display",
-	UI_Timer_SrcGfx        = "Graphical Display",
-	
 	UI_Stacks              = "Stacks",
-	UI_Stacks_SrcText      = "Text Display",
-	UI_Stacks_SrcGfx       = "Graphical Display",
+	UI_SrcText             = "Text Display",
+	UI_SrcGfx              = "Graphical Display",
 	
 	UI_Activation          = "Activation",
 	UI_Rules               = "Rules",
