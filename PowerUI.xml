@@ -167,10 +167,12 @@
 				self:UpdateColors();
 			</OnLeave>
 			<OnEditFocusGained>
-				self:UpdateColors();
+				self:UpdateColors(true);
+				self:HighlightText();
 			</OnEditFocusGained>
 			<OnEditFocusLost>
-				self:UpdateColors();
+				self:UpdateColors(false);
+				self:HighlightText(0,0);
 			</OnEditFocusLost>
 		</Scripts>
 	</EditBox>
@@ -350,33 +352,65 @@
 				</OnEnterPressed>
 			</EditBox>
 		</Frames>
-	</Frame>
+	</Frame>	
 	
-	<Frame name="PowaSliderTemplate" virtual="true">
+	<Slider name="PowaSliderTemplate" virtual="true" minValue="1" maxValue="100" defaultValue="50" valueStep="1" orientation="HORIZONTAL" enableMouse="true">
 		<Size>
-			<AbsDimension x="75" y="45" />
+			<AbsDimension x="150" y="15" />
 		</Size>
+		<HitRectInsets>
+			<AbsInset left="0" right="0" top="-14" bottom="-15" />
+		</HitRectInsets>
+		<Backdrop bgFile="Interface\Buttons\UI-SliderBar-Background" edgeFile="Interface\Buttons\UI-SliderBar-Border" tile="true">
+			<EdgeSize>
+				<AbsValue val="8" />
+			</EdgeSize>
+			<TileSize>
+				<AbsValue val="8" />
+			</TileSize>
+			<BackgroundInsets>
+				<AbsInset left="3" right="3" top="6" bottom="6" />
+			</BackgroundInsets>
+		</Backdrop>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentText" parentKey="Text" text="Text" inherits="GameFontNormalSmall">
+					<Size>
+						<AbsDimension y="14" />
+					</Size>
+					<Anchors>
+						<Anchor point="BOTTOM" relativePoint="TOP" />
+					</Anchors>
+				</FontString>
+				<FontString name="$parentLow" parentKey="Low" text="Low" inherits="GameFontHighlightSmall">
+					<Size>
+						<AbsDimension y="14" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" x="0" y="-1" />
+					</Anchors>
+				</FontString>
+				<FontString name="$parentHigh" parentKey="High" text="High" inherits="GameFontHighlightSmall">
+					<Size>
+						<AbsDimension y="14" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" x="0" y="-1" />
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
 		<Frames>
-			<EditBox name="$parentValue" parentKey="Value" autofocus="false" font="GameFontHighlightSmall" justifyH="CENTER">
+			<EditBox name="$parentValue" parentKey="Value" justifyH="CENTER" inherits="PowaEditBoxTemplate">
 				<Size>
 					<AbsDimension x="70" y="14" />
 				</Size>
 				<Anchors>
-					<Anchor point="BOTTOM" relativePoint="BOTTOM" />
+					<Anchor point="TOP" relativePoint="BOTTOM" x="0" y="-1" />
 				</Anchors>
-				<Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground" edgeFile="Interface\ChatFrame\ChatFrameBackground" tile="true">
-					<EdgeSize>
-						<AbsValue val="1" />
-					</EdgeSize>
-					<TileSize>
-						<AbsValue val="5" />
-					</TileSize>
-					<Color r="0.0" g="0.0" b="0.0" a="0.5" />
-					<BorderColor r="0.3" g="0.3" b="0.3" a="0.8" />
-				</Backdrop>
 				<Scripts>
 					<OnEscapePressed>
-						self:SetText(self:GetParent().Slider:GetValue());
+						self:SetText(self:GetParent():GetValue());
 						self:ClearFocus();
 					</OnEscapePressed>
 					<OnEnterPressed>
@@ -389,110 +423,37 @@
 						end
 						-- If it exists, set it. Otherwise, default to the current one.
 						if(value) then
-							self:GetParent().Slider:SetValue(value);
+							self:GetParent():SetValue(value);
 						end
 						-- Now reset the box.
-						self:SetText(self:GetParent().Slider:GetValue());
+						self:SetText(self:GetParent():GetValue());
 						-- Done.
 						self:ClearFocus();						
 					</OnEnterPressed>
 					<OnLoad>
 						-- Setting justifyH in the XML doesn't work.
 						self:SetJustifyH("CENTER");
+						-- Initialize me!
+						PowaAuras.UI.EditBox(self);
 					</OnLoad>
 				</Scripts>
 			</EditBox>
-			<Slider name="$parentSlider" parentKey="Slider" minValue="1" maxValue="100" defaultValue="50" orientation="HORIZONTAL" enableMouse="true">
-				<Anchors>
-					<Anchor point="TOPLEFT">
-						<Offset x="0" y="-14" />
-					</Anchor>
-					<Anchor point="BOTTOMRIGHT">
-						<Offset x="0" y="14" />			
-					</Anchor>
-				</Anchors>
-				<HitRectInsets>
-					<AbsInset left="0" right="0" top="-10" bottom="-10" />
-				</HitRectInsets>
-				<Backdrop bgFile="Interface\Buttons\UI-SliderBar-Background" edgeFile="Interface\Buttons\UI-SliderBar-Border" tile="true">
-					<EdgeSize>
-						<AbsValue val="8" />
-					</EdgeSize>
-					<TileSize>
-						<AbsValue val="8" />
-					</TileSize>
-					<BackgroundInsets>
-						<AbsInset left="3" right="3" top="14" bottom="20" />
-					</BackgroundInsets>
-				</Backdrop>
-				<Layers>
-					<Layer level="ARTWORK">
-						<FontString name="$parentText" parentKey="Text" text="TEST" inherits="GameFontNormalSmall">
-							<Size>
-								<AbsDimension y="14" />
-							</Size>
-							<Anchors>
-								<Anchor point="BOTTOM" relativePoint="TOP" />
-							</Anchors>
-						</FontString>
-						<FontString name="$parentLow" parentKey="Low" inherits="GameFontHighlightSmall">
-							<Size>
-								<AbsDimension y="14" />
-							</Size>
-							<Anchors>
-								<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" />
-							</Anchors>
-						</FontString>
-						<FontString name="$parentHigh" parentKey="High" inherits="GameFontHighlightSmall">
-							<Size>
-								<AbsDimension y="14" />
-							</Size>
-							<Anchors>
-								<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" />
-							</Anchors>
-						</FontString>
-					</Layer>
-				</Layers>
-				<Scripts>
-					<OnValueChanged>
-						self:GetParent().Value:SetText(self:GetValue());
-						if(self:GetParent().OnValueChanged) then
-							-- Don't run the value through the OnValueGet mutator.
-							self:GetParent():OnValueChanged(value);
-						end
-					</OnValueChanged>
-					<OnLoad>
-						self.Low:SetText(select(1, self:GetMinMaxValues()));
-						self.High:SetText(select(2, self:GetMinMaxValues()));
-						
-						-- Hook set/get value functions.
-						self.__SetValue = self.SetValue;
-						self.__GetValue = self.GetValue;
-						
-						self.SetValue = function(self, value)
-							if(self:GetParent().OnValueSet) then
-								return self:__SetValue(self:GetParent():OnValueSet(value));
-							else
-								return self:__SetValue(value);
-							end
-						end
-						self.GetValue = function(self)
-							if(self:GetParent().OnValueGet) then
-								return self:GetParent():OnValueGet(self:__GetValue());
-							else
-								return self:__GetValue();
-							end
-						end
-					</OnLoad>
-				</Scripts>
-				<ThumbTexture name="$parentThumb" file="Interface\Buttons\UI-SliderBar-Button-Horizontal">
-					<Size>
-						<AbsDimension x="32" y="32" />
-					</Size>
-				</ThumbTexture>
-			</Slider>
 		</Frames>
-	</Frame>
+		<Scripts>
+			<OnValueChanged>
+				self.Value:SetText(self:GetValue());
+				if(self.OnValueChanged) then
+					-- Don't run the value through the OnValueGet mutator.
+					self:OnValueChanged(value);
+				end
+			</OnValueChanged>
+		</Scripts>
+		<ThumbTexture name="$parentThumb" file="Interface\Buttons\UI-SliderBar-Button-Horizontal">
+			<Size>
+				<AbsDimension x="32" y="32" />
+			</Size>
+		</ThumbTexture>
+	</Slider>
 	
 	<Button name="PowaTabButtonTemplate" virtual="true" text="Tab">
 		<Size>
@@ -643,7 +604,7 @@
 				<Texture file="Interface\DialogFrame\UI-DialogBox-Corner">
 					<Size x="32" y="32" />	
 					<Anchors>
-						<Anchor point="TOPRIGHT" relativeTo="$parent">
+						<Anchor point="TOPRIGHT">
 							<Offset>
 								<AbsDimension x="-4" y="-4" />
 							</Offset>
@@ -732,7 +693,7 @@
 				<Texture file="Interface\DialogFrame\UI-DialogBox-Corner">
 					<Size x="32" y="32" />	
 					<Anchors>
-						<Anchor point="TOPRIGHT" relativeTo="$parent">
+						<Anchor point="TOPRIGHT">
 							<Offset>
 								<AbsDimension x="-4" y="-4" />
 							</Offset>
@@ -756,17 +717,17 @@
 				  <AbsDimension y="260" />
 				</Size>
 				<Anchors>
-					<Anchor point="TOP" relativeTo="$parent">
+					<Anchor point="TOP">
 						<Offset>
 							<AbsDimension x="0" y="-55" />
 						</Offset>
 					</Anchor>
-					<Anchor point="LEFT" relativeTo="$parent">
+					<Anchor point="LEFT">
 						<Offset>
 							<AbsDimension x="15" y="0" />
 						</Offset>
 					</Anchor>
-					<Anchor point="RIGHT" relativeTo="$parent">
+					<Anchor point="RIGHT">
 						<Offset>
 							<AbsDimension x="-15" y="0" />
 						</Offset>
@@ -775,12 +736,12 @@
 				<Frames>
 					<Frame name="$parentAura" parentKey="Aura" hidden="true">
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parent">
+							<Anchor point="TOPLEFT">
 								<Offset>
 									<AbsDimension x="0" y="0" />
 								</Offset>
 							</Anchor>
-							<Anchor point="BOTTOMRIGHT" relativeTo="$parent">
+							<Anchor point="BOTTOMRIGHT">
 								<Offset>
 									<AbsDimension x="0" y="0" />
 								</Offset>
@@ -792,12 +753,12 @@
 									<Layer level="ARTWORK">
 										<Texture>
 											<Anchors>
-												<Anchor point="TOPLEFT" relativeTo="$parent">
+												<Anchor point="TOPLEFT">
 													<Offset>
 														<AbsDimension x="4" y="-4" />
 													</Offset>
 												</Anchor>
-												<Anchor point="BOTTOMRIGHT" relativeTo="$parent">
+												<Anchor point="BOTTOMRIGHT">
 													<Offset>
 														<AbsDimension x="-8" y="4" />
 													</Offset>
@@ -810,12 +771,12 @@
 												<AbsDimension x="16" />
 											</Size>
 											<Anchors>
-												<Anchor point="TOPRIGHT" relativeTo="$parent">
+												<Anchor point="TOPRIGHT">
 													<Offset>
 														<AbsDimension x="8" y="-4" />
 													</Offset>
 												</Anchor>
-												<Anchor point="BOTTOMRIGHT" relativeTo="$parent">
+												<Anchor point="BOTTOMRIGHT">
 													<Offset>
 														<AbsDimension x="8" y="4" />
 													</Offset>
@@ -828,7 +789,7 @@
 												<AbsDimension x="128" />
 											</Size>
 											<Anchors>
-												<Anchor point="TOP" relativeTo="PowaEditorDisplayAuraSidebar" relativePoint="TOP" x="0" y="-110"/>
+												<Anchor point="TOP" relativePoint="TOP" x="0" y="-110"/>
 											</Anchors>
 										</FontString>
 									</Layer>
@@ -852,12 +813,12 @@
 														<AbsDimension x="96" y="96" />
 													</Size>
 													<Anchors>
-														<Anchor point="TOPLEFT" relativeTo="$parent">
+														<Anchor point="TOPLEFT">
 															<Offset>
 																<AbsDimension x="0" y="0" />
 															</Offset>
 														</Anchor>
-														<Anchor point="BOTTOMRIGHT" relativeTo="$parent">
+														<Anchor point="BOTTOMRIGHT">
 															<Offset>
 																<AbsDimension x="0" y="0" />
 															</Offset>
@@ -888,7 +849,7 @@
 											<AbsDimension x="64" y="24" />
 										</Size>
 										<Anchors>
-											<Anchor point="BOTTOM" relativeTo="$parent" x="0" y="35" />
+											<Anchor point="BOTTOM" x="0" y="35" />
 										</Anchors>
 										<Scripts>
 											<OnLoad>
@@ -901,7 +862,7 @@
 											<AbsDimension x="64" y="24" />
 										</Size>
 										<Anchors>
-											<Anchor point="BOTTOM" relativeTo="$parent" x="0" y="9" />
+											<Anchor point="BOTTOM" x="0" y="9" />
 										</Anchors>
 										<Scripts>
 											<OnShow>
@@ -913,8 +874,8 @@
 							</Frame>
 							<Frame name="$parentMain" parentKey="Main">
 								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="$parent" />
-									<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
+									<Anchor point="TOPLEFT" />
+									<Anchor point="BOTTOMRIGHT" />
 								</Anchors>
 								<Frames>
 									<ScrollFrame name="$parentConfig" inherits="UIPanelScrollFrameTemplate" parentKey="Config">
@@ -922,8 +883,8 @@
 											<AbsDimension x="350" />
 										</Size>
 										<Anchors>
-											<Anchor point="TOPLEFT" relativeTo="$parent" x="0" y="-2" />
-											<Anchor point="BOTTOMRIGHT" relativeTo="$parent" x="-24" y="2" />
+											<Anchor point="TOPLEFT" x="0" y="-2" />
+											<Anchor point="BOTTOMRIGHT" x="-24" y="2" />
 										</Anchors>
 										<ScrollChild>
 											<Frame parentKey="Child">
@@ -943,20 +904,51 @@
 															</OnLoad>
 														</Scripts>
 													</Frame>
-													<Frame name="$parentOpacity" parentKey="Opacity" inherits="PowaSliderTemplate">
+													<Slider name="$parentOpacity" minValue="1" maxValue="100" defaultValue="75" valueStep="1" parentKey="Opacity" inherits="PowaSliderTemplate">
 														<Scripts>
 															<OnLoad>
-																PowaAuras.UI.Slider(self, 1, 100, 75, 1, "UI_Aura_TexOpacity", "%");
+																PowaAuras.UI.Slider(self, "UI_Aura_TexOpacity", "%");
 															</OnLoad>
 														</Scripts>
-													</Frame>
-													<Frame name="$parentScale" parentKey="Scale" inherits="PowaSliderTemplate">
+													</Slider>
+													<Slider name="$parentScale" minValue="1" maxValue="500" defaultValue="75" valueStep="1" parentKey="Scale" inherits="PowaSliderTemplate">
 														<Scripts>
 															<OnLoad>
-																PowaAuras.UI.Slider(self, 1, 500, 75, 1, "UI_Aura_TexScale", "%");
+																PowaAuras.UI.Slider(self, "UI_Aura_TexScale", "%");
 															</OnLoad>
 														</Scripts>
-													</Frame>
+													</Slider>
+													<Slider name="$parentRotate" minValue="0" maxValue="360" defaultValue="0" valueStep="1" parentKey="Rotate" inherits="PowaSliderTemplate">
+														<Scripts>
+															<OnLoad>
+																PowaAuras.UI.Slider(self, "UI_Aura_TexRotate");
+															</OnLoad>
+														</Scripts>
+													</Slider>
+													<Slider name="$parentFlip" minValue="1" maxValue="4" defaultValue="1" valueStep="1" parentKey="Flip" inherits="PowaSliderTemplate">
+														<Scripts>
+															<OnLoad>
+																-- Add mutators to slider widgets BEFORE initializing them.
+																self.OnValueGet = function(_, value)
+																	if(value == 1) then return "";
+																	elseif(value == 2) then return "X";
+																	elseif(value == 3) then return "Y";
+																	elseif(value == 4) then return "XY";
+																	else return value; end
+																end
+																self.OnValueSet = function(_, value)
+																	if(tonumber(value, 10)) then return tonumber(value, 10); end
+																	
+																	if(value == "") then return 1;
+																	elseif(value == "X") then return 2;
+																	elseif(value == "Y") then return 3;
+																	elseif(value == "XY") then return 4;
+																	else return 1; end
+																end
+																PowaAuras.UI.Slider(self, "UI_Aura_TexFlip", "", "None", "XY");
+															</OnLoad>
+														</Scripts>
+													</Slider>
 													<Frame parentKey="Separator2" inherits="PowaFrameSeparatorTemplate">
 														<Scripts>
 															<OnLoad>
@@ -980,37 +972,6 @@
 															</OnLoad>
 														</Scripts>
 													</EditBox>
-													<Frame name="$parentRotate" parentKey="Rotate" inherits="PowaSliderTemplate">
-														<Scripts>
-															<OnLoad>
-																PowaAuras.UI.Slider(self, 0, 360, 0, 1, "UI_Aura_TexRotate");
-															</OnLoad>
-														</Scripts>
-													</Frame>
-													<Frame name="$parentFlip" parentKey="Flip" inherits="PowaSliderTemplate">
-														<Scripts>
-															<OnLoad>
-																-- Add mutators to slider widgets BEFORE initializing them.
-																self.OnValueGet = function(_, value)
-																	if(value == 1) then return "";
-																	elseif(value == 2) then return "X";
-																	elseif(value == 3) then return "Y";
-																	elseif(value == 4) then return "XY";
-																	else return value; end
-																end
-																self.OnValueSet = function(_, value)
-																	if(tonumber(value, 10)) then return tonumber(value, 10); end
-																	
-																	if(value == "") then return 1;
-																	elseif(value == "X") then return 2;
-																	elseif(value == "Y") then return 3;
-																	elseif(value == "XY") then return 4;
-																	else return 1; end
-																end
-																PowaAuras.UI.Slider(self, 1, 4, 1, 1, "UI_Aura_TexFlip", "", "None", "XY");
-															</OnLoad>
-														</Scripts>
-													</Frame>
 													<Frame parentKey="Separator3" inherits="PowaFrameSeparatorTemplate">
 														<Scripts>
 															<OnLoad>
@@ -1018,24 +979,25 @@
 															</OnLoad>
 														</Scripts>
 													</Frame>
-													<Frame name="$parentDeform" parentKey="Deform" inherits="PowaSliderTemplate">
+													<Slider name="$parentDeform" minValue="0.1" maxValue="2.0" defaultValue="1.0" valueStep="0.05" parentKey="Deform" inherits="PowaSliderTemplate">
 														<Scripts>
 															<OnLoad>
 																-- Add mutators to slider widgets BEFORE initializing them.
 																self.OnValueGet = function(_, value)
 																	return format("%.2f", value);
 																end
-																PowaAuras.UI.Slider(self, 0.1, 2.0, 1.0, 0.05, "UI_Aura_TexDeform");
+																-- Set 0.1 and 2.0 as the min/max labels in string form to prevent the huge precision mess.
+																PowaAuras.UI.Slider(self, "UI_Aura_TexDeform", "", "0.1", "2.0");
 															</OnLoad>
 														</Scripts>
-													</Frame>
-													<Frame name="$parentStrata" parentKey="Strata" inherits="PowaSliderTemplate">
+													</Slider>
+													<Slider name="$parentStrata" minValue="-65536" maxValue="65536" defaultValue="0" valueStep="1" parentKey="Strata" inherits="PowaSliderTemplate">
 														<Scripts>
 															<OnLoad>
-																PowaAuras.UI.Slider(self, -(2^16), 2^16, 0, 1, "UI_Aura_TexStrata");
+																PowaAuras.UI.Slider(self, "UI_Aura_TexStrata");
 															</OnLoad>
 														</Scripts>
-													</Frame>
+													</Slider>
 												</Frames>
 												<Scripts>
 													<OnLoad>
@@ -1043,18 +1005,18 @@
 														PowaAuras.UI.LayoutFrame(self, 2, { [1] = { X = 0.5 }, [2] = { X = 0.5 } }, true);
 														
 														self:SetItem(self.Separator1, { Margin = { 0, 0, 0, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
-														self:SetItem(self.Opacity, { Margin = { 0, 0, 0, 0 }, Padding = { 2, 4, 0, 0 } });
-														self:SetItem(self.Scale, { Margin = { 0, 0, 0, 0 }, Padding = { 4, -2, 0, 0 } });
-														self:SetItem(self.Rotate, { Margin = { 0, 0, 4, 0 }, Padding = { 2, 4, 0, 0 } });
-														self:SetItem(self.Flip, { Margin = { 0, 0, 4, 0 }, Padding = { 4, -2, 0, 0 } });
+														self:SetItem(self.Opacity, { Margin = { 0, 0, 16, 20 }, Padding = { 2, 4, 0, 0 } });
+														self:SetItem(self.Scale, { Margin = { 0, 0, 16, 20 }, Padding = { 4, -2, 0, 0 } });
+														self:SetItem(self.Rotate, { Margin = { 0, 0, 16, 20 }, Padding = { 2, 4, 0, 0 } });
+														self:SetItem(self.Flip, { Margin = { 0, 0, 16, 20 }, Padding = { 4, -2, 0, 0 } });
 														
-														self:SetItem(self.Separator2, { Margin = { 0, 0, 12, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
-														self:SetItem(self.X, { Margin = { 0, 0, 10, 0 }, Padding = { 2, 4, 0, 0 } });
-														self:SetItem(self.Y, { Margin = { 0, 0, 10, 0 }, Padding = { 4, -2, 0, 0 } });
+														self:SetItem(self.Separator2, { Margin = { 0, 0, 6, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
+														self:SetItem(self.X, { Margin = { 0, 0, 4, 4 }, Padding = { 2, 4, 0, 0 } });
+														self:SetItem(self.Y, { Margin = { 0, 0, 4, 4 }, Padding = { 4, -2, 0, 0 } });
 														
-														self:SetItem(self.Separator3, { Margin = { 0, 0, 12, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
-														self:SetItem(self.Deform, { Margin = { 0, 0, 4, 0 }, Padding = { 2, 4, 0, 0 } });
-														self:SetItem(self.Strata, { Margin = { 0, 0, 4, 0 }, Padding = { 4, -2, 0, 0 } });
+														self:SetItem(self.Separator3, { Margin = { 0, 0, 6, 0 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
+														self:SetItem(self.Deform, { Margin = { 0, 0, 16, 20 }, Padding = { 2, 4, 0, 0 } });
+														self:SetItem(self.Strata, { Margin = { 0, 0, 16, 20 }, Padding = { 4, -2, 0, 0 } });
 														
 														-- Register those last 3 as advanced elements.
 														PowaAuras:RegisterAdvancedElement(self.Separator3);
@@ -1067,16 +1029,16 @@
 									</ScrollFrame>
 									<Frame name="$parentSelector" parentKey="Selector" inherits="PowaTabDialogTemplate">
 										<Anchors>
-											<Anchor point="TOPLEFT" relativeTo="$parent" />
-											<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
+											<Anchor point="TOPLEFT" />
+											<Anchor point="BOTTOMRIGHT" />
 										</Anchors>
 										<Frames>
 											<Frame name="$parentDefault" inherits="PowaBrowserFrameTemplate" parentKey="Default">
 												<Anchors>
-													<Anchor point="TOPLEFT" relativeTo="$parent">
+													<Anchor point="TOPLEFT">
 														<Offset x="5" y="-5" />
 													</Anchor>
-													<Anchor point="BOTTOMRIGHT" relativeTo="$parent">
+													<Anchor point="BOTTOMRIGHT">
 														<Offset x="-5" y="30" />
 													</Anchor>
 												</Anchors>
@@ -1131,10 +1093,10 @@
 											</Frame>
 											<Frame name="$parentWoW" inherits="PowaBrowserFrameTemplate" parentKey="WoW">
 												<Anchors>
-													<Anchor point="TOPLEFT" relativeTo="$parent">
+													<Anchor point="TOPLEFT">
 														<Offset x="5" y="-5" />
 													</Anchor>
-													<Anchor point="BOTTOMRIGHT" relativeTo="$parent">
+													<Anchor point="BOTTOMRIGHT">
 														<Offset x="-5" y="30" />
 													</Anchor>
 												</Anchors>
@@ -1172,10 +1134,10 @@
 											</Frame>
 											<Frame name="$parentCustom" inherits="PowaBrowserFrameBaseTemplate" parentKey="Custom">
 												<Anchors>
-													<Anchor point="TOPLEFT" relativeTo="$parent">
+													<Anchor point="TOPLEFT">
 														<Offset x="5" y="-5" />
 													</Anchor>
-													<Anchor point="BOTTOMRIGHT" relativeTo="$parent">
+													<Anchor point="BOTTOMRIGHT">
 														<Offset x="-5" y="30" />
 													</Anchor>
 												</Anchors>
@@ -1199,8 +1161,8 @@
 												<Frames>
 													<EditBox name="$parentTexName" parentKey="TexName" inherits="PowaEditBoxTemplate">
 														<Anchors>
-															<Anchor point="BOTTOMLEFT" relativeTo="$parent" x="9" y="9" />
-															<Anchor point="BOTTOMRIGHT" relativeTo="$parent" x="-9" y="9" />
+															<Anchor point="BOTTOMLEFT" x="9" y="9" />
+															<Anchor point="BOTTOMRIGHT" x="-9" y="9" />
 														</Anchors>
 														<Scripts>
 															<OnLoad>
@@ -1280,14 +1242,14 @@
 											</Frame>
 											<Frame name="$parentText" parentKey="Text">
 												<Anchors>
-													<Anchor point="TOPLEFT" relativeTo="$parent" />
-													<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
+													<Anchor point="TOPLEFT" />
+													<Anchor point="BOTTOMRIGHT" />
 												</Anchors>
 											</Frame>
 											<Frame name="$parentIcon" parentKey="Icon">
 												<Anchors>
-													<Anchor point="TOPLEFT" relativeTo="$parent" />
-													<Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
+													<Anchor point="TOPLEFT" />
+													<Anchor point="BOTTOMRIGHT" />
 												</Anchors>
 											</Frame>
 										</Frames>
@@ -1360,12 +1322,12 @@
 							<AbsDimension x="0" y="-30" />
 						</Offset>
 					</Anchor>
-					<Anchor point="LEFT" relativeTo="$parent">
+					<Anchor point="LEFT">
 						<Offset>
 							<AbsDimension x="15" y="0" />
 						</Offset>
 					</Anchor>
-					<Anchor point="RIGHT" relativeTo="$parent">
+					<Anchor point="RIGHT">
 						<Offset>
 							<AbsDimension x="-15" y="0" />
 						</Offset>
@@ -1392,7 +1354,7 @@
 					<AbsDimension x="92" y="24" />
 				</Size>
 				<Anchors>
-					<Anchor point="BOTTOMRIGHT" relativeTo="$parent" x="-17" y="15" />
+					<Anchor point="BOTTOMRIGHT" x="-17" y="15" />
 				</Anchors>
 				<Scripts>
 					<OnLoad>

@@ -64,21 +64,6 @@ PowaAuras.UI = {
 		end
 	},
 	Checkbox = {
-		UpdateColors = function(self)
-			if(self:GetChecked()) then
-				if(self:IsMouseOver()) then
-					self:SetBackdropBorderColor(1, 0.82, 0, 1);
-				else
-					self:SetBackdropBorderColor(1, 0.82, 0, 0.8);
-				end
-			else
-				if(self:IsMouseOver()) then
-					self:SetBackdropBorderColor(0.3, 0.3, 0.3, 1);
-				else
-					self:SetBackdropBorderColor(0.3, 0.3, 0.3, 0.8);
-				end
-			end
-		end,
 		Init = function(self, property, tooltipDesc)
 			-- Update text to the localized variant.
 			local localeKey = self:GetText();
@@ -100,10 +85,47 @@ PowaAuras.UI = {
 			-- Update colours...
 			self:UpdateColors();
 		end,
+		UpdateColors = function(self)
+			if(self:GetChecked()) then
+				if(self:IsMouseOver()) then
+					self:SetBackdropBorderColor(1, 0.82, 0, 1);
+				else
+					self:SetBackdropBorderColor(1, 0.82, 0, 0.8);
+				end
+			else
+				if(self:IsMouseOver()) then
+					self:SetBackdropBorderColor(0.3, 0.3, 0.3, 1);
+				else
+					self:SetBackdropBorderColor(0.3, 0.3, 0.3, 0.8);
+				end
+			end
+		end
 	},
 	EditBox = {
-		UpdateColors = function(self)
-			if(self:HasFocus()) then
+		Init = function(self, property, title, tooltipDesc)
+			-- Property handling not yet implemented.
+			
+			-- Show a title?
+			if(title) then
+				-- Set title, change editbox text inset so that it doesn't collide.
+				self.Title:SetText(PowaAuras.Text[title] .. ":");
+				self:SetTextInsets(self.Title:GetStringWidth()+8, 0, 1, 0);
+			else
+				self.Title:Hide();
+				self:SetTextInsets(0, 0, 1, 0);
+			end
+			-- Tooltip me up!
+			if(title) then
+				PowaAuras.UI.Tooltip(self, title, tooltipDesc or title .. "Desc");
+			end
+			-- Update colours...
+			self:UpdateColors();		
+		end,
+		UpdateColors = function(self, state)
+			-- self:HasFocus() will return true even if OnEditFocusLost is fired, oddly. So we can force a state to
+			-- be used.
+			if(type(state) ~= "boolean") then state = self:HasFocus(); end
+			if(state) then
 				if(self:IsMouseOver()) then
 					self:SetBackdropBorderColor(1, 0.82, 0, 1);
 				else
@@ -116,24 +138,7 @@ PowaAuras.UI = {
 					self:SetBackdropBorderColor(0.3, 0.3, 0.3, 0.8);
 				end
 			end		
-		end,
-		Init = function(self, property, title, hideTitle, tooltipDesc)
-			-- Property handling not yet implemented.
-			
-			-- Showing a title?
-			if(hideTitle) then
-				self.Title:Hide();
-				self:SetTextInsets(6, 0, 1, 0);
-			else
-				-- Set title, change editbox text inset so that it doesn't collide.
-				self.Title:SetText(PowaAuras.Text[title] .. ":");
-				self:SetTextInsets(self.Title:GetStringWidth()+8, 0, 1, 0);
-			end
-			-- Tooltip me up!
-			PowaAuras.UI.Tooltip(self, title, tooltipDesc or title .. "Desc");
-			-- Update colours...
-			self:UpdateColors();		
-		end,
+		end
 	},
 	-- Frame separator definition.
 	FrameSeparator = {
@@ -330,45 +335,60 @@ PowaAuras.UI = {
 	},
 	-- Slider definition.
 	Slider = {	
-		Init = function(frame, min, max, default, step, title, unit, minLabel, maxLabel, tooltipDesc)
+		Init = function(frame, title, unit, minLabel, maxLabel, tooltipDesc)
 			-- Call them.
+			frame:SetMinMaxLabels(minLabel, maxLabel);
 			frame:SetUnit(unit or "");
-			frame:SetMinMaxValues(min or 1, max or 100, minLabel, maxLabel);
-			frame:SetValue(default or 50);
-			frame:SetValueStep(step or 1);
 			frame:SetTitle(title or "");
 			-- Add tooltips to the slider, background frame and editbox.
-			PowaAuras.UI.Tooltip(frame, title, tooltipDesc or title .. "Desc" , { "Slider", "Value" });
+			PowaAuras.UI.Tooltip(frame, title, tooltipDesc or title .. "Desc", { "Value" });			
+			-- Hook set/get value functions.
+			frame.__SetValue = frame.SetValue;
+			frame.__GetValue = frame.GetValue;			
+			frame.SetValue = frame.SetValueHook
+			frame.GetValue = frame.GetValueHook;
+			-- Update editbox value.
+			frame.Value:SetText(frame:GetValue());
 		end,
 		GetMinValue = function(self)
-			return select(1, self.Slider:GetMinMaxValues());
+			return select(1, self:GetMinMaxValues());
 		end,
 		GetMaxValue = function(self)
-			return select(2, self.Slider:GetMinMaxValues());
+			return select(2, self:GetMinMaxValues());
 		end,
-		SetMinMaxValues = function(self, min, max, labelMin, labelMax)
-			self.Slider:SetMinMaxValues(min, max);
-			self.Slider.Low:SetText((labelMin or min) .. (self.Unit or ""));
-			self.Slider.High:SetText((labelMax or max) .. (self.Unit or ""));
+		GetValueHook = function(self)
+			if(self.OnValueGet) then
+				return self:OnValueGet(self:__GetValue());
+			else
+				return self:__GetValue();
+			end
+		end,
+		SetMinMaxLabels = function(self, labelMin, labelMax)
+			-- Use min/max if no labels are defined.
+			if(not labelMin) then labelMin = self:GetMinValue(); end
+			if(not labelMax) then labelMax = self:GetMaxValue(); end
+			-- Set.
+			self.Low:SetText(labelMin .. (self.Unit or ""));
+			self.High:SetText(labelMax .. (self.Unit or ""));
+			-- Store so SetUnit can be called later on.
+			self.MinLabel = labelMin;
+			self.MaxLabel = labelMax;
 		end,
 		SetTitle = function(self, title)
-			self.Slider.Text:SetText(PowaAuras.Text[title]);	
-		end,
-		SetValue = function(self, value)
-			self.Slider:SetValue(value);
-		end,
-		GetValue = function(self)
-			self.Slider:GetValue();
-		end,
-		SetValueStep = function(self, value)
-			self.Slider:SetValueStep(value);
-		end,
-		GetValueStep = function(self)
-			self.Slider:GetValueStep();
+			self.Text:SetText(PowaAuras.Text[title]);	
 		end,
 		SetUnit = function(self, unit)
-			-- Manual calls to SetMinMaxValues are needed afterwards!
+			-- Update unit...
 			self.Unit = unit;
+			-- Update labels!
+			self:SetMinMaxLabels(self.MinLabel, self.MaxLabel);
+		end,
+		SetValueHook = function(self, value)
+			if(self.OnValueSet) then
+				return self:__SetValue(self:OnValueSet(value));
+			else
+				return self:__SetValue(value);
+			end		
 		end
 	},
 	-- Tab definition.
@@ -509,6 +529,21 @@ PowaAuras.UI = {
 	},
 	-- Tooltip definition.
 	Tooltip = {
+		Init = function(frame, title, text, children)
+			-- Store data.
+			frame.TooltipTitle = PowaAuras.Text[title];
+			frame.TooltipText = PowaAuras.Text[text];
+			-- Use the RefreshTooltip function as a display method.
+			frame:ApplyScript(frame, "OnEnter", frame.Refresh);
+			frame:ApplyScript(frame, "OnLeave", frame.Leave);
+			-- Add to children too.
+			if(children) then
+				for _, child in pairs(children) do
+					frame:ApplyScript(frame[child], "OnEnter", function() frame:Refresh(); end);
+					frame:ApplyScript(frame[child], "OnLeave", function() GameTooltip:Hide(); end);
+				end
+			end
+		end,
 		Refresh = function(self)
 			-- Hide tip.
 			GameTooltip:Hide();
@@ -530,21 +565,6 @@ PowaAuras.UI = {
 				frame:HookScript(script, callback);
 			else
 				frame:SetScript(script, callback);
-			end
-		end,
-		Init = function(frame, title, text, children)
-			-- Store data.
-			frame.TooltipTitle = PowaAuras.Text[title];
-			frame.TooltipText = PowaAuras.Text[text];
-			-- Use the RefreshTooltip function as a display method.
-			frame:ApplyScript(frame, "OnEnter", frame.Refresh);
-			frame:ApplyScript(frame, "OnLeave", frame.Leave);
-			-- Add to children too.
-			if(children) then
-				for _, child in pairs(children) do
-					frame:ApplyScript(frame[child], "OnEnter", function() frame:Refresh(); end);
-					frame:ApplyScript(frame[child], "OnLeave", function() GameTooltip:Hide(); end);
-				end
 			end
 		end
 	},
