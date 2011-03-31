@@ -1,0 +1,43 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+    ..\..\FrameXML\UI.xsd">
+	<Script file="FrameSeparator.lua" />
+	<Frame name="PowaFrameSeparatorTemplate" virtual="true">
+		<Size>
+			<AbsDimension x="42" y="27" />
+		</Size>
+		<Layers>
+			<!--
+			<Layer level="BACKGROUND">
+				<Texture file="Interface\Archeology\ArchaeologyParts" parentKey="LeftTex">
+					<Size>
+						<AbsDimension x="42" y="27" />
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT" />
+					</Anchors>
+					<TexCoords left="0.00195313" right="0.10742188" top="0.70312500" bottom="0.83593750" />
+				</Texture>
+				<Texture file="Interface\Archeology\ArchaeologyParts" parentKey="RightTex">
+					<Size>
+						<AbsDimension x="42" y="27" />
+					</Size>
+					<Anchors>
+						<Anchor point="RIGHT" />
+					</Anchors>
+					<TexCoords left="0.00195313" right="0.10742188" top="0.56250000" bottom="0.69531250" />
+				</Texture>
+			</Layer>
+			-->
+			<Layer level="OVERLAY">
+				<FontString parentKey="Text" inherits="GameFontNormal" justifyH="CENTER" justifyV="MIDDLE">
+					<Anchors>
+						<Anchor point="LEFT" x="46" y="0" />
+						<Anchor point="RIGHT" x="-46" y="0" />
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
+</Ui>
