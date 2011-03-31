@@ -3,40 +3,37 @@
     xsi:schemaLocation="http://www.blizzard.com/wow/ui/
     ..\..\FrameXML\UI.xsd">
 	<Script file="FrameSeparator.lua" />
-	<Frame name="PowaFrameSeparatorTemplate" virtual="true">
+	<Frame name="PowaFrameSeparatorTemplate" virtual="true" enableMouse="true">
 		<Size>
-			<AbsDimension x="42" y="27" />
+			<AbsDimension x="42" y="28" />
 		</Size>
 		<Layers>
-			<!--
 			<Layer level="BACKGROUND">
-				<Texture file="Interface\Archeology\ArchaeologyParts" parentKey="LeftTex">
-					<Size>
-						<AbsDimension x="42" y="27" />
-					</Size>
+				<Texture file="Interface\LevelUp\LevelUpTex" parentKey="Line">
+					<Size x="419" y="2" />
 					<Anchors>
-						<Anchor point="LEFT" />
+						<Anchor point="BOTTOMLEFT" x="0" y="1" />
+						<Anchor point="BOTTOMRIGHT" x="0" y="1" />
 					</Anchors>
-					<TexCoords left="0.00195313" right="0.10742188" top="0.70312500" bottom="0.83593750" />
-				</Texture>
-				<Texture file="Interface\Archeology\ArchaeologyParts" parentKey="RightTex">
-					<Size>
-						<AbsDimension x="42" y="27" />
-					</Size>
-					<Anchors>
-						<Anchor point="RIGHT" />
-					</Anchors>
-					<TexCoords left="0.00195313" right="0.10742188" top="0.56250000" bottom="0.69531250" />
+					<TexCoords left="0" right="0.818359375" top="0.013671875" bottom="0.017578125" />
+					<Color r="1.0" g="0.82" b="0" a="0.8" />
 				</Texture>
 			</Layer>
-			-->
 			<Layer level="OVERLAY">
 				<FontString parentKey="Text" inherits="GameFontNormal" justifyH="CENTER" justifyV="MIDDLE">
+					<Size x="419" y="16" />
 					<Anchors>
-						<Anchor point="LEFT" x="46" y="0" />
-						<Anchor point="RIGHT" x="-46" y="0" />
+						<Anchor point="LEFT" x="16" y="0" />
+						<Anchor point="RIGHT" x="-16" y="0" />
 					</Anchors>
 				</FontString>
+				<Texture file="Interface\BUTTONS\UI-PlusMinus-Buttons" hidden="true" parentKey="Expand">
+					<Size x="8" y="8" />
+					<Anchors>
+						<Anchor point="LEFT" x="0" y="-2" />
+					</Anchors>
+					<TexCoords left="0.5" right="1" top="0" bottom="0.5" />
+				</Texture>
 			</Layer>
 		</Layers>
 	</Frame>

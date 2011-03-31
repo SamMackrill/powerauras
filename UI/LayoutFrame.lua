@@ -79,8 +79,6 @@ PowaAuras.UI["LayoutFrame"] = {
 			cW = (cW == 0 and item:GetWidth() or cW <= 1 and (self:GetWidth() * cW));
 			cH = (cH == 0 and item:GetHeight() or cH <= 1 and (self:GetHeight() * cH));
 			-- Skip if item is not visible.
-			-- We skip this block as it positions the element, something which is useless.
-			-- However, updating the HORIZONTAL offset is vital to the layout, the vertical not so much.
 			if(item:IsShown()) then
 				-- Debug layout?
 				if(self.Debug == true) then self:DebugItem(item, cW, cH, cW-pL-pR, cH-pT-pB, pL, pR, pT, pB, mL, mR, mT, mB, oX, oY); end
@@ -92,7 +90,7 @@ PowaAuras.UI["LayoutFrame"] = {
 				item:SetPoint("TOPLEFT", self, "TOPLEFT", oX+pL+mL, (oY - pT - mT));
 			else
 				-- ...So we "forget" the column height ever existed.
-				cH = 0;
+				cH = 0; mB = 0; mT = 0;
 			end
 			-- Update offsets once more for margins only.
 			oX = oX + cW + mL + mR;
