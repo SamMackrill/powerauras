@@ -1,0 +1,42 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+    ..\..\FrameXML\UI.xsd">
+	<Script file="TreeView.lua" />
+	<Frame name="PowaTreeViewTemplate" virtual="true" inherits="PowaBorderedFrameTemplate">
+		<Size>
+			<AbsDimension x="172" y="0" />
+		</Size>
+		<Anchors>
+			<Anchor point="TOPLEFT" x="2" y="-2" />
+			<Anchor point="BOTTOMLEFT" x="2" y="2" />
+		</Anchors>
+		<Frames>
+			<ScrollFrame name="$parentScroll" inherits="UIPanelScrollFrameTemplate">
+				<Size>
+					<AbsDimension x="172" y="0" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="4" y="-4" />
+					<Anchor point="BOTTOMRIGHT" x="-26" y="4" />
+				</Anchors>
+				<ScrollChild>
+					<Frame parentKey="Child">
+						<Size>
+							<AbsDimension x="140" y="0" />
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="4" y="-4" />
+							<Anchor point="BOTTOMLEFT" x="4" y="4" />
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								PowaAuras.UI.LayoutFrame(self, 1, { X = 1.0, Y = 23 }, true);
+							</OnLoad>
+						</Scripts>
+					</Frame>
+				</ScrollChild>
+			</ScrollFrame>
+		</Frames>
+	</Frame>
+</Ui>
