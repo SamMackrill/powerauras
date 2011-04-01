@@ -11,19 +11,18 @@ PowaAuras.UI = {
 		self[widget] = setmetatable(self[widget], { 
 				-- Constructor.
 				__call = function(self, widget, ...)
-					-- Widget doesn't need to be a table.
-					if(type(widget) == "table") then
-						-- Check for hooks. All this does is set widget[v] to widget[k] (so imagine: { Show = "__Show" })
-						-- This allows you to then specify your own Show function without destroying the initial one.
-						if(self.Hooks) then
-							for k,v in pairs(self.Hooks) do
-								widget[v] = widget[k];
-							end
+					-- Run pre-init function, it can directly modify the widget too.
+					widget = (self.PreInit and self.PreInit() or widget);
+					-- Check for hooks. All this does is set widget[v] to widget[k] (so imagine: { Show = "__Show" })
+					-- This allows you to then specify your own Show function without destroying the initial one.
+					if(self.Hooks) then
+						for k,v in pairs(self.Hooks) do
+							widget[v] = widget[k];
 						end
-						-- Copy anything we have over automatically...
-						for k,v in pairs(self) do
-							if(k ~= "Init") then widget[k] = v; end
-						end
+					end
+					-- Copy anything we have over automatically...
+					for k,v in pairs(self) do
+						if(k ~= "Init") then widget[k] = v; end
 					end
 					-- Run passed ctor.
 					return self.Init(widget, ...);
