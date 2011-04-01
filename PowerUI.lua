@@ -9,11 +9,20 @@ PowaAuras.UI = {
 	DefineWidget = function(self, widget)
 		if(not self[widget]) then PowaAuras:ShowText("No widget definition exists for: ", widget); return; end
 		self[widget] = setmetatable(self[widget], { 
+				-- Constructor.
 				__call = function(self, widget, ...)
-					-- Constructor. Copy anything we have over automatically...
-					for k,v in pairs(self) do
-						if(k ~= "Init") then
-							widget[k] = v;
+					-- Widget doesn't need to be a table.
+					if(type(widget) == "table") then
+						-- Check for hooks. All this does is set widget[v] to widget[k] (so imagine: { Show = "__Show" })
+						-- This allows you to then specify your own Show function without destroying the initial one.
+						if(self.Hooks) then
+							for k,v in pairs(self.Hooks) do
+								widget[v] = widget[k];
+							end
+						end
+						-- Copy anything we have over automatically...
+						for k,v in pairs(self) do
+							if(k ~= "Init") then widget[k] = v; end
 						end
 					end
 					-- Run passed ctor.

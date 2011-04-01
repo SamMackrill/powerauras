@@ -1,17 +1,16 @@
 -- Create definition.
 PowaAuras.UI["Slider"] = {
+	Hooks = {
+		GetValue = "__GetValue",
+		SetValue = "__SetValue",
+	},
 	Init = function(frame, title, unit, minLabel, maxLabel, tooltipDesc)
 		-- Call them.
 		frame:SetMinMaxLabels(minLabel, maxLabel);
 		frame:SetUnit(unit or "");
 		frame:SetTitle(title or "");
 		-- Add tooltips to the slider, background frame and editbox.
-		PowaAuras.UI.Tooltip(frame, title, tooltipDesc or title .. "Desc", { "Value" });			
-		-- Hook set/get value functions.
-		frame.__SetValue = frame.SetValue;
-		frame.__GetValue = frame.GetValue;			
-		frame.SetValue = frame.SetValueHook
-		frame.GetValue = frame.GetValueHook;
+		PowaAuras.UI.Tooltip(frame, title, tooltipDesc or title .. "Desc", { "Value" });
 		-- Update editbox value.
 		frame.Value:SetText(frame:GetValue());
 	end,
@@ -21,7 +20,7 @@ PowaAuras.UI["Slider"] = {
 	GetMaxValue = function(self)
 		return select(2, self:GetMinMaxValues());
 	end,
-	GetValueHook = function(self)
+	GetValue = function(self)
 		if(self.OnValueGet) then
 			return self:OnValueGet(self:__GetValue());
 		else
@@ -48,7 +47,7 @@ PowaAuras.UI["Slider"] = {
 		-- Update labels!
 		self:SetMinMaxLabels(self.MinLabel, self.MaxLabel);
 	end,
-	SetValueHook = function(self, value)
+	SetValue = function(self, value)
 		if(self.OnValueSet) then
 			return self:__SetValue(self:OnValueSet(value));
 		else
