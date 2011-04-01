@@ -12,7 +12,7 @@ PowaAuras.UI = {
 				-- Constructor.
 				__call = function(self, widget, ...)
 					-- Run pre-init function, it can directly modify the widget too.
-					widget = (self.PreInit and self.PreInit() or widget);
+					widget = (self.PreInit and self:PreInit() or widget);
 					-- Check for hooks. All this does is set widget[v] to widget[k] (so imagine: { Show = "__Show" })
 					-- This allows you to then specify your own Show function without destroying the initial one.
 					if(self.Hooks) then
@@ -22,10 +22,10 @@ PowaAuras.UI = {
 					end
 					-- Copy anything we have over automatically...
 					for k,v in pairs(self) do
-						if(k ~= "Init") then widget[k] = v; end
+						if(strsub(k, 1, 1) ~= "_") then widget[k] = v; end
 					end
 					-- Run passed ctor.
-					return self.Init(widget, ...);
+					return widget:Init(...);
 				end
 			}
 		);
