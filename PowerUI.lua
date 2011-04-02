@@ -25,7 +25,8 @@ PowaAuras.UI = {
 						if(strsub(k, 1, 1) ~= "_") then widget[k] = v; end
 					end
 					-- Run passed ctor.
-					return widget:Init(...);
+					widget:Init(...);
+					return widget;
 				end
 			}
 		);

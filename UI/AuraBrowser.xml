@@ -91,7 +91,13 @@
 							<Anchor point="BOTTOMRIGHT" x="-4" y="4" />
 						</Anchors>
 						<Frames>
-							<Frame name="$parentList" inherits="PowaTreeViewTemplate" />
+							<Frame parentKey="List" inherits="PowaTreeViewTemplate">
+								<Scripts>
+									<OnLoad>
+										PowaAuras.UI.TreeView(self, "Versions");
+									</OnLoad>
+								</Scripts>
+							</Frame>
 						</Frames>
 						<Scripts>
 							<OnShow>

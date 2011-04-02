@@ -1,17 +1,23 @@
 -- New features list stuff.
-local NEWFEATURES_LIST = {
-	["1.0"] = {
-		[1] = "TEST #1",
-		[2] = "TEST #2",
-		[3] = "TEST #3",
-		[4] = "TEST #4",
-	},
-	["1.1"] = {
-		[5] = "TEST #5",
-		[6] = "TEST #6",
-		[7] = "TEST #7",
-		[8] = "TEST #8",
-	},
+local NEWFEATURES_VERSIONS = {
+	50000,
+	41700,
+	41600,
+	41400,
+	41300,
+	41200,
+	41100,
+	41000,
+	40900,
+	40800,
+	40700,
+	40600,
+	40500,
+	40400,
+	40300,
+	40200,
+	40100,
+	40000,
 }
 -- New features list stuff.
 local NEWFEATURES_DESC = {
@@ -32,7 +38,19 @@ local NEWFEATURES_DESC = {
 -- OnLoad function for the browser frame.
 function PowaBrowser_OnLoad(self)
 	-- New features tables! Assign them!!!
-	
+	for _, version in pairs(NEWFEATURES_VERSIONS) do
+		print(version);
+		-- self.Tabs.NewFeatures.List:AddItem(version, format("%.2f", version/10000));
+	end
+	self.Tabs.NewFeatures.List:AddItem("a", "A");
+	self.Tabs.NewFeatures.List:AddItem("b", "B", "a");
+	self.Tabs.NewFeatures.List:AddItem("c", "C", "b");
+	self.Tabs.NewFeatures.List:AddItem("d", "D", "a");
+	self.Tabs.NewFeatures.List:AddItem("e", "E");
+	self.Tabs.NewFeatures.List:AddItem("f", "F", "e");
+	self.Tabs.NewFeatures.List:AddItem("g", "G", "e");
+	self.Tabs.NewFeatures.List:AddItem("h", "H", "c");
+	-- self.Tabs.NewFeatures.List:AddItem(NEWFEATURES_LIST);
 end
 -- The good bits.
 function PowaBrowser_OnVariablesLoaded()
