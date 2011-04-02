@@ -55,7 +55,12 @@ function cPowaTrigger:Check(value, qualifier)
 	--	PowaAuras:DisplayText("Check result=", result);
 	--end
 	if (not result) then
-		if (self.Once and self.Set) then self:ResetActions(); end
+		if (self.Once and self.Set) then 
+			if (PowaAuras.DebugTriggers or self.Debug) then
+				PowaAuras:DisplayText("Once Match! reset value=", value, " CompareTo=", self.Value);
+			end
+			self:ResetActions();
+		end
 		self.Set = false;
 	else
 		if (self.Once) then
@@ -99,17 +104,17 @@ end
 Timer trigger type class.
 ===========================
 --]]
-cPowaAuraTimerTrigger = PowaClass(cPowaTrigger, { Type = "Timer", Once=true });
+cPowaAuraTimerTrigger = PowaClass(cPowaTrigger, { Type = "Timer", Once = true });
 
-cPowaAuraDurationTrigger = PowaClass(cPowaTrigger, { Type = "Duration", Once=true });
+cPowaAuraDurationTrigger = PowaClass(cPowaTrigger, { Type = "Duration", Once = true });
 
 cPowaAuraTimerRefreshTrigger = PowaClass(cPowaTrigger, { Type = "TimerRefresh" });
 
-cPowaStacksTrigger = PowaClass(cPowaTrigger, { Type = "Stacks" });
+cPowaStacksTrigger = PowaClass(cPowaTrigger, { Type = "Stacks", Once = true });
 
-cPowaAuraStartTrigger = PowaClass(cPowaTrigger, { Type = "AuraStart" });
+cPowaAuraShowTrigger = PowaClass(cPowaTrigger, { Type = "AuraShow" });
 
-cPowaAuraEndTrigger = PowaClass(cPowaTrigger, { Type = "AuraEnd" });
+cPowaAuraHideTrigger = PowaClass(cPowaTrigger, { Type = "AuraHide" });
 
 cPowaStateTrigger = PowaClass(cPowaTrigger, { Type = "State" });
 
@@ -166,25 +171,69 @@ function cPowaAuraHideAction:Fire()
 	end
 	local aura = PowaAuras.Auras[self.AuraId];
 	if (self.Parameters.All or self.Parameters.Aura) then
+		aura.HideCount = (aura.HideCount or 0) + 1;
 		if (PowaAuras.DebugTriggers or self.Debug) then
-			PowaAuras:DisplayText("  HideAction: Hide Aura");
+			PowaAuras:DisplayText("  HideAction: Hide Aura HideCount=", aura.HideCount);
 		end
-		aura:Hide("cPowaAuraHideAction");
-		aura.TriggerForcedHide = true;
+		if (aura.HideCount==1) then
+			if (self.Parameters.Now) then
+				aura:Hide();
+			else
+				aura:SetHideRequest("Trigger Hide Action");
+			end
+		end
 	end
 	if (aura.Timer and (self.Parameters.All or self.Parameters.Timer)) then
+		aura.Timer.HideCount = (aura.Timer.HideCount or 0) + 1;
 		if (PowaAuras.DebugTriggers or self.Debug) then
-			PowaAuras:DisplayText("  HideAction: Hide Timer");
+			PowaAuras:DisplayText("  HideAction: Hide Timer HideCount=", aura.Timer.HideCount);
 		end
-		aura.Timer:Hide();
-		aura.Timer.TriggerForcedHide = true;
+		if (aura.Timer.HideCount==1) then
+			aura.Timer:Hide();
+		end
 	end
 	if (aura.Stacks and (self.Parameters.All or self.Parameters.Stacks)) then
+		aura.Stacks.HideCount = (aura.Stacks.HideCount or 0) + 1;
 		if (PowaAuras.DebugTriggers or self.Debug) then
-			PowaAuras:DisplayText("  HideAction: Hide Stacks");
+			PowaAuras:DisplayText("  HideAction: Hide Stacks HideCount=", aura.Stacks.HideCount);
 		end
-		aura.Stacks:Hide();
-		aura.Stacks.TriggerForcedHide = true;
+		if (aura.Stacks.HideCount==1) then
+			aura.Stacks:Hide();
+		end
+	end
+end
+
+function cPowaAuraHideAction:Reset()
+	if (PowaAuras.DebugTriggers or self.Debug) then
+		PowaAuras:DisplayText("HideAction: Reset");
+	end
+	local aura = PowaAuras.Auras[self.AuraId];
+	if (self.Parameters.All or self.Parameters.Aura) then
+		aura.HideCount = (aura.HideCount or 1) - 1;
+		if (PowaAuras.DebugTriggers or self.Debug) then
+			PowaAuras:DisplayText("  HideAction: Hide Aura, reset HideCount=", aura.HideCount);
+		end
+		if (aura.HideCount==0) then
+			aura:Show();
+		end
+	end
+	if (aura.Timer and (self.Parameters.All or self.Parameters.Timer)) then
+		aura.Timer.HideCount = (aura.Timer.HideCount or 1) - 1;
+		if (PowaAuras.DebugTriggers or self.Debug) then
+			PowaAuras:DisplayText("  HideAction: Hide Timer, reset HideCount=", aura.Timer.HideCount);
+		end
+		if (aura.Timer.HideCount==0) then
+			aura.Timer:Show();
+		end
+	end
+	if (aura.Stacks and (self.Parameters.All or self.Parameters.Stacks)) then
+		aura.Stacks.HideCount = (aura.Stacks.HideCount or 1) - 1;
+		if (PowaAuras.DebugTriggers or self.Debug) then
+			PowaAuras:DisplayText("  HideAction: Hide Stacks, reset HideCount=", aura.Stacks.HideCount);
+		end
+		if (aura.Stacks.HideCount==0) then
+			aura.Stacks:Show();
+		end
 	end
 end
 
