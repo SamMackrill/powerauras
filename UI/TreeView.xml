@@ -29,11 +29,6 @@
 							<Anchor point="TOPLEFT" x="4" y="-4" />
 							<Anchor point="BOTTOMLEFT" x="4" y="4" />
 						</Anchors>
-						<Scripts>
-							<OnLoad>
-								PowaAuras.UI.LayoutFrame(self, 1, { X = 1.0, Y = 23 }, true);
-							</OnLoad>
-						</Scripts>
 					</Frame>
 				</ScrollChild>
 			</ScrollFrame>
