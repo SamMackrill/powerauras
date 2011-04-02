@@ -816,7 +816,7 @@ PowaAuras.DebuffTypeSpellIds={
 	[87204] = PowaAuras.DebuffCatType.CC,		-- Sin and Punishment fear/horror.
 	[9484]  = PowaAuras.DebuffCatType.CC,		-- Shackle Undead (works against Death Knights using Lichborne)
 	[15487] = PowaAuras.DebuffCatType.Silence,	-- Silence
-	[64058] = PowaAuras.DebuffCatType.Disarm,	-- Psychic Horror
+	-- [64058] = PowaAuras.DebuffCatType.Disarm,	-- Psychic Horror
 	[15407] = PowaAuras.DebuffCatType.Snare,	-- Mind Flay
 	[88625] = PowaAuras.DebuffCatType.CC,	    -- Holy Word: Chastise
 	-- Rogue
@@ -856,7 +856,7 @@ PowaAuras.DebuffTypeSpellIds={
 	[60946] = PowaAuras.DebuffCatType.Snare,	-- Nightmare (Improved Fear I)
 	[60947] = PowaAuras.DebuffCatType.Snare,	-- Nightmare (Improved Fear II)
 	[85387] = PowaAuras.DebuffCatType.Stun,	    -- Aftermath (stun effect from rain of fire)
-	[89777] = PowaAuras.DebuffCatType.Stun,	    -- Axe Toss (from a felguard)
+	[89766] = PowaAuras.DebuffCatType.Stun,	    -- Axe Toss (from a felguard)
 	[93975] = PowaAuras.DebuffCatType.Stun,	    -- Aura of Foreboding I (stun effect)
 	[93974] = PowaAuras.DebuffCatType.Snare,	-- Aura of Foreboding I (root effect)
 	[93986] = PowaAuras.DebuffCatType.Stun,	    -- Aura of Foreboding II (stun effect)
