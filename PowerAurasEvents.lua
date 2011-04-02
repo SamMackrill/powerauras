@@ -96,9 +96,7 @@ function PowaAuras:Setup()
 	self.WeAreMounted = (IsMounted() == 1 and true or self:IsDruidTravelForm());
 	self.WeAreInVehicle = (UnitInVehicle("player")~=nil);
 	
-	if(self.WoWBuild >= 13726) then
-		self.Comms:Register();
-	end
+	self.Comms:Register();
 
 	self.ActiveTalentGroup = GetActiveTalentGroup();
 	
@@ -663,12 +661,7 @@ function PowaAuras:COMBAT_LOG_EVENT_UNFILTERED(...)
 	--self:ShowText("COMBAT_LOG_EVENT_UNFILTERED");
 	if (self.ModTest) then return end
 	-- 4.1 backwards compat (will remove when 4.1 is live, prevents needing to time a release to fix this).
-	local timestamp,event,casterHidden,sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags, spellId, spellName, spellType;
-	if(self.WoWBuild >= 13682) then
-		timestamp,event,casterHidden,sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags, spellId, spellName, _, spellType = ...;	
-	else
-		timestamp,event,sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags, spellId, spellName, _, spellType = ...;
-	end
+	local timestamp,event,casterHidden,sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags, spellId, spellName, _, spellType = ...;		
 	if (not spellName) then return end
 	--self:ShowText("CLEU: ", event, " by me=", sourceGUID==UnitGUID("player"), " on me=", destGUID==UnitGUID("player"), " ", spellName);
 	--self:ShowText("Player=", UnitGUID("player"), " sourceGUID=", sourceGUID, " destGUID=", destGUID);
