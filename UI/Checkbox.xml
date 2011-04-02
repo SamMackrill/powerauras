@@ -1,0 +1,57 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+    ..\..\FrameXML\UI.xsd">
+	<Script file="Checkbox.lua" />
+	<CheckButton name="PowaCheckboxTemplate" virtual="true">
+		<NormalFont style="GameFontNormalSmall" />
+		<DisabledFont style="GameFontDisableSmall" />
+		<HighlightFont style="GameFontHighlightSmall" />
+		<NormalTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled" blend="DISABLE">
+			<Size>
+				<AbsDimension x="20" y="20" />
+			</Size>
+			<Anchors>
+				<Anchor point="LEFT" relativePoint="LEFT" x="4" y="-1" />
+			</Anchors>
+		</NormalTexture>
+		<CheckedTexture file="Interface\Buttons\UI-CheckBox-Check" blend="DISABLE">
+			<Size>
+				<AbsDimension x="20" y="20" />
+			</Size>
+			<Anchors>
+				<Anchor point="LEFT" relativePoint="LEFT" x="4" y="-1" />
+			</Anchors>
+		</CheckedTexture>
+		<Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground" edgeFile="Interface\ChatFrame\ChatFrameBackground" tile="true">
+			<EdgeSize>
+				<AbsValue val="1" />
+			</EdgeSize>
+			<TileSize>
+				<AbsValue val="5" />
+			</TileSize>
+			<Color r="0.0" g="0.0" b="0.0" a="0.5" />
+			<BorderColor r="0.3" g="0.3" b="0.3" a="0.8" />
+		</Backdrop>
+		<ButtonText name="$parentText" parentKey="Text" font="GameFontNormalSmall" justifyH="LEFT" justifyV="MIDDLE">
+			<Size>
+				<AbsDimension y="24"/>
+			</Size>
+			<Anchors>
+				<Anchor point="LEFT" x="28" y="0" />
+				<Anchor point="RIGHT" x="-4" y="0" />
+			</Anchors>
+		</ButtonText>
+		<Scripts>
+			<PostClick>
+				self:UpdateColors();
+			</PostClick>
+			<OnEnter>
+				self:UpdateColors();
+			</OnEnter>
+			<OnLeave>
+				self:UpdateColors();
+			</OnLeave>
+		</Scripts>
+	</CheckButton>
+</Ui>

@@ -1,0 +1,127 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+    ..\..\FrameXML\UI.xsd">
+	<Script file="AuraBrowser.lua" />
+	<Frame name="PowaBrowser" toplevel="true" movable="true" parent="UIParent" hidden="false" frameStrata="MEDIUM" enableMouse="true" enableKeyboard="true">
+		<Size>
+          <AbsDimension x="500" y="450" />
+        </Size>
+        <Anchors>
+			<Anchor point="CENTER" relativeTo="UIParent" x="0" y="50" />
+        </Anchors>
+		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+			<BackgroundInsets>
+				<AbsInset left="11" right="12" top="12" bottom="11" />
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="32" />
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="32" />
+			</EdgeSize>
+		</Backdrop>	
+		<Scripts>
+			<OnMouseDown>
+				if(button == "LeftButton" and not self.isMoving) then
+					self:StartMoving();
+					self.isMoving = true;
+				end
+			</OnMouseDown>
+			<OnMouseUp>
+				if(button == "LeftButton" and self.isMoving) then
+					self:StopMovingOrSizing();
+					self.isMoving = false;
+				end
+			</OnMouseUp>
+			<OnHide>
+				if(self.isMoving) then
+					self:StopMovingOrSizing();
+					self.isMoving = false;
+				end
+			</OnHide>
+		</Scripts>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture file="Interface\DialogFrame\UI-DialogBox-Header">
+					<Size>
+						<AbsDimension x="300" y="68" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOP" relativePoint="TOP" x="0" y="13"/>
+					</Anchors>					
+				</Texture>
+				<FontString name="$parentTitle" inherits="GameFontNormal" text="Power Auras 5.0" justifyH="CENTER" justifyV="TOP">
+					<Size>
+						<AbsDimension x="300" y="68" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOP" relativePoint="TOP" x="0" y="-2"/>
+					</Anchors>
+				</FontString>
+				<Texture file="Interface\DialogFrame\UI-DialogBox-Corner">
+					<Size x="32" y="32" />	
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="-4" y="-4" />	
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentCloseButton" inherits="UIPanelCloseButton">
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="0" y="0" />
+				</Anchors>
+			</Button>
+			<Frame name="$parentTabs" parentKey="Tabs" inherits="PowaBorderedFrameTemplate">
+				<Size>
+				  <AbsDimension y="260" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOP" x="0" y="-65" />
+					<Anchor point="LEFT" x="15" y="0" />
+					<Anchor point="RIGHT" x="-15" y="0" />
+				</Anchors>
+				<Frames>
+					<Frame parentKey="Auras" hidden="true" />
+					<Frame parentKey="Config" hidden="true" />
+					<Frame parentKey="NewFeatures" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="4" y="-4" />
+							<Anchor point="BOTTOMRIGHT" x="-4" y="4" />
+						</Anchors>
+						<Frames>
+							<Frame parentKey="List" inherits="PowaTreeViewTemplate">
+								<Scripts>
+									<OnLoad>
+										PowaAuras.UI.TreeView(self, "Versions");
+									</OnLoad>
+								</Scripts>
+							</Frame>
+						</Frames>
+						<Scripts>
+							<OnShow>
+								self.TabButton:SetGlow(false);
+							</OnShow>
+						</Scripts>
+					</Frame>
+					<Frame parentKey="HelpPlz" hidden="true" />
+				</Frames>
+				<Scripts>
+					<OnLoad>
+						PowaAuras.UI.TabFrame(self, 4);
+						self:RegisterTab(self.Auras, "Interface\\GossipFrame\\TrainerGossipIcon");
+						self:RegisterTab(self.Config, "Interface\\GossipFrame\\BinderGossipIcon");
+						self:RegisterTab(self.NewFeatures, { "Interface\\OPTIONSFRAME\\UI-OptionsFrame-NewFeatureIcon", 16, 16, 0, 1, 0, 1 });
+						self:RegisterTab(self.HelpPlz, { "Interface\\WorldMap\\UI-WorldMap-QuestIcon", 12, 17, 0.171875, 0.359375, 0.109375, 0.375 });
+					</OnLoad>
+				</Scripts>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				PowaBrowser_OnLoad(self);
+			</OnLoad>
+		</Scripts>
+	</Frame>
+</Ui>
