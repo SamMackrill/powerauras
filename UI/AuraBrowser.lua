@@ -50,6 +50,18 @@ function PowaBrowser_OnLoad(self)
 	self.Tabs.NewFeatures.List:AddItem("f", "F", "e");
 	self.Tabs.NewFeatures.List:AddItem("g", "G", "e");
 	self.Tabs.NewFeatures.List:AddItem("h", "H", "c");
+	self.Tabs.NewFeatures.List:AddItem("i", "I");
+	self.Tabs.NewFeatures.List:AddItem("j", "J");
+	self.Tabs.NewFeatures.List:AddItem("k", "K");
+	self.Tabs.NewFeatures.List:AddItem("l", "L", "k");
+	self.Tabs.NewFeatures.List:AddItem("m", "M", "l");
+	self.Tabs.NewFeatures.List:AddItem("n", "N", "m");
+	self.Tabs.NewFeatures.List:AddItem("o", "O", "n");
+	self.Tabs.NewFeatures.List:AddItem("p", "P", "o");
+	self.Tabs.NewFeatures.List:AddItem("q", "Q", "p");
+	self.Tabs.NewFeatures.List:AddItem("r", "R", "m");
+	self.Tabs.NewFeatures.List:AddItem("s", "S", "p");
+	self.Tabs.NewFeatures.List:AddItem("t", "T", "p");
 	-- self.Tabs.NewFeatures.List:AddItem(NEWFEATURES_LIST);
 end
 -- The good bits.

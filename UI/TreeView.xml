@@ -29,9 +29,37 @@
 							<Anchor point="TOPLEFT" x="4" y="-4" />
 							<Anchor point="BOTTOMLEFT" x="4" y="4" />
 						</Anchors>
+						<Layers>
+							<Layer level="OVERLAY">
+								<FontString parentKey="Title" inherits="GameFontNormal" justifyH="CENTER" justifyV="MIDDLE">
+									<Size x="140" y="23" />
+									<Anchors>
+										<Anchor point="TOPLEFT" x="0" y="0" />
+										<Anchor point="TOPRIGHT" x="0" y="0" />
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
 					</Frame>
 				</ScrollChild>
 			</ScrollFrame>
 		</Frames>
 	</Frame>
+	
+	<Button name="PowaTreeViewItemTemplate" virtual="true" inherits="OptionsButtonTemplate">
+		<Size>
+			<AbsDimension x="172" y="23" />
+		</Size>
+		<Layers>		
+			<Layer level="OVERLAY">
+				<Texture file="Interface\BUTTONS\UI-PlusMinus-Buttons" parentKey="Expand">
+					<Size x="8" y="8" />
+					<Anchors>
+						<Anchor point="LEFT" x="0" y="-2" />
+					</Anchors>
+					<TexCoords left="0.5" right="1" top="0" bottom="0.5" />
+				</Texture>
+			</Layer>
+		</Layers>
+	</Button>
 </Ui>
