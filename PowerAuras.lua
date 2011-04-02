@@ -1000,7 +1000,7 @@ local function keyUp(frame, key)
 	if (PowaAuras.CurrentAuraId == frame.aura.id) then
 		PowaAuras:InitPage(frame.aura);
 	end
-	PowaAuras:RedisplayAura(frame.aura.id);
+	PowaAuras:RedisplayAura(frame.aura.id, false);
 end
 
 local function enterAura(frame)
@@ -1029,7 +1029,7 @@ end
 
 function PowaAuras:SetForDragging(aura, frame)
 	if (frame==nil or aura==nil or frame.SetForDragging) then return; end
-	--self:ShowText("Set Dragging ", aura.id);
+	self:ShowText("Set Dragging ", aura.id, " frame=", frame);
 	frame:SetMovable(true);
 	frame:EnableMouse(true);
 	frame:SetClampedToScreen(false);
@@ -1044,7 +1044,7 @@ end
 
 function PowaAuras:ResetDragging(aura, frame)
 	if (frame==nil or aura==nil or not frame.SetForDragging) then return; end
-	--self:ShowText("Reset Dragging ", aura.id);
+	self:ShowText("Reset Dragging ", aura.id);
 	frame:SetMovable(false);
 	frame:EnableMouse(false);
 	frame:EnableKeyboard(false);
@@ -1070,6 +1070,8 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 
 	local frame, texture, frame2, texture2 = aura:CreateFrames();	
 
+	self:ShowText("ShowAuraForFirstTime ", aura.id, " frame=", frame);
+
 	self:InitialiseFrame(aura, frame, texture, aura.alpha);
 	if (aura.anim2 == 0) then --- no secondary frame
 		if (frame2) then
@@ -1087,26 +1089,29 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 		self:ResetDragging(aura, frame);
 	end
 
-	if (aura.duration>0) then
-		aura.TimeToHide = GetTime() + aura.duration;
-	else
-		aura.TimeToHide = nil;
-	end
+	--if (aura.duration>0) then
+	--	aura.TimeToHide = GetTime() + aura.duration;
+	--else
+	--	aura.TimeToHide = nil;
+	--end
 	
-	if (aura.InvertTimeHides) then
-		aura.ForceTimeInvert = nil;
-	end
+	--if (aura.InvertTimeHides) then
+	--	aura.ForceTimeInvert = nil;
+	--end
 	
-	if (aura.Timer and aura.Timer.enabled) then
-		if (aura.Debug) then
-			self:Message("Show Timer");
+	if (aura.Timer) then
+		if (aura.Timer.enabled) then
+			if (aura.Debug) then
+				self:Message("Show Timer");
+			end
+			PowaAuras:CreateTimerFrameIfMissing(aura.id);
 		end
-		PowaAuras:CreateTimerFrameIfMissing(aura.id);
-		if (aura.timerduration) then
-			aura.Timer.CustomDuration = aura.timerduration;
-		end
+		--if (aura.timerduration) then
+		--	aura.Timer.CustomDuration = aura.timerduration;
+		--end
 		aura.Timer.Start = GetTime();
 	end
+	
 	if (aura.Stacks and aura.Stacks.enabled) then
 		PowaAuras:CreateStacksFrameIfMissing(aura.id);
 		aura.Stacks:ShowValue(aura, aura.Stacks.lastShownValue)
@@ -1198,7 +1203,7 @@ end
 
 function PowaAuras:DisplayAura(auraId)
 	--self:UnitTestInfo("DisplayAura", auraId);
-	--self:ShowText("DisplayAura aura ", auraId);
+	self:ShowText("DisplayAura aura ", auraId);
 	if (not (self.VariablesLoaded and self.SetupDone)) then return; end   --- de-actived
 
 	local aura = self.Auras[auraId];
