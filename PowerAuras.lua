@@ -659,11 +659,13 @@ function PowaAuras:OnUpdate(elapsed)
 			local isMountedNow = (IsMounted() == 1 and true or self:IsDruidTravelForm());
 			if (isMountedNow ~= self.WeAreMounted) then
 				self.DoCheck.All = true;
+				self:Message("DoCheck.All: Mounted");
 				self.WeAreMounted = isMountedNow;
 			end	
 			local isInVehicledNow = (UnitInVehicle("player")~=nil);
 			if (isInVehicledNow ~= self.WeAreInVehicle) then
 				self.DoCheck.All = true;
+				self:Message("DoCheck.All: in Vehicle");
 				self.WeAreInVehicle = isInVehicledNow;
 			end	
 		end
@@ -672,6 +674,7 @@ function PowaAuras:OnUpdate(elapsed)
 			self:InitialiseAllAuras();
 			self:MemorizeActions();
 			self.DoCheck.All = true;
+			self:Message("DoCheck.All: PendingRescan");
 			self.PendingRescan = nil;
 		end
 		
@@ -696,7 +699,7 @@ function PowaAuras:OnUpdate(elapsed)
 	
 		--self:UnitTestInfo("DoCheck update");
 		if (self.DoCheck.CheckIt or self.DoCheck.All) then
-			self:NewCheckBuffs();
+			self:CheckAllMarkedAuras();
 			self.DoCheck.CheckIt = false;
 		end
 
@@ -761,12 +764,12 @@ function PowaAuras:IsDruidTravelForm()
 	return false;
 end
 
-function PowaAuras:NewCheckBuffs()
-   	--self:UnitTestInfo("NewCheckBuffs");
+function PowaAuras:CheckAllMarkedAuras()
+   	--self:UnitTestInfo("CheckAllMarkedAuras");
 
-	--if (self.DoCheck.All) then
-	--	self:ShowText("self.DoCheck.All");
-	--end
+	if (self.DoCheck.All) then
+		self:ShowText("self.DoCheck.All");
+	end
 	for i = 1, #self.AurasByTypeList do
 		local auraType = self.AurasByTypeList[i];
 		--self:ShowText("Check auraType ",auraType);
@@ -840,12 +843,12 @@ function PowaAuras:TestThisEffect(auraId, giveReason, ignoreCascade)
 		return false, self.Text.nomReasonAuraBad;
 	end
 	
-	--self:ShowText("Test Aura for Hide or Show = ",auraId, " showing=",aura.Showing);
+	--self:ShowText("Test Aura ",auraId, " for Hide/Show showing=",aura.Showing);
 	aura.InactiveDueToMulti = nil;
-	local shouldShow, reason = aura:ShouldShow(giveReason or debugEffectTest, false, ignoreCascade);
+	local shouldShow, reason = aura:ShouldShow(giveReason or debugEffectTest or true, false, ignoreCascade);
 	--if (ignoreCascade) then
-	--	self:ShowText(GetTime()," Test Aura for Hide or Show = ",auraId, " showing=",aura.Showing);
-	--	self:ShowText(GetTime()," shouldShow=", shouldShow, " Reason=", reason);
+		self:ShowText(GetTime()," Test Aura ", auraId, " for Hide/Show showing=", aura.Showing);
+		self:ShowText(GetTime()," shouldShow=", shouldShow, " Reason=", reason);
 	--end
 	if (shouldShow==-1) then
 		if (debugEffectTest) then
@@ -867,32 +870,35 @@ function PowaAuras:TestThisEffect(auraId, giveReason, ignoreCascade)
 			aura.InactiveDueToMulti = true;
 		end
 	end
+	
 	if (debugEffectTest) then
 		self:Message("shouldShow=", shouldShow, " because ", reason);
 	end
 	
-	if shouldShow then
+	if (shouldShow) then
 		if (not aura.Active) then
 			if (debugEffectTest) then
 				self:Message("ShowAura ", aura.buffname, " (",auraId,") ", reason);
 			end
+			aura.Active = true;			
+			self:ShowText(GetTime()," Aura active ", auraId, " cas=", ignoreCascade);
 			self:DisplayAura(auraId);
 			if (not ignoreCascade) then self:AddChildrenToCascade(aura); end
-			aura.Active = true;
 		end
 	else
 		if (aura.Showing) then
 			if (debugEffectTest) then
 				self:Message("HideAura ", aura.buffname, " (",auraId,") ", reason);
 			end
-			aura:SetHideRequest("TestThisEffect: false & showing");
+			aura:SetHideRequest("TestThisEffect: false & showing", true);
 		end
 		if (aura.Active) then
-			--self:ShowText(GetTime()," Aura set inactive ", auraId, " cas=", ignoreCascade);
+			self:ShowText(GetTime()," Aura set inactive ", auraId, " cas=", ignoreCascade);
 			if (not ignoreCascade) then
 				self:AddChildrenToCascade(aura);
 			end
-			aura.Active = false;
+			aura.Active = false;	
+			aura.HideCount = nil;
 		end
 	end
 	
@@ -1062,8 +1068,15 @@ function PowaAuras:ResetDragging(aura, frame)
 end
 
 -->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-function PowaAuras:ShowAuraForFirstTime(aura)
-	--self:UnitTestInfo("ShowAuraForFirstTime", aura.id);
+
+function PowaAuras:DisplayAura(auraId)
+	--self:UnitTestInfo("DisplayAura", auraId);
+	self:ShowText("DisplayAura aura ", auraId);
+	if (not (self.VariablesLoaded and self.SetupDone)) then return; end   --- de-actived
+
+	local aura = self.Auras[auraId];
+	if (aura==nil or (aura.off and not self.UsedInMultis[id])) then return; end
+	
 	if (aura.Debug) then
 		self:Message("ShowAuraForFirstTime ", aura.id);
 	end
@@ -1072,7 +1085,8 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 
 	self:ShowText("ShowAuraForFirstTime ", aura.id, " frame=", frame);
 
-	self:InitialiseFrame(aura, frame, texture, aura.alpha);
+	self:InitialiseAuraFrame(aura, frame, texture, aura.alpha);
+	
 	if (aura.anim2 == 0) then --- no secondary frame
 		if (frame2) then
 			frame2:Hide();
@@ -1080,24 +1094,14 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 		self.SecondaryFrames[aura.id] = nil;
 		self.SecondaryTextures[aura.id] = nil;
 	else
-		self:InitialiseFrame(aura, frame2, texture2, aura.alpha * 0.5);	
+		self:InitialiseAuraFrame(aura, frame2, texture2, aura.alpha * 0.5);	
 	end
 
 	if (self.ModTest and not PowaMisc.Locked) then
 		self:SetForDragging(aura, frame);
 	else
 		self:ResetDragging(aura, frame);
-	end
-
-	--if (aura.duration>0) then
-	--	aura.TimeToHide = GetTime() + aura.duration;
-	--else
-	--	aura.TimeToHide = nil;
-	--end
-	
-	--if (aura.InvertTimeHides) then
-	--	aura.ForceTimeInvert = nil;
-	--end
+	end	
 	
 	if (aura.Timer) then
 		if (aura.Timer.enabled) then
@@ -1117,20 +1121,11 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 		aura.Stacks:ShowValue(aura, aura.Stacks.lastShownValue)
 	end
 	
-	--self:UnitTestInfo("frame:Show()", aura.id);
-	if (aura.Debug) then
-		self:Message("frame:Show()", aura.id, " ", frame);
-	end
-	frame:Show(); -- Show Aura Frame
+	aura:Show();
 
-	aura.Showing = true;
-	aura.HideRequest = false;
-	
-	aura:CheckTriggers("AuraStart");
-	
 end
 
-function PowaAuras:InitialiseFrame(aura, frame, texture, alpha)
+function PowaAuras:InitialiseAuraFrame(aura, frame, texture, alpha)
 	if (aura.owntex == true) then
 		if (aura.icon=="") then
 			texture:SetTexture("Interface\\Icons\\Inv_Misc_QuestionMark");
@@ -1199,19 +1194,8 @@ function PowaAuras:InitialiseFrame(aura, frame, texture, alpha)
 	frame:SetPoint("CENTER",aura.x, aura.y);
 	frame:SetWidth(frame.baseL);
 	frame:SetHeight(frame.baseH);
-end
-
-function PowaAuras:DisplayAura(auraId)
-	--self:UnitTestInfo("DisplayAura", auraId);
-	self:ShowText("DisplayAura aura ", auraId);
-	if (not (self.VariablesLoaded and self.SetupDone)) then return; end   --- de-actived
-
-	local aura = self.Auras[auraId];
-	if (aura==nil or (aura.off and not self.UsedInMultis[id])) then return; end
-
-	--self:ShowText("DisplayAura aura ", aura.id);
 	
-	self:ShowAuraForFirstTime(aura);
+
 end
 
 function PowaAuras:SetupStaticPopups()

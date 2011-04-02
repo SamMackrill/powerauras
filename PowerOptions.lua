@@ -1308,7 +1308,7 @@ function PowaAuras:MainOptionClose()
 	self:FindAllChildren();
 	self:CreateEffectLists();	
 	self.DoCheck.All = true;
-	self:NewCheckBuffs();
+	self:CheckAllMarkedAuras();
  	self:MemorizeActions();
 	
 	self:ReregisterEvents(PowaAuras_Frame);
@@ -3499,7 +3499,7 @@ function PowaAuras:ToggleTesting()
 	end
 
 	if (aura.Showing) then 
-		aura:SetHideRequest("ToggleTesting");
+		aura:SetHideRequest("ToggleTesting", true);
 		aura.Active = false;
 	else
 		aura.Active = true;
@@ -3535,7 +3535,7 @@ function PowaAuras:OptionHideAll(now) --- Hide all auras
 			if (aura.Timer) then aura.Timer:Hide(); end 
 			if (aura.Stacks) then aura.Stacks:Hide(); end
 		else
-			aura:SetHideRequest("OptionHideAll");
+			aura:SetHideRequest("OptionHideAll", true);
 			if (aura.Timer)  then aura.Timer.HideRequest  = true; end
 		end
 	end	
