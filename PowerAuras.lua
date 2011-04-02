@@ -1087,26 +1087,29 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 		self:ResetDragging(aura, frame);
 	end
 
-	if (aura.duration>0) then
-		aura.TimeToHide = GetTime() + aura.duration;
-	else
-		aura.TimeToHide = nil;
-	end
+	--if (aura.duration>0) then
+	--	aura.TimeToHide = GetTime() + aura.duration;
+	--else
+	--	aura.TimeToHide = nil;
+	--end
 	
-	if (aura.InvertTimeHides) then
-		aura.ForceTimeInvert = nil;
-	end
+	--if (aura.InvertTimeHides) then
+	--	aura.ForceTimeInvert = nil;
+	--end
 	
-	if (aura.Timer and aura.Timer.enabled) then
-		if (aura.Debug) then
-			self:Message("Show Timer");
+	if (aura.Timer) then
+		if (aura.Timer.enabled) then
+			if (aura.Debug) then
+				self:Message("Show Timer");
+			end
+			PowaAuras:CreateTimerFrameIfMissing(aura.id);
 		end
-		PowaAuras:CreateTimerFrameIfMissing(aura.id);
-		if (aura.timerduration) then
-			aura.Timer.CustomDuration = aura.timerduration;
-		end
+		--if (aura.timerduration) then
+		--	aura.Timer.CustomDuration = aura.timerduration;
+		--end
 		aura.Timer.Start = GetTime();
 	end
+	
 	if (aura.Stacks and aura.Stacks.enabled) then
 		PowaAuras:CreateStacksFrameIfMissing(aura.id);
 		aura.Stacks:ShowValue(aura, aura.Stacks.lastShownValue)

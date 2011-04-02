@@ -170,18 +170,21 @@ function cPowaAuraHideAction:Fire()
 			PowaAuras:DisplayText("  HideAction: Hide Aura");
 		end
 		aura:Hide("cPowaAuraHideAction");
+		aura.TriggerForcedHide = true;
 	end
 	if (aura.Timer and (self.Parameters.All or self.Parameters.Timer)) then
 		if (PowaAuras.DebugTriggers or self.Debug) then
 			PowaAuras:DisplayText("  HideAction: Hide Timer");
 		end
 		aura.Timer:Hide();
+		aura.Timer.TriggerForcedHide = true;
 	end
 	if (aura.Stacks and (self.Parameters.All or self.Parameters.Stacks)) then
 		if (PowaAuras.DebugTriggers or self.Debug) then
 			PowaAuras:DisplayText("  HideAction: Hide Stacks");
 		end
 		aura.Stacks:Hide();
+		aura.Stacks.TriggerForcedHide = true;
 	end
 end
 
