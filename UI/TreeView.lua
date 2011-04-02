@@ -10,17 +10,35 @@ PowaAuras.UI["TreeView"] = {
 		self:SetTitle(title);
 	end,
 	AddItem = function(self, key, text, parent)
+		-- Prevent duplicate keys.
+		if(self.ItemsByKey[key]) then return false; end
 		-- Add it where needed.
 		local pos;
-		if(not parent) then pos = #(self.ItemsByOrder)+1; else pos = self.ItemsByKey[parent]:GetPosition()+1; end
+		if(not parent) then
+			-- Append to end.
+			pos = #(self.ItemsByOrder)+1;
+		elseif(parent) then
+			-- Go over the list, find the last element which references the same parent and place it after that.
+			-- If no element is found, place after parent.
+			pos = self.ItemsByKey[parent]:GetPosition()+1;
+			local count = #(self.ItemsByOrder);
+			for i=1,count do
+				local key = self.ItemsByOrder[i];
+				local item = self.ItemsByKey[key];
+				if(item.ParentKey and item.ParentKey == parent) then
+					pos = item:GetPosition()+1;
+				end
+			end
+		end
 		tinsert(self.ItemsByOrder, pos, key);
 		-- Was a parent specified?
 		local depth = 1;
 		if(parent) then depth = self.ItemsByKey[parent]:GetDepth()+1; end
 		-- Add the actual data to the itemsbykey table...
-		self.ItemsByKey[key] = PowaAuras.UI.TreeViewItem(nil, self.Scroll.Child, pos, text, depth, parent or nil);
+		self.ItemsByKey[key] = PowaAuras.UI.TreeViewItem(nil, self, pos, text, depth, parent or nil);
 		-- Update.
 		self:UpdateItems();
+		return true;
 	end,
 	DisableItem = function(self, key)
 	end,
@@ -32,10 +50,12 @@ PowaAuras.UI["TreeView"] = {
 	end,
 	RemoveItem = function(self, key)
 		-- Remove item...
-		local pos = self.ItemsByKey[key]:GetPosition();
+		local item = self.ItemsByKey[key];
+		local pos = item:GetPosition();
+		item:Recycle();
 		self.ItemsByKey[key] = nil;
 		tremove(self.ItemsByOrder, pos);
-		-- Update (do this now, if we DO remove anything then it'll be called again).
+		-- Update (do this now, if we DO remove anything then it'll be called again, so no bugs be occurrin' mon!).
 		self:UpdateItems();
 		-- Find anything which referenced this one.
 		for childKey, data in pairs(self.ItemsByKey) do
@@ -55,6 +75,9 @@ PowaAuras.UI["TreeView"] = {
 			local item = self.ItemsByKey[key];
 			-- Make sure stuff is in order!
 			item:SetPosition(i);
+			-- Set points.
+			item:ClearAllPoints();
+			item:SetPoint("TOPLEFT", ((item:GetDepth()-1)*10), -((i-1)*23));
 		end
 	end,
 };
@@ -72,17 +95,19 @@ PowaAuras.UI["TreeViewItem"] = {
 			return item;
 		else
 			-- Get making.
-			local item = CreateFrame("Button", nil, UIParent);
+			local item = CreateFrame("Button", nil, UIParent, "OptionsButtonTemplate");
 			return item;
 		end
 	end,
 	Init = function(self, parent, pos, text, depth, parentKey)
 		-- Set us up!
-		if(parent and parent.SetItem) then parent:SetItem(self); end
+		self:SetParent(parent);
 		self:SetText(text);
 		self:SetDepth(depth);
 		self:SetPosition(pos);
 		self.ParentKey = parentKey;
+		self:ClearAllPoints();
+		self:Show();
 	end,
 	GetDepth = function(self)
 		return self.Depth;
@@ -90,13 +115,11 @@ PowaAuras.UI["TreeViewItem"] = {
 	GetPosition = function(self)
 		return self.Position;
 	end,
-	GetText = function(self)
-		return self.Text;
-	end,
 	Recycle = function(self)
-		-- Got a parent? If so, make sure we're not in the layout...
-		local parent = self:GetParent();
-		if(parent and parent.UnsetItem) then parent:UnsetItem(self); end
+		-- Place in recycle table!
+		tinsert(PowaAuras.UI.TreeViewItem._Items, self);
+		self:ClearAllPoints();
+		self:Hide();
 	end,
 	SetDepth = function(self, depth)
 		self.Depth = depth;
@@ -108,9 +131,6 @@ PowaAuras.UI["TreeViewItem"] = {
 		print(selected);
 	end,
 	SetStyle = function(self, level)
-	end,
-	SetText = function(self, text)
-		self.Text = text;
 	end,
 	_Items = {}, -- Private.
 };
