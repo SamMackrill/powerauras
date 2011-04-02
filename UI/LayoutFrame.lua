@@ -43,9 +43,14 @@ PowaAuras.UI["LayoutFrame"] = {
 		self:UpdateLayout();
 		return #(self.Items); -- Should be the ID...
 	end,
-	UnsetItem = function(self, itemId)
-		tremove(self.Items, itemId);
-		self:UpdateLayout();
+	UnsetItem = function(self, item)
+		for i,v in pairs(self.Items) do
+			if(v == item) then
+				tremove(self.Items, i);
+				self:UpdateLayout();
+				return;
+			end
+		end
 	end,
 	UpdateLayout = function(self)
 		local iC, c, cO, oY, oX, mY = #(self.Items), 0, 1, 0, 0, 0;
@@ -81,12 +86,12 @@ PowaAuras.UI["LayoutFrame"] = {
 			-- If the size is <= 1, then it's a fluid value based on container size. If no size is specified, default to item size.
 			if(c+(item.LayoutOpts["Columns"]-1) <= self.Columns) then
 				for j=c, c+(item.LayoutOpts["Columns"]-1) do
-					cW = cW + (self.ColumnSizes[j]["X"] or 0);
-					cH = (cH > (self.ColumnSizes[j]["Y"] or 0) and cH or (self.ColumnSizes[j]["Y"] or 0));
+					cW = cW + (self.ColumnSizes[j] and self.ColumnSizes[j]["X"] or 0);
+					cH = (cH > (self.ColumnSizes[j] and self.ColumnSizes[j]["Y"] or 0) and cH or (self.ColumnSizes[j] and self.ColumnSizes[j]["Y"] or 0));
 				end
 			else
-				cW = (self.ColumnSizes[c]["X"] or 0);
-				cH = (self.ColumnSizes[c]["Y"] or 0);
+				cW = (self.ColumnSizes[c] and self.ColumnSizes[c]["X"] or 0);
+				cH = (self.ColumnSizes[c] and self.ColumnSizes[c]["Y"] or 0);
 			end
 			-- Update column height/width.
 			cW = (cW == 0 and item:GetWidth() or cW <= 1 and (self:GetWidth() * cW));
