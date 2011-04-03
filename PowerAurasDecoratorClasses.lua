@@ -162,11 +162,11 @@ function cPowaStacks:SetStackCount(count)
 			frame:Hide();
 		end
 		self.Showing = false;
-		self.lastShownValue = nil;
+		self.LastShownValue = nil;
 		return;
 	end
 	
-	if (self.lastShownValue==count and self.Showing) then
+	if (self.LastShownValue==count and self.Showing) then
 		self.UpdateValueTo = nil;
 		if (aura.Debug) then
 			PowaAuras:DisplayText("Stacks unchanged");
@@ -185,7 +185,7 @@ function cPowaStacks:Update()
 	if (aura.Debug) then
 		PowaAuras:DisplayText("Stacks Update UpdateValueTo=",self.UpdateValueTo);
 	end
-	self.lastShownValue=self.UpdateValueTo;
+	self.LastShownValue=self.UpdateValueTo;
 	PowaAuras:CreateStacksFrameIfMissing(self.id);
 	self:ShowValue(aura, self.UpdateValueTo);
 	self.Showing = true;
@@ -201,7 +201,30 @@ function cPowaStacks:Hide()
 	end
 	self.Showing = false;
 	self.UpdateValueTo = nil;
-	self.lastShownValue = nil;
+	self.LastShownValue = nil;
+	self.HideCount = nil;
+end
+
+function cPowaStacks:IncrementHideCount()
+	self.HideCount = (self.HideCount or 0) + 1;
+	local aura = PowaAuras.Auras[self.id];
+	--if (aura.Debug) then
+		PowaAuras:DisplayText(self.id, " Stacks IncrementHideCount HideCount=", self.HideCount);
+	--end
+	if (self.HideCount==1) then
+		self:Hide();
+	end
+end
+
+function cPowaStacks:DecrementHideCount(now)
+	self.HideCount = (self.HideCount or 1) - 1;
+	local aura = PowaAuras.Auras[self.id];
+	--if (aura.Debug) then
+		PowaAuras:DisplayText(self.id, " Stacks DecrementHideCount HideCount=", self.HideCount);
+	--end
+	if (self.HideCount==0) then
+		self:Show();
+	end
 end
 
 function cPowaStacks:Dispose()
@@ -511,8 +534,31 @@ function cPowaTimer:Hide()
 	self.lastShownLarge = nil;
 	self.lastShownSmall = nil;
 	self.Showing = false;
-	self.ShowRequest = false;	
+	self.ShowRequest = false;
+	self.HideCount = nil;
 	--PowaAuras:ShowText("Hide timer frame");
+end
+
+function cPowaTimer:IncrementHideCount()
+	self.HideCount = (self.HideCount or 0) + 1;
+	local aura = PowaAuras.Auras[self.id];
+	--if (PowaAuras.DebugTriggers or aura.Debug) then
+		PowaAuras:DisplayText(self.id, " Timer IncrementHideCount HideCount=", self.HideCount);
+	--end
+	if (self.HideCount==1) then
+		self:Hide();
+	end
+end
+
+function cPowaTimer:DecrementHideCount(now)
+	self.HideCount = (self.HideCount or 1) - 1;
+	local aura = PowaAuras.Auras[self.id];
+	--if (aura.Debug) then
+		PowaAuras:DisplayText(self.id, " Timer DecrementHideCount HideCount=", self.HideCount);
+	--end
+	if (self.HideCount==0) then
+		self:Show();
+	end
 end
 
 function cPowaTimer:Dispose()

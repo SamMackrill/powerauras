@@ -850,7 +850,8 @@ function PowaAuras:TestThisEffect(auraId, giveReason, ignoreCascade)
 		self:ShowText(GetTime()," Test Aura ", auraId, " for Hide/Show showing=", aura.Showing);
 		self:ShowText(GetTime()," shouldShow=", shouldShow, " Reason=", reason);
 	--end
-	if (shouldShow==-1) then
+	
+	if (shouldShow == -1) then
 		if (debugEffectTest) then
 			self:Message("TestThisEffect unchanged");
 		end
@@ -1118,7 +1119,7 @@ function PowaAuras:DisplayAura(auraId)
 	
 	if (aura.Stacks and aura.Stacks.enabled) then
 		PowaAuras:CreateStacksFrameIfMissing(aura.id);
-		aura.Stacks:ShowValue(aura, aura.Stacks.lastShownValue)
+		aura.Stacks:ShowValue(aura, aura.Stacks.LastShownValue)
 	end
 	
 	aura:Show();
