@@ -8,6 +8,8 @@ PowaAuras.UI["TreeView"] = {
 		self.SelectedIndex = nil;
 		-- Set ze title.
 		self:SetTitle(title);
+		-- Initial update! (Fixed the scrollbar).
+		self:UpdateItems();
 	end,
 	AddItem = function(self, key, text, parent)
 		-- Prevent duplicate keys.
@@ -186,6 +188,12 @@ PowaAuras.UI["TreeView"] = {
 		end
 		-- Update scrollchild height.
 		self.Scroll.Child:SetHeight((self:HasTitle() and 24 or 0)+(shownItems*24));
+		-- Hide scrollbar if not needed.
+		if(self.Scroll.Child:GetHeight() < self.Scroll:GetHeight()) then
+			self.Scroll.ScrollBar:Hide();
+		else
+			self.Scroll.ScrollBar:Show();
+		end			
 	end,
 };
 -- Register.
