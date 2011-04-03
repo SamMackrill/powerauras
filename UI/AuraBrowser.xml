@@ -83,7 +83,21 @@
 					<Anchor point="RIGHT" x="-15" y="0" />
 				</Anchors>
 				<Frames>
-					<Frame parentKey="Auras" hidden="true" />
+					<Frame parentKey="Auras" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="4" y="-4" />
+							<Anchor point="BOTTOMRIGHT" x="-4" y="4" />
+						</Anchors>
+						<Frames>
+							<Frame name="$parentAurasList" parentKey="List" inherits="PowaTreeViewTemplate">
+								<Scripts>
+									<OnLoad>
+										PowaAuras.UI.TreeView(self);
+									</OnLoad>
+								</Scripts>
+							</Frame>
+						</Frames>
+					</Frame>
 					<Frame parentKey="Config" hidden="true" />
 					<Frame parentKey="NewFeatures" hidden="true">
 						<Anchors>
@@ -91,7 +105,8 @@
 							<Anchor point="BOTTOMRIGHT" x="-4" y="4" />
 						</Anchors>
 						<Frames>
-							<Frame parentKey="List" inherits="PowaTreeViewTemplate">
+							<!-- You need to name Treeviews so the scroll bar doesn't mess up! -->
+							<Frame name="$parentNewFeaturesList" parentKey="List" inherits="PowaTreeViewTemplate">
 								<Scripts>
 									<OnLoad>
 										PowaAuras.UI.TreeView(self, "Versions");
