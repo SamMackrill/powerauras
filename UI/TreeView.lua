@@ -91,13 +91,14 @@ PowaAuras.UI["TreeView"] = {
 		tremove(parentTable, index);
 		self.ItemsByKey[key] = nil;
 		item:Recycle();
-		print("Recycled: " .. key);
+		-- Change selection if needed.
+		if(self.SelectedKey == key) then self:SetSelectedKey(nil); end
 		-- Update.
 		self:UpdateItems();
 	end,
 	SetSelectedKey = function(self, key)
 		-- Go go go.
-		if(self.ItemsByKey[key] and self.SelectedKey ~= key) then
+		if(key == nil or (self.ItemsByKey[key] and self.SelectedKey ~= key)) then
 			self.SelectedKey = key;
 			self:OnSelectionChange(self.SelectedKey);
 		end
