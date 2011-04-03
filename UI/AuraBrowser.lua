@@ -50,14 +50,14 @@ function PowaBrowser_OnVariablesLoaded()
 	local playerPageCount, globalPageCount, classPageCount = #(PowaPlayerListe), #(PowaGlobalListe), #(PowaClassListe[class]);
 	self.Tabs.Auras.List:AddItem("CHAR", PowaAuras.Text["UI_CharAuras"]);
 	for i=1,playerPageCount do
-		self.Tabs.Auras.List:AddItem(i*30, PowaPlayerListe[i], "CHAR");
+		self.Tabs.Auras.List:AddItem(i, PowaPlayerListe[i], "CHAR");
 	end
 	self.Tabs.Auras.List:AddItem("CLASS", PowaAuras.Text["UI_ClassAuras"]);
 	for i=1,classPageCount do
-		self.Tabs.Auras.List:AddItem(i*30+playerPageCount, PowaClassListe[class][i], "CLASS");
+		self.Tabs.Auras.List:AddItem(i+playerPageCount, PowaClassListe[class][i], "CLASS");
 	end
 	self.Tabs.Auras.List:AddItem("GLOBAL", PowaAuras.Text["UI_GlobAuras"]);
 	for i=1,globalPageCount do
-		self.Tabs.Auras.List:AddItem(i*30+playerPageCount+classPageCount, PowaGlobalListe[i], "GLOBAL");
+		self.Tabs.Auras.List:AddItem(i+playerPageCount+classPageCount, PowaGlobalListe[i], "GLOBAL");
 	end
 end

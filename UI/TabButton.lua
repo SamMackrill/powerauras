@@ -12,19 +12,22 @@ PowaAuras.UI["TabButton"] = {
 	end,
 	SetSelected = function(self, selected)
 		if(selected == true) then
-			self:SetHighlightTexture(nil);
-			self:SetNormalFontObject("GameFontHighlightSmall");
-			self:SetNormalTexture("Interface\\PaperDollInfoFrame\\UI-Character-ActiveTab");
-			self:GetNormalTexture():SetTexCoord(0, 1, 0.606875, 0.05);
+			-- Texture stuff.
+			self.TabBgL:SetTexCoord(0.01562500, 0.25, 0.78906250, 0.93359375);
+			self.TabBgM:SetTexCoord(0.25, 0.25, 0.78906250, 0.93359375);
+			self.TabBgR:SetTexCoord(0.625, 0.79687500, 0.78906250, 0.93359375);
+			self.HighlightL:Hide();
+			self.HighlightM:Hide();
+			self.HighlightR:Hide();
 			self:Disable();
 		else
-			self:SetNormalTexture("Interface\\PaperDollInfoFrame\\UI-Character-InActiveTab");
-			self:GetNormalTexture():SetTexCoord(0, 1, 1, 0);
-			self:SetHighlightTexture("Interface\\PaperDollInfoFrame\\UI-Character-Tab-RealHighlight", "ADD");
-			self:GetHighlightTexture():SetPoint("TOPLEFT", self, "TOPLEFT", 0, -7);
-			self:GetHighlightTexture():SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 0, 0);
-			self:GetHighlightTexture():SetTexCoord(0, 1, 0.2, 0.6);
-			self:SetNormalFontObject("GameFontNormalSmall");
+			-- Texture stuff.
+			self.TabBgL:SetTexCoord(0.01562500, 0.25, 0.61328125, 0.75390625);
+			self.TabBgM:SetTexCoord(0.25, 0.25, 0.61328125, 0.75390625);
+			self.TabBgR:SetTexCoord(0.625, 0.79687500, 0.61328125, 0.75390625);
+			self.HighlightL:Show();
+			self.HighlightM:Show();
+			self.HighlightR:Show();
 			self:Enable();
 		end
 	end

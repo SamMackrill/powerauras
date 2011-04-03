@@ -23,7 +23,7 @@ PowaAuras.UI["TabIconButton"] = {
 		if(glow == true) then
 			self.Glow.StartAnimation:Play();
 		else
-			self.Glow.MainAnimation.Loop = false;		
+			self.Glow.MainAnimation.Loop = false;
 		end
 		self.Glowing = glow;
 	end,
