@@ -4,13 +4,13 @@
     ..\..\FrameXML\UI.xsd">
 	<Script file="TabIconButton.lua" />
 	<!-- When 4.1 hits, change the texture file path to Interface\PaperDollFrame\PaperDollSidebarTabs -->
-	<Button name="PowaTabIconButtonTemplate" virtual="true">		
+	<Button name="PowaTabIconButtonTemplate" virtual="true">
 		<Size x="33" y="35" />
 		<Layers>
 			<Layer level="BACKGROUND">
 				<Texture file="Interface\AddOns\PowerAuras\UI\PaperDollSidebarTabs" parentKey="TabBg">
 					<Size x="50" y="41" />
-					<TexCoords left="0.01562500" right="0.79687500" top="0.61328125" bottom="0.78125000" />
+					<TexCoords left="0.01562500" right="0.79687500" top="0.61328125" bottom="0.7734375" />
 					<Anchors>
 						<Anchor point="BOTTOMLEFT" x="-9" y="0" />
 					</Anchors>

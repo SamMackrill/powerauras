@@ -7,7 +7,7 @@ PowaAuras.UI["TabFrame"] = {
 		frame.Tabs = {};
 		frame.TabType = tabType or 1;
 		-- Optional offset for tabs.
-		frame.Offset = offset or (tabType == 4 and 10 or 0);
+		frame.Offset = offset or (tabType == 4 and 9 or 0);
 	end,
 	RegisterTab = function(self, tab, text, hidden)
 		if(not tab) then PowaAuras:ShowText("Cannot register tab, tab does not exist."); return; end
@@ -68,7 +68,7 @@ PowaAuras.UI["TabFrame"] = {
 			if(tab) then
 				if(tab.TabDisabled == false and tab.TabButton) then
 					if(self.TabType == 1) then
-						tab.TabButton:SetPoint("BOTTOMLEFT", self, "TOPLEFT", ((i-1)*115)+self.Offset, -2);
+						tab.TabButton:SetPoint("BOTTOMLEFT", self, "TOPLEFT", ((i-1)*117)+self.Offset, -2);
 					elseif(self.TabType == 2) then
 						tab.TabButton:SetPoint("TOPRIGHT", self, "TOPLEFT", 0, -((i-1)*24)-self.Offset);	
 					elseif(self.TabType == 4) then		

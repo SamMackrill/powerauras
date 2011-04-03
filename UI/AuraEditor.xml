@@ -81,7 +81,7 @@
 				  <AbsDimension y="260" />
 				</Size>
 				<Anchors>
-					<Anchor point="TOP" x="0" y="-55" />
+					<Anchor point="TOP" x="0" y="-60" />
 					<Anchor point="LEFT" x="15" y="0" />
 					<Anchor point="RIGHT" x="-15" y="0" />
 				</Anchors>
@@ -633,7 +633,7 @@
 			</Frame>
 			<Frame name="$parentActivation" inherits="PowaBorderedFrameTemplate">
 				<Size>
-				  <AbsDimension y="260" />
+				  <AbsDimension y="258" />
 				</Size>
 				<Anchors>
 					<Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parentDisplay" x="0" y="-30" />
