@@ -32,7 +32,9 @@ PowaMisc =
 		BlockIncomingAuras = false,
 		CustomTextures = {},
 		EditorCategoryState = {},
-		LastVersion = 1.0,
+		CustomDebuffTypeIds = {},
+		LastVersion = 10000,
+		FirstRun = true,
 	};
 
 PowaAuras.PowaMiscDefault = PowaAuras:CopyTable(PowaMisc);

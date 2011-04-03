@@ -2,6 +2,7 @@ PowaAuras = {
 	Version = GetAddOnMetadata("PowerAuras", "Version");
 	
 	VersionPattern = "(%d+)%.(%d+)";
+	VersionInt = 10000,
 	
 	WoWBuild = tonumber(select(2, GetBuildInfo()), 10);
 	
@@ -571,6 +572,9 @@ PowaAuras = {
 		tile = true
 	};
 };
+
+-- VersionInt setting.
+PowaAuras.VersionInt = tonumber(PowaAuras.Version)*10000;
 
 -- Check for LibStub and LibSharedMedia for fonts.
 if(LibStub) then
