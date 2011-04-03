@@ -25,12 +25,10 @@ local NEWFEATURES_VERSIONS_DESC = {
 
 -- OnLoad function for the browser frame.
 function PowaBrowser_OnLoad(self)
-	-- New features tables! Assign them!!!
-	local lastVersion = nil;
-	for _, version in pairs(NEWFEATURES_VERSIONS) do
-		-- self.Tabs.NewFeatures.List:AddItem(version, format("%.2f", version/10000), lastVersion);
-		-- lastVersion = version;
-	end
+	-- -- New features tables! Assign them!!!
+	-- for _, version in pairs(NEWFEATURES_VERSIONS) do
+		-- self.Tabs.NewFeatures.List:AddItem(version, format("%.2f", version/10000));
+	-- end
 	self.Tabs.NewFeatures.List:AddItem(1, 1);
 	self.Tabs.NewFeatures.List:AddItem(2, 2, 1);
 	self.Tabs.NewFeatures.List:AddItem(3, 3, 1);

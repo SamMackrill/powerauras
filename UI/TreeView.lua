@@ -162,9 +162,8 @@ PowaAuras.UI["TreeView"] = {
 				item:ClearAllPoints();
 				item:SetPoint("TOPLEFT", 0, -4-(shownItems*24));
 				item:SetPoint("TOPRIGHT", 0, -4-(shownItems*24));
-				-- Inset the title/expand buttons based on depth.
-				item.Text:SetPoint("LEFT", 24+((item:GetDepth()-1)*10), 0);
-				item.Expand:SetPoint("LEFT", 4+((item:GetDepth()-1)*10), 0);
+				-- Inset the title based on depth.
+				item.Text:SetPoint("LEFT", 4+((item:GetDepth()-1)*10), 0);
 				-- Show parent one though (see what I'm doing there?)
 				if(parent) then parent.Expand:Show(); end
 				-- Selected or not?

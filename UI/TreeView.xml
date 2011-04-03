@@ -53,7 +53,7 @@
 		<NormalFont style="GameFontNormalSmall" />
 		<HighlightFont style="GameFontHighlightSmall" />
 		<DisabledFont style="GameFontNormalSmall" />
-		<ButtonText parentKey="Text">
+		<ButtonText parentKey="Text" justifyH="LEFT">
 			<Size>
 				<AbsDimension x="0" y="24"/>
 			</Size>
@@ -71,7 +71,7 @@
 					<AbsDimension x="16" y="16"/>
 				</Size>
 				<Anchors>
-					<Anchor point="LEFT" x="4" y="0" />
+					<Anchor point="RIGHT" x="-4" y="0" />
 				</Anchors>
 				<NormalTexture file="Interface\Buttons\UI-MinusButton-Up" />
 				<HighlightTexture file="Interface\Buttons\UI-PlusButton-Hilight" alphamode="ADD" />
