@@ -350,7 +350,7 @@ function cPowaAura:CreateDefaultTriggers()
 		end
 		
 		if (self.InvertAuraBelow>0) then		
-			trigger=self:CreateTrigger(cPowaAuraTimerTrigger,  {Name="PA_InvertOnTimerHide", Value=self.InvertAuraBelow, Compare=">", Debug=false});
+			trigger=self:CreateTrigger(cPowaAuraTimerTrigger,  {Name="PA_InvertAuraBelow", Value=self.InvertAuraBelow, Compare=">", Debug=true});
 			trigger:AddAction(cPowaAuraHideAction, {Name="PA_Hide", All=true});
 			--trigger=self:CreateTrigger(cPowaAuraTimerTrigger,  {Name="PA_InvertOnTimerShow", Value=self.InvertAuraBelow, Compare="<=", Debug=true});
 			--trigger:AddAction(cPowaAuraShowAction, {Name="PA_Show", All=true});
@@ -411,7 +411,7 @@ function cPowaAura:ProcessTriggerQueue()
 	while i<=#self.TriggerActionQueue do
 		local action = self.TriggerActionQueue[i];
 		if (PowaAuras.DebugTriggers) then
-			local trigger = self.Trigger;
+			local trigger = action.Trigger;
 			PowaAuras:DisplayText("==AF [", trigger.Name, ":", action.Name, "] ", action.AuraId, "_", trigger.Id, "_", action.Id, " (", trigger.Type, " : ", action.Type, ")");
 		end
 		action:Fire();
@@ -433,9 +433,9 @@ function cPowaAura:CheckTriggers(triggerType, value, qualifier)
 	local i = 1;
 	while i<=#triggersByType do
 		local trigger = triggersByType[i];
-		if (PowaAuras.DebugTriggers) then
-			PowaAuras:DisplayText("==TF [", trigger.Name, "] ", trigger.AuraId, "_", trigger.Id, " (", trigger.Type, ")");
-		end
+		--if (PowaAuras.DebugTriggers) then
+		--	PowaAuras:DisplayText("==TF [", trigger.Name, "] ", trigger.AuraId, "_", trigger.Id, " (", trigger.Type, ")");
+		--end
 		if (trigger:Check(value, qualifier)) then
 			self:QueueActions(trigger);
 		end
@@ -508,6 +508,30 @@ function cPowaAura:Hide(source)
 	self.Showing = false;
 	self.HideRequest = false;
 	self.HideCount = nil;
+end
+
+function cPowaAura:IncrementHideCount(now)
+	self.HideCount = (self.HideCount or 0) + 1;
+	if (PowaAuras.DebugTriggers or self.Debug) then
+		PowaAuras:DisplayText(self.id, " Aura IncrementHideCount HideCount=", self.HideCount);
+	end
+	if (self.HideCount==1) then
+		if (now) then
+			self:Hide();
+		else
+			self:SetHideRequest("Trigger Hide Action");
+		end
+	end
+end
+
+function cPowaAura:DecrementHideCount(now)
+	self.HideCount = (self.HideCount or 1) - 1;
+	if (PowaAuras.DebugTriggers or self.Debug) then
+		PowaAuras:DisplayText(self.id, " Aura DecrementHideCount HideCount=", self.HideCount);
+	end
+	if (self.HideCount==0) then
+		self:Show();
+	end
 end
 
 function cPowaAura:SetHideRequest(source, force)
