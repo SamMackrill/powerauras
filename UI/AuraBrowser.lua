@@ -19,50 +19,39 @@ local NEWFEATURES_VERSIONS = {
 	40100,
 	40000,
 }
--- New features list stuff.
-local NEWFEATURES_DESC = {
-	["1.0"] = {
-		[1] = "This is item #1",
-		[2] = "This is item #2",
-		[3] = "This is item #3",
-		[4] = "This is item #4",
-	},
-	["1.1"] = {	
-		[5] = "This is item #5",
-		[6] = "This is item #6",
-		[7] = "This is item #7",
-		[8] = "This is item #8",
-	},
+
+local NEWFEATURES_VERSIONS_DESC = {
 }
 
 -- OnLoad function for the browser frame.
 function PowaBrowser_OnLoad(self)
 	-- New features tables! Assign them!!!
+	local lastVersion = nil;
 	for _, version in pairs(NEWFEATURES_VERSIONS) do
-		print(version);
-		-- self.Tabs.NewFeatures.List:AddItem(version, format("%.2f", version/10000));
+		-- self.Tabs.NewFeatures.List:AddItem(version, format("%.2f", version/10000), lastVersion);
+		-- lastVersion = version;
 	end
-	self.Tabs.NewFeatures.List:AddItem("a", "A");
-	self.Tabs.NewFeatures.List:AddItem("b", "B", "a");
-	self.Tabs.NewFeatures.List:AddItem("c", "C", "b");
-	self.Tabs.NewFeatures.List:AddItem("d", "D", "a");
-	self.Tabs.NewFeatures.List:AddItem("e", "E");
-	self.Tabs.NewFeatures.List:AddItem("f", "F", "e");
-	self.Tabs.NewFeatures.List:AddItem("g", "G", "e");
-	self.Tabs.NewFeatures.List:AddItem("h", "H", "c");
-	self.Tabs.NewFeatures.List:AddItem("i", "I");
-	self.Tabs.NewFeatures.List:AddItem("j", "J");
-	self.Tabs.NewFeatures.List:AddItem("k", "K");
-	self.Tabs.NewFeatures.List:AddItem("l", "L", "k");
-	self.Tabs.NewFeatures.List:AddItem("m", "M", "l");
-	self.Tabs.NewFeatures.List:AddItem("n", "N", "m");
-	self.Tabs.NewFeatures.List:AddItem("o", "O", "n");
-	self.Tabs.NewFeatures.List:AddItem("p", "P", "o");
-	self.Tabs.NewFeatures.List:AddItem("q", "Q", "p");
-	self.Tabs.NewFeatures.List:AddItem("r", "R", "m");
-	self.Tabs.NewFeatures.List:AddItem("s", "S", "p");
-	self.Tabs.NewFeatures.List:AddItem("t", "T", "p");
-	-- self.Tabs.NewFeatures.List:AddItem(NEWFEATURES_LIST);
+	self.Tabs.NewFeatures.List:AddItem(1, 1);
+	self.Tabs.NewFeatures.List:AddItem(2, 2, 1);
+	self.Tabs.NewFeatures.List:AddItem(3, 3, 1);
+	self.Tabs.NewFeatures.List:AddItem(4, 4, 2);
+	self.Tabs.NewFeatures.List:AddItem(5, 5, 4);
+	self.Tabs.NewFeatures.List:AddItem(6, 6, 2);
+	self.Tabs.NewFeatures.List:AddItem(7, 7, 4);
+	self.Tabs.NewFeatures.List:AddItem(8, 8, 2);
+	self.Tabs.NewFeatures.List:AddItem(9, 9, 5);
+	self.Tabs.NewFeatures.List:AddItem(10, 10, 5);
+	self.Tabs.NewFeatures.List:AddItem(11, 11, 10);
+	self.Tabs.NewFeatures.List:AddItem(12, 12, 11);
+	self.Tabs.NewFeatures.List:AddItem(13, 13, 5);
+	self.Tabs.NewFeatures.List:AddItem(14, 14, 5);
+	self.Tabs.NewFeatures.List:AddItem(15, 15);
+	self.Tabs.NewFeatures.List:AddItem(16, 16);
+	self.Tabs.NewFeatures.List:AddItem(17, 17, 16);
+	self.Tabs.NewFeatures.List:AddItem(18, 18, 17);
+	self.Tabs.NewFeatures.List:AddItem(19, 19, 16);
+	self.Tabs.NewFeatures.List:AddItem(20, 20, 18);
+	self.Tabs.NewFeatures.List:AddItem(21, 21);
 end
 -- The good bits.
 function PowaBrowser_OnVariablesLoaded()
