@@ -80,7 +80,7 @@
 				<Scripts>
 					<OnClick>
 						-- Epicly long line of code right there.
-						self:GetParent():GetParent():GetParent():GetParent():ToggleChildren(self:GetParent().Position);
+						self:GetParent():GetParent():GetParent():GetParent():ToggleElementChildren(self:GetParent():GetKey());
 					</OnClick>
 				</Scripts>
 			</Button>

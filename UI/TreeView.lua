@@ -5,42 +5,37 @@ PowaAuras.UI["TreeView"] = {
 		self.ItemsByOrder = {};
 		self.ItemsByKey = {};
 		self.SelectedKey = nil;
-		self.SelectedIndex = nil;
 		-- Set ze title.
 		self:SetTitle(title);
 		-- Initial update! (Fixed the scrollbar).
 		self:UpdateItems();
 	end,
-	AddItem = function(self, key, text, parent)
-		-- Prevent duplicate keys.
-		if(self.ItemsByKey[key]) then return false; end
-		-- Add it where needed.
-		local pos;
-		if(not parent) then
-			-- Append to end.
-			pos = #(self.ItemsByOrder)+1;
-		elseif(parent) then
-			-- Figure out a position for the element. We want it to be the last added to the list relative to this depth,
-			-- but we don't want the thing to then attach itself to another layer of this depth later on.
-			-- In addition, we don't want to interrupt any child elements either.
-			pos = self.ItemsByKey[parent]:GetPosition();
-			local depth, item = self.ItemsByKey[parent]:GetDepth(), nil;
-			repeat
-				pos = pos+1;
-				item = self.ItemsByKey[self.ItemsByOrder[pos]];
-			until(not item or depth >= item:GetDepth())
-		end
-		tinsert(self.ItemsByOrder, pos, key);
-		-- Was a parent specified?
-		local depth = 1;
-		if(parent) then
-			depth = self.ItemsByKey[parent]:GetDepth()+1;
-		end
-		-- Add the actual data to the itemsbykey table...
-		self.ItemsByKey[key] = PowaAuras.UI.TreeViewItem(nil, self, pos, text, depth, parent or nil);
+	AddItem = function(self, key, text, parent, position, disable, fontSize)
+		-- Got a parent? If so, find it.
+		if(parent) then parent = self:FindItemByKey(parent); end
+		if(not parent) then parent = self.ItemsByOrder; end
+		-- Where are we inserting you?
+		if(not position) then position = #(parent)+1; end
+		-- Let's do it.
+		tinsert(parent, position, { Key = key });
+		self.ItemsByKey[key] = PowaAuras.UI.TreeViewItem(nil, self, parent["Key"], key, text);
 		-- Update.
 		self:UpdateItems();
 		return true;
+	end,
+	FindItemByKey = function(self, key, items)
+		-- Go go power rangers.
+		if(not items) then items = self.ItemsByOrder; end
+		local count, item, tmpVal = #(items), nil, nil;
+		for i=1,count do
+			item = items[i];
+			if(item["Key"] == key) then return item; end
+			tmpVal = self:FindItemByKey(key, item);
+			if(tmpVal) then
+				return tmpVal;
+			end
+		end
+		return nil, nil;
 	end,
 	DisableItem = function(self, key)
 		if(self.ItemsByKey[key]) then self.ItemsByKey[key]:Disable(); end
@@ -48,62 +43,11 @@ PowaAuras.UI["TreeView"] = {
 	EnableItem = function(self, key)
 		if(self.ItemsByKey[key]) then self.ItemsByKey[key]:Enable(); end
 	end,
-	GetSelectedIndex = function(self)
-		return self.SelectedIndex;
-	end,
 	GetSelectedKey = function(self)
 		return self.SelectedKey;
 	end,
 	HasItem = function(self, key)
 		return (self.ItemsByKey[key] and true or false);
-	end,
-	RemoveItem = function(self, key)
-		-- Remove item...
-		local item = self.ItemsByKey[key];
-		local pos = item:GetPosition();
-		-- Recycle it.
-		item:Recycle();
-		self.ItemsByKey[key] = nil;
-		tremove(self.ItemsByOrder, pos);
-		-- Update (do this now, if we DO remove anything then it'll be called again, so no bugs be occurrin' mon!).
-		self:UpdateItems();
-		-- Find anything which referenced this one.
-		for childKey, data in pairs(self.ItemsByKey) do
-			-- And delete it.
-			if(childKey ~= key and data.ParentKey and data.ParentKey == key) then
-				self:RemoveItem(childKey);
-			end
-		end
-		-- Was this item selected? Well deselect it.
-		if(self.SelectedKey == key) then self:SetSelectedIndex(0); end
-	end,
-	OnSelectionChange = function(self, key) -- All TreeViews should override this func.
-		print("Selection changed: " .. (key or "nil"));
-	end,
-	SetSelectedIndex = function(self, index)
-		-- Go go go.
-		if(self.ItemsByOrder[index] and self.SelectedIndex ~= index) then
-			self.SelectedIndex = index;
-			self.SelectedKey = self.ItemsByOrder[index];
-			self:OnSelectionChange(self.SelectedKey);
-		elseif((index == 1 and self.SelectedIndex ~= index) or index == 0) then
-			-- No items at all!
-			self.SelectedIndex = 0;
-			self.SelectedKey = nil;
-			self:OnSelectionChange(nil);			
-		end
-		-- Update.
-		self:UpdateItems();
-	end,
-	SetSelectedKey = function(self, key)
-		-- Go go go.
-		if(self.ItemsByKey[key] and self.SelectedKey ~= key) then
-			self.SelectedIndex = self.ItemsByKey[key]:GetPosition();
-			self.SelectedKey = key;
-			self:OnSelectionChange(self.SelectedKey);
-		end
-		-- Update.
-		self:UpdateItems();
 	end,
 	HasTitle = function(self)
 		if(not self.Scroll.Child.Title:GetText() or self.Scroll.Child.Title:GetText() == "") then
@@ -112,88 +56,86 @@ PowaAuras.UI["TreeView"] = {
 			return true;
 		end
 	end,
+	OnSelectionChange = function(self, key) -- All TreeViews should override this func.
+		print("Selection changed: " .. (key or "nil"));
+	end,
+	RemoveItem = function(self, key)
+		-- Update.
+		self:UpdateItems();
+	end,
+	SetSelectedKey = function(self, key)
+		-- Go go go.
+		if(self.ItemsByKey[key] and self.SelectedKey ~= key) then
+			self.SelectedKey = key;
+			self:OnSelectionChange(self.SelectedKey);
+		end
+		-- Update.
+		self:UpdateItems();
+	end,
 	SetTitle = function(self, title)
 		self.Scroll.Child.Title:SetText(title);
 	end,
-	ToggleChildren = function(self, index)
-		-- Get item...
-		local parentKey = self.ItemsByOrder[index];
-		local parent = self.ItemsByKey[parentKey];
-		parent.ShowChildren = not parent.ShowChildren;
-		if(parent.ShowChildren) then
-			-- Minus button.
-			parent.Expand:SetNormalTexture("Interface\\Buttons\\UI-MinusButton-Up");
-			parent.Expand:SetPushedTexture("Interface\\Buttons\\UI-MinusButton-Down");
-			parent.Expand:SetDisabledTexture("Interface\\Buttons\\UI-MinusButton-Disabled");
-		else
-			-- Opposite of minus.
-			parent.Expand:SetNormalTexture("Interface\\Buttons\\UI-PlusButton-Up");
-			parent.Expand:SetPushedTexture("Interface\\Buttons\\UI-PlusButton-Down");
-			parent.Expand:SetDisabledTexture("Interface\\Buttons\\UI-PlusButton-Disabled");
-		end
-		-- Update. The update will hide any children at a lower depth than the current item depending on the parent
-		-- ShowChildren state.
+	ToggleElementChildren = function(self, key)
+		-- Get item.
+		local item = self.ItemsByKey[key];
+		if(not item) then return; end
+		-- Set expand state.
+		item:ToggleExpanded();
+		-- Update.
 		self:UpdateItems();
 	end,
-	UpdateItems = function(self, items)
-		-- Go over items.
-		local count, shownItems, showChildren, showChildrenDepth = #(self.ItemsByOrder), 0, true, 0;
+	UpdateItems = function(self, items, level, offset, shouldShow)
+		-- Fix missing params.
+		if(not level) then level = 1; end
+		if(not items) then items = self.ItemsByOrder; end
+		if(level == 1) then shouldShow = true; end
+		local count, item, itemKey, offset, showChildren = #(items), nil, nil, (offset or 0), true;
 		for i=1,count do
-			local key = self.ItemsByOrder[i];
-			local item = self.ItemsByKey[key];
-			local parent = item.ParentKey and self.ItemsByKey[item.ParentKey] or nil;
-			-- Make sure stuff is in order!
-			item:SetPosition(i);
-			-- Check showChildren status.
-			if(showChildren == true and item.ShowChildren == false) then
-				-- Set depth.
-				showChildren = false; showChildrenDepth = item:GetDepth();
-			elseif(showChildren == false and showChildrenDepth >= item:GetDepth()) then
-				-- No need to hide children now.
-				showChildren = true; showChildrenDepth = 0;
-			end
-			-- Show/hide item.
-			if(showChildren == false and item:GetDepth() > showChildrenDepth) then
-				-- Hide child.
-				item:Hide();
-			else
-				-- Show it, increment shownItems counter.
+			-- Update locals.
+			offset = offset+1;
+			itemKey = items[i];
+			item = self.ItemsByKey[itemKey["Key"]];
+			-- Should it show?
+			if(shouldShow) then
+				-- Show + position.
 				item:Show();
-				shownItems = shownItems+1;
-				-- Set points.
-				item:ClearAllPoints();
-				item:SetPoint("TOPLEFT", 0, -4-(shownItems*24));
-				item:SetPoint("TOPRIGHT", 0, -4-(shownItems*24));
-				-- Inset the title based on depth.
-				item.Text:SetPoint("LEFT", 4+((item:GetDepth()-1)*10), 0);
-				-- Show parent one though (see what I'm doing there?)
-				if(parent) then parent.Expand:Show(); end
-				-- Selected or not?
-				if(self.SelectedIndex == i) then
-					item:SetNormalTexture("Interface\\FriendsFrame\\UI-FriendsFrame-HighlightBar-Blue");
-					item:GetNormalTexture():SetBlendMode("ADD");
-					item:SetNormalFontObject(GameFontHighlightSmall);
-					item:SetHighlightTexture(nil);
+				item:SetPoint("TOPLEFT", 0, -((offset-1)*24));
+				item:SetPoint("TOPRIGHT", 0, -((offset-1)*24));
+				-- Indent text (do NOT indent the entire item, it looks weird).
+				item.Text:SetPoint("LEFT", 4+((level-1)*10), 0);
+				-- Show or hide expand button.
+				if(#(itemKey) > 0) then
+					item.Expand:Show();
 				else
-					item:SetHighlightTexture("Interface\\FriendsFrame\\UI-FriendsFrame-HighlightBar-Blue");
-					item:GetHighlightTexture():SetBlendMode("ADD");
-					item:SetNormalFontObject(GameFontNormalSmall);
-					item:SetNormalTexture(nil);
+					item.Expand:Hide();
 				end
+			else
+				-- Hide them.
+				item:Hide();
+				-- Decrement offset (fixes things).
+				offset = offset-1;
 			end
-			-- Hide expand button.
-			item.Expand:Hide();
-			-- Show parent expand button.
-			if(parent) then parent.Expand:Show(); end
+			-- Selected?
+			item:SetSelected((self.SelectedKey == itemKey["Key"]));
+			-- Update children.
+			showChildren = item:GetExpanded();
+			if(shouldShow == false) then showChildren = false; end
+			offset = self:UpdateItems(itemKey, level+1, offset, showChildren);
 		end
-		-- Update scrollchild height.
-		self.Scroll.Child:SetHeight((self:HasTitle() and 24 or 0)+(shownItems*24));
-		-- Hide scrollbar if not needed.
-		if(self.Scroll.Child:GetHeight() < self.Scroll:GetHeight()) then
-			self.Scroll.ScrollBar:Hide();
+		-- Check level.
+		if(level > 1) then
+			-- Return amount of shown we iterated over.
+			return offset;
 		else
-			self.Scroll.ScrollBar:Show();
-		end			
+			-- Update scrollchild height.
+			self.Scroll.Child:SetHeight((self:HasTitle() and 24 or 0)+(offset*24));
+			-- Hide scrollbar if not needed.
+			if(self.Scroll.Child:GetHeight() < self.Scroll:GetHeight()) then
+				self.Scroll.ScrollBar:Hide();
+			else
+				self.Scroll.ScrollBar:Show();
+			end
+		end
 	end,
 };
 -- Register.
@@ -214,37 +156,70 @@ PowaAuras.UI["TreeViewItem"] = {
 			return item;
 		end
 	end,
-	Init = function(self, parent, pos, text, depth, parentKey)
+	Init = function(self, parentTree, parentKey, key, text)
 		-- Set us up!
-		self:SetParent(parent.Scroll.Child);
+		self:SetParent(parentTree.Scroll.Child);
+		self:SetKey(key);
 		self:SetText(text);
-		self:SetDepth(depth);
-		self:SetPosition(pos);
-		self.ParentKey = parentKey;
-		self:Show();
+		self:SetParentKey(parentKey);
+		self:ToggleExpanded(true);
 		self:SetScript("OnClick", self.OnClick);
-		self.ShowChildren = true;
+		self:Show();
 	end,
-	GetDepth = function(self)
-		return self.Depth;
+	GetExpanded = function(self)
+		return self.Expanded;
 	end,
-	GetPosition = function(self)
-		return self.Position;
+	GetKey = function(self)
+		return self.Key;
+	end,
+	GetParentKey = function(self)
+		return self.ParentKey;
 	end,
 	OnClick = function(self)
 		-- I know it looks ugly, the parent is the scrollchild so we need to work our way up...
-		self:GetParent():GetParent():GetParent():SetSelectedIndex(self.Position);
+		self:GetParent():GetParent():GetParent():SetSelectedKey(self.Key);
 	end,
 	Recycle = function(self)
 		-- Place in recycle table!
 		tinsert(PowaAuras.UI.TreeViewItem._Items, self);
 		self:Hide();
 	end,
-	SetDepth = function(self, depth)
-		self.Depth = depth;
+	SetKey = function(self, key)
+		self.Key = key;
 	end,
-	SetPosition = function(self, pos)
-		self.Position = pos;
+	SetParentKey = function(self, key)
+		self.ParentKey = key;
+	end,
+	SetSelected = function(self, selected)
+		if(selected) then
+			self:SetNormalTexture("Interface\\FriendsFrame\\UI-FriendsFrame-HighlightBar-Blue");
+			self:GetNormalTexture():SetBlendMode("ADD");
+			self:SetNormalFontObject(GameFontHighlightSmall);
+			self:SetHighlightTexture(nil);
+		else
+			self:SetHighlightTexture("Interface\\FriendsFrame\\UI-FriendsFrame-HighlightBar-Blue");
+			self:GetHighlightTexture():SetBlendMode("ADD");
+			self:SetNormalFontObject(GameFontNormalSmall);
+			self:SetNormalTexture(nil);		
+		end
+	end,
+	ToggleExpanded = function(self, force)
+		-- Set it.
+		if(force) then
+			self.Expanded = force;
+		else
+			self.Expanded = not self.Expanded;
+		end
+		-- Update imagery.
+		if(self.Expanded) then
+			self.Expand:SetNormalTexture("Interface\\Buttons\\UI-MinusButton-Up");
+			self.Expand:SetPushedTexture("Interface\\Buttons\\UI-MinusButton-Down");
+			self.Expand:SetDisabledTexture("Interface\\Buttons\\UI-MinusButton-Disabled");
+		else
+			self.Expand:SetNormalTexture("Interface\\Buttons\\UI-PlusButton-Up");
+			self.Expand:SetPushedTexture("Interface\\Buttons\\UI-PlusButton-Down");
+			self.Expand:SetDisabledTexture("Interface\\Buttons\\UI-PlusButton-Disabled");		
+		end
 	end,
 	_Items = {}, -- Private.
 };
