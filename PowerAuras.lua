@@ -899,7 +899,7 @@ function PowaAuras:TestThisEffect(auraId, giveReason, ignoreCascade)
 				self:AddChildrenToCascade(aura);
 			end
 			aura.Active = false;	
-			aura.HideCount = nil;
+			aura.InvertCount = nil;
 		end
 	end
 	
@@ -1119,7 +1119,7 @@ function PowaAuras:DisplayAura(auraId)
 	
 	if (aura.Stacks and aura.Stacks.enabled) then
 		PowaAuras:CreateStacksFrameIfMissing(aura.id);
-		aura.Stacks:ShowValue(aura, aura.Stacks.LastShownValue)
+		aura.Stacks:ShowValue(aura, aura.Stacks.LastShownValue);
 	end
 	
 	aura:Show();

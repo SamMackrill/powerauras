@@ -11,6 +11,7 @@ cPowaStacks = PowaClass(function(stacker, aura, base)
 	
 	stacker.Showing = false;
 	stacker.id = aura.id;
+	stacker.ShowOnAuraHide = false;
 end);
 
 -- This is the set of values that will be exported with their default values
@@ -202,28 +203,36 @@ function cPowaStacks:Hide()
 	self.Showing = false;
 	self.UpdateValueTo = nil;
 	self.LastShownValue = nil;
-	self.HideCount = nil;
+	self.InvertCount = nil;
 end
 
-function cPowaStacks:IncrementHideCount()
-	self.HideCount = (self.HideCount or 0) + 1;
+function cPowaStacks:IncrementInvertCount()
+	self.InvertCount = (self.InvertCount or 0) + 1;
 	local aura = PowaAuras.Auras[self.id];
 	--if (aura.Debug) then
-		PowaAuras:DisplayText(self.id, " Stacks IncrementHideCount HideCount=", self.HideCount);
+		PowaAuras:DisplayText(self.id, " Stacks IncrementInvertCount InvertCount=", self.InvertCount);
 	--end
-	if (self.HideCount==1) then
-		self:Hide();
+	if (self.InvertCount==1) then
+		if (aura.Active) then
+			self:Hide();
+		else
+			self:Show();
+		end
 	end
 end
 
-function cPowaStacks:DecrementHideCount(now)
-	self.HideCount = (self.HideCount or 1) - 1;
+function cPowaStacks:DecrementInvertCount(now)
+	self.InvertCount = (self.InvertCount or 1) - 1;
 	local aura = PowaAuras.Auras[self.id];
 	--if (aura.Debug) then
-		PowaAuras:DisplayText(self.id, " Stacks DecrementHideCount HideCount=", self.HideCount);
+		PowaAuras:DisplayText(self.id, " Stacks DecrementInvertCount InvertCount=", self.InvertCount);
 	--end
-	if (self.HideCount==0) then
-		self:Show();
+	if (self.InvertCount==0) then
+		if (aura.Active) then
+			self:Show();
+		else
+			self:Hide();
+		end
 	end
 end
 
@@ -535,29 +544,37 @@ function cPowaTimer:Hide()
 	self.lastShownSmall = nil;
 	self.Showing = false;
 	self.ShowRequest = false;
-	self.HideCount = nil;
+	self.InvertCount = nil;
 	--PowaAuras:ShowText("Hide timer frame");
 end
 
-function cPowaTimer:IncrementHideCount()
-	self.HideCount = (self.HideCount or 0) + 1;
+function cPowaTimer:IncrementInvertCount()
+	self.InvertCount = (self.InvertCount or 0) + 1;
 	local aura = PowaAuras.Auras[self.id];
 	--if (PowaAuras.DebugTriggers or aura.Debug) then
-		PowaAuras:DisplayText(self.id, " Timer IncrementHideCount HideCount=", self.HideCount);
+		PowaAuras:DisplayText(self.id, " Timer IncrementInvertCount InvertCount=", self.InvertCount);
 	--end
-	if (self.HideCount==1) then
-		self:Hide();
+	if (self.InvertCount==1) then
+		if (aura.Active) then
+			self:Hide();
+		else
+			self:Show();
+		end
 	end
 end
 
-function cPowaTimer:DecrementHideCount(now)
-	self.HideCount = (self.HideCount or 1) - 1;
+function cPowaTimer:DecrementInvertCount(now)
+	self.InvertCount = (self.InvertCount or 1) - 1;
 	local aura = PowaAuras.Auras[self.id];
 	--if (aura.Debug) then
-		PowaAuras:DisplayText(self.id, " Timer DecrementHideCount HideCount=", self.HideCount);
+		PowaAuras:DisplayText(self.id, " Timer DecrementInvertCount InvertCount=", self.InvertCount);
 	--end
-	if (self.HideCount==0) then
-		self:Show();
+	if (self.InvertCount==0) then
+		if (aura.Active) then
+			self:Show();
+		else
+			self:Hide();
+		end
 	end
 end
 
