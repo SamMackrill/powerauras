@@ -257,22 +257,28 @@ function cPowaAura:StacksAllowed()
 end
 
 function cPowaAura:ClearTriggers()
-	for index, trigger in pairs (self.Triggers) do
-		if (string.sub(trigger.Name, 3) == "PA_") then
-			PowaAuras:ShowText("Clear trigger ", trigger.Name);
-			for index, action in pairs (trigger.Actions) do
-				if (string.sub(action.Name, 3) == "PA_") then
-					PowaAuras:ShowText("Deleting action ", action.Name);
-					trigger:DeleteAction(action);
-				end
+	--PowaAuras:ShowText("Clearing default triggers ", #self.Triggers);
+	local triggerIndex = #self.Triggers;
+	while triggerIndex>0 do
+		local trigger = self.Triggers[triggerIndex];
+		--PowaAuras:ShowText(triggerIndex, " - ", trigger.Name);
+		if (trigger.Name and string.sub(trigger.Name, 1, 3) == "PA_") then
+			--PowaAuras:ShowText("Clear trigger ", trigger.Name);
+			local actionIndex = #trigger.Actions;
+			while actionIndex>0 do
+				local action = trigger.Actions[actionIndex];
+				--PowaAuras:ShowText("Deleting action ", action.Name);
+				trigger:DeleteAction(action);
+				actionIndex = actionIndex - 1;
 			end
-			if (#trigger.Actions==0) then
-				PowaAuras:ShowText("Deleting trigger ", trigger.Name);
-				self:DeleteTrigger(trigger);
-			end
+			--PowaAuras:ShowText("Deleting trigger ", trigger.Name);
+			self:DeleteTrigger(trigger);
+		else
+			--PowaAuras:ShowText("Leaving custom trigger ", trigger.Id, " (", trigger.Name, ")");
 		end
-	
+		triggerIndex = triggerIndex - 1;
 	end
+	--PowaAuras:ShowText("Aura trigger count now=", #self.Triggers);
 end
 
 function cPowaAura:CreateDefaultTriggers()
@@ -280,7 +286,7 @@ function cPowaAura:CreateDefaultTriggers()
 	if (self.off) then return; end
 	local frame, texture, frame2, texture2 = self:CreateFrames();
 	
-	local trigger=self:CreateTrigger(cPowaAuraShowTrigger, {Name="PA_AuraShow", Debug=true});
+	local trigger=self:CreateTrigger(cPowaAuraShowTrigger, {Name="PA_AuraShow", Debug=false});
 	--trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Show Aura"});
 	if (self.begin>0) then
 		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_ShowAnim", Frame=frame, HideFrame=frame2, Animation=self.begin, Speed=self.speed, Alpha=self.alpha, BeginSpin=self.beginSpin, State=1, StateName="AnimationState"});
@@ -293,7 +299,7 @@ function cPowaAura:CreateDefaultTriggers()
 		trigger:AddAction(cPowaAuraPlaySoundAction, {Name="PA_Sound", Sound=self.sound});
 	end			
 	
-	trigger=self:CreateTrigger(cPowaAuraHideTrigger, {Name="PA_AuraHide", Debug=true});
+	trigger=self:CreateTrigger(cPowaAuraHideTrigger, {Name="PA_AuraHide", Debug=false});
 	--trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Hide Aura"});
 	if (self.finish>0) then
 		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_HideAnim", Frame=frame, HideFrame=frame2, Animation=self.finish + 100, Speed=self.speed, Alpha=self.alpha, Hide=true, State=0, StateName="AnimationState"});
@@ -344,7 +350,7 @@ function cPowaAura:CreateDefaultTriggers()
 		end
 		
 		if (self.InvertAuraBelow>0) then		
-			trigger=self:CreateTrigger(cPowaAuraTimerTrigger,  {Name="PA_InvertOnTimerHide", Value=self.InvertAuraBelow, Compare=">", Debug=true});
+			trigger=self:CreateTrigger(cPowaAuraTimerTrigger,  {Name="PA_InvertOnTimerHide", Value=self.InvertAuraBelow, Compare=">", Debug=false});
 			trigger:AddAction(cPowaAuraHideAction, {Name="PA_Hide", All=true});
 			--trigger=self:CreateTrigger(cPowaAuraTimerTrigger,  {Name="PA_InvertOnTimerShow", Value=self.InvertAuraBelow, Compare="<=", Debug=true});
 			--trigger:AddAction(cPowaAuraShowAction, {Name="PA_Show", All=true});
@@ -381,14 +387,14 @@ function cPowaAura:CreateTrigger(tType, parameters)
 end
 
 function cPowaAura:DeleteTrigger(trigger)
-	if(not trigger) then return; end
-	for index, t in pairs (self.TriggersByType[trigger.Type]) do
+	if (not trigger) then return; end
+	for index, t in ipairs (self.TriggersByType[trigger.Type]) do
 		if (trigger.Id==t.Id) then
 			table.remove(self.TriggersByType[trigger.Type], index);
 			break;
 		end
 	end
-	for index, t in pairs (self.Triggers) do
+	for index, t in ipairs (self.Triggers) do
 		if (trigger.Id==t.Id) then
 			table.remove(self.Triggers, index);
 			break;
@@ -405,8 +411,8 @@ function cPowaAura:ProcessTriggerQueue()
 	while i<=#self.TriggerActionQueue do
 		local action = self.TriggerActionQueue[i];
 		if (PowaAuras.DebugTriggers) then
-			local trigger = self.Triggers[action.TriggerId];
-			PowaAuras:DisplayText("==AF [", trigger.Name, ":", action.Name, "] ", action.AuraId, "_", action.TriggerId, "_", action.Id, " (", trigger.Type, " : ", action.Type, ")");
+			local trigger = self.Trigger;
+			PowaAuras:DisplayText("==AF [", trigger.Name, ":", action.Name, "] ", action.AuraId, "_", trigger.Id, "_", action.Id, " (", trigger.Type, " : ", action.Type, ")");
 		end
 		action:Fire();
 		i = i + 1;
@@ -446,7 +452,7 @@ function cPowaAura:QueueActions(trigger)
 		action.TriggerValue = trigger.Value;
 		local insertPosition = #self.TriggerActionQueue + 1;
 		if (PowaAuras.DebugTriggers) then
-			PowaAuras:DisplayText("==AQ [", trigger.Name, ":", action.Name, "] ",  action.AuraId, "_", action.TriggerId, "_", action.Id, " insert@=", insertPosition);
+			PowaAuras:DisplayText("==AQ [", trigger.Name, ":", action.Name, "] ",  action.AuraId, "_", action.Trigger.Id, "_", action.Id, " insert@=", insertPosition);
 		end
 		self.TriggerActionQueue[insertPosition] = action;
 		i = i + 1;
