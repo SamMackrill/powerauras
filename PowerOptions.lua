@@ -1291,7 +1291,7 @@ function PowaAuras:MainOptionShow()
 end
 
 function PowaAuras:MainOptionClose()
-	--self:ShowText("MainOptionClose");
+	self:ShowText("MainOptionClose");
 	self:DisableMoveMode();
 	self.ModTest = false;
 	if ColorPickerFrame:IsVisible() then
@@ -1310,6 +1310,8 @@ function PowaAuras:MainOptionClose()
 	self.DoCheck.All = true;
 	self:CheckAllMarkedAuras();
  	self:MemorizeActions();
+	self:CreateAllAuraTriggers();
+
 	
 	self:ReregisterEvents(PowaAuras_Frame);
 
@@ -3499,7 +3501,7 @@ function PowaAuras:ToggleTesting()
 	end
 
 	if (aura.Showing) then 
-		aura:SetHideRequest("ToggleTesting", true);
+		aura:SetHideRequest("ToggleTesting");
 		aura.Active = false;
 	else
 		aura.Active = true;
@@ -3535,7 +3537,7 @@ function PowaAuras:OptionHideAll(now) --- Hide all auras
 			if (aura.Timer) then aura.Timer:Hide(); end 
 			if (aura.Stacks) then aura.Stacks:Hide(); end
 		else
-			aura:SetHideRequest("OptionHideAll", true);
+			aura:SetHideRequest("OptionHideAll");
 			if (aura.Timer)  then aura.Timer.HideRequest  = true; end
 		end
 	end	

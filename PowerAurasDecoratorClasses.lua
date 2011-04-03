@@ -213,7 +213,7 @@ function cPowaStacks:IncrementInvertCount()
 		PowaAuras:DisplayText(self.id, " Stacks IncrementInvertCount InvertCount=", self.InvertCount);
 	--end
 	if (self.InvertCount==1) then
-		if (aura.Active) then
+		if (aura.Active or self.ShowOnAuraHide) then
 			self:Hide();
 		else
 			self:Show();
@@ -228,7 +228,7 @@ function cPowaStacks:DecrementInvertCount(now)
 		PowaAuras:DisplayText(self.id, " Stacks DecrementInvertCount InvertCount=", self.InvertCount);
 	--end
 	if (self.InvertCount==0) then
-		if (aura.Active) then
+		if (aura.Active or self.ShowOnAuraHide) then
 			self:Show();
 		else
 			self:Hide();
@@ -525,6 +525,7 @@ end
 
 function cPowaTimer:Show()
 	self.ShowRequest = true;
+	PowaAuras:ShowText("Timer ShowRequest");
 end
 
 function cPowaTimer:HideFrame(i)
@@ -545,7 +546,7 @@ function cPowaTimer:Hide()
 	self.Showing = false;
 	self.ShowRequest = false;
 	self.InvertCount = nil;
-	--PowaAuras:ShowText("Hide timer frame");
+	PowaAuras:ShowText("Hide timer frame");
 end
 
 function cPowaTimer:IncrementInvertCount()
@@ -555,7 +556,7 @@ function cPowaTimer:IncrementInvertCount()
 		PowaAuras:DisplayText(self.id, " Timer IncrementInvertCount InvertCount=", self.InvertCount);
 	--end
 	if (self.InvertCount==1) then
-		if (aura.Active) then
+		if (aura.Active or self.ShowOnAuraHide) then
 			self:Hide();
 		else
 			self:Show();
@@ -570,7 +571,7 @@ function cPowaTimer:DecrementInvertCount(now)
 		PowaAuras:DisplayText(self.id, " Timer DecrementInvertCount InvertCount=", self.InvertCount);
 	--end
 	if (self.InvertCount==0) then
-		if (aura.Active) then
+		if (aura.Active or self.ShowOnAuraHide) then
 			self:Show();
 		else
 			self:Hide();
