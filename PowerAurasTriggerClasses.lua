@@ -170,29 +170,51 @@ function cPowaAuraHideAction:Fire()
 	end
 	local aura = PowaAuras.Auras[self.AuraId];
 	if (self.Parameters.All or self.Parameters.Aura) then
-		aura:IncrementHideCount(self.Parameters.Now);
+		aura:Hide();
 	end
-	if (aura.Timer and (self.Parameters.All or self.Parameters.Timer)) then
-		aura.Timer:IncrementHideCount();
+	if (aura.Timer and ((self.Parameters.All and not aura.Timer.ShowOnAuraHide) or self.Parameters.Timer)) then
+		aura.Timer:Hide();
 	end
-	if (aura.Stacks and (self.Parameters.All or self.Parameters.Stacks)) then
-		aura.Stacks:IncrementHideCount();
+	if (aura.Stacks and ((self.Parameters.All and not aura.Stacks.ShowOnAuraHide) or self.Parameters.Stacks)) then
+		aura.Stacks:Hide();
 	end
 end
 
-function cPowaAuraHideAction:Reset()
+--[[
+=====cPowaAuraHideAction========
+===========================
+--]]
+cPowaAuraInvertAction = PowaClass(cPowaTriggerAction, { Type = "Invert" });
+
+function cPowaAuraInvertAction:Fire()
 	if (PowaAuras.DebugTriggers or self.Debug) then
-		PowaAuras:DisplayText("HideAction: Reset");
+		PowaAuras:DisplayText("InvertAction: Fire!");
 	end
 	local aura = PowaAuras.Auras[self.AuraId];
 	if (self.Parameters.All or self.Parameters.Aura) then
-		aura:DecrementHideCount();
+		aura:IncrementInvertCount(self.Parameters.Now);
 	end
 	if (aura.Timer and (self.Parameters.All or self.Parameters.Timer)) then
-		aura.Timer:DecrementHideCount();
+		aura.Timer:IncrementInvertCount();
 	end
 	if (aura.Stacks and (self.Parameters.All or self.Parameters.Stacks)) then
-		aura.Stacks:DecrementHideCount();
+		aura.Stacks:IncrementInvertCount();
+	end
+end
+
+function cPowaAuraInvertAction:Reset()
+	if (PowaAuras.DebugTriggers or self.Debug) then
+		PowaAuras:DisplayText("InvertAction: Reset");
+	end
+	local aura = PowaAuras.Auras[self.AuraId];
+	if (self.Parameters.All or self.Parameters.Aura) then
+		aura:DecrementInvertCount();
+	end
+	if (aura.Timer and (self.Parameters.All or self.Parameters.Timer)) then
+		aura.Timer:DecrementInvertCount();
+	end
+	if (aura.Stacks and (self.Parameters.All or self.Parameters.Stacks)) then
+		aura.Stacks:DecrementInvertCount();
 	end
 end
 

@@ -304,7 +304,7 @@ function cPowaAura:CreateDefaultTriggers()
 	if (self.finish>0) then
 		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_HideAnim", Frame=frame, HideFrame=frame2, Animation=self.finish + 100, Speed=self.speed, Alpha=self.alpha, Hide=true, State=0, StateName="AnimationState"});
 	else
-		trigger:AddAction(cPowaAuraHideAction, {Name="PA_Hide", All=true, Now=true});
+		trigger:AddAction(cPowaAuraHideAction, {Name="PA_Hide", All=true});
 		trigger:AddAction(cPowaAuraStateAction, {Name="PA_State", StateName="AnimationState", StateValue=0});
 	end
 	if (self.customsoundend~="") then
@@ -346,12 +346,14 @@ function cPowaAura:CreateDefaultTriggers()
 		
 		if (self.timerduration>0) then	
 			trigger=self:CreateTrigger(cPowaAuraDurationTrigger,  {Name="PA_HideAfterDuration", Value=self.timerduration, Compare=">"});
-			trigger:AddAction(cPowaAuraHideAction, {Name="PA_Hide", All=true});
+			trigger:AddAction(cPowaAuraHideAction, {Name="PA_Invert", All=true});
 		end
 		
-		if (self.InvertAuraBelow>0) then		
-			trigger=self:CreateTrigger(cPowaAuraTimerTrigger,  {Name="PA_InvertAuraBelow", Value=self.InvertAuraBelow, Compare=">", Debug=true});
-			trigger:AddAction(cPowaAuraHideAction, {Name="PA_Hide", All=true});
+		if (self.InvertAuraBelow>0) then
+			trigger=self:CreateTrigger(cPowaAuraTimerTrigger,  {Name="PA_InvertTimerAbove", Value=self.InvertAuraBelow, Compare=">", Debug=true});
+			trigger:AddAction(cPowaAuraInvertAction, {Name="PA_Invert", Timer=true});
+			trigger=self:CreateTrigger(cPowaAuraTimerTrigger,  {Name="PA_InvertAuraBelow", Value=self.InvertAuraBelow, Compare="<", Debug=true});
+			trigger:AddAction(cPowaAuraInvertAction, {Name="PA_Invert", Aura=true});
 			--trigger=self:CreateTrigger(cPowaAuraTimerTrigger,  {Name="PA_InvertOnTimerShow", Value=self.InvertAuraBelow, Compare="<=", Debug=true});
 			--trigger:AddAction(cPowaAuraShowAction, {Name="PA_Show", All=true});
 			--if (self.InvertTimeHides) then
@@ -427,9 +429,9 @@ end
 function cPowaAura:CheckTriggers(triggerType, value, qualifier)
 	local triggersByType = self.TriggersByType[triggerType];
 	if (not triggersByType or #triggersByType==0) then return; end
-	if (PowaAuras.DebugTriggers) then
-		PowaAuras:DisplayText("Checking all ",triggerType, " auras");
-	end
+	--if (PowaAuras.DebugTriggers) then
+	--	PowaAuras:DisplayText("Checking all ",triggerType, " auras");
+	--end
 	local i = 1;
 	while i<=#triggersByType do
 		local trigger = triggersByType[i];
@@ -474,8 +476,8 @@ end
 
 
 function cPowaAura:Show()
-	PowaAuras:ShowText("Aura Show() Showing=", self.Showing, " HideCount=", self.HideCount);
-	if (self.Showing or (self.HideCount or 0) > 0 ) then return; end
+	PowaAuras:ShowText("Aura Show() Showing=", self.Showing, " InvertCount=", self.HideCount);
+	if (self.Showing or (self.InvertCount or 0) > 0 ) then return; end
 	local frame = self:GetFrame();
 	if (frame == nil) then return; end
 
@@ -507,30 +509,38 @@ function cPowaAura:Hide(source)
 
 	self.Showing = false;
 	self.HideRequest = false;
-	self.HideCount = nil;
+	self.InvertCount = nil;
 end
 
-function cPowaAura:IncrementHideCount(now)
-	self.HideCount = (self.HideCount or 0) + 1;
+function cPowaAura:IncrementInvertCount(now)
+	self.InvertCount = (self.InvertCount or 0) + 1;
 	if (PowaAuras.DebugTriggers or self.Debug) then
-		PowaAuras:DisplayText(self.id, " Aura IncrementHideCount HideCount=", self.HideCount);
+		PowaAuras:DisplayText(self.id, " Aura IncrementInvertCount InvertCount=", self.InvertCount);
 	end
-	if (self.HideCount==1) then
-		if (now) then
-			self:Hide();
+	if (self.InvertCount==1) then
+		if (self.Active) then
+			if (now) then
+				self:Hide();
+			else
+				self:SetHideRequest("Trigger Hide Action");
+			end
 		else
-			self:SetHideRequest("Trigger Hide Action");
+			self:Show();
 		end
 	end
 end
 
-function cPowaAura:DecrementHideCount(now)
-	self.HideCount = (self.HideCount or 1) - 1;
+function cPowaAura:DecrementInvertCount(now)
+	self.InvertCount = (self.InvertCount or 1) - 1;
 	if (PowaAuras.DebugTriggers or self.Debug) then
-		PowaAuras:DisplayText(self.id, " Aura DecrementHideCount HideCount=", self.HideCount);
+		PowaAuras:DisplayText(self.id, " Aura DecrementInvertCount InvertCount=", self.InvertCount);
 	end
-	if (self.HideCount==0) then
-		self:Show();
+	if (self.InvertCount==0) then
+		if (self.Active) then
+			self:Show();
+		else
+			self:Hide();
+		end
 	end
 end
 
@@ -550,8 +560,20 @@ function cPowaAura:SetHideRequest(source, force)
 		
 	self:CheckTriggers("AuraHide");
 	
+	if (self.Timer) then
+		if (self.Timer.ShowOnAuraHide) then
+			self.Timer:Show();
+		else
+			self.Timer:Hide();
+		end
+	end
+	
 	if (self.Stacks) then
-		self.Stacks:Hide();
+		if (self.Stacks.ShowOnAuraHide) then
+			self.Stacks:Show();
+		else
+			self.Stacks:Hide();
+		end
 	end
 
 end
@@ -2857,7 +2879,6 @@ cPowaSpellCooldown.OptionText={
 						};
 cPowaSpellCooldown.ShowOptions={["PowaBarTooltipCheck"]=1};
 cPowaSpellCooldown.CheckBoxes={
-						  ["PowaInverseButton"]=1,
 						  ["PowaInverseButton"]=1,
 						  ["PowaIngoreCaseButton"]=1,
 						  ["PowaOwntexButton"]=1,
