@@ -166,8 +166,12 @@ PowaAuras.UI["TreeView"] = {
 			-- Hide scrollbar if not needed.
 			if(self.Scroll.Child:GetHeight() < self.Scroll:GetHeight()) then
 				self.Scroll.ScrollBar:Hide();
+				self.Scroll:SetPoint("BOTTOMRIGHT", -4, 4);
+				self.Scroll.Child:SetWidth(165);
 			else
 				self.Scroll.ScrollBar:Show();
+				self.Scroll:SetPoint("BOTTOMRIGHT", -26, 4);
+				self.Scroll.Child:SetWidth(147);
 			end
 		end
 	end,

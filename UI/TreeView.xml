@@ -7,10 +7,6 @@
 		<Size>
 			<AbsDimension x="172" y="0" />
 		</Size>
-		<Anchors>
-			<Anchor point="TOPLEFT" x="2" y="-2" />
-			<Anchor point="BOTTOMLEFT" x="2" y="2" />
-		</Anchors>
 		<Frames>
 			<ScrollFrame name="$parentScroll" parentKey="Scroll" inherits="UIPanelScrollFrameTemplate">
 				<Size>
@@ -23,16 +19,16 @@
 				<ScrollChild>
 					<Frame parentKey="Child">
 						<Size>
-							<AbsDimension x="140" y="0" />
+							<AbsDimension x="147" y="0" />
 						</Size>
 						<Anchors>
 							<Anchor point="TOPLEFT" x="4" y="-4" />
-							<Anchor point="BOTTOMLEFT" x="4" y="4" />
+							<Anchor point="BOTTOMRIGHT" x="4" y="4" />
 						</Anchors>
 						<Layers>
 							<Layer level="OVERLAY">
 								<FontString parentKey="Title" inherits="GameFontNormal" justifyH="CENTER" justifyV="MIDDLE">
-									<Size x="140" y="23" />
+									<Size x="140" y="24" />
 									<Anchors>
 										<Anchor point="TOPLEFT" x="0" y="0" />
 										<Anchor point="TOPRIGHT" x="0" y="0" />
