@@ -35,7 +35,17 @@ PowaAuras.UI["TreeView"] = {
 				return tmpVal;
 			end
 		end
-		return nil, nil;
+		return nil;
+	end,
+	FindItemIndexByKey = function(self, key, items)
+		-- Go go power rangers.
+		if(not items) then items = self.ItemsByOrder; end
+		local count, item = #(items), nil;
+		for i=1,count do
+			item = items[i];
+			if(item["Key"] == key) then return i; end
+		end
+		return nil;
 	end,
 	DisableItem = function(self, key)
 		if(self.ItemsByKey[key]) then self.ItemsByKey[key]:Disable(); end
@@ -60,6 +70,28 @@ PowaAuras.UI["TreeView"] = {
 		print("Selection changed: " .. (key or "nil"));
 	end,
 	RemoveItem = function(self, key)
+		-- Find the item...
+		local item, index, parentTable = self.ItemsByKey[key], 0, nil;
+		-- Find its parents table.
+		parentTable = (item:GetParentKey() and self:FindItemByKey(item:GetParentKey()) or self.ItemsByOrder);
+		-- Find its index in the parent list.
+		index = self:FindItemIndexByKey(key, parentTable);
+		-- I need all of these.
+		if(not item or not index or not parentTable) then return false; end
+		-- Remove all children.
+		local count, itemData = nil, self:FindItemByKey(key);
+		count = #(itemData);
+		if(count > 0) then
+			repeat
+				self:RemoveItem(itemData[1]["Key"]);
+				count = count-1;
+			until(count == 0);
+		end
+		-- Kill the item.
+		tremove(parentTable, index);
+		self.ItemsByKey[key] = nil;
+		item:Recycle();
+		print("Recycled: " .. key);
 		-- Update.
 		self:UpdateItems();
 	end,
@@ -92,11 +124,12 @@ PowaAuras.UI["TreeView"] = {
 		local count, item, itemKey, offset, showChildren = #(items), nil, nil, (offset or 0), true;
 		for i=1,count do
 			-- Update locals.
-			offset = offset+1;
 			itemKey = items[i];
 			item = self.ItemsByKey[itemKey["Key"]];
 			-- Should it show?
 			if(shouldShow) then
+				-- Increment offset.
+				offset = offset+1;
 				-- Show + position.
 				item:Show();
 				item:SetPoint("TOPLEFT", 0, -((offset-1)*24));
@@ -112,8 +145,6 @@ PowaAuras.UI["TreeView"] = {
 			else
 				-- Hide them.
 				item:Hide();
-				-- Decrement offset (fixes things).
-				offset = offset-1;
 			end
 			-- Selected?
 			item:SetSelected((self.SelectedKey == itemKey["Key"]));
