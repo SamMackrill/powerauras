@@ -5,7 +5,7 @@
 	<Script file="AuraBrowser.lua" />
 	<Frame name="PowaBrowser" toplevel="true" movable="true" parent="UIParent" hidden="false" frameStrata="MEDIUM" enableMouse="true" enableKeyboard="true">
 		<Size>
-          <AbsDimension x="500" y="450" />
+          <AbsDimension x="550" y="450" />
         </Size>
         <Anchors>
 			<Anchor point="CENTER" relativeTo="UIParent" x="0" y="50" />
@@ -51,7 +51,7 @@
 						<Anchor point="TOP" relativePoint="TOP" x="0" y="13"/>
 					</Anchors>					
 				</Texture>
-				<FontString name="$parentTitle" inherits="GameFontNormal" text="Power Auras 5.0" justifyH="CENTER" justifyV="TOP">
+				<FontString parentKey="Title" inherits="GameFontNormal" text="Power Auras %s" justifyH="CENTER" justifyV="TOP">
 					<Size>
 						<AbsDimension x="300" y="68" />
 					</Size>
@@ -81,6 +81,7 @@
 					<Anchor point="TOP" x="0" y="-65" />
 					<Anchor point="LEFT" x="15" y="0" />
 					<Anchor point="RIGHT" x="-15" y="0" />
+					<Anchor point="BOTTOM" x="0" y="15" />
 				</Anchors>
 				<Frames>
 					<Frame parentKey="Auras" hidden="true">
@@ -90,6 +91,10 @@
 						</Anchors>
 						<Frames>
 							<Frame name="$parentAurasList" parentKey="List" inherits="PowaTreeViewTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT" x="2" y="-2" />
+									<Anchor point="BOTTOMLEFT" x="2" y="2" />
+								</Anchors>
 								<Scripts>
 									<OnLoad>
 										PowaAuras.UI.TreeView(self);
@@ -114,6 +119,7 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
+				self.Title:SetText(format("Power Auras %s", PowaAuras.Version));
 				PowaBrowser_OnLoad(self);
 			</OnLoad>
 		</Scripts>
