@@ -29,10 +29,10 @@ function cPowaTrigger:ResetActions()
 end
 
 function cPowaTrigger:AddAction(actionClass, parameters)
-	local action = actionClass(self.AuraId, self.Id, self.NextActionId, parameters);
+	local action = actionClass(self, self.NextActionId, parameters);
 	self.NextActionId = self.NextActionId + 1;
 	if (PowaAuras.DebugTriggers or self.Debug) then
-		PowaAuras:DisplayText("Creating ", action.Type, " Action - Aura=", self.AuraId, " Trigger=", self.Id, " Action=", action.Id);
+		PowaAuras:DisplayText("Creating ", action.Type, " Action - Aura=", self.AuraId, " Trigger=", self.Id, " Action=", action.Id, " name=", action.Name);
 	end
 	table.insert(self.Actions, action);
 	return action;	
@@ -40,10 +40,10 @@ end
 
 function cPowaTrigger:DeleteAction(action)
 	if (not action) then return; end
-	for index, a in pairs (self.Actions) do
+	for index, a in ipairs (self.Actions) do
 		if (action.Id==a.Id) then
 			table.remove(self.Actions, index);
-			return;
+			break;
 		end
 	end
 end
@@ -123,17 +123,16 @@ cPowaStateTrigger = PowaClass(cPowaTrigger, { Type = "State" });
 
 ===========================
 --]]
-cPowaTriggerAction = PowaClass(function(action, auraId, triggerId, actionId, parameters)
-	if(not auraId or not triggerId or not PowaAuras.Auras[auraId] or not PowaAuras.Auras[auraId].Triggers[triggerId]) then return; end
+cPowaTriggerAction = PowaClass(function(action, trigger, actionId, parameters)
+	if (not trigger) then return; end
 	action.Id           = actionId;
-	action.AuraId       = auraId;
-	action.TriggerId    = triggerId;
+	action.AuraId       = trigger.AuraId;
+	action.Trigger      = trigger;
 	action.Name         = parameters.Name;
-	parameters.Name     = nil;
 	action.Parameters   = parameters;
-	action.Debug = PowaAuras.Auras[auraId].Triggers[triggerId].Debug;
+	action.Debug        = trigger.Debug;
 	if (PowaAuras.DebugTriggers or action.Debug) then
-		PowaAuras:DisplayText("Constructing Action type ", action.Type );
+		PowaAuras:DisplayText("Constructing Action type ", action.Type, " Name=",action.Name);
 	end
 	action:Init();
 end);
@@ -258,7 +257,7 @@ end
 
 function cPowaAuraAnimationAction:Init()
 	local aura = PowaAuras.Auras[self.AuraId];
-	local groupName = "Trigger" .. self.TriggerId .. "_" .. self.Id;
+	local groupName = "Trigger" .. self.Trigger.Id .. "_" .. self.Id;
 	if (PowaAuras.DebugTriggers or self.Debug) then
 		PowaAuras:DisplayText("Add Animation: ", self.Parameters.Animation, " Group=", groupName );
 	end
@@ -293,6 +292,10 @@ function cPowaAuraStateAction:Fire()
 		PowaAuras:DisplayText("Change State of ", self.Parameters.StateName, " to ", self.Parameters.StateValue );
 	end
 	local aura = PowaAuras.Auras[self.AuraId];
+	if (aura==nil) then
+		PowaAuras:DisplayText("cPowaAuraStateAction Fire: Aura nil!!! id=", self.AuraId );
+		return;
+	end
 	aura:SetState(self.Parameters.StateName, self.Parameters.StateValue);
 end
 
