@@ -770,6 +770,10 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	UI_Cancel              = "Cancel",
 	UI_Save                = "Save",
 	
+	UI_CharAuras           = "Character Auras",
+	UI_ClassAuras          = "Class Auras",
+	UI_GlobAuras           = "Global Auras",
+	
 	UI_Debug               = "Debug",
 	UI_DebugDesc           = "Enables debugging output for this aura. Don't enable it if you don't need to :)",
 	UI_Advanced            = "Advanced",
