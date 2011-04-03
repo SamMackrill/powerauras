@@ -18,14 +18,15 @@ PowaAuras.UI["TreeView"] = {
 			-- Append to end.
 			pos = #(self.ItemsByOrder)+1;
 		elseif(parent) then
-			-- Figure out a position...
-			pos = self.ItemsByKey[parent]:GetPosition()+1;
+			-- Figure out a position for the element. We want it to be the last added to the list relative to this depth,
+			-- but we don't want the thing to then attach itself to another layer of this depth later on.
+			-- In addition, we don't want to interrupt any child elements either.
+			pos = self.ItemsByKey[parent]:GetPosition();
 			local depth, item = self.ItemsByKey[parent]:GetDepth(), nil;
 			repeat
-				item = self.ItemsByKey[self.ItemsByOrder[pos]];
 				pos = pos+1;
-			until(not item or depth > item:GetDepth())
-			pos = pos-1;
+				item = self.ItemsByKey[self.ItemsByOrder[pos]];
+			until(not item or depth >= item:GetDepth())
 		end
 		tinsert(self.ItemsByOrder, pos, key);
 		-- Was a parent specified?
@@ -89,6 +90,8 @@ PowaAuras.UI["TreeView"] = {
 			self.SelectedKey = nil;
 			self:OnSelectionChange(nil);			
 		end
+		-- Update.
+		self:UpdateItems();
 	end,
 	SetSelectedKey = function(self, key)
 		-- Go go go.
@@ -97,30 +100,93 @@ PowaAuras.UI["TreeView"] = {
 			self.SelectedKey = key;
 			self:OnSelectionChange(self.SelectedKey);
 		end
+		-- Update.
+		self:UpdateItems();
+	end,
+	HasTitle = function(self)
+		if(not self.Scroll.Child.Title:GetText() or self.Scroll.Child.Title:GetText() == "") then
+			return false;
+		else
+			return true;
+		end
 	end,
 	SetTitle = function(self, title)
 		self.Scroll.Child.Title:SetText(title);
 	end,
+	ToggleChildren = function(self, index)
+		-- Get item...
+		local parentKey = self.ItemsByOrder[index];
+		local parent = self.ItemsByKey[parentKey];
+		parent.ShowChildren = not parent.ShowChildren;
+		if(parent.ShowChildren) then
+			-- Minus button.
+			parent.Expand:SetNormalTexture("Interface\\Buttons\\UI-MinusButton-Up");
+			parent.Expand:SetPushedTexture("Interface\\Buttons\\UI-MinusButton-Down");
+			parent.Expand:SetDisabledTexture("Interface\\Buttons\\UI-MinusButton-Disabled");
+		else
+			-- Opposite of minus.
+			parent.Expand:SetNormalTexture("Interface\\Buttons\\UI-PlusButton-Up");
+			parent.Expand:SetPushedTexture("Interface\\Buttons\\UI-PlusButton-Down");
+			parent.Expand:SetDisabledTexture("Interface\\Buttons\\UI-PlusButton-Disabled");
+		end
+		-- Update. The update will hide any children at a lower depth than the current item depending on the parent
+		-- ShowChildren state.
+		self:UpdateItems();
+	end,
 	UpdateItems = function(self, items)
 		-- Go over items.
-		local count = #(self.ItemsByOrder);
+		local count, shownItems, showChildren, showChildrenDepth = #(self.ItemsByOrder), 0, true, 0;
 		for i=1,count do
 			local key = self.ItemsByOrder[i];
 			local item = self.ItemsByKey[key];
 			local parent = item.ParentKey and self.ItemsByKey[item.ParentKey] or nil;
 			-- Make sure stuff is in order!
 			item:SetPosition(i);
-			-- Set points.
-			item:ClearAllPoints();
-			item:SetPoint("TOPLEFT", ((item:GetDepth()-1)*10), -4-(i*23));
-			item:SetPoint("TOPRIGHT", 0, -4-(i*23));
-			-- Hide expand button unless told otherwise.
+			-- Check showChildren status.
+			if(showChildren == true and item.ShowChildren == false) then
+				-- Set depth.
+				showChildren = false; showChildrenDepth = item:GetDepth();
+			elseif(showChildren == false and showChildrenDepth >= item:GetDepth()) then
+				-- No need to hide children now.
+				showChildren = true; showChildrenDepth = 0;
+			end
+			-- Show/hide item.
+			if(showChildren == false and item:GetDepth() > showChildrenDepth) then
+				-- Hide child.
+				item:Hide();
+			else
+				-- Show it, increment shownItems counter.
+				item:Show();
+				shownItems = shownItems+1;
+				-- Set points.
+				item:ClearAllPoints();
+				item:SetPoint("TOPLEFT", 0, -4-(shownItems*24));
+				item:SetPoint("TOPRIGHT", 0, -4-(shownItems*24));
+				-- Inset the title/expand buttons based on depth.
+				item.Text:SetPoint("LEFT", 24+((item:GetDepth()-1)*10), 0);
+				item.Expand:SetPoint("LEFT", 4+((item:GetDepth()-1)*10), 0);
+				-- Show parent one though (see what I'm doing there?)
+				if(parent) then parent.Expand:Show(); end
+				-- Selected or not?
+				if(self.SelectedIndex == i) then
+					item:SetNormalTexture("Interface\\FriendsFrame\\UI-FriendsFrame-HighlightBar-Blue");
+					item:GetNormalTexture():SetBlendMode("ADD");
+					item:SetNormalFontObject(GameFontHighlightSmall);
+					item:SetHighlightTexture(nil);
+				else
+					item:SetHighlightTexture("Interface\\FriendsFrame\\UI-FriendsFrame-HighlightBar-Blue");
+					item:GetHighlightTexture():SetBlendMode("ADD");
+					item:SetNormalFontObject(GameFontNormalSmall);
+					item:SetNormalTexture(nil);
+				end
+			end
+			-- Hide expand button.
 			item.Expand:Hide();
-			-- Show parent one though (see what I'm doing there?)
+			-- Show parent expand button.
 			if(parent) then parent.Expand:Show(); end
 		end
 		-- Update scrollchild height.
-		self.Scroll.Child:SetHeight(27+count*23);
+		self.Scroll.Child:SetHeight((self:HasTitle() and 24 or 0)+(shownItems*24));
 	end,
 };
 -- Register.
@@ -150,6 +216,7 @@ PowaAuras.UI["TreeViewItem"] = {
 		self.ParentKey = parentKey;
 		self:Show();
 		self:SetScript("OnClick", self.OnClick);
+		self.ShowChildren = true;
 	end,
 	GetDepth = function(self)
 		return self.Depth;

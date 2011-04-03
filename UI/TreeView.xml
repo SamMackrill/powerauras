@@ -46,20 +46,44 @@
 		</Frames>
 	</Frame>
 	
-	<Button name="PowaTreeViewItemTemplate" virtual="true" inherits="OptionsButtonTemplate">
+	<Button name="PowaTreeViewItemTemplate" virtual="true" >
 		<Size>
-			<AbsDimension x="172" y="23" />
+			<AbsDimension x="172" y="24" />
 		</Size>
-		<Layers>		
-			<Layer level="OVERLAY">
-				<Texture file="Interface\BUTTONS\UI-PlusMinus-Buttons" parentKey="Expand">
-					<Size x="8" y="8" />
-					<Anchors>
-						<Anchor point="LEFT" x="0" y="-2" />
-					</Anchors>
-					<TexCoords left="0.5" right="1" top="0" bottom="0.5" />
-				</Texture>
-			</Layer>
-		</Layers>
+		<NormalFont style="GameFontNormalSmall" />
+		<HighlightFont style="GameFontHighlightSmall" />
+		<DisabledFont style="GameFontNormalSmall" />
+		<ButtonText parentKey="Text">
+			<Size>
+				<AbsDimension x="0" y="24"/>
+			</Size>
+			<Anchors>
+				<Anchor point="LEFT" x="24" y="0" />
+				<Anchor point="RIGHT" x="-24" y="0" />
+			</Anchors>
+		</ButtonText>
+		<HighlightTexture file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar-Blue" alphaMode="ADD" />
+		<NormalTexture file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar-Blue" alphamode="ADD" />
+		<DisabledTexture />
+		<Frames>
+			<Button parentKey="Expand">
+				<Size>
+					<AbsDimension x="16" y="16"/>
+				</Size>
+				<Anchors>
+					<Anchor point="LEFT" x="4" y="0" />
+				</Anchors>
+				<NormalTexture file="Interface\Buttons\UI-MinusButton-Up" />
+				<HighlightTexture file="Interface\Buttons\UI-PlusButton-Hilight" alphamode="ADD" />
+				<DisabledTexture file="Interface\Buttons\UI-MinusButton-Disabled" />
+				<PushedTexture file="Interface\Buttons\UI-MinusButton-Down" />
+				<Scripts>
+					<OnClick>
+						-- Epicly long line of code right there.
+						self:GetParent():GetParent():GetParent():GetParent():ToggleChildren(self:GetParent().Position);
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
 	</Button>
 </Ui>
