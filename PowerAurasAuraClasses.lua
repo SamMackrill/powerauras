@@ -256,8 +256,8 @@ function cPowaAura:StacksAllowed()
 	return (self.CanHaveStacks and not self.inverse);
 end
 
-function cPowaAura:ClearTriggers()
-	--PowaAuras:ShowText("Clearing default triggers ", #self.Triggers);
+function cPowaAura:ClearDefaultTriggers()
+	PowaAuras:ShowText("Clearing default triggers ", #self.Triggers);
 	local triggerIndex = #self.Triggers;
 	while triggerIndex>0 do
 		local trigger = self.Triggers[triggerIndex];
@@ -282,7 +282,8 @@ function cPowaAura:ClearTriggers()
 end
 
 function cPowaAura:CreateDefaultTriggers()
-	self:ClearTriggers();
+	PowaAuras:ShowText("CreateDefaultTriggers");
+	self:ClearDefaultTriggers();
 	if (self.off) then return; end
 	local frame, texture, frame2, texture2 = self:CreateFrames();
 	
@@ -350,7 +351,7 @@ function cPowaAura:CreateDefaultTriggers()
 		end
 		
 		if (self.InvertAuraBelow>0) then
-			trigger=self:CreateTrigger(cPowaAuraTimerTrigger,  {Name="PA_InvertTimerAbove", Value=self.InvertAuraBelow, Compare=">", Debug=true});
+			trigger=self:CreateTrigger(cPowaAuraTimerTrigger,  {Name="PA_InvertTimerAbove", Value=self.InvertAuraBelow+0.01, Compare=">", Debug=true});
 			trigger:AddAction(cPowaAuraInvertAction, {Name="PA_Invert", Timer=true});
 			trigger=self:CreateTrigger(cPowaAuraTimerTrigger,  {Name="PA_InvertAuraBelow", Value=self.InvertAuraBelow, Compare="<", Debug=true});
 			trigger:AddAction(cPowaAuraInvertAction, {Name="PA_Invert", Aura=true});
@@ -476,8 +477,8 @@ end
 
 
 function cPowaAura:Show()
-	PowaAuras:ShowText("Aura Show() Showing=", self.Showing, " InvertCount=", self.HideCount);
-	if (self.Showing or (self.InvertCount or 0) > 0 ) then return; end
+	PowaAuras:ShowText("Aura Show() Showing=", self.Showing, " InvertCount=", self.InvertCount);
+	if (self.Showing) then return; end
 	local frame = self:GetFrame();
 	if (frame == nil) then return; end
 
@@ -544,11 +545,11 @@ function cPowaAura:DecrementInvertCount(now)
 	end
 end
 
-function cPowaAura:SetHideRequest(source, force)
+function cPowaAura:SetHideRequest(source)
 	PowaAuras:Message(GetTime()," SetHideRequest ", self.HideRequest, " showing=", self.Showing, " from=", source);
 	if (self.HideRequest or not self.Showing) then return; end
-	PowaAuras:Message(GetTime()," force=", force," HideCount=", self.HideCount);
-	if (not force and (self.HideCount or 0) == 0 ) then return; end
+	--PowaAuras:Message(GetTime()," force=", force," InvertCount=", self.InvertCount);
+	--if (not force and (self.InvertCount or 0) == 0 ) then return; end
 
 	--if (self.Debug) then
 		PowaAuras:Message(GetTime()," SetHideRequest ", self.id," from=", source);
