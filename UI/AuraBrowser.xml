@@ -99,36 +99,15 @@
 						</Frames>
 					</Frame>
 					<Frame parentKey="Config" hidden="true" />
-					<Frame parentKey="NewFeatures" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" x="4" y="-4" />
-							<Anchor point="BOTTOMRIGHT" x="-4" y="4" />
-						</Anchors>
-						<Frames>
-							<!-- You need to name Treeviews so the scroll bar doesn't mess up! -->
-							<Frame name="$parentNewFeaturesList" parentKey="List" inherits="PowaTreeViewTemplate">
-								<Scripts>
-									<OnLoad>
-										PowaAuras.UI.TreeView(self, "Versions");
-									</OnLoad>
-								</Scripts>
-							</Frame>
-						</Frames>
-						<Scripts>
-							<OnShow>
-								self.TabButton:SetGlow(false);
-							</OnShow>
-						</Scripts>
-					</Frame>
-					<Frame parentKey="HelpPlz" hidden="true" />
+					<Frame parentKey="Help" hidden="true" />
 				</Frames>
 				<Scripts>
 					<OnLoad>
 						PowaAuras.UI.TabFrame(self, 4);
 						self:RegisterTab(self.Auras, "Interface\\GossipFrame\\TrainerGossipIcon");
 						self:RegisterTab(self.Config, "Interface\\GossipFrame\\BinderGossipIcon");
-						self:RegisterTab(self.NewFeatures, { "Interface\\OPTIONSFRAME\\UI-OptionsFrame-NewFeatureIcon", 16, 16, 0, 1, 0, 1 });
-						self:RegisterTab(self.HelpPlz, { "Interface\\WorldMap\\UI-WorldMap-QuestIcon", 12, 17, 0.171875, 0.359375, 0.109375, 0.375 });
+						-- self:RegisterTab(self.NewFeatures, { "Interface\\OPTIONSFRAME\\UI-OptionsFrame-NewFeatureIcon", 16, 16, 0, 1, 0, 1 });
+						self:RegisterTab(self.Help, { "Interface\\WorldMap\\UI-WorldMap-QuestIcon", 12, 17, 0.171875, 0.359375, 0.109375, 0.375 });
 					</OnLoad>
 				</Scripts>
 			</Frame>

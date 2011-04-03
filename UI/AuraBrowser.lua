@@ -1,35 +1,5 @@
--- New features list stuff.
-local NEWFEATURES_VERSIONS = {
-	50000,
-	41700,
-	41600,
-	41400,
-	41300,
-	41200,
-	41100,
-	41000,
-	40900,
-	40800,
-	40700,
-	40600,
-	40500,
-	40400,
-	40300,
-	40200,
-	40100,
-	40000,
-}
-
-local NEWFEATURES_VERSIONS_DESC = {
-}
-
 -- OnLoad function for the browser frame.
 function PowaBrowser_OnLoad(self)
-	-- New features tables! Assign them!!!
-	for _, version in pairs(NEWFEATURES_VERSIONS) do
-		self.Tabs.NewFeatures.List:AddItem(version, format("%.2f", version/10000));
-	end
-	print(self.Tabs.NewFeatures.List.Scroll:GetName());
 	-- -- self.Tabs.NewFeatures.List:AddItem(1, 1);
 	-- -- self.Tabs.NewFeatures.List:AddItem(2, 2, 1);
 	-- -- self.Tabs.NewFeatures.List:AddItem(3, 3, 1);
@@ -56,8 +26,12 @@ end
 function PowaBrowser_OnVariablesLoaded()
 	local self = PowaBrowser;
 	-- Do update check.
-	if(tonumber(PowaAuras.Version) > PowaGlobalMisc["LastVersion"]) then
-		-- Make version check tab glow!
-		self.Tabs.NewFeatures.TabButton:SetGlow(true);
+	if(PowaAuras.VersionInt > PowaGlobalMisc["LastVersion"]) then
+		self.ShowVersionDialog = true;
+	end
+	-- First run check.
+	if(PowaGlobalMisc["FirstRun"] == true) then
+		self.ShowRunDialog = true;
+		PowaGlobalMisc["FirstRun"] = false;
 	end
 end
