@@ -624,12 +624,12 @@ PowaAuras:MergeTables(PowaAuras.Text,
 
 	nomReasonInverted        = "$1 (inverted)", -- $1 is the reason, but the inverted flag is set so the logic is reversed
 	
-	nomReasonSpellUsable     = "Spell $1 usable",
-	nomReasonSpellNotUsable  = "Spell $1 not usable",
-	nomReasonSpellNotReady   = "Spell $1 Not Ready, on cooldown, timer invert",
-	nomReasonSpellNotEnabled = "Spell $1 not enabled ",
-	nomReasonSpellNotFound   = "Spell $1 not found",
-	nomReasonSpellOnCooldown = "Spell $1 on Cooldown",
+	nomReasonSpellUsable     = "Spell: $1 usable",
+	nomReasonSpellNotUsable  = "Spell: $1 not usable",
+	nomReasonSpellNotReady   = "Spell: $1 Not Ready, on cooldown, timer invert",
+	nomReasonSpellNotEnabled = "Spell: $1 not enabled ",
+	nomReasonSpellNotFound   = "Spell: $1 not found",
+	nomReasonSpellOnCooldown = "Spell: $1 on Cooldown",
 	
 	nomReasonCastingOnMe	 = "$1 is casting $2 on me", --$1=CasterName $2=SpellName (e.g. "Rotface is casting Slime Spray on me")
 	nomReasonNotCastingOnMe	 = "No matching spell being cast on me",
@@ -639,19 +639,19 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	
 	nomReasonAnimationDuration  = "Still within custom duration",
 	
-	nomReasonItemUsable     = "Item $1 usable",
-	nomReasonItemNotUsable  = "Item $1 not usable",
-	nomReasonItemNotReady   = "Item $1 Not Ready, on cooldown, timer invert",
-	nomReasonItemNotEnabled = "Item $1 not enabled ",
-	nomReasonItemNotFound   = "Item $1 not found",
-	nomReasonItemOnCooldown = "Item $1 on Cooldown",
+	nomReasonItemUsable     = "Item: $1 usable",
+	nomReasonItemNotUsable  = "Item: $1 not usable",
+	nomReasonItemNotReady   = "Item: $1 Not Ready, on cooldown, timer invert",
+	nomReasonItemNotEnabled = "Item: $1 not enabled ",
+	nomReasonItemNotFound   = "Item: $1 not found",
+	nomReasonItemOnCooldown = "Item: $1 on Cooldown",
 	
-	nomReasonItemEquipped    = "Item $1 equipped",
-	nomReasonItemNotEquipped = "Item $1 not equipped",
+	nomReasonItemEquipped    = "Item: $1 equipped",
+	nomReasonItemNotEquipped = "Item: $1 not equipped",
 						
-	nomReasonItemInBags      = "Item $1 in bags",
-	nomReasonItemNotInBags   = "Item $1 not in bags",
-	nomReasonItemNotOnPlayer = "Item $1 not carried",
+	nomReasonItemInBags      = "Item: $1 in bags",
+	nomReasonItemNotInBags   = "Item: $1 not in bags",
+	nomReasonItemNotOnPlayer = "Item: $1 not carried",
 
 	nomReasonSlotUsable     = "$1 Slot usable",
 	nomReasonSlotNotUsable  = "$1 Slot not usable",

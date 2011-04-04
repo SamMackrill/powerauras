@@ -19,7 +19,7 @@ PowaAuras = {
 	TextureCount = 186;
 	
 	DebugEvents = false;
-	DebugTriggers = false;
+	DebugTriggers = true;
 	--DebugAura = 3;
 	
 	-- Internal counters
@@ -554,8 +554,8 @@ PowaAuras = {
 	TriggerTypes = {
 		Timer        = 1,
 		Stacks       = 2,
-		AuraStart    = 3,
-		AuraEnd      = 4,
+		AuraShow     = 3,
+		AuraHide     = 4,
 		TriggerStart = 5,
 		TriggerEnd   = 6,
 	};
