@@ -120,8 +120,8 @@
 										<Texture file="Interface\LevelUp\LevelUpTex">
 											<Size x="419" y="2" />
 											<Anchors>
-												<Anchor point="TOPLEFT" x="0" y="-205" />
-												<Anchor point="TOPRIGHT" x="0" y="-205" />
+												<Anchor point="TOPLEFT" x="0" y="-211" />
+												<Anchor point="TOPRIGHT" x="0" y="-211" />
 											</Anchors>
 											<TexCoords left="0" right="0.818359375" top="0.013671875" bottom="0.017578125" />
 											<Color r="0.3" g="0.3" b="0.3" a="1.0" />
