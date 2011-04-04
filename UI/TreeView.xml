@@ -14,7 +14,7 @@
 				</Size>
 				<Anchors>
 					<Anchor point="TOPLEFT" x="4" y="-4" />
-					<Anchor point="BOTTOMRIGHT" x="-26" y="4" />
+					<Anchor point="BOTTOMRIGHT" x="-26" y="7" />
 				</Anchors>
 				<ScrollChild>
 					<Frame parentKey="Child">
@@ -67,7 +67,7 @@
 					<AbsDimension x="16" y="16"/>
 				</Size>
 				<Anchors>
-					<Anchor point="RIGHT" x="-4" y="0" />
+					<Anchor point="TOPRIGHT" x="-4" y="-4" />
 				</Anchors>
 				<NormalTexture file="Interface\Buttons\UI-MinusButton-Up" />
 				<HighlightTexture file="Interface\Buttons\UI-PlusButton-Hilight" alphamode="ADD" />
