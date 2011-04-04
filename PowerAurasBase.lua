@@ -833,6 +833,7 @@ PowaAuras.DebuffTypeSpellIds={
 	[51585] = PowaAuras.DebuffCatType.Snare,	-- Blade Twisting II
 	[3409]  = PowaAuras.DebuffCatType.Snare,	-- Crippling Poison
 	[26679] = PowaAuras.DebuffCatType.Snare,	-- Deadly Throw
+	[51696] = PowaAuras.DebuffCatType.Snare,	-- Waylay
 	-- Shaman
 	[39796] = PowaAuras.DebuffCatType.Stun,		-- Stoneclaw Stun
 	[51514] = PowaAuras.DebuffCatType.CC,		-- Hex (although effectively a silence+disarm effect, it is conventionally thought of as a CC, plus you can trinket out of it)
