@@ -1,10 +1,15 @@
 -- Create definition.
 PowaAuras.UI["LayoutFrame"] = {
-	Init = function(self, columns, columnSizes, isScrollChild, debug)
-		self.Columns = columns or 1;
-		self.ColumnSizes = columnSizes or {};
+	Init = function(self, x, y, alignMode, locked, isScrollChild, debug)
+		-- Set up some things. My comments are ever descriptive tonight.
+		self.Columns = {};
 		self.Items = {};
-		self.Debug = debug or false;
+		self:SetLocked(locked or false);
+		self:SetOffsetX(x or 0);
+		self:SetOffsetY(y or 0);
+		self:SetAlign(alignMode or 1);
+		self:SetDebug(debug or false);
+		-- Autoscrollbar stuff.
 		self.IsScrollChild = isScrollChild or false;
 		if(isScrollChild) then
 			-- Autoscrollbar!
@@ -19,31 +24,43 @@ PowaAuras.UI["LayoutFrame"] = {
 				self:GetParent().ScrollBar:Hide();
 			end
 		end
-	end,
-	SetColumns = function(self, columns, sizes)
-		self.Columns = columns;
-		self.ColumnSizes = sizes or {};
+		-- Initial update.
 		self:UpdateLayout();
 	end,
-	SetItem = function(self, child, options)
+	AddColumn = function(self, width, height, mode)
+		tinsert(self.Columns, { X = width or 0, Y = height or 0, Mode = mode or 1 });
+		self:UpdateLayout();
+	end,
+	AddItem = function(self, child, columns, padding, margins)
 		-- Each frame has its own layout options.
-		child.LayoutOpts = {
-			Padding = { 0, 0, 0, 0 }, -- Padding modifies element offsets by reducing frame size to compensate.
-			Margin = { 0, 0, 0, 0 },  -- Margins modify element offsets, but not frame size.
-			Columns = 1,              -- Column span. Defaults to 1.
-		}
-		-- Overwrite any.
-		if(options) then
-			for k, v in pairs(options) do
-				child.LayoutOpts[k] = v;
-			end
-		end
+		child.Columns = columns or 1;
+		child.Padding = padding or { 0, 0, 0, 0 };
+		child.Margins = margins or { 0, 0, 0, 0 };
 		-- Insert it into the items table.
 		tinsert(self.Items, child);
 		self:UpdateLayout();
 		return #(self.Items); -- Should be the ID...
 	end,
-	UnsetItem = function(self, item)
+	GetAlign = function(self)
+		return self.AlignMode;
+	end,
+	GetDebug = function(self, debug)
+		return self.Debug;
+	end,
+	GetLocked = function(self, locked)
+		return self.IsLocked;
+	end,
+	GetOffsetX = function(self, x)
+		return self.OffsetX;
+	end,
+	GetOffsetY = function(self, y)
+		return self.OffsetY;
+	end,
+	RemoveColumn = function(self, column)
+		tremove(self.Columns, column);
+		self:UpdateLayout();
+	end,
+	RemoveItem = function(self, item)
 		for i,v in pairs(self.Items) do
 			if(v == item) then
 				tremove(self.Items, i);
@@ -52,16 +69,67 @@ PowaAuras.UI["LayoutFrame"] = {
 			end
 		end
 	end,
+	SetAlign = function(self, align)
+		self.AlignMode = align;
+		self:UpdateLayout();
+	end,
+	SetDebug = function(self, debug)
+		self.Debug = debug;
+		self:UpdateLayout();
+	end,
+	SetLocked = function(self, locked)
+		self.IsLocked = locked;
+		self:UpdateLayout();
+	end,
+	SetOffsetX = function(self, x)
+		self.OffsetX = x;
+		self:UpdateLayout();
+	end,
+	SetOffsetY = function(self, y)
+		self.OffsetY = -y;
+		self:UpdateLayout();
+	end,
+	SetItem = function(self, ...)
+		-- Deprecated.
+		self:AddItem(...);
+	end,
+	UnsetItem = function(self, ...)
+		-- Deprecated.
+		self:RemoveItem(...);
+	end,
 	UpdateLayout = function(self)
-		local iC, c, cO, oY, oX, mY = #(self.Items), 0, 1, 0, 0, 0;
+		-- Check lock.
+		if(self.IsLocked) then return; end
+		-- Locals.
+		local iC, c, cO, oY, oX, mY, cC, aO, aW, aF, gX, gY = #(self.Items), 0, 1, 0, 0, 0, #(self.Columns), 0, 0, false, self.OffsetX, self.OffsetY;
+		-- Calculate align offset.
+		if(self.AlignMode > 1) then
+			-- Calculate total column set width.
+			for _, col in pairs(self.Columns) do
+				-- Fluid columns aren't allowed if you want the layout to be aligned.
+				if(col["X"] <= 1) then aW = 0; aF = true; end
+				if(not aF) then
+					aW = aW + col["X"];
+				end
+			end
+			-- Update align offset.
+			if(self.AlignMode == 2) then
+				-- Center align.
+				aO = (self:GetWidth() - aW) / 2;
+			elseif(self.AlignMode == 3) then
+				-- Right align.
+				aO = (self:GetWidth() - aW) / 1;
+			end
+		end
+		-- Align items.
 		for i=1,iC do
 			-- Some locals for width, height and the item...
 			local item, cW, cH = self.Items[i], 0, 0;
 			-- Store padding/margins in locals, as it's a long thing to write out and we need to calculate stuff from it a lot.
-			local pL, pR, pT, pB = item.LayoutOpts["Padding"][1], 
-				item.LayoutOpts["Padding"][2], item.LayoutOpts["Padding"][3], item.LayoutOpts["Padding"][4];
-			local mL, mR, mT, mB = item.LayoutOpts["Margin"][1], 
-				item.LayoutOpts["Margin"][2], item.LayoutOpts["Margin"][3], item.LayoutOpts["Margin"][4];
+			local pL, pR, pT, pB = item.Padding[1], 
+				item.Padding[2], item.Padding[3], item.Padding[4];
+			local mL, mR, mT, mB = item.Margins[1], 
+				item.Margins[2], item.Margins[3], item.Margins[4];
 			-- Calculate the padding/margins if they're fluid values.
 			-- The only difference in these fluid values is they are not fluid if they equal 1.
 			pL = (pL > 0 and pL < 1 and self:GetWidth() * pL or pL);
@@ -73,7 +141,7 @@ PowaAuras.UI["LayoutFrame"] = {
 			mT = (mT > 0 and mT < 1 and self:GetWidth() * mT or mT);
 			mB = (mB > 0 and mB < 1 and self:GetWidth() * mB or mB);
 			-- Update column offset.
-			if(self.Columns < (c+cO)) then
+			if(cC < (c+cO)) then
 				-- We've gone down a row. Reset column to #1, reset X offset and lower the Y offset.
 				c = 1;
 				oX = 0;
@@ -84,28 +152,32 @@ PowaAuras.UI["LayoutFrame"] = {
 			end
 			-- Calculate column height and width, obeying column span rules.
 			-- If the size is <= 1, then it's a fluid value based on container size. If no size is specified, default to item size.
-			if(c+(item.LayoutOpts["Columns"]-1) <= self.Columns) then
-				for j=c, c+(item.LayoutOpts["Columns"]-1) do
-					cW = cW + (self.ColumnSizes[j] and self.ColumnSizes[j]["X"] or 0);
-					cH = (cH > (self.ColumnSizes[j] and self.ColumnSizes[j]["Y"] or 0) and cH or (self.ColumnSizes[j] and self.ColumnSizes[j]["Y"] or 0));
+			if(c+(item.Columns-1) <= cC) then
+				for j=c, c+(item.Columns-1) do
+					cW = cW + (self.Columns[j]["X"] or 0);
+					cH = (cH > (self.Columns[j]["Y"] or 0) and cH or (self.Columns[j]["Y"] or 0));
 				end
 			else
-				cW = (self.ColumnSizes[c] and self.ColumnSizes[c]["X"] or 0);
-				cH = (self.ColumnSizes[c] and self.ColumnSizes[c]["Y"] or 0);
+				cW = (self.Columns[c]["X"] or 0);
+				cH = (self.Columns[c]["Y"] or 0);
 			end
 			-- Update column height/width.
-			cW = (cW == 0 and item:GetWidth() or cW <= 1 and (self:GetWidth() * cW));
-			cH = (cH == 0 and item:GetHeight() or cH <= 1 and (self:GetHeight() * cH));
+			cW = (cW == 0 and item:GetWidth() or cW <= 1 and (self:GetWidth() * cW) or cW);
+			cH = (cH == 0 and item:GetHeight() or cH <= 1 and (self:GetHeight() * cH) or cH);
 			-- Skip if item is not visible.
 			if(item:IsShown()) then
 				-- Debug layout?
 				if(self.Debug == true) then self:DebugItem(item, cW, cH, cW-pL-pR, cH-pT-pB, pL, pR, pT, pB, mL, mR, mT, mB, oX, oY); end
 				-- Update sizes, subtracting padding.
-				item:SetWidth(cW - pL - pR);
-				item:SetHeight(cH - pT - pB);
+				if(self.Columns[c].Mode == 1 or (self.Columns[c].Mode == 2 and item:GetWidth() > (cW-pL-pR))) then
+					item:SetWidth(cW - pL - pR);
+				end
+				if(self.Columns[c].Mode == 1 or (self.Columns[c].Mode == 2 and item:GetHeight() > (cH-pT-pB))) then
+					item:SetHeight(cH - pT - pB);
+				end
 				-- Set point.
 				item:ClearAllPoints();
-				item:SetPoint("TOPLEFT", self, "TOPLEFT", oX+pL+mL, (oY - pT - mT));
+				item:SetPoint("TOPLEFT", self, "TOPLEFT", gX+aO+oX+pL+mL, gY+oY-pT-mT);
 			else
 				-- ...So we "forget" the column height ever existed.
 				cH = 0; mB = 0; mT = 0;
@@ -117,7 +189,7 @@ PowaAuras.UI["LayoutFrame"] = {
 			cH = cH + mB + mT;
 			mY = (mY > cH and mY or cH);
 			-- Column offset update.
-			cO = item.LayoutOpts["Columns"];
+			cO = item.Columns;
 		end
 		-- Is the current parent frame a scrollchild?
 		if(self.IsScrollChild) then
@@ -128,7 +200,7 @@ PowaAuras.UI["LayoutFrame"] = {
 		local name = item:GetName();
 		for i=1, 9 do
 			-- Get texture/frame.
-			local frame = item["Debug" .. i] or CreateFrame("Frame", nil, item);
+			local frame = item["Debug" .. i] or CreateFrame("Frame", nil, self);
 			frame:EnableMouse(true);
 			frame:SetFrameStrata("HIGH");
 			frame.Texture = frame:CreateTexture();
