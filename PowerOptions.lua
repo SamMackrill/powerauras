@@ -417,7 +417,7 @@ function PowaAuras:OptionNewEffect()
 	self.CurrentAuraId = i;
 	self.CurrentAuraPage = self.CurrentAuraPage;
 	local aura = self:AuraFactory(self.BuffTypes.Buff, i);
-	--self:Message("Timer.enabled=", aura.Timer.enabled)
+	--self:Message("Timer.enabled=", aura.Timer.enabled);
 	aura:Init();
 	self.Auras[i] = aura;
 	-- effet global ?
@@ -428,6 +428,7 @@ function PowaAuras:OptionNewEffect()
 	self:CalculateAuraSequence();
 
 	aura.Active = true;
+	self:ShowText("OptionNewEffect RecreateFrames");
 	aura:RecreateFrames();
 	
 	self:DisplayAura(i);
@@ -1290,7 +1291,7 @@ function PowaAuras:MainOptionShow()
 end
 
 function PowaAuras:MainOptionClose()
-	--self:ShowText("MainOptionClose");
+	self:ShowText("MainOptionClose");
 	self:DisableMoveMode();
 	self.ModTest = false;
 	if ColorPickerFrame:IsVisible() then
@@ -1307,8 +1308,10 @@ function PowaAuras:MainOptionClose()
 	self:FindAllChildren();
 	self:CreateEffectLists();	
 	self.DoCheck.All = true;
-	self:NewCheckBuffs();
+	self:CheckAllMarkedAuras();
  	self:MemorizeActions();
+	self:CreateAllAuraTriggers();
+
 	
 	self:ReregisterEvents(PowaAuras_Frame);
 
@@ -1817,7 +1820,7 @@ function PowaAuras:BarAuraTextureSliderChanged()
 	PowaBarAuraTextureEdit:SetText(SliderValue);
 	
 	self.Auras[auraId].texture = SliderValue;
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, false);
 end
 
 function PowaAuras:TextAuraTextureChanged()
@@ -1834,7 +1837,7 @@ function PowaAuras:BarAuraAlphaSliderChanged()
 	PowaBarAuraAlphaSliderText:SetText(self.Text.nomAlpha.." : "..format("%.0f",SliderValue*100).."%");
 
 	self.Auras[self.CurrentAuraId].alpha = SliderValue;
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, false);
 end
 
 function PowaAuras:BarAuraSizeSliderChanged()
@@ -1845,7 +1848,7 @@ function PowaAuras:BarAuraSizeSliderChanged()
 	PowaBarAuraSizeSliderText:SetText(self.Text.nomTaille.." : "..format("%.0f",SliderValue*100).."%");
 
 	self.Auras[auraId].size = SliderValue;
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, false);
 end
 
 function PowaAuras:BarAuraCoordSliderChanged()
@@ -1859,7 +1862,7 @@ function PowaAuras:BarAuraCoordSliderChanged()
 	end
 
 	self.Auras[auraId].y = SliderValue;
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, false);
 end
 
 function PowaAuras:BarAuraCoordXSliderChanged()
@@ -1873,7 +1876,7 @@ function PowaAuras:BarAuraCoordXSliderChanged()
 	end
 
 	self.Auras[auraId].x = SliderValue;
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, false);
 end
 
 function PowaAuras:BarAuraAnimSpeedSliderChanged()
@@ -1884,7 +1887,7 @@ function PowaAuras:BarAuraAnimSpeedSliderChanged()
 	PowaBarAuraAnimSpeedSliderText:SetText(self.Text.nomSpeed.." : "..format("%.0f",SliderValue*100).."%");
 
 	self.Auras[auraId].speed = SliderValue;
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, true);
 end
 
 function PowaAuras:BarAuraAnimDurationSliderChanged(control)
@@ -1895,7 +1898,7 @@ function PowaAuras:BarAuraAnimDurationSliderChanged(control)
 
 	--self:ShowText("Duration set to ", sliderValue);
 	self.Auras[self.CurrentAuraId].duration = sliderValue;
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, true);
 end
 
 function PowaAuras:BarAuraSymSliderChanged()
@@ -1918,7 +1921,7 @@ function PowaAuras:BarAuraSymSliderChanged()
 	end
 	
 	self.Auras[self.CurrentAuraId].symetrie = sliderValue;
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, false);
 end
 
 function PowaAuras:BarAuraDeformSliderChanged()
@@ -1928,7 +1931,7 @@ function PowaAuras:BarAuraDeformSliderChanged()
 	PowaBarAuraDeformSliderText:SetText(self.Text.nomDeform.." : "..format("%.2f", sliderValue));
 
 	self.Auras[self.CurrentAuraId].torsion = sliderValue;
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, false);
 end
 
 function PowaAuras:BarThresholdSliderChanged()
@@ -1969,7 +1972,7 @@ function PowaAuras:TextCoordXChanged()
 		end
 		self.Auras[auraId].x = thisNumber;
 	end
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, false);
 end
 
 function PowaAuras:TextCoordYChanged()
@@ -1993,7 +1996,7 @@ function PowaAuras:TextCoordYChanged()
 		end
 		self.Auras[auraId].y = thisNumber;
 	end
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, false);
 end
 
 function PowaAuras:TextChanged()
@@ -2041,7 +2044,7 @@ end
 function PowaAuras:CustomTextChanged()
 	local auraId = self.CurrentAuraId;
 	self.Auras[auraId].customname = PowaBarCustomTexName:GetText();
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, false);
 end
 
 function PowaAuras:AurasTextCancel()
@@ -2054,7 +2057,7 @@ function PowaAuras:AurasTextChanged()
 	local aura = self.Auras[self.CurrentAuraId];
 	aura.aurastext = PowaBarAurasText:GetText();
 	--self:ShowText("AurasTextChanged: aura text changed to ", aura.aurastext);
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, false);
 end
 
 function PowaAuras:CustomSoundTextChanged(force)
@@ -2086,6 +2089,7 @@ function PowaAuras:CustomSoundTextChanged(force)
 			PowaDropDownSound2Button:Enable();
 		end
 	end	
+	self:RedisplayAura(self.CurrentAuraId, true);
 end
 
 function PowaAuras:CustomSoundEndTextChanged(force)
@@ -2118,6 +2122,7 @@ function PowaAuras:CustomSoundEndTextChanged(force)
 			PowaDropDownSound2EndButton:Enable();
 		end
 	end	
+	self:RedisplayAura(self.CurrentAuraId, true);
 end
 
 --===================
@@ -2172,7 +2177,7 @@ function PowaAuras:TexModeChecked()
 	else
 		self.Auras[auraId].texmode = 2;
 	end
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, false);
 end
 
 function PowaAuras:ThresholdInvertChecked(owner)
@@ -2201,8 +2206,9 @@ function PowaAuras:OwntexChecked()
 	else
 		aura.owntex = false;
 	end	
-	PowaAuras:InitPage(aura);
-	self:RedisplayAura(aura.id);
+	self:TestThisEffect(aura.id, false, true)
+	self:InitPage(aura);
+	self:RedisplayAura(aura.id, false);
 end
 
 function PowaAuras:WowTexturesChecked()
@@ -2230,7 +2236,7 @@ function PowaAuras:WowTexturesChecked()
 		PowaBarAuraTextureSliderHigh:SetText(self.MaxTextures);
 	end
 	PowaAuras:BarAuraTextureSliderChanged();
-	self:RedisplayAura(aura.id);
+	self:RedisplayAura(aura.id, false);
 end
 
 function PowaAuras:CustomTexturesChecked()
@@ -2254,7 +2260,7 @@ function PowaAuras:CustomTexturesChecked()
 		PowaBarCustomTexName:Hide();
 	end
 	PowaAuras:BarAuraTextureSliderChanged();
-	self:RedisplayAura(aura.id);
+	self:RedisplayAura(aura.id, false);
 end
 
 function PowaAuras:TextAuraChecked()
@@ -2282,7 +2288,7 @@ function PowaAuras:TextAuraChecked()
 		PowaFontsButton:Hide();
 	end
 	self:BarAuraTextureSliderChanged();
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, false);
 end
 
 --=====================================
@@ -2582,7 +2588,7 @@ function PowaAuras:ChangeAuraType(id, newType)
 	end
 	
 	self:UpdateMainOption();
-	self:RedisplayAura(aura.id);
+	self:RedisplayAura(aura.id, false);
 	self:InitPage(aura);
 end
 
@@ -2594,7 +2600,7 @@ function PowaAuras:ShowSpinAtBeginningChecked(control)
 	else
 		aura.beginSpin = false;
 	end
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, true);
 end
 
 function PowaAuras:OldAnimationChecked(control)
@@ -2604,7 +2610,7 @@ function PowaAuras:OldAnimationChecked(control)
 	else
 		aura.UseOldAnimations = false;
 	end
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, true);
 end
 
 function PowaAuras.DropDownMenu_OnClickAnim1(owner)
@@ -2617,7 +2623,7 @@ function PowaAuras.DropDownMenu_OnClickAnim1(owner)
 	--UIDropDownMenu_SetSelectedValue(PowaDropDownAnim1, optionName);
 
 	PowaAuras.Auras[auraId].anim1 = optionID;
-	PowaAuras:RedisplayAura(auraId);
+	PowaAuras:RedisplayAura(auraId, true);
 end
 
 function PowaAuras.DropDownMenu_OnClickAnim2(owner)
@@ -2629,7 +2635,7 @@ function PowaAuras.DropDownMenu_OnClickAnim2(owner)
 	--UIDropDownMenu_SetSelectedValue(PowaDropDownAnim2, optionName);
 
 	PowaAuras.Auras[auraId].anim2 = optionID -1;
-	PowaAuras:RedisplayAura(auraId);
+	PowaAuras:RedisplayAura(auraId, true);
 end
 
 function PowaAuras.DropDownMenu_OnClickSound(self)
@@ -2729,7 +2735,7 @@ function PowaAuras.DropDownMenu_OnClickBegin(self)
 	--UIDropDownMenu_SetSelectedValue(PowaDropDownAnimBegin, optionName);
 
 	PowaAuras.Auras[PowaAuras.CurrentAuraId].begin = self.value;
-	PowaAuras:RedisplayAura(auraId);
+	PowaAuras:RedisplayAura(auraId, true);
 end
 
 function PowaAuras.DropDownMenu_OnClickEnd(self)
@@ -2741,7 +2747,7 @@ function PowaAuras.DropDownMenu_OnClickEnd(self)
 	--UIDropDownMenu_SetSelectedValue(PowaDropDownAnimEnd, optionName);
 
 	PowaAuras.Auras[auraId].finish = optionID - 1;
-	PowaAuras:RedisplayAura(auraId);
+	PowaAuras:RedisplayAura(auraId, true);
 end
 
 -- OPTIONS DEPLACEMENT
@@ -2783,7 +2789,7 @@ function PowaAuras:SetAuraColor(r, g, b)
 	if (ColorPickerFrame.setTexture) then
 		AuraTexture:SetVertexColor(r,g,b);
 	end
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, false);
 end
 
 function PowaAuras:OpenColorPicker(control, source, setTexture)
@@ -2833,7 +2839,7 @@ function PowaAuras:FontSelectorOkay(owner)
 	else
 		self.Auras[self.CurrentAuraId].aurastextfont = 1;
 	end
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, false);
 	self:FontSelectorClose(owner);
 end
 
@@ -2896,6 +2902,7 @@ function PowaAuras:EditorShow()
 	if (aura) then
 		if (not aura.Showing) then 
 			aura.Active = true;
+			self:ShowText("EditorShow RecreateFrames");
 			aura:RecreateFrames();
 			self:DisplayAura(aura.id);
 		end
@@ -3274,7 +3281,7 @@ local function OptionsOK()
 	if (newFps~=PowaMisc.AnimationFps) then
 		PowaMisc.AnimationFps = newFps;
 		for auraId in pairs(PowaAuras.Auras) do
-			PowaAuras:RedisplayAura(auraId);
+			PowaAuras:RedisplayAura(auraId, true);
 		end
 	end
 	PowaMisc.AnimationLimit = (100 - PowaOptionsTimerUpdateSlider2:GetValue()) / 1000;
@@ -3498,6 +3505,7 @@ function PowaAuras:ToggleTesting()
 		aura.Active = false;
 	else
 		aura.Active = true;
+		self:ShowText("ToggleTesting RecreateFrames");
 		aura:RecreateFrames();
 		self:DisplayAura(aura.id);
 	end
@@ -3510,6 +3518,7 @@ function PowaAuras:TestAllAuras()
 	for id, aura in pairs(self.Auras) do
 		if (not aura.off) then 
 			aura.Active = true;
+			self:ShowText("TestAllAuras RecreateFrames");
 			aura:RecreateFrames();
 			self:DisplayAura(aura.id);
 		end
@@ -3543,6 +3552,7 @@ function PowaAuras:RedisplayAuras()
 			if (aura.Timer) then aura.Timer:Hide(); end
 			if (aura.Stacks) then aura.Stacks:Hide(); end
 			aura.Active = true;
+			self:ShowText("RedisplayAuras RecreateFrames");
 			aura:RecreateFrames();
 			self:DisplayAura(aura.id);
 		end
@@ -3563,7 +3573,7 @@ function PowaAuras:ToggleLock()
 	self:RedisplayAuras();
 end
 
-function PowaAuras:RedisplayAura(auraId) ---Re-show aura after options changed
+function PowaAuras:RedisplayAura(auraId, recreateTriggers) ---Re-show aura after options changed
 
 	if (not (self.VariablesLoaded and self.SetupDone)) then return; end 
 
@@ -3574,8 +3584,11 @@ function PowaAuras:RedisplayAura(auraId) ---Re-show aura after options changed
 	--self:ShowText("RedisplayAura auraId=", aura.id, " showing=", aura.Showing);
 	local showing = aura.Showing;
 	aura:Hide("RedisplayAura");
-	aura:RecreateFrames();
-	aura:CreateDefaultTriggers();
+	aura:CreateFrames();
+	if (recreateTriggers) then
+		self:ShowText("RedisplayAura ", aura.id," Recreate Triggers");
+		aura:CreateDefaultTriggers();
+	end
 	if (showing) then
 		self:DisplayAura(aura.id);
 	end
