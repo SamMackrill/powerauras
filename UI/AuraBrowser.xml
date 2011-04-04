@@ -1,0 +1,310 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+    ..\..\FrameXML\UI.xsd">
+	<Script file="AuraBrowser.lua" />
+	<Frame name="PowaBrowser" toplevel="true" movable="true" parent="UIParent" hidden="false" frameStrata="MEDIUM" enableMouse="true" enableKeyboard="true">
+		<Size>
+          <AbsDimension x="550" y="450" />
+        </Size>
+        <Anchors>
+			<Anchor point="CENTER" relativeTo="UIParent" x="0" y="50" />
+        </Anchors>
+		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+			<BackgroundInsets>
+				<AbsInset left="11" right="12" top="12" bottom="11" />
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="32" />
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="32" />
+			</EdgeSize>
+		</Backdrop>	
+		<Scripts>
+			<OnMouseDown>
+				if(button == "LeftButton" and not self.isMoving) then
+					self:StartMoving();
+					self.isMoving = true;
+				end
+			</OnMouseDown>
+			<OnMouseUp>
+				if(button == "LeftButton" and self.isMoving) then
+					self:StopMovingOrSizing();
+					self.isMoving = false;
+				end
+			</OnMouseUp>
+			<OnHide>
+				if(self.isMoving) then
+					self:StopMovingOrSizing();
+					self.isMoving = false;
+				end
+			</OnHide>
+		</Scripts>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture file="Interface\DialogFrame\UI-DialogBox-Header">
+					<Size>
+						<AbsDimension x="300" y="68" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOP" relativePoint="TOP" x="0" y="13"/>
+					</Anchors>					
+				</Texture>
+				<FontString parentKey="Title" inherits="GameFontNormal" text="Power Auras %s" justifyH="CENTER" justifyV="TOP">
+					<Size>
+						<AbsDimension x="300" y="68" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOP" relativePoint="TOP" x="0" y="-2"/>
+					</Anchors>
+				</FontString>
+				<Texture file="Interface\DialogFrame\UI-DialogBox-Corner">
+					<Size x="32" y="32" />	
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="-4" y="-4" />	
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentCloseButton" inherits="UIPanelCloseButton">
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="0" y="0" />
+				</Anchors>
+			</Button>
+			<Frame name="$parentTabs" parentKey="Tabs" inherits="PowaBorderedFrameTemplate">
+				<Size>
+				  <AbsDimension y="260" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOP" x="0" y="-65" />
+					<Anchor point="LEFT" x="15" y="0" />
+					<Anchor point="RIGHT" x="-15" y="0" />
+					<Anchor point="BOTTOM" x="0" y="15" />
+				</Anchors>
+				<Frames>
+					<Frame parentKey="Auras" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="4" y="-4" />
+							<Anchor point="BOTTOMRIGHT" x="-4" y="5" />
+						</Anchors>
+						<Frames>
+							<Frame name="$parentAurasTree" parentKey="Tree" inherits="PowaTreeViewTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT" x="2" y="-2" />
+									<Anchor point="BOTTOMLEFT" x="2" y="2" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										PowaAuras.UI.TreeView(self);
+									</OnLoad>
+								</Scripts>
+							</Frame>
+							<Frame parentKey="Main" inherits="PowaBorderedFrameTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT" x="177" y="-2" />
+									<Anchor point="BOTTOMRIGHT" x="-2" y="2" />
+								</Anchors>
+								<Layers>
+									<Layer level="ARTWORK">
+										<Texture file="Interface\LevelUp\LevelUpTex">
+											<Size x="419" y="2" />
+											<Anchors>
+												<Anchor point="TOPLEFT" x="0" y="-45" />
+												<Anchor point="TOPRIGHT" x="0" y="-45" />
+											</Anchors>
+											<TexCoords left="0" right="0.818359375" top="0.013671875" bottom="0.017578125" />
+											<Color r="0.3" g="0.3" b="0.3" a="1.0" />
+										</Texture>
+										<Texture file="Interface\LevelUp\LevelUpTex">
+											<Size x="419" y="2" />
+											<Anchors>
+												<Anchor point="TOPLEFT" x="0" y="-205" />
+												<Anchor point="TOPRIGHT" x="0" y="-205" />
+											</Anchors>
+											<TexCoords left="0" right="0.818359375" top="0.013671875" bottom="0.017578125" />
+											<Color r="0.3" g="0.3" b="0.3" a="1.0" />
+										</Texture>
+									</Layer>
+									<Layer level="OVERLAY">
+										<Texture file="Interface\Buttons\WHITE8X8" parentKey="a1">
+											<Size x="36" y="36" />
+											<Color r="1" g="0" b="0" a="1.0" />
+										</Texture>
+										<Texture file="Interface\Buttons\WHITE8X8" parentKey="a2">
+											<Size x="36" y="36" />
+											<Color r="0" g="1" b="0" a="1.0" />
+										</Texture>
+										<Texture file="Interface\Buttons\WHITE8X8" parentKey="a3">
+											<Size x="36" y="36" />
+											<Color r="0" g="0" b="1" a="1.0" />
+										</Texture>
+										<Texture file="Interface\Buttons\WHITE8X8" parentKey="a4">
+											<Size x="36" y="36" />
+											<Color r="1" g="0" b="0" a="1.0" />
+										</Texture>
+										<Texture file="Interface\Buttons\WHITE8X8" parentKey="a5">
+											<Size x="36" y="36" />
+											<Color r="0" g="1" b="0" a="1.0" />
+										</Texture>
+										<Texture file="Interface\Buttons\WHITE8X8" parentKey="a6">
+											<Size x="36" y="36" />
+											<Color r="0" g="0" b="1" a="1.0" />
+										</Texture>
+										<Texture file="Interface\Buttons\WHITE8X8" parentKey="a7">
+											<Size x="36" y="36" />
+											<Color r="1" g="0" b="0" a="1.0" />
+										</Texture>
+										<Texture file="Interface\Buttons\WHITE8X8" parentKey="a8">
+											<Size x="36" y="36" />
+											<Color r="0" g="1" b="0" a="1.0" />
+										</Texture>
+										<Texture file="Interface\Buttons\WHITE8X8" parentKey="a9">
+											<Size x="36" y="36" />
+											<Color r="0" g="0" b="1" a="1.0" />
+										</Texture>
+										<Texture file="Interface\Buttons\WHITE8X8" parentKey="a10">
+											<Size x="36" y="36" />
+											<Color r="1" g="0" b="0" a="1.0" />
+										</Texture>
+										<Texture file="Interface\Buttons\WHITE8X8" parentKey="a11">
+											<Size x="36" y="36" />
+											<Color r="0" g="1" b="0" a="1.0" />
+										</Texture>
+										<Texture file="Interface\Buttons\WHITE8X8" parentKey="a12">
+											<Size x="36" y="36" />
+											<Color r="0" g="0" b="1" a="1.0" />
+										</Texture>
+										<Texture file="Interface\Buttons\WHITE8X8" parentKey="b1">
+											<Size x="36" y="36" />
+											<Color r="1" g="0" b="0" a="1.0" />
+										</Texture>
+										<Texture file="Interface\Buttons\WHITE8X8" parentKey="b2">
+											<Size x="36" y="36" />
+											<Color r="0" g="1" b="0" a="1.0" />
+										</Texture>
+										<Texture file="Interface\Buttons\WHITE8X8" parentKey="b3">
+											<Size x="36" y="36" />
+											<Color r="0" g="0" b="1" a="1.0" />
+										</Texture>
+										<Texture file="Interface\Buttons\WHITE8X8" parentKey="b4">
+											<Size x="36" y="36" />
+											<Color r="1" g="0" b="0" a="1.0" />
+										</Texture>
+										<Texture file="Interface\Buttons\WHITE8X8" parentKey="b5">
+											<Size x="36" y="36" />
+											<Color r="0" g="1" b="0" a="1.0" />
+										</Texture>
+										<Texture file="Interface\Buttons\WHITE8X8" parentKey="b6">
+											<Size x="36" y="36" />
+											<Color r="0" g="0" b="1" a="1.0" />
+										</Texture>
+										<Texture file="Interface\Buttons\WHITE8X8" parentKey="b7">
+											<Size x="36" y="36" />
+											<Color r="1" g="0" b="0" a="1.0" />
+										</Texture>
+										<Texture file="Interface\Buttons\WHITE8X8" parentKey="b8">
+											<Size x="36" y="36" />
+											<Color r="0" g="1" b="0" a="1.0" />
+										</Texture>
+										<Texture file="Interface\Buttons\WHITE8X8" parentKey="b9">
+											<Size x="36" y="36" />
+											<Color r="0" g="0" b="1" a="1.0" />
+										</Texture>
+										<Texture file="Interface\Buttons\WHITE8X8" parentKey="b10">
+											<Size x="36" y="36" />
+											<Color r="1" g="0" b="0" a="1.0" />
+										</Texture>
+										<Texture file="Interface\Buttons\WHITE8X8" parentKey="b11">
+											<Size x="36" y="36" />
+											<Color r="0" g="1" b="0" a="1.0" />
+										</Texture>
+										<Texture file="Interface\Buttons\WHITE8X8" parentKey="b12">
+											<Size x="36" y="36" />
+											<Color r="0" g="0" b="1" a="1.0" />
+										</Texture>
+									</Layer>
+								</Layers>
+								<Scripts>
+									<OnLoad>
+										-- Init layout frame, lock layout to speed up load.
+										PowaAuras.UI.LayoutFrame(self, 0, 49, 2, true);
+										-- Add columns.
+										self:AddColumn(40, 40);
+										self:AddColumn(40, 40);
+										self:AddColumn(40, 40);
+										self:AddColumn(40, 40);
+										self:AddColumn(40, 40);
+										self:AddColumn(40, 40);
+										
+										self:SetItem(self.a1);
+										self:SetItem(self.a2);
+										self:SetItem(self.a3);
+										self:SetItem(self.a4);
+										self:SetItem(self.a5);
+										self:SetItem(self.a6);
+										self:SetItem(self.a7);
+										self:SetItem(self.a8);
+										self:SetItem(self.a9);
+										self:SetItem(self.a10);
+										self:SetItem(self.a11);
+										self:SetItem(self.a12);
+										self:SetItem(self.b1);
+										self:SetItem(self.b2);
+										self:SetItem(self.b3);
+										self:SetItem(self.b4);
+										self:SetItem(self.b5);
+										self:SetItem(self.b6);
+										self:SetItem(self.b7);
+										self:SetItem(self.b8);
+										self:SetItem(self.b9);
+										self:SetItem(self.b10);
+										self:SetItem(self.b11);
+										self:SetItem(self.b12);
+										-- Unlock layout. This will trigger 1 update, as opposed to about 8 updates while initializing.
+										self:SetLocked(false);
+									</OnLoad>
+								</Scripts>
+							</Frame>
+						</Frames>
+					</Frame>
+					<Frame parentKey="Config" hidden="true" />
+					<Frame parentKey="Help" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="4" y="-4" />
+							<Anchor point="BOTTOMRIGHT" x="-4" y="5" />
+						</Anchors>
+						<Frames>
+							<Frame name="$parentHelpTree" parentKey="Tree" inherits="PowaTreeViewTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT" x="2" y="-2" />
+									<Anchor point="BOTTOMLEFT" x="2" y="2" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										PowaAuras.UI.TreeView(self);
+									</OnLoad>
+								</Scripts>
+							</Frame>
+						</Frames>
+					</Frame>>
+				</Frames>
+				<Scripts>
+					<OnLoad>
+						PowaAuras.UI.TabFrame(self, 4);
+						self:RegisterTab(self.Auras, "Interface\\GossipFrame\\TrainerGossipIcon");
+						self:RegisterTab(self.Config, "Interface\\GossipFrame\\BinderGossipIcon");
+						self:RegisterTab(self.Help, { "Interface\\WorldMap\\UI-WorldMap-QuestIcon", 12, 17, 0.171875, 0.359375, 0.109375, 0.375 });
+					</OnLoad>
+				</Scripts>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				self.Title:SetText(format("Power Auras %s", PowaAuras.Version));
+				PowaBrowser_OnLoad(self);
+			</OnLoad>
+		</Scripts>
+	</Frame>
+</Ui>
