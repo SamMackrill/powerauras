@@ -115,10 +115,10 @@ PowaAuras.UI["LayoutFrame"] = {
 			-- Update align offset.
 			if(self.AlignMode == 2) then
 				-- Center align.
-				aO = (self:GetWidth() - aW) / 2;
+				aO = math.floor((self:GetWidth()-aW)/2);
 			elseif(self.AlignMode == 3) then
 				-- Right align.
-				aO = (self:GetWidth() - aW) / 1;
+				aO = math.floor(self:GetWidth()-aW);
 			end
 		end
 		-- Align items.
