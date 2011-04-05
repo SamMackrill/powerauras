@@ -101,7 +101,7 @@
 									</OnLoad>
 								</Scripts>
 							</Frame>
-							<Frame parentKey="Main" inherits="PowaBorderedFrameTemplate">
+							<Frame parentKey="Page" inherits="PowaBorderedFrameTemplate">
 								<Anchors>
 									<Anchor point="TOPLEFT" x="177" y="-2" />
 									<Anchor point="BOTTOMRIGHT" x="-2" y="2" />
@@ -127,104 +127,6 @@
 											<Color r="0.3" g="0.3" b="0.3" a="1.0" />
 										</Texture>
 									</Layer>
-									<Layer level="OVERLAY">
-										<Texture file="Interface\Buttons\WHITE8X8" parentKey="a1">
-											<Size x="36" y="36" />
-											<Color r="1" g="0" b="0" a="1.0" />
-										</Texture>
-										<Texture file="Interface\Buttons\WHITE8X8" parentKey="a2">
-											<Size x="36" y="36" />
-											<Color r="0" g="1" b="0" a="1.0" />
-										</Texture>
-										<Texture file="Interface\Buttons\WHITE8X8" parentKey="a3">
-											<Size x="36" y="36" />
-											<Color r="0" g="0" b="1" a="1.0" />
-										</Texture>
-										<Texture file="Interface\Buttons\WHITE8X8" parentKey="a4">
-											<Size x="36" y="36" />
-											<Color r="1" g="0" b="0" a="1.0" />
-										</Texture>
-										<Texture file="Interface\Buttons\WHITE8X8" parentKey="a5">
-											<Size x="36" y="36" />
-											<Color r="0" g="1" b="0" a="1.0" />
-										</Texture>
-										<Texture file="Interface\Buttons\WHITE8X8" parentKey="a6">
-											<Size x="36" y="36" />
-											<Color r="0" g="0" b="1" a="1.0" />
-										</Texture>
-										<Texture file="Interface\Buttons\WHITE8X8" parentKey="a7">
-											<Size x="36" y="36" />
-											<Color r="1" g="0" b="0" a="1.0" />
-										</Texture>
-										<Texture file="Interface\Buttons\WHITE8X8" parentKey="a8">
-											<Size x="36" y="36" />
-											<Color r="0" g="1" b="0" a="1.0" />
-										</Texture>
-										<Texture file="Interface\Buttons\WHITE8X8" parentKey="a9">
-											<Size x="36" y="36" />
-											<Color r="0" g="0" b="1" a="1.0" />
-										</Texture>
-										<Texture file="Interface\Buttons\WHITE8X8" parentKey="a10">
-											<Size x="36" y="36" />
-											<Color r="1" g="0" b="0" a="1.0" />
-										</Texture>
-										<Texture file="Interface\Buttons\WHITE8X8" parentKey="a11">
-											<Size x="36" y="36" />
-											<Color r="0" g="1" b="0" a="1.0" />
-										</Texture>
-										<Texture file="Interface\Buttons\WHITE8X8" parentKey="a12">
-											<Size x="36" y="36" />
-											<Color r="0" g="0" b="1" a="1.0" />
-										</Texture>
-										<Texture file="Interface\Buttons\WHITE8X8" parentKey="b1">
-											<Size x="36" y="36" />
-											<Color r="1" g="0" b="0" a="1.0" />
-										</Texture>
-										<Texture file="Interface\Buttons\WHITE8X8" parentKey="b2">
-											<Size x="36" y="36" />
-											<Color r="0" g="1" b="0" a="1.0" />
-										</Texture>
-										<Texture file="Interface\Buttons\WHITE8X8" parentKey="b3">
-											<Size x="36" y="36" />
-											<Color r="0" g="0" b="1" a="1.0" />
-										</Texture>
-										<Texture file="Interface\Buttons\WHITE8X8" parentKey="b4">
-											<Size x="36" y="36" />
-											<Color r="1" g="0" b="0" a="1.0" />
-										</Texture>
-										<Texture file="Interface\Buttons\WHITE8X8" parentKey="b5">
-											<Size x="36" y="36" />
-											<Color r="0" g="1" b="0" a="1.0" />
-										</Texture>
-										<Texture file="Interface\Buttons\WHITE8X8" parentKey="b6">
-											<Size x="36" y="36" />
-											<Color r="0" g="0" b="1" a="1.0" />
-										</Texture>
-										<Texture file="Interface\Buttons\WHITE8X8" parentKey="b7">
-											<Size x="36" y="36" />
-											<Color r="1" g="0" b="0" a="1.0" />
-										</Texture>
-										<Texture file="Interface\Buttons\WHITE8X8" parentKey="b8">
-											<Size x="36" y="36" />
-											<Color r="0" g="1" b="0" a="1.0" />
-										</Texture>
-										<Texture file="Interface\Buttons\WHITE8X8" parentKey="b9">
-											<Size x="36" y="36" />
-											<Color r="0" g="0" b="1" a="1.0" />
-										</Texture>
-										<Texture file="Interface\Buttons\WHITE8X8" parentKey="b10">
-											<Size x="36" y="36" />
-											<Color r="1" g="0" b="0" a="1.0" />
-										</Texture>
-										<Texture file="Interface\Buttons\WHITE8X8" parentKey="b11">
-											<Size x="36" y="36" />
-											<Color r="0" g="1" b="0" a="1.0" />
-										</Texture>
-										<Texture file="Interface\Buttons\WHITE8X8" parentKey="b12">
-											<Size x="36" y="36" />
-											<Color r="0" g="0" b="1" a="1.0" />
-										</Texture>
-									</Layer>
 								</Layers>
 								<Scripts>
 									<OnLoad>
@@ -237,31 +139,6 @@
 										self:AddColumn(40, 40);
 										self:AddColumn(40, 40);
 										self:AddColumn(40, 40);
-										
-										self:SetItem(self.a1);
-										self:SetItem(self.a2);
-										self:SetItem(self.a3);
-										self:SetItem(self.a4);
-										self:SetItem(self.a5);
-										self:SetItem(self.a6);
-										self:SetItem(self.a7);
-										self:SetItem(self.a8);
-										self:SetItem(self.a9);
-										self:SetItem(self.a10);
-										self:SetItem(self.a11);
-										self:SetItem(self.a12);
-										self:SetItem(self.b1);
-										self:SetItem(self.b2);
-										self:SetItem(self.b3);
-										self:SetItem(self.b4);
-										self:SetItem(self.b5);
-										self:SetItem(self.b6);
-										self:SetItem(self.b7);
-										self:SetItem(self.b8);
-										self:SetItem(self.b9);
-										self:SetItem(self.b10);
-										self:SetItem(self.b11);
-										self:SetItem(self.b12);
 										-- Unlock layout. This will trigger 1 update, as opposed to about 8 updates while initializing.
 										self:SetLocked(false);
 									</OnLoad>
