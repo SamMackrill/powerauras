@@ -48,15 +48,15 @@ function PowaBrowser_OnVariablesLoaded()
 	end
 	-- Counts.
 	local playerPageCount, globalPageCount, classPageCount = #(PowaPlayerListe), #(PowaGlobalListe), #(PowaClassListe[class]);
-	self.Tabs.Auras.Tree:AddItem("CHAR", PowaAuras.Text["UI_CharAuras"]);
+	self.Tabs.Auras.Tree:AddItem("CHAR", PowaAuras.Text["UI_CharAuras"], nil, nil, true);
 	for i=1,playerPageCount do
 		self.Tabs.Auras.Tree:AddItem(i, PowaPlayerListe[i], "CHAR");
 	end
-	self.Tabs.Auras.Tree:AddItem("CLASS", PowaAuras.Text["UI_ClassAuras"]);
+	self.Tabs.Auras.Tree:AddItem("CLASS", PowaAuras.Text["UI_ClassAuras"], nil, nil, true);
 	for i=1,classPageCount do
 		self.Tabs.Auras.Tree:AddItem(i+playerPageCount, PowaClassListe[class][i], "CLASS");
 	end
-	self.Tabs.Auras.Tree:AddItem("GLOBAL", PowaAuras.Text["UI_GlobAuras"]);
+	self.Tabs.Auras.Tree:AddItem("GLOBAL", PowaAuras.Text["UI_GlobAuras"], nil, nil, true);
 	for i=1,globalPageCount do
 		self.Tabs.Auras.Tree:AddItem(i+playerPageCount+classPageCount, PowaGlobalListe[i], "GLOBAL");
 	end
