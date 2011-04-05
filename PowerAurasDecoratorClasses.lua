@@ -443,16 +443,25 @@ function cPowaTimer:Update(elapsed)
 		self.Duration = math.max(GetTime() - self.Start, 0);
 	end
 	
-	if ((self.enabled==false and not self:HasDependants(aura)) or (aura.ForceTimeInvert and aura.InvertTimeHides)) then
+	--if ((self.enabled==false and not self:HasDependants(aura)) or (aura.ForceTimeInvert and aura.InvertTimeHides)) then
+	if (self.enabled==false and not self:HasDependants(aura)) then
 		--PowaAuras:UnitTestInfo("Timer disabled");
 		if (PowaAuras.DebugCycle) then
 			PowaAuras:DisplayText("Timer disabled");
 		end
 		return;
 	end
-	
-	local newvalue = self:GetDisplayValue(aura, elapsed);
 
+	local newvalue = self:GetDisplayValue(aura, elapsed);
+	
+	if (self.ShowOnAuraHide and aura.Active)  or (not self.ShowOnAuraHide and not aura.Active) then
+		if (self.Showing or self.ShowRequest) then
+			self:Hide();
+		end
+		return;
+	end
+	
+	
 	aura:CheckTriggers("Timer", newvalue);
 	aura:CheckTriggers("Duration", self.Duration);
 	
@@ -525,7 +534,7 @@ end
 
 function cPowaTimer:Show()
 	self.ShowRequest = true;
-	PowaAuras:ShowText("Timer ShowRequest");
+	PowaAuras:ShowText(">>>>> Timer ShowRequest");
 end
 
 function cPowaTimer:HideFrame(i)
@@ -546,7 +555,7 @@ function cPowaTimer:Hide()
 	self.Showing = false;
 	self.ShowRequest = false;
 	self.InvertCount = nil;
-	PowaAuras:ShowText("Hide timer frame");
+	PowaAuras:ShowText(">>>>> Hide timer frame");
 end
 
 function cPowaTimer:IncrementInvertCount()
