@@ -746,8 +746,8 @@ function PowaAuras:OnUpdate(elapsed)
 	for i = 1, #self.AuraSequence do
 		local aura = self.AuraSequence[i];
 		--self:Message("UpdateAura Call id=", aura.id, " ", aura);
-		if (aura:UpdateAura()) then
-			aura:UpdateTimer(timerElapsed, skipTimerUpdate);
+		if (aura:UpdateAura() and not skipTimerUpdate) then
+			aura:UpdateTimer(timerElapsed);
 		end
 	end
 	
@@ -884,24 +884,52 @@ function PowaAuras:TestThisEffect(auraId, giveReason, ignoreCascade)
 				self:Message("ShowAura ", aura.buffname, " (",auraId,") ", reason);
 			end
 			aura.Active = true;			
-			self:ShowText(GetTime()," Aura active ", auraId, " cas=", ignoreCascade);
+			self:ShowText(GetTime(),"=== Aura now ACTIVE ", auraId, " cas=", ignoreCascade);
+			
+			if (aura.Timer) then
+				aura.Timer.Active = not aura.Timer.ShowOnAuraHide;
+				aura.Timer.InvertCount = 0;
+				if (aura.Timer.Active) then
+					local newvalue = aura.Timer:GetDisplayValue(aura, 0);
+					if (newvalue>0) then
+						self:ShowText("Re-evaluate timer triggers @", newvalue);
+						aura:CheckTriggers("Timer", newvalue);
+						aura:CheckTriggers("Duration", newvalue);
+					end
+				end
+			end
+			
 			self:DisplayAura(auraId);
 			if (not ignoreCascade) then self:AddChildrenToCascade(aura); end
 		end
 	else
-		if (aura.Showing) then
-			if (debugEffectTest) then
-				self:Message("HideAura ", aura.buffname, " (",auraId,") ", reason);
-			end
-			aura:SetHideRequest("TestThisEffect: false & showing", true);
-		end
 		if (aura.Active) then
-			self:ShowText(GetTime()," Aura set inactive ", auraId, " cas=", ignoreCascade);
+			self:ShowText(GetTime(),"=== Aura now INACTIVE ", auraId, " cas=", ignoreCascade);
+			
+			if (aura.Timer) then
+				aura.Timer.Active = aura.Timer.ShowOnAuraHide;
+				aura.Timer.InvertCount = 0;
+				if (aura.Timer.Active) then
+					local newvalue = aura.Timer:GetDisplayValue(aura, 0);
+					if (newvalue>0) then
+						self:ShowText("Re-evaluate timer triggers @", newvalue);
+						aura:CheckTriggers("Timer", newvalue);
+						aura:CheckTriggers("Duration", newvalue);
+					end
+				end
+			end
+			
 			if (not ignoreCascade) then
 				self:AddChildrenToCascade(aura);
 			end
 			aura.Active = false;	
 			aura.InvertCount = nil;
+		end
+		if (aura.Showing and (aura.InvertCount or 0)==0) then
+			if (debugEffectTest) then
+				self:Message("HideAura ", aura.buffname, " (",auraId,") ", reason);
+			end
+			aura:SetHideRequest("TestThisEffect: false & showing");
 		end
 	end
 	

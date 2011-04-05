@@ -49,6 +49,12 @@ function cPowaTrigger:DeleteAction(action)
 end
 
 function cPowaTrigger:Check(value, qualifier)
+	if (self.Timer) then
+		local aura = PowaAuras.Auras[self.AuraId];
+		if (not aura.Timer or not aura.Timer.Active) then
+			return false;
+		end
+	end
 	if (not self:CheckQulifier(qualifier)) then return false; end
 	local result = self:Compare(self.CompareOperator, value, self.Value);
 	--if (PowaAuras.DebugTriggers or self.Debug) then
@@ -57,7 +63,7 @@ function cPowaTrigger:Check(value, qualifier)
 	if (not result) then
 		if (self.Once and self.Set) then 
 			if (PowaAuras.DebugTriggers or self.Debug) then
-				PowaAuras:DisplayText("Once Match! reset value=", value, " CompareTo=", self.Value);
+				PowaAuras:DisplayText(self.Name, " Once Match! reset value=", value, " ", self.CompareOperator, " ", self.Value);
 			end
 			self:ResetActions();
 		end
@@ -68,7 +74,7 @@ function cPowaTrigger:Check(value, qualifier)
 				return false;
 			else
 				if (PowaAuras.DebugTriggers or self.Debug) then
-					PowaAuras:DisplayText("Once Match! value=", value, " CompareTo=", self.Value);
+					PowaAuras:DisplayText(self.Name, " Once Match! value=", value, " ", self.CompareOperator, " ", self.Value);
 				end
 			end
 		end
@@ -104,11 +110,11 @@ end
 Timer trigger type class.
 ===========================
 --]]
-cPowaAuraTimerTrigger = PowaClass(cPowaTrigger, { Type = "Timer", Once = true });
+cPowaAuraTimerTrigger = PowaClass(cPowaTrigger, { Type = "Timer", Once = true, Timer=true });
 
-cPowaAuraDurationTrigger = PowaClass(cPowaTrigger, { Type = "Duration", Once = true });
+cPowaAuraDurationTrigger = PowaClass(cPowaTrigger, { Type = "Duration", Once = true, Timer=true });
 
-cPowaAuraTimerRefreshTrigger = PowaClass(cPowaTrigger, { Type = "TimerRefresh" });
+cPowaAuraTimerRefreshTrigger = PowaClass(cPowaTrigger, { Type = "TimerRefresh", Timer=true });
 
 cPowaStacksTrigger = PowaClass(cPowaTrigger, { Type = "Stacks", Once = true });
 

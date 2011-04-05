@@ -446,7 +446,6 @@ function cPowaAura:CheckTriggers(triggerType, value, qualifier)
 	end
 end
 
-
 function cPowaAura:QueueActions(trigger)
 	if (not trigger or not trigger.Actions or #trigger.Actions==0) then return; end
 	local i = 1;
@@ -640,13 +639,13 @@ function cPowaAura:UpdateAura()
 	return true;
 end
 
-function cPowaAura:UpdateTimer(timerElapsed, skipTimerUpdate)
+function cPowaAura:UpdateTimer(timerElapsed)
 
 	--if (self.Debug) then
 	--	--PowaAuras:UnitTestInfo("UpdateTimer ",self.id, " ", self.Timer, " skip=",skipTimerUpdate);
 	--end
 	
-	if (not self.Timer or skipTimerUpdate) then
+	if (not self.Timer) then
 		return;
 	end
 	
@@ -659,24 +658,24 @@ function cPowaAura:UpdateTimer(timerElapsed, skipTimerUpdate)
 		PowaAuras:DisplayText("self.Active=",self.Active);
 	end
 	
-	local timerHide;
-	if (self.Timer.ShowOnAuraHide and not PowaAuras.ModTest and (not self.ForceTimeInvert and not self.InvertTimeHides) ) then
-		timerHide = self.Active;
-	else
-		timerHide = not self.Active;
-	end
-	if (PowaAuras.DebugCycle) then
-		PowaAuras:Message("timerHide=",timerHide);
-		PowaAuras:Message("InactiveDueToState=",self.InactiveDueToState);
-	end
-	if (timerHide or (self.InactiveDueToState and not self.Active) or self.InactiveDueToMulti) then
-		self.Timer:Hide(); -- Request or state
-		if (self.ForceTimeInvert) then
-			self.Timer:Update(timerElapsed);				
-		end
-	else
+	--local timerHide;
+	--if (self.Timer.ShowOnAuraHide and not PowaAuras.ModTest and (not self.ForceTimeInvert and not self.InvertTimeHides) ) then
+	--	timerHide = self.Active;
+	--else
+	--	timerHide = not self.Active;
+	--end
+	--if (PowaAuras.DebugCycle) then
+	--	PowaAuras:Message("timerHide=",timerHide);
+	--	PowaAuras:Message("InactiveDueToState=",self.InactiveDueToState);
+	--end
+	--if (timerHide or (self.InactiveDueToState and not self.Active) or self.InactiveDueToMulti) then
+	--	self.Timer:Hide(); -- Request or state
+	--	if (self.ForceTimeInvert) then
+	--		self.Timer:Update(timerElapsed);				
+	--	end
+	--else
 		self.Timer:Update(timerElapsed);
-	end
+	--end
 	
 end
 
