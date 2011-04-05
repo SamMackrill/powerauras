@@ -55,6 +55,10 @@ PowaAuras.UI["TreeView"] = {
 	EnableItem = function(self, key)
 		if(self.ItemsByKey[key]) then self.ItemsByKey[key]:Enable(); end
 	end,
+	GetItem = function(self, key)
+		if(not key or not self.ItemsByKey[key]) then return; end
+		return self.ItemsByKey[key];
+	end,
 	GetSelectedKey = function(self)
 		return self.SelectedKey;
 	end,
@@ -68,7 +72,7 @@ PowaAuras.UI["TreeView"] = {
 			return true;
 		end
 	end,
-	OnSelectionChange = function(self, key) -- All TreeViews should override this func.
+	OnSelectionChanged = function(self, key) -- All TreeViews should override this func.
 		print("Selection changed: " .. (key or "nil"));
 	end,
 	RemoveItem = function(self, key)
@@ -102,7 +106,7 @@ PowaAuras.UI["TreeView"] = {
 		-- Go go go.
 		if(key == nil or (self.ItemsByKey[key] and self.SelectedKey ~= key)) then
 			self.SelectedKey = key;
-			self:OnSelectionChange(self.SelectedKey);
+			self:OnSelectionChanged(self.SelectedKey);
 		end
 		-- Update.
 		self:UpdateItems();
