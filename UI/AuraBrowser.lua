@@ -135,6 +135,7 @@ PowaAuras.UI["AuraBrowser"] = {
 				if(linkedAuras and linkedAuras[button:GetAuraID()]) then
 					-- WOW!
 					button:SetLinked(true);
+					print("|cFF527FCCDEBUG (AuraBrowser): |rAura " .. button:GetAuraID() .. " is linked to aura " .. self.SelectedAura .. ".");
 				else
 					button:SetLinked(false);
 				end
@@ -153,6 +154,7 @@ PowaAuras.UI["AuraBrowser"] = {
 		if(linkedAuras) then wipe(linkedAuras); end
 	end
 }
+
 -- And a definition for the item.
 PowaAuras.UI["AuraButton"] = {
 	Init = function(self, icon)

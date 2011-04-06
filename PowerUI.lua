@@ -12,7 +12,7 @@ PowaAuras.UI = {
 				-- Constructor.
 				__call = function(self, widget, ...)
 					-- Run pre-init function, it can directly modify the widget too.
-					widget = (self.PreInit and self:PreInit() or widget);
+					widget = (self.PreInit and self:PreInit(widget) or widget);
 					-- Check for hooks. All this does is set widget[v] to widget[k] (so imagine: { Show = "__Show" })
 					-- This allows you to then specify your own Show function without destroying the initial one.
 					if(self.Hooks) then
@@ -20,12 +20,26 @@ PowaAuras.UI = {
 							widget[v] = widget[k];
 						end
 					end
+					-- Easyscript™!
+					-- Automatically registers scripts, requires you to supply a function in the widget definition
+					-- which matches the script name (eg. OnEnter).
+					if(self.Scripts) then
+						for v in self.Scripts do
+							widget:SetScript(v, widget[v]);
+						end
+					end
 					-- Copy anything we have over automatically...
 					for k,v in pairs(self) do
-						if(strsub(k, 1, 1) ~= "_") then widget[k] = v; end
+						-- Ignore _ prefixed elements, same with preinit/hooks/scripts. Normal init is fine.
+						if(strsub(k, 1, 1) ~= "_" and key ~= "PreInit" and key ~= "Hooks" and key ~= "Scripts") then
+							widget[k] = v;
+						end
 					end
-					-- Run passed ctor.
-					widget:Init(...);
+					-- Run widget ctor.
+					if(widget.Init) then
+						widget:Init(...);
+					end
+					-- Done.
 					return widget;
 				end
 			}
