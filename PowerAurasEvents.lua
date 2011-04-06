@@ -61,8 +61,10 @@ function PowaAuras:VARIABLES_LOADED(...)
 		self:RegisterEvents(PowaAuras_Frame);
 	end
 	
-	-- UI stuff.
-	PowaBrowser_OnVariablesLoaded();
+	-- UI stuff. Race condition prevention (can it ever actually HAPPEN? I don't want to know..)
+	if(PowaBrowser.OnVariablesLoaded) then
+		PowaBrowser:OnVariablesLoaded();
+	end
 
 	self.VariablesLoaded = true;
 end

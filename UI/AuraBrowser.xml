@@ -232,7 +232,7 @@
 		<Scripts>
 			<OnLoad>
 				self.Title:SetText(format("Power Auras %s", PowaAuras.Version));
-				PowaBrowser_OnLoad(self);
+				PowaAuras.UI.AuraBrowser(self);
 			</OnLoad>
 		</Scripts>
 	</Frame>

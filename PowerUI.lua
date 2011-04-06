@@ -39,7 +39,7 @@ PowaAuras.UI = {
 function PowaAuras:SaveSetting(property, value, auraId)
 	local self = PowaAuras;
 	auraId = auraId or self.CurrentAuraId;
-	if(not auraId or not self.Auras[auraId]) then print("No aura ID"); return; end
+	if(not auraId or not self.Auras[auraId]) then print("No aura ID!"); return; end
 	-- We don't save settings yet, this is just for debugging purposes.
 	-- self.Auras[auraId][property] = value;
 	-- self:RedisplayAura(auraId);
