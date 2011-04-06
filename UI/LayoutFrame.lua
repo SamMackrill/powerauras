@@ -170,10 +170,10 @@ PowaAuras.UI["LayoutFrame"] = {
 				if(self.Debug == true) then self:DebugItem(item, cW, cH, cW-pL-pR, cH-pT-pB, pL, pR, pT, pB, mL, mR, mT, mB, oX, oY); end
 				-- Update sizes, subtracting padding.
 				if(self.Columns[c].Mode == 1 or (self.Columns[c].Mode == 2 and item:GetWidth() > (cW-pL-pR))) then
-					item:SetWidth(cW - pL - pR);
+					item:SetWidth(cW-pL-pR);
 				end
 				if(self.Columns[c].Mode == 1 or (self.Columns[c].Mode == 2 and item:GetHeight() > (cH-pT-pB))) then
-					item:SetHeight(cH - pT - pB);
+					item:SetHeight(cH-pT-pB);
 				end
 				-- Set point.
 				item:ClearAllPoints();
