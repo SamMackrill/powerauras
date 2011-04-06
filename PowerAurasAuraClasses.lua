@@ -507,7 +507,6 @@ function cPowaAura:Hide(source)
 	self:HideFrame(self:GetFrame());
 	self:HideFrame(self:GetFrame(true));
 
-	self.Showing = false;
 	self.HideRequest = false;
 	self.InvertCount = nil;
 end
@@ -554,6 +553,7 @@ function cPowaAura:SetHideRequest(source)
 		PowaAuras:Message(GetTime()," SetHideRequest ", self.id," from=", source);
 	--end
 	self.HideRequest = true;
+	self.Showing = false;
 	--if (not self.InvertTimeHides) then
 	--	self.ForceTimeInvert = nil;
 	--end
@@ -602,36 +602,16 @@ function cPowaAura:UpdateAura()
 		PowaAuras:DisplayText("Showing=",self.Showing);
 	end
 
-	--PowaAuras:ShowText("aura.Showing ", self.Showing);
-	if (self.Showing) then
-		local frame = self:GetFrame();
-		if (frame == nil) then
-			--PowaAuras:UnitTestInfo("UpdateAura: Don't show, frame missing");
-			--PowaAuras:ShowText("UpdateAura: Don't show, frame missing");
-			return false;
-		end
-		--PowaAuras:ShowText("UpdateAura ", self.id, " HideRequest=", self.HideRequest);
-		
-		--if (not self.HideRequest and not PowaAuras.ModTest and self.TimeToHide) then
-		--	if (GetTime() >= self.TimeToHide) then --- If duration has expired then hide this aura
-		--		--PowaAuras:UnitTestInfo("UpdateAura: Hide, duration expired");
-		--		--PowaAuras:ShowText("UpdateAura: Hide, duration expired");
-		--		self:SetHideRequest("UpdateAura: HideRequest");
-		--		self.TimeToHide = nil;
-		--	end
-		--end
-		
-		if (self.Active and self.Stacks and self.Stacks.enabled) then
-			if (PowaAuras.ModTest) then
-				if (self.Stacks.SetStackCount) then
-					self.Stacks:SetStackCount(random(1,12));
-				else
-					PowaAuras:Message("aura.Stacks:SetStackCount nil!! ",self.id);			
-				end
-			end		
-			self.Stacks:Update();
-		end
-
+	if (self.Active and self.Stacks and self.Stacks.enabled) then
+		-- Generate random stacks count for testing
+		if (PowaAuras.ModTest) then
+			if (self.Stacks.SetStackCount) then
+				self.Stacks:SetStackCount(random(1,12));
+			else
+				PowaAuras:Message("aura.Stacks:SetStackCount nil!! ",self.id);			
+			end
+		end		
+		self.Stacks:Update();
 	end
 		
 	self:ProcessTriggerQueue();
