@@ -886,18 +886,7 @@ function PowaAuras:TestThisEffect(auraId, giveReason, ignoreCascade)
 			aura.Active = true;			
 			self:ShowText(GetTime(),"=== Aura now ACTIVE ", auraId, " cas=", ignoreCascade);
 			
-			if (aura.Timer) then
-				aura.Timer.Active = not aura.Timer.ShowOnAuraHide;
-				aura.Timer.InvertCount = 0;
-				if (aura.Timer.Active) then
-					local newvalue = aura.Timer:GetDisplayValue(aura, 0);
-					if (newvalue>0) then
-						self:ShowText("Re-evaluate timer triggers @", newvalue);
-						aura:CheckTriggers("Timer", newvalue);
-						aura:CheckTriggers("Duration", newvalue);
-					end
-				end
-			end
+			if (aura.Timer) then aura.Timer:CheckActive(aura); end
 			
 			self:DisplayAura(auraId);
 			if (not ignoreCascade) then self:AddChildrenToCascade(aura); end
@@ -906,24 +895,11 @@ function PowaAuras:TestThisEffect(auraId, giveReason, ignoreCascade)
 		if (aura.Active) then
 			self:ShowText(GetTime(),"=== Aura now INACTIVE ", auraId, " cas=", ignoreCascade);
 			
-			if (aura.Timer) then
-				aura.Timer.Active = aura.Timer.ShowOnAuraHide;
-				aura.Timer.InvertCount = 0;
-				if (aura.Timer.Active) then
-					local newvalue = aura.Timer:GetDisplayValue(aura, 0);
-					if (newvalue>0) then
-						self:ShowText("Re-evaluate timer triggers @", newvalue);
-						aura:CheckTriggers("Timer", newvalue);
-						aura:CheckTriggers("Duration", newvalue);
-					end
-				end
-			end
+			if (aura.Timer) then aura.Timer:CheckActive(aura); end
 			
-			if (not ignoreCascade) then
-				self:AddChildrenToCascade(aura);
-			end
 			aura.Active = false;	
-			aura.InvertCount = nil;
+			aura.InvertCount = 0;
+			if (not ignoreCascade) then self:AddChildrenToCascade(aura); end
 		end
 		if (aura.Showing and (aura.InvertCount or 0)==0) then
 			if (debugEffectTest) then

@@ -422,6 +422,21 @@ function cPowaTimer:DisplayTime(aura, newvalue)
 
 end
 
+function cPowaTimer:CheckActive(aura)
+
+	self.Active = (aura.Active and not aura.Timer.ShowOnAuraHide);	
+	self.InvertCount = 0;
+	if (not self.Active) then return; end
+	local newvalue = self:GetDisplayValue(aura, 0);
+	if (newvalue<=0) then return; end
+	
+	PowaAuras:ShowText("Re-evaluate timer triggers @", newvalue);
+	aura:CheckTriggers("Timer", newvalue);
+	aura:CheckTriggers("Duration", newvalue);
+	aura:ProcessTriggerQueue();
+
+end
+
 function cPowaTimer:Update(elapsed)
 	--PowaAuras:UnitTestInfo("Timer.Update ",self.id);
 	local aura = PowaAuras.Auras[self.id];
@@ -460,8 +475,7 @@ function cPowaTimer:Update(elapsed)
 		end
 		return;
 	end
-	
-	
+
 	aura:CheckTriggers("Timer", newvalue);
 	aura:CheckTriggers("Duration", self.Duration);
 	
