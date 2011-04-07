@@ -52,6 +52,7 @@ function cPowaTrigger:Check(value, qualifier)
 	if (self.Timer) then
 		local aura = PowaAuras.Auras[self.AuraId];
 		if (not aura.Timer or not aura.Timer.Active) then
+			self.Set = false;
 			return false;
 		end
 	end
