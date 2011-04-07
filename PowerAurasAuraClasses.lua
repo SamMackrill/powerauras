@@ -334,7 +334,7 @@ function cPowaAura:CreateDefaultTriggers()
 	
 	if (self.Timer) then
 		local frame1, frame2 = PowaAuras:CreateTimerFrameIfMissing(self.id)
-		if(self.Timer.UpdatePing) then
+		if(self.Timer.UpdatePing and self.Timer.enabled) then
 			trigger=self:CreateTrigger(cPowaAuraTimerRefreshTrigger, {Name="PA_TimerPing"});
 			if (frame1) then trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_TimerPing1", Frame=frame1, Animation=1000, Alpha=self.alpha, Speed=1}); end
 			if (frame2) then trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_TimerPing2", Frame=frame2, Animation=1000, Alpha=self.alpha, Speed=1}); end
