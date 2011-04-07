@@ -351,7 +351,7 @@ function cPowaAura:CreateDefaultTriggers()
 		end
 		
 		if (self.InvertAuraBelow>0) then
-			trigger=self:CreateTrigger(cPowaAuraTimerTrigger,  {Name="PA_InvertTimerAbove", Value=self.InvertAuraBelow+0.01, Compare=">", Debug=true});
+			trigger=self:CreateTrigger(cPowaAuraTimerTrigger,  {Name="PA_InvertTimerAbove", Value=self.InvertAuraBelow+0.02, Compare=">", Debug=true});
 			trigger:AddAction(cPowaAuraInvertAction, {Name="PA_Invert", Timer=true});
 			trigger=self:CreateTrigger(cPowaAuraTimerTrigger,  {Name="PA_InvertAuraBelow", Value=self.InvertAuraBelow, Compare="<", Debug=true});
 			trigger:AddAction(cPowaAuraInvertAction, {Name="PA_Invert", Aura=true});
@@ -559,7 +559,8 @@ function cPowaAura:SetHideRequest(source)
 	--end
 		
 	self:CheckTriggers("AuraHide");
-	
+
+--[[	
 	if (self.Timer) then
 		if (self.Timer.ShowOnAuraHide) then
 			self.Timer:Show();
@@ -574,6 +575,42 @@ function cPowaAura:SetHideRequest(source)
 		else
 			self.Stacks:Hide();
 		end
+	end
+]]--
+end
+
+function cPowaAura:CheckActive(shouldShow)
+	if (shouldShow) then
+		if (self.Active) then return; end
+		if (debugEffectTest) then
+			PowaAuras:Message("ShowAura ", self.buffname, " (",self.id,") ", reason);
+		end
+		self.Active = true;			
+		self.InvertCount = 0;
+		PowaAuras:ShowText(GetTime(),"=== Aura ACTIVE ", self.id);
+		
+		if (self.Timer) then self.Timer:CheckActive(self); end
+		
+		PowaAuras:DisplayAura(self.id);
+		if (not ignoreCascade) then PowaAuras:AddChildrenToCascade(self); end
+		return
+	end
+	
+	if (self.Active) then
+		PowaAuras:ShowText(GetTime(),"=== Aura INACTIVE ", self.id);
+		
+		self.Active = false;	
+		self.InvertCount = 0;
+
+		if (self.Timer) then self.Timer:CheckActive(self); end
+		
+		if (not ignoreCascade) then PowaAuras:AddChildrenToCascade(self); end
+	end
+	if (self.Showing and (self.InvertCount or 0)==0) then
+		if (debugEffectTest) then
+			PowaAuras:Message("HideAura ", self.buffname, " (",self.id,") ", reason);
+		end
+		self:SetHideRequest("TestThisEffect: false & showing");
 	end
 
 end

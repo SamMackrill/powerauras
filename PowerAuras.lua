@@ -878,36 +878,7 @@ function PowaAuras:TestThisEffect(auraId, giveReason, ignoreCascade)
 		self:Message("shouldShow=", shouldShow, " because ", reason);
 	end
 	
-	if (shouldShow) then
-		if (not aura.Active) then
-			if (debugEffectTest) then
-				self:Message("ShowAura ", aura.buffname, " (",auraId,") ", reason);
-			end
-			aura.Active = true;			
-			self:ShowText(GetTime(),"=== Aura now ACTIVE ", auraId, " cas=", ignoreCascade);
-			
-			if (aura.Timer) then aura.Timer:CheckActive(aura); end
-			
-			self:DisplayAura(auraId);
-			if (not ignoreCascade) then self:AddChildrenToCascade(aura); end
-		end
-	else
-		if (aura.Active) then
-			self:ShowText(GetTime(),"=== Aura now INACTIVE ", auraId);
-			
-			if (aura.Timer) then aura.Timer:CheckActive(aura); end
-			
-			aura.Active = false;	
-			aura.InvertCount = 0;
-			if (not ignoreCascade) then self:AddChildrenToCascade(aura); end
-		end
-		if (aura.Showing and (aura.InvertCount or 0)==0) then
-			if (debugEffectTest) then
-				self:Message("HideAura ", aura.buffname, " (",auraId,") ", reason);
-			end
-			aura:SetHideRequest("TestThisEffect: false & showing");
-		end
-	end
+	aura:CheckActive(shouldShow);
 	
 	return shouldShow, reason;
 end

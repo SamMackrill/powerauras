@@ -423,28 +423,32 @@ function cPowaTimer:DisplayTime(aura, newvalue)
 end
 
 function cPowaTimer:CheckActive(aura)
-
-	self.Active = (aura.Active and not aura.Timer.ShowOnAuraHide);	
+	local oldActive = self.Active;
+	self.Active = (aura.Active and not self.ShowOnAuraHide) or (not aura.Active and self.ShowOnAuraHide);	
+	PowaAuras:DisplayText(aura.id, " CheckActive: Timer AuraActive=", aura.Active, " ShowOnAuraHide=", self.ShowOnAuraHide, " Active=", self.Active);
+	PowaAuras:DisplayText("Active=", self.Active, " (was ", oldActive, ")");
+	if (oldActive==self.Active) then return; end
 	self.InvertCount = 0;
-	if (not self.Active) then return; end
-
-	PowaAuras:ShowText(GetTime(),"=== Timer now ACTIVE ", auraId);
 
 	local newvalue = self:GetDisplayValue(aura, 0);
-	if (newvalue<=0) then return; end
 	
 	PowaAuras:ShowText("Timer CheckActive: Re-evaluate timer triggers @", newvalue);
 	aura:CheckTriggers("Timer", newvalue);
 	aura:CheckTriggers("Duration", newvalue);
 	aura:ProcessTriggerQueue();
 
-	if (self.InvertCount>0) then
-		if (self.Showing) then
-			self:Hide();
-		end
+	PowaAuras:ShowText(GetTime(),"Timer.InvertCount=", self.InvertCount, " Showing=", self.Showing);
+
+	if (not self.Active) then
+		PowaAuras:ShowText(GetTime(),"=== Timer INACTIVE ", auraId);
+		self:Hide();
 		return;
 	end
-	if (not self.Showing) then
+
+	PowaAuras:ShowText(GetTime(),"=== Timer ACTIVE ", auraId);
+	if (self.InvertCount>0) then
+		self:Hide();
+	else
 		self:Show();
 	end
 	
@@ -560,6 +564,7 @@ end
 
 
 function cPowaTimer:Show()
+	if (self.Showing) then return; end
 	self.ShowRequest = true;
 	PowaAuras:ShowText(">>>>> Timer ShowRequest");
 end
