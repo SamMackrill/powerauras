@@ -849,8 +849,8 @@ function PowaAuras:TestThisEffect(auraId, giveReason, ignoreCascade)
 	aura.InactiveDueToMulti = nil;
 	local shouldShow, reason = aura:ShouldShow(giveReason or debugEffectTest or true, false, ignoreCascade);
 	--if (ignoreCascade) then
-		self:ShowText(GetTime()," Test Aura ", auraId, " for Hide/Show showing=", aura.Showing);
-		self:ShowText(GetTime()," shouldShow=", shouldShow, " Reason=", reason);
+	--	self:ShowText(GetTime()," Test Aura ", auraId, " for Hide/Show showing=", aura.Showing);
+	--	self:ShowText(GetTime()," shouldShow=", shouldShow, " Reason=", reason);
 	--end
 	
 	if (shouldShow == -1) then
@@ -893,7 +893,7 @@ function PowaAuras:TestThisEffect(auraId, giveReason, ignoreCascade)
 		end
 	else
 		if (aura.Active) then
-			self:ShowText(GetTime(),"=== Aura now INACTIVE ", auraId, " cas=", ignoreCascade);
+			self:ShowText(GetTime(),"=== Aura now INACTIVE ", auraId);
 			
 			if (aura.Timer) then aura.Timer:CheckActive(aura); end
 			
