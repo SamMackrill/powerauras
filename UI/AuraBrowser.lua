@@ -28,6 +28,9 @@ PowaAuras.UI["AuraBrowser"] = {
 	GetSelectedAuras = function(self)
 		return self.SelectedAuras;
 	end,
+	OnAuraDragged = function(self)
+		print("Recieved: " .. self.Key);
+	end,
 	OnSelectionChanged = function(self, key)
 		-- Save page.
 		PowaBrowser.SelectedPage = key;
@@ -59,17 +62,23 @@ PowaAuras.UI["AuraBrowser"] = {
 		end
 		-- Counts.
 		local playerPageCount, globalPageCount, classPageCount = #(PowaPlayerListe), #(PowaGlobalListe), #(PowaClassListe[class]);
+		-- Character auras.
 		self.Tabs.Auras.Tree:AddItem("CHAR", PowaAuras.Text["UI_CharAuras"], nil, nil, true);
 		for i=1,playerPageCount do
 			self.Tabs.Auras.Tree:AddItem(i, PowaPlayerListe[i], "CHAR");
+			self.Tabs.Auras.Tree:GetItem(i):SetScript("OnReceiveDrag", self.OnAuraDragged);
 		end
+		-- Global auras.
 		self.Tabs.Auras.Tree:AddItem("GLOBAL", PowaAuras.Text["UI_GlobAuras"], nil, nil, true);
 		for i=1,globalPageCount do
 			self.Tabs.Auras.Tree:AddItem(i+playerPageCount, PowaGlobalListe[i], "GLOBAL");
+			self.Tabs.Auras.Tree:GetItem(i+playerPageCount):SetScript("OnReceiveDrag", self.OnAuraDragged);
 		end
+		-- Class auras.
 		self.Tabs.Auras.Tree:AddItem("CLASS", PowaAuras.Text["UI_ClassAuras"], nil, nil, true);
 		for i=1,classPageCount do
 			self.Tabs.Auras.Tree:AddItem(i+playerPageCount+globalPageCount, PowaClassListe[class][i], "CLASS");
+			self.Tabs.Auras.Tree:GetItem(i+playerPageCount+globalPageCount):SetScript("OnReceiveDrag", self.OnAuraDragged);
 		end
 		-- Add 24 beautiful buttons.
 		self.Tabs.Auras.Page:SetLocked(true);
@@ -140,9 +149,9 @@ PowaAuras.UI["AuraBrowser"] = {
 		if(multiSelectMode ~= 0x4) then
 			tinsert(self.SelectedAuras, id);
 		else
-			-- Select all between the last selected aura and this one.
+			-- Select all between the last selected aura and this one (shift key).
 			local lastID;
-			for _,v in pairs(self.SelectedAuras) do
+			for _,v in ipairs(self.SelectedAuras) do
 				lastID = v;
 			end
 			wipe(self.SelectedAuras);
@@ -160,24 +169,40 @@ PowaAuras.UI["AuraBrowser"] = {
 		-- Not strictly button related, but it prevents two function calls.
 		PowaBrowser.Tabs.Auras.Page.Title:SetText(self:GetPageName());
 		PowaBrowser.Tabs.Auras.Page.Title:ClearFocus();
+		-- Keep track on if we've displayed at least one empty button.
+		local hasDisplayedEmpty = nil;
 		-- Go over buttons.
 		for i=1,24 do
 			local button, buttonAura = self.Tabs.Auras.Page["Aura" .. i], nil;
 			-- Fix button and aura.
 			button:SetAuraID(((self.SelectedPage-1)*24)+i);
 			buttonAura = button:GetAura();
-			-- Select/deselect.
-			if(not tContains(self.SelectedAuras, button:GetAuraID())) then
+			-- ...Was there an aura?
+			if(buttonAura) then
+				-- Select/deselect.
+				if(not tContains(self.SelectedAuras, button:GetAuraID())) then
+					button:SetSelected(false);
+				else
+					button:SetSelected(true);
+				end
+				-- Icons.
+				if(not buttonAura or not buttonAura.icon) then
+					button.Icon:SetTexture("");
+				else
+					button.Icon:SetTexture(buttonAura.icon);
+				end
+				-- Show button.
+				button:Show();
+			else
+				-- Deselect...
 				button:SetSelected(false);
-			else
-				button:SetSelected(true);
-				-- button:SetLinked(false);
-			end
-			-- Icons.
-			if(not buttonAura or not buttonAura.icon) then
-				button.Icon:SetTexture("");
-			else
-				button.Icon:SetTexture(buttonAura.icon);
+				-- Hide?
+				if(hasDisplayedEmpty) then
+					button:Hide();
+				else
+					button:Show();
+					hasDisplayedEmpty = true;
+				end
 			end
 		end
 		-- No longer need you, mister linkedAuras.
@@ -188,7 +213,10 @@ PowaAuras.UI["AuraBrowser"] = {
 -- And a definition for the item.
 PowaAuras.UI["AuraButton"] = {
 	Scripts = {
-		"OnClick"
+		"OnClick",
+		"OnDragStart",
+		"OnDragStop",
+		"OnReceiveDrag",
 	},
 	Init = function(self, icon)
 		-- Set things up.
@@ -196,7 +224,7 @@ PowaAuras.UI["AuraButton"] = {
 		self:SetIcon(icon or "");
 		-- Register clicks.
 		self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
-		self:RegisterForDrag(true);
+		self:RegisterForDrag("LeftButton");
 	end,
 	GetAura = function(self)
 		return PowaAuras.Auras[self.AuraID] or nil;
@@ -205,15 +233,18 @@ PowaAuras.UI["AuraButton"] = {
 		return self.AuraID;
 	end,
 	SetAuraID = function(self, id)
+		-- Don't allow dragging of non-existant things :)
+		if(not PowaAuras.Auras[id]) then
+			self:RegisterForDrag(nil);
+		else
+			self:RegisterForDrag("LeftButton");
+		end
+		-- You have been invited to join <World of War> for the 19th time. Would you like to virtually punch one of the guild members in the face?
 		self.AuraID = id;
 	end,
 	SetIcon = function(self, icon)
 		self.Icon:SetTexture(icon);
 	end,
-	-- SetLinked = function(self, linked)
-		-- self.Linked = linked;
-		-- self:Update();
-	-- end,
 	OnClick = function(self, button)
 		-- Left or right?
 		if(button == "LeftButton") then
@@ -223,6 +254,17 @@ PowaAuras.UI["AuraButton"] = {
 			-- Shortcut for edit.
 			
 		end
+	end,
+	OnDragStart = function(self, button)
+		print("OnDragStart: " .. self.AuraID);
+		SetCursor(self.Icon:GetTexture());
+	end,
+	OnDragStop = function(self)
+		print("OnDragStop: " .. self.AuraID);
+		SetCursor(nil);
+	end,
+	OnReceiveDrag = function(self)
+		print("OnReceiveDrag: " .. self.AuraID);		
 	end,
 	SetSelected = function(self, selected)
 		self.Selected = selected;
