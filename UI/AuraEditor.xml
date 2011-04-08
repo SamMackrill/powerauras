@@ -335,24 +335,28 @@
 												<Scripts>
 													<OnLoad>
 														-- Layout needed.
-														PowaAuras.UI.LayoutFrame(self, 2, { [1] = { X = 0.5 }, [2] = { X = 0.5 } }, true);
+														PowaAuras.UI.LayoutFrame(self, 0, 0, 1, true, true);
+														self:AddColumn(0.5);
+														self:AddColumn(0.5);
 														
-														self:SetItem(self.Separator1, { Margin = { 0, 0, 0, 4 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
-														self:SetItem(self.Separator1.Opacity, { Margin = { 0, 0, 16, 20 }, Padding = { 2, 4, 0, 0 } });
-														self:SetItem(self.Separator1.Scale, { Margin = { 0, 0, 16, 20 }, Padding = { 4, -2, 0, 0 } });
-														self:SetItem(self.Separator1.Rotate, { Margin = { 0, 0, 16, 20 }, Padding = { 2, 4, 0, 0 } });
-														self:SetItem(self.Separator1.Flip, { Margin = { 0, 0, 16, 20 }, Padding = { 4, -2, 0, 0 } });
+														self:SetItem(self.Separator1, 2, { 2, -2, 0, 0 }, { 0, 0, 0, 4 });
+														self:SetItem(self.Separator1.Opacity, 1, { 2, 4, 0, 0 }, { 0, 0, 16, 20 });
+														self:SetItem(self.Separator1.Scale, 1, { 4, -2, 0, 0 }, { 0, 0, 16, 20 });
+														self:SetItem(self.Separator1.Rotate, 1, { 2, 4, 0, 0 }, { 0, 0, 16, 20 });
+														self:SetItem(self.Separator1.Flip, 1, { 4, -2, 0, 0 }, { 0, 0, 16, 20 });
 														
-														self:SetItem(self.Separator2, { Margin = { 0, 0, 6, 4 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
-														self:SetItem(self.Separator2.X, { Margin = { 0, 0, 4, 4 }, Padding = { 2, 4, 0, 0 } });
-														self:SetItem(self.Separator2.Y, { Margin = { 0, 0, 4, 4 }, Padding = { 4, -2, 0, 0 } });
+														self:SetItem(self.Separator2, 2, { 2, -2, 0, 0 }, { 0, 0, 6, 4 });
+														self:SetItem(self.Separator2.X, 1, { 2, 4, 0, 0 }, { 0, 0, 4, 4 });
+														self:SetItem(self.Separator2.Y, 1, { 4, -2, 0, 0 }, { 0, 0, 4, 4 });
 														
-														self:SetItem(self.Separator3, { Margin = { 0, 0, 6, 4 }, Padding = { 2, -2, 0, 0 }, Columns = 2 });
-														self:SetItem(self.Separator3.Deform, { Margin = { 0, 0, 16, 20 }, Padding = { 2, 4, 0, 0 } });
-														self:SetItem(self.Separator3.Strata, { Margin = { 0, 0, 16, 20 }, Padding = { 4, -2, 0, 0 } });
+														self:SetItem(self.Separator3, 2, { 2, -2, 0, 0 }, { 0, 0, 6, 4 });
+														self:SetItem(self.Separator3.Deform, 1, { 2, 4, 0, 0 }, { 0, 0, 16, 20 });
+														self:SetItem(self.Separator3.Strata, 1, { 4, -2, 0, 0 }, { 0, 0, 16, 20 });
 														
 														-- Register last separator as advanced element.
 														PowaAuras:RegisterAdvancedElement(self.Separator3);
+														-- Unlock layout.
+														self:SetLocked(false);
 													</OnLoad>
 												</Scripts>
 											</Frame>
@@ -612,10 +616,13 @@
 						</Frames>
 						<Scripts>
 							<OnLoad>
-								PowaAuras.UI.LayoutFrame(self);
-								self:SetColumns(2, { [1] = { X = 0.3, Y = 1 }, [2] = { X = 0.7, Y = 1 } });
+								PowaAuras.UI.LayoutFrame(self, 0, 0, 1, true);
+								self:AddColumn(0.3, 1);
+								self:AddColumn(0.7, 1);
 								self:SetItem(self.Sidebar);
-								self:SetItem(self.Main, { Padding = { 4, 4, 4, 4 } });
+								self:SetItem(self.Main, 1, { 4, 4, 4, 4 });
+								-- Unlock layout.
+								self:SetLocked(false);
 							</OnLoad>
 						</Scripts>
 					</Frame>

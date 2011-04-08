@@ -3,6 +3,32 @@
     xsi:schemaLocation="http://www.blizzard.com/wow/ui/
     ..\..\FrameXML\UI.xsd">
 	<Script file="AuraBrowser.lua" />
+	<!-- Todo: Put this in another file? Doubt it. -->
+	<Button name="PowaAuraButtonTemplate" virtual="true">
+		<!-- Yes, I really am using totem bar textures here. I haven't gone insane yet. -->
+		<NormalTexture file="Interface\Buttons\UI-TotemBar" setAllPoints="true">
+			<!-- Linked texture: -->
+			<!-- <TexCoords left="0.0078125" right="0.2734375" top="0.671875" bottom="0.8046875" /> -->
+			<TexCoords left="0.0078125" right="0.2734375" top="0.80859375" bottom="0.94140625" />
+			<Color r="0.75" g="0.325" b="0.325" />
+		</NormalTexture>
+		<HighlightTexture file="Interface\Buttons\UI-TotemBar" setAllPoints="true">
+			<TexCoords left="0.0078125" right="0.2734375" top="0.80859375" bottom="0.94140625" />
+		</HighlightTexture>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Icon">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="5" y="-5" />
+						<Anchor point="BOTTOMRIGHT" x="-5" y="5" />
+					</Anchors>
+					<!-- Cuts the border out of icons. -->
+					<TexCoords left="0.07" right="0.93" top="0.07" bottom="0.93" />
+				</Texture>
+			</Layer>
+		</Layers>
+	</Button>
+	
 	<Frame name="PowaBrowser" toplevel="true" movable="true" parent="UIParent" hidden="false" frameStrata="MEDIUM" enableMouse="true" enableKeyboard="true">
 		<Size>
           <AbsDimension x="550" y="450" />
@@ -87,10 +113,99 @@
 					<Frame parentKey="Auras" hidden="true">
 						<Anchors>
 							<Anchor point="TOPLEFT" x="4" y="-4" />
-							<Anchor point="BOTTOMRIGHT" x="-4" y="4" />
+							<Anchor point="BOTTOMRIGHT" x="-4" y="5" />
 						</Anchors>
 						<Frames>
-							<Frame name="$parentAurasList" parentKey="List" inherits="PowaTreeViewTemplate">
+							<Frame name="$parentAurasTree" parentKey="Tree" inherits="PowaTreeViewTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT" x="2" y="-2" />
+									<Anchor point="BOTTOMLEFT" x="2" y="2" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										PowaAuras.UI.TreeView(self);
+									</OnLoad>
+								</Scripts>
+							</Frame>
+							<Frame parentKey="Page" inherits="PowaBorderedFrameTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT" x="177" y="-2" />
+									<Anchor point="BOTTOMRIGHT" x="-2" y="2" />
+								</Anchors>
+								<Layers>
+									<Layer level="ARTWORK">
+										<Texture file="Interface\LevelUp\LevelUpTex">
+											<Size x="419" y="2" />
+											<Anchors>
+												<Anchor point="TOPLEFT" x="0" y="-45" />
+												<Anchor point="TOPRIGHT" x="0" y="-45" />
+											</Anchors>
+											<TexCoords left="0" right="0.818359375" top="0.013671875" bottom="0.017578125" />
+											<Color r="0.3" g="0.3" b="0.3" a="1.0" />
+										</Texture>
+										<Texture file="Interface\LevelUp\LevelUpTex">
+											<Size x="419" y="2" />
+											<Anchors>
+												<Anchor point="TOPLEFT" x="0" y="-242" />
+												<Anchor point="TOPRIGHT" x="0" y="-242" />
+											</Anchors>
+											<TexCoords left="0" right="0.818359375" top="0.013671875" bottom="0.017578125" />
+											<Color r="0.3" g="0.3" b="0.3" a="1.0" />
+										</Texture>
+									</Layer>
+								</Layers>
+								<Frames>
+									<EditBox parentKey="Title" justifyH="LEFT" justifyV="MIDDLE" font="GameFontNormalLarge" text="123456789012345" letters="15" autoFocus="false">
+										<Size x="225" y="40" />
+										<Anchors>
+											<Anchor point="TOPLEFT" x="15" y="-4" />
+											<Anchor point="TOPRIGHT" x="-15" y="-4" />
+										</Anchors>	
+										<Scripts>
+											<OnEscapePressed>
+												self:SetText(PowaBrowser:GetPageName());
+												self:ClearFocus();
+											</OnEscapePressed>
+											<OnEditFocusGained>
+												self:HighlightText();
+											</OnEditFocusGained>
+											<OnEditFocusLost>
+												self:HighlightText(0,0);
+											</OnEditFocusLost>
+											<OnEnterPressed>
+												PowaBrowser:SavePageName(self:GetText());
+												self:SetText(PowaBrowser:GetPageName());
+												self:ClearFocus();
+											</OnEnterPressed>
+										</Scripts>
+									</EditBox>
+								</Frames>
+								<Scripts>
+									<OnLoad>
+										-- Init layout frame, lock layout to speed up load.
+										PowaAuras.UI.LayoutFrame(self, 0, 49, 2, true);
+										-- Add columns.
+										self:AddColumn(48, 48);
+										self:AddColumn(48, 48);
+										self:AddColumn(48, 48);
+										self:AddColumn(48, 48);
+										self:AddColumn(48, 48);
+										self:AddColumn(48, 48);
+										-- Unlock layout. This will trigger 1 update, as opposed to about 8 updates while initializing.
+										self:SetLocked(false);
+									</OnLoad>
+								</Scripts>
+							</Frame>
+						</Frames>
+					</Frame>
+					<Frame parentKey="Config" hidden="true" />
+					<Frame parentKey="Help" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="4" y="-4" />
+							<Anchor point="BOTTOMRIGHT" x="-4" y="5" />
+						</Anchors>
+						<Frames>
+							<Frame name="$parentHelpTree" parentKey="Tree" inherits="PowaTreeViewTemplate">
 								<Anchors>
 									<Anchor point="TOPLEFT" x="2" y="-2" />
 									<Anchor point="BOTTOMLEFT" x="2" y="2" />
@@ -103,15 +218,12 @@
 							</Frame>
 						</Frames>
 					</Frame>
-					<Frame parentKey="Config" hidden="true" />
-					<Frame parentKey="Help" hidden="true" />
 				</Frames>
 				<Scripts>
 					<OnLoad>
 						PowaAuras.UI.TabFrame(self, 4);
 						self:RegisterTab(self.Auras, "Interface\\GossipFrame\\TrainerGossipIcon");
 						self:RegisterTab(self.Config, "Interface\\GossipFrame\\BinderGossipIcon");
-						-- self:RegisterTab(self.NewFeatures, { "Interface\\OPTIONSFRAME\\UI-OptionsFrame-NewFeatureIcon", 16, 16, 0, 1, 0, 1 });
 						self:RegisterTab(self.Help, { "Interface\\WorldMap\\UI-WorldMap-QuestIcon", 12, 17, 0.171875, 0.359375, 0.109375, 0.375 });
 					</OnLoad>
 				</Scripts>
@@ -120,7 +232,7 @@
 		<Scripts>
 			<OnLoad>
 				self.Title:SetText(format("Power Auras %s", PowaAuras.Version));
-				PowaBrowser_OnLoad(self);
+				PowaAuras.UI.AuraBrowser(self);
 			</OnLoad>
 		</Scripts>
 	</Frame>
