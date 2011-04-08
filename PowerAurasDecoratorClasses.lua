@@ -369,8 +369,6 @@ function cPowaTimer:DisplayTime(aura, newvalue)
 		return;
 	end
 
-	PowaAuras:CreateTimerFrameIfMissing(self.id);
-
 	local split = 60;
 	if (self.Seconds99) then
 		split = 100;

@@ -287,6 +287,9 @@ function cPowaAura:CreateDefaultTriggers()
 	if (self.off) then return; end
 	local frame, texture, frame2, texture2 = self:CreateFrames();
 	
+	-- =======
+	-- On Show
+	-- =======
 	local trigger=self:CreateTrigger(cPowaAuraShowTrigger, {Name="PA_AuraShow", Debug=false});
 	--trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Show Aura"});
 	if (self.begin>0) then
@@ -300,6 +303,9 @@ function cPowaAura:CreateDefaultTriggers()
 		trigger:AddAction(cPowaAuraPlaySoundAction, {Name="PA_Sound", Sound=self.sound});
 	end			
 	
+	-- =======
+	-- On Hide
+	-- =======
 	trigger=self:CreateTrigger(cPowaAuraHideTrigger, {Name="PA_AuraHide", Debug=false});
 	--trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Hide Aura"});
 	if (self.finish>0) then
@@ -313,7 +319,10 @@ function cPowaAura:CreateDefaultTriggers()
 	elseif (self.soundend>0) then
 		trigger:AddAction(cPowaAuraPlaySoundAction, {Name="PA_Sound", Sound=self.soundend});
 	end			
-		
+	
+	-- =======
+	-- After Show
+	-- =======		
 	if (self.anim1>1 or self.anim2>0) then
 		PowaAuras:ShowText("Main animation trigger, anim1=", self.anim1, " anim2=", self.anim2);
 		trigger=self:CreateTrigger(cPowaStateTrigger, {Name="PA_MainAnim", Value=1, Qualifier="AnimationState", Compare="="});
@@ -332,18 +341,22 @@ function cPowaAura:CreateDefaultTriggers()
 		end
 	end
 	
+	-- =======
+	-- Timer
+	-- =======		
 	if (self.Timer) then
-		local frame1, frame2 = PowaAuras:CreateTimerFrameIfMissing(self.id)
-		if(self.Timer.UpdatePing and self.Timer.enabled) then
-			trigger=self:CreateTrigger(cPowaAuraTimerRefreshTrigger, {Name="PA_TimerPing"});
-			if (frame1) then trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_TimerPing1", Frame=frame1, Animation=1000, Alpha=self.alpha, Speed=1}); end
-			if (frame2) then trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_TimerPing2", Frame=frame2, Animation=1000, Alpha=self.alpha, Speed=1}); end
+		if (self.Timer.enabled) then
+			local frame1, frame2 = PowaAuras:CreateTimerFrameIfMissing(self.id)
+			if (self.Timer.UpdatePing) then
+				trigger=self:CreateTrigger(cPowaAuraTimerRefreshTrigger, {Name="PA_TimerPing"});
+				if (frame1) then trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_TimerPing1", Frame=frame1, Animation=1000, Alpha=self.alpha, Speed=1}); end
+				if (frame2) then trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_TimerPing2", Frame=frame2, Animation=1000, Alpha=self.alpha, Speed=1}); end
+			end
+			--trigger=self:CreateTrigger(cPowaAuraTimerTrigger, 12, nil, "<");
+			--if (frame1 and frame1.texture) then trigger:AddAction(cPowaAuraColourAction, {Texture=frame1.texture, R=255, G=0, B=0, Revert=true}); end
+			--if (frame2 and frame2.texture) then trigger:AddAction(cPowaAuraColourAction, {Texture=frame2.texture, R=255, G=0, B=0, Revert=true}); end
+			--trigger:AddAction(cPowaAuraPlaySoundAction, {Sound=11});
 		end
-		--trigger=self:CreateTrigger(cPowaAuraTimerTrigger, 12, nil, "<");
-		--if (frame1 and frame1.texture) then trigger:AddAction(cPowaAuraColourAction, {Texture=frame1.texture, R=255, G=0, B=0, Revert=true}); end
-		--if (frame2 and frame2.texture) then trigger:AddAction(cPowaAuraColourAction, {Texture=frame2.texture, R=255, G=0, B=0, Revert=true}); end
-		--trigger:AddAction(cPowaAuraPlaySoundAction, {Sound=11});
-		
 		
 		if (self.timerduration>0) then	
 			trigger=self:CreateTrigger(cPowaAuraDurationTrigger,  {Name="PA_HideAfterDuration", Value=self.timerduration, Compare=">"});
@@ -366,7 +379,10 @@ function cPowaAura:CreateDefaultTriggers()
 			--end
 		end		
 	end
-
+	
+	-- =======
+	-- Stacks
+	-- =======		
 	if (self.Stacks and self.Stacks.UpdatePing) then
 		local frame = PowaAuras:CreateStacksFrameIfMissing(self.id)
 		trigger=self:CreateTrigger(cPowaStacksTrigger, {Name="PA_StacksPing"});
@@ -518,11 +534,7 @@ function cPowaAura:IncrementInvertCount(now)
 	end
 	if (self.InvertCount==1) then
 		if (self.Active) then
-			if (now) then
-				self:Hide();
-			else
-				self:SetHideRequest("Trigger Hide Action");
-			end
+			self:SetHideRequest("Trigger Hide Action", now);
 		else
 			self:Show();
 		end
@@ -543,22 +555,23 @@ function cPowaAura:DecrementInvertCount(now)
 	end
 end
 
-function cPowaAura:SetHideRequest(source)
-	PowaAuras:Message(GetTime()," SetHideRequest ", self.HideRequest, " showing=", self.Showing, " from=", source);
-	if (self.HideRequest or not self.Showing) then return; end
-	--PowaAuras:Message(GetTime()," force=", force," InvertCount=", self.InvertCount);
-	--if (not force and (self.InvertCount or 0) == 0 ) then return; end
-
+function cPowaAura:SetHideRequest(source, now)
 	--if (self.Debug) then
-		PowaAuras:Message(GetTime()," SetHideRequest ", self.id," from=", source);
+		PowaAuras:Message(GetTime()," SetHideRequest ", self.HideRequest, " showing=", self.Showing, " from=", source, " now=", now);
 	--end
-	self.HideRequest = true;
+
+	if ((self.HideRequest and not now) or not self.Showing) then return; end
+
+	self.HideRequest = (not now);
 	self.Showing = false;
-	--if (not self.InvertTimeHides) then
-	--	self.ForceTimeInvert = nil;
-	--end
-		
+
 	self:CheckTriggers("AuraHide");
+
+	if (now) then
+		self:Hide();
+		return;
+	end
+	
 
 --[[	
 	if (self.Timer) then
@@ -606,24 +619,25 @@ function cPowaAura:CheckActive(shouldShow)
 		
 		if (not ignoreCascade) then PowaAuras:AddChildrenToCascade(self); end
 	end
+	
 	if (self.Showing and (self.InvertCount or 0)==0) then
 		if (debugEffectTest) then
 			PowaAuras:Message("HideAura ", self.buffname, " (",self.id,") ", reason);
 		end
-		self:SetHideRequest("TestThisEffect: false & showing");
+		self:SetHideRequest("TestThisEffect: false & showing", false);
 	end
 
 end
 
 function cPowaAura:UpdateAura()
-	--PowaAuras:ShowText("UpdateAura ", self.id);
 	
-	--if (self.Debug) then
-	--	PowaAuras:Message("UpdateAura ", self.id);
-	--end
+	if (self.Debug) then
+		PowaAuras:Message("UpdateAura ", self.id);
+	end
+	
 	if (self.off) then
 		if (self.Showing) then
-			self:Hide("UpdateAura off and showing");
+			self:SetHideRequest("UpdateAura off and showing", true);
 		end
 		if (self.Timer and self.Timer.Showing) then
 			self.Timer:Hide(); -- Aura off

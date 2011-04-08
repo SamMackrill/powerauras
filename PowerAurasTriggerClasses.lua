@@ -120,8 +120,9 @@ cPowaAuraTimerRefreshTrigger = PowaClass(cPowaTrigger, { Type = "TimerRefresh", 
 cPowaStacksTrigger = PowaClass(cPowaTrigger, { Type = "Stacks", Once = true });
 
 cPowaAuraShowTrigger = PowaClass(cPowaTrigger, { Type = "AuraShow" });
-
 cPowaAuraHideTrigger = PowaClass(cPowaTrigger, { Type = "AuraHide" });
+cPowaAuraActiveTrigger = PowaClass(cPowaTrigger, { Type = "AuraActive" });
+cPowaAuraInactiveTrigger = PowaClass(cPowaTrigger, { Type = "AuraInactive" });
 
 cPowaStateTrigger = PowaClass(cPowaTrigger, { Type = "State" });
 
@@ -143,6 +144,10 @@ cPowaTriggerAction = PowaClass(function(action, trigger, actionId, parameters)
 	end
 	action:Init();
 end);
+
+-- Optionally override these to do action specific tasks
+function cPowaTriggerAction:Fire()
+end
 
 function cPowaTriggerAction:Init()
 end
@@ -188,7 +193,7 @@ function cPowaAuraHideAction:Fire()
 end
 
 --[[
-=====cPowaAuraHideAction========
+=====cPowaAuraInvertAction========
 ===========================
 --]]
 cPowaAuraInvertAction = PowaClass(cPowaTriggerAction, { Type = "Invert" });

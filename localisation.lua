@@ -545,7 +545,9 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomReasonShouldShow = "Should show because $1",
 	nomReasonWontShow   = "Won't show because $1",
 	
-	nomReasonMulti = "All multiples match $1", --$1=Multiple match ID list
+	nomReasonMulti         = "All multiples match $1", --$1=Multiple match ID list
+	nomReasonMultiInactive = "Aura $1 is not active", --$1=Multiple match Aura Id
+	nomReasonMultiActive   = "Aura $1 is active", --$1=Multiple match Aura Id
 	
 	nomReasonDisabled = "Power Auras Disabled",
 	nomReasonGlobalCooldown = "Ignore Global Cooldown",
