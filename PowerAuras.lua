@@ -17,7 +17,6 @@ PowaMisc =
 		DefaultStacksTexture = "Original",
 		TimerRoundUp = true,
 		AllowInspections = true,
-		AnimationFps = 30,                           -- DEPRECATED: 4.1 seems to be dropping support for FPS in animations.
 		UseGTFO = nil,
 		UserSetMaxTextures = PowaAuras.TextureCount, -- DEPRECATED: No longer needed.
 		OverrideMaxTextures = false,                 -- DEPRECATED: No longer needed.
@@ -54,8 +53,6 @@ end
 for i = 1, 10 do
 	PowaGlobalListe[i] = PowaAuras.Text.ListeGlobal.." "..i;
 end
-
-
 
 -->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -437,7 +434,6 @@ function PowaAuras:CreateTimerFrameIfMissing(auraId)
 	else
 		frame1, frame2 = self.TimerFrame[auraId][1], self.TimerFrame[auraId][2];
 	end
-	self:UpdateOptionsTimer(auraId);
 	return frame1, frame2;
 end
 
@@ -746,8 +742,8 @@ function PowaAuras:OnUpdate(elapsed)
 	for i = 1, #self.AuraSequence do
 		local aura = self.AuraSequence[i];
 		--self:Message("UpdateAura Call id=", aura.id, " ", aura);
-		if (aura:UpdateAura()) then
-			aura:UpdateTimer(timerElapsed, skipTimerUpdate);
+		if (aura:UpdateAura() and not skipTimerUpdate) then
+			aura:UpdateTimer(timerElapsed);
 		end
 	end
 	
@@ -849,8 +845,8 @@ function PowaAuras:TestThisEffect(auraId, giveReason, ignoreCascade)
 	aura.InactiveDueToMulti = nil;
 	local shouldShow, reason = aura:ShouldShow(giveReason or debugEffectTest or true, false, ignoreCascade);
 	--if (ignoreCascade) then
-		self:ShowText(GetTime()," Test Aura ", auraId, " for Hide/Show showing=", aura.Showing);
-		self:ShowText(GetTime()," shouldShow=", shouldShow, " Reason=", reason);
+	--	self:ShowText(GetTime()," Test Aura ", auraId, " for Hide/Show showing=", aura.Showing);
+	--	self:ShowText(GetTime()," shouldShow=", shouldShow, " Reason=", reason);
 	--end
 	
 	if (shouldShow == -1) then
@@ -878,32 +874,7 @@ function PowaAuras:TestThisEffect(auraId, giveReason, ignoreCascade)
 		self:Message("shouldShow=", shouldShow, " because ", reason);
 	end
 	
-	if (shouldShow) then
-		if (not aura.Active) then
-			if (debugEffectTest) then
-				self:Message("ShowAura ", aura.buffname, " (",auraId,") ", reason);
-			end
-			aura.Active = true;			
-			self:ShowText(GetTime()," Aura active ", auraId, " cas=", ignoreCascade);
-			self:DisplayAura(auraId);
-			if (not ignoreCascade) then self:AddChildrenToCascade(aura); end
-		end
-	else
-		if (aura.Showing) then
-			if (debugEffectTest) then
-				self:Message("HideAura ", aura.buffname, " (",auraId,") ", reason);
-			end
-			aura:SetHideRequest("TestThisEffect: false & showing", true);
-		end
-		if (aura.Active) then
-			self:ShowText(GetTime()," Aura set inactive ", auraId, " cas=", ignoreCascade);
-			if (not ignoreCascade) then
-				self:AddChildrenToCascade(aura);
-			end
-			aura.Active = false;	
-			aura.InvertCount = nil;
-		end
-	end
+	aura:CheckActive(shouldShow);
 	
 	return shouldShow, reason;
 end
@@ -929,10 +900,14 @@ function PowaAuras:CheckMultiple(aura, reason, giveReason)
 		local state;
 		if linkedAura then
 			--self:ShowText("Multicheck. Aura ",k);	
-			result, reason = linkedAura:ShouldShow(giveReason, reverse, true);
-			if (result==false or (result==-1 and not linkedAura.Showing and not linkedAura.HideRequest)) then
+			--result, reason = linkedAura:ShouldShow(giveReason, reverse, true);
+			if (not linkedAura.Active and not reverse) or (linkedAura.Active and reverse) then
 				if (not giveReason) then return false; end
-				return result, reason;
+				if (reverse) then
+					return false, self:InsertText(self.Text.nomReasonMultiActive, linkedAura.id);				
+				else
+					return false, self:InsertText(self.Text.nomReasonMultiInactive, linkedAura.id);
+				end
 			end 				
 		else
 			--self:Debug("Multicheck. Non-existant Aura ID specified: "..pword);
@@ -941,7 +916,6 @@ function PowaAuras:CheckMultiple(aura, reason, giveReason)
 	if (not giveReason) then return true; end
 	return true, self:InsertText(self.Text.nomReasonMulti, aura.multiids);	
 end
-
 
 -- Drag and Drop functions
 
@@ -1111,7 +1085,8 @@ function PowaAuras:DisplayAura(auraId)
 			if (aura.Debug) then
 				self:Message("Show Timer");
 			end
-			PowaAuras:CreateTimerFrameIfMissing(aura.id);
+			self:CreateTimerFrameIfMissing(aura.id);
+			self:UpdateOptionsTimer(aura.id);
 		end
 		--if (aura.timerduration) then
 		--	aura.Timer.CustomDuration = aura.timerduration;

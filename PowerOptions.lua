@@ -2976,7 +2976,8 @@ function PowaAuras:ShowTimerChecked(control)
 	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
 	if (control:GetChecked()) then
 		self.Auras[self.CurrentAuraId].Timer.enabled = true;
-		self:CreateTimerFrameIfMissing(self.CurrentAuraId);	
+		self:CreateTimerFrameIfMissing(self.CurrentAuraId);
+		self:UpdateOptionsTimer(self.CurrentAuraId)
 	else
 		self.Auras[self.CurrentAuraId].Timer.enabled = false;
 		self.Auras[self.CurrentAuraId].Timer:Dispose();
@@ -3277,13 +3278,6 @@ end
 local function OptionsOK()
 	--PowaAuras:DisplayText("OptionsOK");
 	PowaMisc.OnUpdateLimit = (100 - PowaOptionsUpdateSlider2:GetValue()) / 200;
-	local newFps = PowaOptionsAnimationsSlider2:GetValue();
-	if (newFps~=PowaMisc.AnimationFps) then
-		PowaMisc.AnimationFps = newFps;
-		for auraId in pairs(PowaAuras.Auras) do
-			PowaAuras:RedisplayAura(auraId, true);
-		end
-	end
 	PowaMisc.AnimationLimit = (100 - PowaOptionsTimerUpdateSlider2:GetValue()) / 1000;
 	PowaMisc.UserSetMaxTextures = PowaOptionsTextureCount:GetValue();
 	if (PowaMisc.OverrideMaxTextures) then
@@ -3501,7 +3495,7 @@ function PowaAuras:ToggleTesting()
 	end
 
 	if (aura.Showing) then 
-		aura:SetHideRequest("ToggleTesting");
+		aura:SetHideRequest("ToggleTesting", true);
 		aura.Active = false;
 	else
 		aura.Active = true;
@@ -3537,7 +3531,7 @@ function PowaAuras:OptionHideAll(now) --- Hide all auras
 			if (aura.Timer) then aura.Timer:Hide(); end 
 			if (aura.Stacks) then aura.Stacks:Hide(); end
 		else
-			aura:SetHideRequest("OptionHideAll");
+			aura:SetHideRequest("OptionHideAll", true);
 			if (aura.Timer)  then aura.Timer.HideRequest  = true; end
 		end
 	end	
