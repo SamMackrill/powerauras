@@ -17,7 +17,6 @@ PowaMisc =
 		DefaultStacksTexture = "Original",
 		TimerRoundUp = true,
 		AllowInspections = true,
-		AnimationFps = 30,                           -- DEPRECATED: 4.1 seems to be dropping support for FPS in animations.
 		UseGTFO = nil,
 		UserSetMaxTextures = PowaAuras.TextureCount, -- DEPRECATED: No longer needed.
 		OverrideMaxTextures = false,                 -- DEPRECATED: No longer needed.
@@ -54,8 +53,6 @@ end
 for i = 1, 10 do
 	PowaGlobalListe[i] = PowaAuras.Text.ListeGlobal.." "..i;
 end
-
-
 
 -->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -437,7 +434,6 @@ function PowaAuras:CreateTimerFrameIfMissing(auraId)
 	else
 		frame1, frame2 = self.TimerFrame[auraId][1], self.TimerFrame[auraId][2];
 	end
-	self:UpdateOptionsTimer(auraId);
 	return frame1, frame2;
 end
 
@@ -904,10 +900,14 @@ function PowaAuras:CheckMultiple(aura, reason, giveReason)
 		local state;
 		if linkedAura then
 			--self:ShowText("Multicheck. Aura ",k);	
-			result, reason = linkedAura:ShouldShow(giveReason, reverse, true);
-			if (result==false or (result==-1 and not linkedAura.Showing and not linkedAura.HideRequest)) then
+			--result, reason = linkedAura:ShouldShow(giveReason, reverse, true);
+			if (not linkedAura.Active and not reverse) or (linkedAura.Active and reverse) then
 				if (not giveReason) then return false; end
-				return result, reason;
+				if (reverse) then
+					return false, self:InsertText(self.Text.nomReasonMultiActive, linkedAura.id);				
+				else
+					return false, self:InsertText(self.Text.nomReasonMultiInactive, linkedAura.id);
+				end
 			end 				
 		else
 			--self:Debug("Multicheck. Non-existant Aura ID specified: "..pword);
@@ -916,7 +916,6 @@ function PowaAuras:CheckMultiple(aura, reason, giveReason)
 	if (not giveReason) then return true; end
 	return true, self:InsertText(self.Text.nomReasonMulti, aura.multiids);	
 end
-
 
 -- Drag and Drop functions
 
@@ -1086,7 +1085,8 @@ function PowaAuras:DisplayAura(auraId)
 			if (aura.Debug) then
 				self:Message("Show Timer");
 			end
-			PowaAuras:CreateTimerFrameIfMissing(aura.id);
+			self:CreateTimerFrameIfMissing(aura.id);
+			self:UpdateOptionsTimer(aura.id);
 		end
 		--if (aura.timerduration) then
 		--	aura.Timer.CustomDuration = aura.timerduration;
