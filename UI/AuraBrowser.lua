@@ -157,6 +157,9 @@ PowaAuras.UI["AuraBrowser"] = {
 
 -- And a definition for the item.
 PowaAuras.UI["AuraButton"] = {
+	Scripts = {
+		"OnClick"
+	},
 	Init = function(self, icon)
 		-- Set things up.
 		self.AuraID = id;
@@ -164,7 +167,6 @@ PowaAuras.UI["AuraButton"] = {
 		-- Register clicks.
 		self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
 		self:RegisterForDrag(true);
-		self:SetScript("OnClick", self.OnClick);
 	end,
 	GetAura = function(self)
 		return PowaAuras.Auras[self.AuraID] or nil;
