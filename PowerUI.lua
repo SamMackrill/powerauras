@@ -20,19 +20,19 @@ PowaAuras.UI = {
 							widget[v] = widget[k];
 						end
 					end
+					-- Copy anything we have over automatically...
+					for k,v in pairs(self) do
+						-- Ignore _ prefixed elements, same with preinit/hooks/scripts. Normal init is fine.
+						if(strsub(k, 1, 1) ~= "_" and key ~= "PreInit" and key ~= "Hooks" and key ~= "Scripts") then
+							widget[k] = v;
+						end
+					end
 					-- Easyscript™!
 					-- Automatically registers scripts, requires you to supply a function in the widget definition
 					-- which matches the script name (eg. OnEnter).
 					if(self.Scripts and widget.SetScript) then
 						for _,v in ipairs(self.Scripts) do
 							widget:SetScript(v, widget[v]);
-						end
-					end
-					-- Copy anything we have over automatically...
-					for k,v in pairs(self) do
-						-- Ignore _ prefixed elements, same with preinit/hooks/scripts. Normal init is fine.
-						if(strsub(k, 1, 1) ~= "_" and key ~= "PreInit" and key ~= "Hooks" and key ~= "Scripts") then
-							widget[k] = v;
 						end
 					end
 					-- Run widget ctor.
