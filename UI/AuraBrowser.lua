@@ -28,8 +28,16 @@ PowaAuras.UI["AuraBrowser"] = {
 	GetSelectedAuras = function(self)
 		return self.SelectedAuras;
 	end,
+	IsAuraSelected = function(self, id)
+		return tContains(self.SelectedAuras, id);
+	end,
 	OnAuraDragged = function(self)
-		print("Recieved: " .. self.Key);
+		local browser, str = PowaBrowser, "";
+		print("|cFF527FCCDEBUG (AuraBrowser): |rRecieved aura drag onto page: " .. self.Key .. " (Ctrl: " .. (IsControlKeyDown() and "true" or "false") .. ")");
+		for _,v in ipairs(browser.SelectedAuras) do
+			str = str .. " " .. v;
+		end
+		print("|cFF527FCCDEBUG (AuraBrowser): |rAuras" .. str .. " should be " .. (IsControlKeyDown() and "copied" or "moved") .. " to page " .. self.Key .. ".");		
 	end,
 	OnSelectionChanged = function(self, key)
 		-- Save page.
@@ -185,26 +193,39 @@ PowaAuras.UI["AuraBrowser"] = {
 				else
 					button:SetSelected(true);
 				end
+				-- Don't make it create an aura, please!!
+				button:SetCreateAura(false);
 				-- Icons.
-				if(not buttonAura or not buttonAura.icon) then
-					button.Icon:SetTexture("");
+				if(not buttonAura.icon or buttonAura.icon == "") then
+					button.Icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");
 				else
 					button.Icon:SetTexture(buttonAura.icon);
 				end
+				-- Restore texcoords.
+				button.Icon:SetTexCoord(0.07, 0.93, 0.07, 0.93);
 				-- Show button.
 				button:Show();
 			else
-				-- Deselect...
-				button:SetSelected(false);
 				-- Hide?
 				if(hasDisplayedEmpty) then
+					button.Icon:SetTexture("");
+					button:SetSelected(false);
+					button:SetCreateAura(false);
 					button:Hide();
 				else
-					button:Show();
+					-- Prevent further buttons being displayed.
 					hasDisplayedEmpty = true;
+					-- Flag this one as an aura creator.
+					button:SetCreateAura(true);
+					-- Icon fixes (use different texcoords as it slips to the right a bit here).
+					button.Icon:SetTexture("Interface\\GuildBankFrame\\UI-GuildBankFrame-NewTab");
+					button.Icon:SetTexCoord(0.11, 0.93, 0.07, 0.93);
+					button:Show();
 				end
 			end
 		end
+		-- Bugfix for buttons vanishing.
+		PowaBrowser.Tabs.Auras.Page:UpdateLayout();
 		-- No longer need you, mister linkedAuras.
 		if(linkedAuras) then wipe(linkedAuras); end
 	end
@@ -216,7 +237,6 @@ PowaAuras.UI["AuraButton"] = {
 		"OnClick",
 		"OnDragStart",
 		"OnDragStop",
-		"OnReceiveDrag",
 	},
 	Init = function(self, icon)
 		-- Set things up.
@@ -232,6 +252,9 @@ PowaAuras.UI["AuraButton"] = {
 	GetAuraID = function(self)
 		return self.AuraID;
 	end,
+	GetCreateAura = function(self)
+		return self.CreateAura;
+	end,
 	SetAuraID = function(self, id)
 		-- Don't allow dragging of non-existant things :)
 		if(not PowaAuras.Auras[id]) then
@@ -239,7 +262,7 @@ PowaAuras.UI["AuraButton"] = {
 		else
 			self:RegisterForDrag("LeftButton");
 		end
-		-- You have been invited to join <World of War> for the 19th time. Would you like to virtually punch one of the guild members in the face?
+		-- You have been invited to join <World of War> for the 19th time. Would you like to e-punch one of the guild members in the face? [Y/N]
 		self.AuraID = id;
 	end,
 	SetIcon = function(self, icon)
@@ -248,23 +271,32 @@ PowaAuras.UI["AuraButton"] = {
 	OnClick = function(self, button)
 		-- Left or right?
 		if(button == "LeftButton") then
-			-- Select aura.
-			PowaBrowser:SetSelectedAura(self.AuraID, (IsControlKeyDown() and 0x2 or IsShiftKeyDown() and 0x4 or 0x1));
-		elseif(button == "RightButton") then
+			-- Select aura, or create.
+			if(self.CreateAura) then
+				-- Todo: Make clicking this add a new aura.
+				print("|cFF527FCCDEBUG (AuraBrowser): |rCreate aura: " .. self.AuraID);
+			else
+				PowaBrowser:SetSelectedAura(self.AuraID, (IsControlKeyDown() and 0x2 or IsShiftKeyDown() and 0x4 or 0x1));			
+			end
+		elseif(button == "RightButton" and not self.CreateAura) then
 			-- Shortcut for edit.
-			
+			print("|cFF527FCCDEBUG (AuraBrowser): |rOpen aura editor: " .. self.AuraID);			
 		end
 	end,
 	OnDragStart = function(self, button)
-		print("OnDragStart: " .. self.AuraID);
+		-- Set cursor up.
 		SetCursor(self.Icon:GetTexture());
+		-- Select aura if needed.
+		if(not PowaBrowser:IsAuraSelected(self.AuraID)) then
+			PowaBrowser:SetSelectedAura(self.AuraID, 0x1); -- Single selection forced if moving/copying unselected aura.
+		end
 	end,
 	OnDragStop = function(self)
-		print("OnDragStop: " .. self.AuraID);
+		-- Reset cursor.
 		SetCursor(nil);
 	end,
-	OnReceiveDrag = function(self)
-		print("OnReceiveDrag: " .. self.AuraID);		
+	SetCreateAura = function(self, create)
+		self.CreateAura = create;
 	end,
 	SetSelected = function(self, selected)
 		self.Selected = selected;
