@@ -4,12 +4,15 @@
 PowaAuras.UI["AuraBrowser"] = {
 	Init = function(self)
 		-- Variables.
-		self.SelectedAura = nil;
-		self.SelectedAuraPage = 1;
+		self.SelectedAuras = {};
+		self.SelectedPage = 1;
 		-- Add OnSelectionChanged function to tree views.
 		self.Tabs.Auras.Tree.OnSelectionChanged = self.OnSelectionChanged;
 		-- Check...
 		if(PowaAuras.VariablesLoaded) then self:OnVariablesLoaded(); end
+	end,
+	CountSelectedAuras = function(self)
+		return #(self.SelectedAuras);
 	end,
 	GetPageName = function(self)
 		local page = self.Tabs.Auras.Tree:GetSelectedKey();
@@ -22,14 +25,14 @@ PowaAuras.UI["AuraBrowser"] = {
 			return PowaClassListe[UnitClass("player")][page-15];
 		end
 	end,
-	GetSelectedAura = function(self)
-		return self.SelectedAura;
+	GetSelectedAuras = function(self)
+		return self.SelectedAuras;
 	end,
 	OnSelectionChanged = function(self, key)
 		-- Save page.
-		PowaBrowser.SelectedAuraPage = key;
+		PowaBrowser.SelectedPage = key;
 		-- Deselect any and all auras. This will trigger a button update.
-		PowaBrowser:SetSelectedAura(nil);
+		PowaBrowser:SetSelectedAura(nil, 0x1);
 	end,
 	OnVariablesLoaded = function()
 		-- Easymode.
@@ -100,25 +103,60 @@ PowaAuras.UI["AuraBrowser"] = {
 		-- Update listview.
 		self.Tabs.Auras.Tree:GetItem(page):SetText(name);
 	end,
-	SetSelectedAura = function(self, id)
-		-- Select eet!
-		if(id and self.SelectedAura == id) then return; end
-		self.SelectedAura = id;
+	SetSelectedAura = function(self, id, multiSelectMode)
+		-- Deselect if already selected.
+		if(id and tContains(self.SelectedAuras, id)) then
+			-- If ctrl is down, just deselect this one.
+			if(id and multiSelectMode == 0x2) then
+				for k,v in pairs(self.SelectedAuras) do
+					if(v == id) then
+						table.remove(self.SelectedAuras, k);
+						self:UpdateAuraButtons();
+						return;
+					end
+				end
+			elseif(id and multiSelectMode == 0x1 and #(self.SelectedAuras) > 1) then
+				-- You clicked one which was selected but didn't use a modifier key, so deselect all but this one.
+				wipe(self.SelectedAuras)
+				tinsert(self.SelectedAuras, id);
+				self:UpdateAuraButtons();
+			elseif(id and multiSelectMode == 0x1 and #(self.SelectedAuras) == 1) then
+				-- Deselect all.
+				wipe(self.SelectedAuras)
+				self:UpdateAuraButtons();
+			end
+			-- Done, either way...
+			return;
+		end
+		-- Wipe the auras table if no ID has been given, or if multiple selection is off.
+		if(not id or multiSelectMode == 0x1) then
+			wipe(self.SelectedAuras);
+			if(not id) then
+				self:UpdateAuraButtons();
+				return;
+			end
+		end
+		-- If we got this far we probably should just add the aura...
+		if(multiSelectMode ~= 0x4) then
+			tinsert(self.SelectedAuras, id);
+		else
+			-- Select all between the last selected aura and this one.
+			local lastID;
+			for _,v in pairs(self.SelectedAuras) do
+				lastID = v;
+			end
+			wipe(self.SelectedAuras);
+			if(not lastID) then lastID = ((self.SelectedPage-1)*24)+1; end
+			-- Onwards!
+			for i=lastID, id, (lastID < id and 1 or -1) do
+				tinsert(self.SelectedAuras, i);
+			end
+		end		
 		-- Update buttons.
 		self:UpdateAuraButtons();
 	end,
 	UpdateAuraButtons = function(self)
 		print("|cFF527FCCDEBUG (AuraBrowser): |rUpdating aura buttons!");
-		-- Selected Aura local.
-		local selectedAura, linkedAuras = (self.SelectedAura and PowaAuras.Auras[self.SelectedAura] or nil), nil;
-		-- Find out the ID's of linked auras to the selected one.
-		if(selectedAura) then
-			-- Tablemode = easymode, yes?
-			linkedAuras = {};
-			for multiId in string.gmatch(selectedAura.multiids, "[^/]+") do
-				tinsert(linkedAuras, tonumber(multiId), true);
-			end
-		end
 		-- Not strictly button related, but it prevents two function calls.
 		PowaBrowser.Tabs.Auras.Page.Title:SetText(self:GetPageName());
 		PowaBrowser.Tabs.Auras.Page.Title:ClearFocus();
@@ -126,22 +164,14 @@ PowaAuras.UI["AuraBrowser"] = {
 		for i=1,24 do
 			local button, buttonAura = self.Tabs.Auras.Page["Aura" .. i], nil;
 			-- Fix button and aura.
-			button:SetAuraID(((self.SelectedAuraPage-1)*24)+i);
+			button:SetAuraID(((self.SelectedPage-1)*24)+i);
 			buttonAura = button:GetAura();
 			-- Select/deselect.
-			if(not self.SelectedAura or button:GetAuraID() ~= self.SelectedAura) then
+			if(not tContains(self.SelectedAuras, button:GetAuraID())) then
 				button:SetSelected(false);
-				-- Linked?
-				if(linkedAuras and linkedAuras[button:GetAuraID()]) then
-					-- WOW!
-					button:SetLinked(true);
-					print("|cFF527FCCDEBUG (AuraBrowser): |rAura " .. button:GetAuraID() .. " is linked to aura " .. self.SelectedAura .. ".");
-				else
-					button:SetLinked(false);
-				end
 			else
 				button:SetSelected(true);
-				button:SetLinked(false);
+				-- button:SetLinked(false);
 			end
 			-- Icons.
 			if(not buttonAura or not buttonAura.icon) then
@@ -180,15 +210,18 @@ PowaAuras.UI["AuraButton"] = {
 	SetIcon = function(self, icon)
 		self.Icon:SetTexture(icon);
 	end,
-	SetLinked = function(self, linked)
-		self.Linked = linked;
-		self:Update();
-	end,
+	-- SetLinked = function(self, linked)
+		-- self.Linked = linked;
+		-- self:Update();
+	-- end,
 	OnClick = function(self, button)
 		-- Left or right?
 		if(button == "LeftButton") then
-			-- Attempt to select this aura.
-			PowaBrowser:SetSelectedAura(self.AuraID);
+			-- Select aura.
+			PowaBrowser:SetSelectedAura(self.AuraID, (IsControlKeyDown() and 0x2 or IsShiftKeyDown() and 0x4 or 0x1));
+		elseif(button == "RightButton") then
+			-- Shortcut for edit.
+			
 		end
 	end,
 	SetSelected = function(self, selected)
@@ -201,9 +234,9 @@ PowaAuras.UI["AuraButton"] = {
 		if(self.Selected) then
 			texture:SetTexCoord(0.0078125, 0.2734375, 0.80859375, 0.94140625);
 			texture:SetVertexColor(1, 1, 1);
-		elseif(self.Linked) then
-			texture:SetTexCoord(0.0078125, 0.2734375, 0.671875, 0.8046875);
-			texture:SetVertexColor(1, 1, 1);
+		-- elseif(self.Linked) then
+			-- texture:SetTexCoord(0.0078125, 0.2734375, 0.671875, 0.8046875);
+			-- texture:SetVertexColor(1, 1, 1);
 		else
 			texture:SetTexCoord(0.0078125, 0.2734375, 0.80859375, 0.94140625);
 			texture:SetVertexColor(0.75, 0.325, 0.325);

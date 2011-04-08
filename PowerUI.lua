@@ -20,6 +20,25 @@ PowaAuras.UI = {
 							widget[v] = widget[k];
 						end
 					end
+					--[[
+						Ignore this bit. I was seeing what used less memory, making the frame a metatable or just copying keys and referencing
+						functions. It's the latter by about ~20kb.
+					--]]
+					-- -- -- Blizzard's frames have a metatable already defined.
+					-- -- local meta = getmetatable(widget);
+					-- -- setmetatable(widget, {
+						-- -- __index = function(t,k)
+							-- -- if(self[k]) then
+								-- -- return self[k];
+							-- -- elseif(meta["__index"]) then
+								-- -- if(type(meta["__index"]) == "function") then
+									-- -- return meta["__index"](t, k);
+								-- -- else
+									-- -- return meta["__index"][k];
+								-- -- end
+							-- -- end
+						-- -- end
+					-- -- });
 					-- Copy anything we have over automatically...
 					for k,v in pairs(self) do
 						-- Ignore _ prefixed elements, same with preinit/hooks/scripts. Normal init is fine.
