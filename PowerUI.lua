@@ -23,8 +23,8 @@ PowaAuras.UI = {
 					-- Easyscript™!
 					-- Automatically registers scripts, requires you to supply a function in the widget definition
 					-- which matches the script name (eg. OnEnter).
-					if(self.Scripts) then
-						for v in self.Scripts do
+					if(self.Scripts and widget.SetScript) then
+						for _,v in ipairs(self.Scripts) do
 							widget:SetScript(v, widget[v]);
 						end
 					end
