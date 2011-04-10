@@ -419,52 +419,6 @@ function PowaAuras:CreateTimerFrame(auraId, index)
 	return frame, texture;
 end
 
-function PowaAuras:CreateTimerFrameIfMissing(auraId)
-	local aura = self.Auras[auraId];
-	if (not self.Frames[auraId] and aura.Timer:IsRelative()) then
-		aura.Timer.Showing = false;
-		return;
-	end
-	local frame1, frame2;
-	if (not self.TimerFrame[auraId]) then
-		--self:Message("Creating missing TimerFrames for aura "..tostring(auraId));		
-		self.TimerFrame[auraId] = {};
-		frame1 = self:CreateTimerFrame(auraId, 1);
-		frame2 = self:CreateTimerFrame(auraId, 2);
-	else
-		frame1, frame2 = self.TimerFrame[auraId][1], self.TimerFrame[auraId][2];
-	end
-	return frame1, frame2;
-end
-
-function PowaAuras:CreateStacksFrameIfMissing(auraId)
-	local aura = self.Auras[auraId];
-	if (not self.Frames[auraId] and aura.Stacks:IsRelative()) then
-		aura.Stacks.Showing = false;
-		return;
-	end
-	if (not self.StacksFrames[auraId]) then
-		--self:Message("Creating missing StacksFrame for aura "..tostring(auraId));		
-		local frame = CreateFrame("Frame", nil, UIParent);
-		self.StacksFrames[auraId] = frame;
-		
-		frame:SetFrameStrata(aura.strata);
-		frame:Hide(); 
-		
-		frame.texture = frame:CreateTexture(nil, "BACKGROUND");
-		frame.texture:SetBlendMode("ADD");
-		frame.texture:SetAllPoints(frame);
-		frame.texture:SetTexture(aura.Stacks:GetTexture());
-		
-		frame.textures = {
-			[1] = frame.texture
-		};
-		
-	end
-	self:UpdateOptionsStacks(auraId);
-	return self.StacksFrames[auraId];
-end
-
 function PowaAuras:CreateEffectLists()
 	
 	for k in pairs(self.AurasByType) do
@@ -657,13 +611,13 @@ function PowaAuras:OnUpdate(elapsed)
 			local isMountedNow = (IsMounted() == 1 and true or self:IsDruidTravelForm());
 			if (isMountedNow ~= self.WeAreMounted) then
 				self.DoCheck.All = true;
-				self:Message("DoCheck.All: Mounted");
+				--self:ShowText("DoCheck.All: Mounted");
 				self.WeAreMounted = isMountedNow;
 			end	
 			local isInVehicledNow = (UnitInVehicle("player")~=nil);
 			if (isInVehicledNow ~= self.WeAreInVehicle) then
 				self.DoCheck.All = true;
-				self:Message("DoCheck.All: in Vehicle");
+				--self:ShowText("DoCheck.All: in Vehicle");
 				self.WeAreInVehicle = isInVehicledNow;
 			end	
 		end
@@ -672,7 +626,7 @@ function PowaAuras:OnUpdate(elapsed)
 			self:InitialiseAllAuras();
 			self:MemorizeActions();
 			self.DoCheck.All = true;
-			self:Message("DoCheck.All: PendingRescan");
+			--self:ShowText("DoCheck.All: PendingRescan");
 			self.PendingRescan = nil;
 		end
 		
@@ -742,8 +696,8 @@ function PowaAuras:OnUpdate(elapsed)
 	for i = 1, #self.AuraSequence do
 		local aura = self.AuraSequence[i];
 		--self:Message("UpdateAura Call id=", aura.id, " ", aura);
-		if (aura:UpdateAura() and not skipTimerUpdate) then
-			aura:UpdateTimer(timerElapsed);
+		if (aura:UpdateAura() and not skipTimerUpdate and aura.Timer) then
+			aura.Timer:Update(timerElapsed);
 		end
 	end
 	
@@ -765,9 +719,9 @@ end
 function PowaAuras:CheckAllMarkedAuras()
    	--self:UnitTestInfo("CheckAllMarkedAuras");
 
-	if (self.DoCheck.All) then
-		self:ShowText("self.DoCheck.All");
-	end
+	--if (self.DoCheck.All) then
+	--	self:ShowText("self.DoCheck.All");
+	--end
 	for i = 1, #self.AurasByTypeList do
 		local auraType = self.AurasByTypeList[i];
 		--self:ShowText("Check auraType ",auraType);
@@ -1012,7 +966,7 @@ end
 
 function PowaAuras:SetForDragging(aura, frame)
 	if (frame==nil or aura==nil or frame.SetForDragging) then return; end
-	self:ShowText("Set Dragging ", aura.id, " frame=", frame);
+	--self:ShowText("Set Dragging ", aura.id, " frame=", frame);
 	frame:SetMovable(true);
 	frame:EnableMouse(true);
 	frame:SetClampedToScreen(false);
@@ -1027,7 +981,7 @@ end
 
 function PowaAuras:ResetDragging(aura, frame)
 	if (frame==nil or aura==nil or not frame.SetForDragging) then return; end
-	self:ShowText("Reset Dragging ", aura.id);
+	--self:ShowText("Reset Dragging ", aura.id);
 	frame:SetMovable(false);
 	frame:EnableMouse(false);
 	frame:EnableKeyboard(false);
@@ -1048,7 +1002,7 @@ end
 
 function PowaAuras:DisplayAura(auraId)
 	--self:UnitTestInfo("DisplayAura", auraId);
-	self:ShowText("DisplayAura aura ", auraId);
+	--self:ShowText("DisplayAura aura ", auraId);
 	if (not (self.VariablesLoaded and self.SetupDone)) then return; end   --- de-actived
 
 	local aura = self.Auras[auraId];
@@ -1060,7 +1014,7 @@ function PowaAuras:DisplayAura(auraId)
 
 	local frame, texture, frame2, texture2 = aura:CreateFrames();	
 
-	self:ShowText("ShowAuraForFirstTime ", aura.id, " frame=", frame);
+	--self:ShowText("ShowAuraForFirstTime ", aura.id, " frame=", frame);
 
 	self:InitialiseAuraFrame(aura, frame, texture, aura.alpha);
 	
@@ -1081,22 +1035,7 @@ function PowaAuras:DisplayAura(auraId)
 	end	
 	
 	if (aura.Timer) then
-		if (aura.Timer.enabled) then
-			if (aura.Debug) then
-				self:Message("Show Timer");
-			end
-			self:CreateTimerFrameIfMissing(aura.id);
-			self:UpdateOptionsTimer(aura.id);
-		end
-		--if (aura.timerduration) then
-		--	aura.Timer.CustomDuration = aura.timerduration;
-		--end
 		aura.Timer.Start = GetTime();
-	end
-	
-	if (aura.Stacks and aura.Stacks.enabled) then
-		PowaAuras:CreateStacksFrameIfMissing(aura.id);
-		aura.Stacks:ShowValue(aura, aura.Stacks.LastShownValue);
 	end
 	
 	aura:Show();
