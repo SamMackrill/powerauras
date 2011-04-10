@@ -514,11 +514,12 @@ function PowaAuras:UNIT_TARGET(...)
 			end
 		end
 		self.ChangedUnits.Targets[target] = unit;
+		self.DoCheck.UnitTarget = true;
 		if (UnitCanAttack(target, "player")) then
 			self.DoCheck.StealableSpells = true;
 			self.DoCheck.PurgeableSpells = true;
-			self.DoCheck.CheckIt = true;
 		end
+		self.DoCheck.CheckIt = true;
 	end
 end
 	 
