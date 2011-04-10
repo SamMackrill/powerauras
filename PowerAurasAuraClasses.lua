@@ -3942,6 +3942,70 @@ function cPowaStatic:SetFixedIcon()
 	self:SetIcon("Interface\\icons\\Spell_frost_frozencore");
 end
 
+-- Unit Target Aura--
+cPowaUnitTarget= PowaClass(cPowaAura, { AuraType = "UnitTarget", ValueName = "Unit Target" });
+cPowaUnitTarget.OptionText = {
+	typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.UnitTarget],
+	buffNameTooltip=PowaAuras.Text.aideUnitTarget,
+	targetFriendText=PowaAuras.Text.nomCheckFriend, targetFriendTooltip=PowaAuras.Text.aideTargetFriend,
+}
+
+cPowaUnitTarget.CheckBoxes={
+	["PowaInverseButton"]=1,
+	["PowaTargetButton"]=1,
+	["PowaTargetButton"]=1,
+	["PowaFocusButton"]=1,
+	["PowaOptunitnButton"]=1,
+	["PowaIngoreCaseButton"]=1,
+	["PowaOwntexButton"]=1,
+	["PowaRoleTankButton"]=1,
+	["PowaRoleHealerButton"]=1,
+	["PowaRoleMeleDpsButton"]=1,
+	["PowaRoleRangeDpsButton"]=1,
+}
+
+function cPowaUnitTarget:AddEffectAndEvents()
+	table.insert(PowaAuras.AurasByType[self.AuraType], self.id);
+	PowaAuras.Events.UNIT_TARGET = true;
+end
+
+function cPowaUnitTarget:CheckIfShouldShow(giveReason)
+	-- Figure out what unit target to test.
+	local unit = "none";
+	if(self.target or self.targetfriend) then	
+		-- Target's target.
+		unit = "targettarget";
+	elseif(self.focus) then
+		-- Focus target.
+		unit = "focustarget";
+	elseif(self.unitn and self.unitn ~= "") then
+		-- Custom unit target.
+		unit = self.unitn .. "target";
+	else
+		-- Player target.
+		unit = "target";
+	end
+	-- If we're checking for *, then pass so long as the unit in question exists.
+	local result, reason = false;
+	if(self.buffname == "*") then
+		result = UnitExists(unit);
+	else
+		-- Check exact.
+		result = UnitIsUnit(unit, (self.buffname ~= "" and self.buffname or "none"));
+		-- Still failed? Do a unit name comparison.
+		if(not result) then
+			result = ((UnitName(unit) or "") == self.buffname);
+		end
+	end
+	-- Return!
+	return result, (giveReason and PowaAuras:InsertText((result and PowaAuras.Text.nomReasonUnitTarget or PowaAuras.Text.nomReasonNoUnitTarget), unit, self.buffname));
+end
+
+function cPowaUnitTarget:SetFixedIcon()
+	self.icon = nil;
+	self:SetIcon("Interface\\Icons\\Spell_Misc_EmotionAngry");
+end
+
 -- Concrete Classes
 PowaAuras.AuraClasses = {
 	[PowaAuras.BuffTypes.Buff]=cPowaBuff,
@@ -3970,6 +4034,7 @@ PowaAuras.AuraClasses = {
 	[PowaAuras.BuffTypes.Tracking]=cPowaTracking,
 	[PowaAuras.BuffTypes.TypeBuff]=cPowaTypeBuff,
 	[PowaAuras.BuffTypes.Static]=cPowaStatic,
+	[PowaAuras.BuffTypes.UnitTarget]=cPowaUnitTarget,
 }
 
 -- Instance concrete class based on type
