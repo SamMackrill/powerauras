@@ -3980,7 +3980,7 @@ function cPowaUnitTarget:CheckIfShouldShow(giveReason)
 		unit = "focustarget";
 	elseif(self.unitn and self.unitn ~= "") then
 		-- Custom unit target.
-		unit = self.unitn;
+		unit = self.unitn .. "target";
 	else
 		-- Player target.
 		unit = "target";
@@ -3988,13 +3988,13 @@ function cPowaUnitTarget:CheckIfShouldShow(giveReason)
 	-- If we're checking for *, then pass so long as the unit in question exists.
 	local result, reason = false;
 	if(self.buffname == "*") then
-		result = UnitExists(unit);
+		result = (UnitExists(unit) and true or false);
 	else
 		-- Check exact.
-		result = UnitIsUnit(unit, (self.buffname ~= "" and self.buffname or "none"));
+		result = (UnitIsUnit(unit, (self.buffname ~= "" and self.buffname or "none")) and true or false);
 		-- Still failed? Do a unit name comparison.
 		if(not result) then
-			result = ((UnitName(unit) or "") == self.buffname);
+			result = (((UnitName(unit) or "") == self.buffname) and true or false);
 		end
 	end
 	-- Return!
