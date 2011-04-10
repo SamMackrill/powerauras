@@ -3980,7 +3980,7 @@ function cPowaUnitTarget:CheckIfShouldShow(giveReason)
 		unit = "focustarget";
 	elseif(self.unitn and self.unitn ~= "") then
 		-- Custom unit target.
-		unit = self.unitn .. "target";
+		unit = self.unitn;
 	else
 		-- Player target.
 		unit = "target";
@@ -3996,10 +3996,6 @@ function cPowaUnitTarget:CheckIfShouldShow(giveReason)
 		if(not result) then
 			result = ((UnitName(unit) or "") == self.buffname);
 		end
-	end
-	-- Invert (we need to do this manually?)
-	if(self.inverse) then
-		result = false;
 	end
 	-- Return!
 	return result, (giveReason and PowaAuras:InsertText((result and PowaAuras.Text.nomReasonUnitTarget or PowaAuras.Text.nomReasonNoUnitTarget), unit, self.buffname));
