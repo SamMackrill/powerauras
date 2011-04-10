@@ -3997,6 +3997,10 @@ function cPowaUnitTarget:CheckIfShouldShow(giveReason)
 			result = ((UnitName(unit) or "") == self.buffname);
 		end
 	end
+	-- Invert (we need to do this manually?)
+	if(self.inverse) then
+		result = false;
+	end
 	-- Return!
 	return result, (giveReason and PowaAuras:InsertText((result and PowaAuras.Text.nomReasonUnitTarget or PowaAuras.Text.nomReasonNoUnitTarget), unit, self.buffname));
 end
