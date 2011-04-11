@@ -595,7 +595,11 @@ function PowaAuras:OnUpdate(elapsed)
 	end
 	
 	local checkAura = false;
-	if (PowaMisc.OnUpdateLimit == 0 or self.ThrottleTimer >= PowaMisc.OnUpdateLimit) then
+	local onUpdateLimit = PowaMisc.OnUpdateLimit;
+	if (self.ModTest) then
+		onUpdateLimit = 1; -- Limit testing updates to 1 per second
+	end
+	if (onUpdateLimit == 0 or self.ThrottleTimer >= onUpdateLimit) then
 		checkAura = true;
 		self.ThrottleTimer = 0;
 	end
