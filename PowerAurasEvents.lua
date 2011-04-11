@@ -116,7 +116,7 @@ function PowaAuras:Setup()
 	self:MemorizeActions();
 	
 	self.DoCheck.All = true;
-	self:Message("DoCheck.All: Setup");
+	--self:ShowText("DoCheck.All: Setup");
 
 		
 	self.SetupDone = true;
@@ -175,7 +175,7 @@ end
 function PowaAuras:PLAYER_UPDATE_RESTING(...)
 	if (self.ModTest == false) then
 		self.DoCheck.All = true;
-		self:Message("DoCheck.All: PLAYER_UPDATE_RESTING");
+		--self:ShowText("DoCheck.All: PLAYER_UPDATE_RESTING");
 	end
 end
 
@@ -319,7 +319,7 @@ function PowaAuras:UNIT_SPELLCAST_SUCCEEDED(...)
 		if (self.TalentChangeSpells[spell]) then
 			self:ResetTalentScan(unit);
 			self.DoCheck.All = true;
-			self:Message("DoCheck.All: Talents changed");
+			--self:ShowText("DoCheck.All: Talents changed");
 		end
 		if (self.DebugEvents) then
 			self:DisplayText("UNIT_SPELLCAST_SUCCEEDED ",unit, " ", spell);
@@ -470,7 +470,7 @@ end
 function PowaAuras:PLAYER_DEAD(...)
 	if (self.ModTest == false) then
 		self.DoCheck.All = true;
-		self:Message("DoCheck.All: PLAYER_DEAD");
+		--self:ShowText("DoCheck.All: PLAYER_DEAD");
 	end
 	self.WeAreMounted = false;
 	self.WeAreInVehicle = false;
@@ -482,7 +482,7 @@ function PowaAuras:PLAYER_ALIVE(...)
 		self.WeAreAlive = true;
 		if (self.ModTest == false) then
 			self.DoCheck.All = true;
-			self:Message("DoCheck.All: PLAYER_ALIVE");
+			--self:ShowText("DoCheck.All: PLAYER_ALIVE");
 		end
 	end
 end
@@ -492,7 +492,7 @@ function PowaAuras:PLAYER_UNGHOST(...)
 		self.WeAreAlive = true;
 		if (self.ModTest == false) then
 			self.DoCheck.All = true;
-			self:Message("DoCheck.All: PLAYER_UNGHOST");
+			--self:ShowText("DoCheck.All: PLAYER_UNGHOST");
 		end
 	end
 end
@@ -538,7 +538,7 @@ function PowaAuras:PLAYER_REGEN_DISABLED(...)
 	self.WeAreInCombat = true;
 	if (self.ModTest == false) then
 		self.DoCheck.All = true;
-		self:Message("DoCheck.All: PLAYER_REGEN_DISABLED");
+		--self:ShowText("DoCheck.All: PLAYER_REGEN_DISABLED");
 	end	   
 end
 	   
@@ -546,7 +546,7 @@ function PowaAuras:PLAYER_REGEN_ENABLED(...)
 	self.WeAreInCombat = false;
 	if (self.ModTest == false) then
 		self.DoCheck.All = true;
-		self:Message("DoCheck.All: PLAYER_REGEN_ENABLED");
+		--self:ShowText("DoCheck.All: PLAYER_REGEN_ENABLED");
 	end
 end   
 
@@ -560,7 +560,7 @@ function PowaAuras:ZONE_CHANGED_NEW_AREA()
 			self:DisplayText("ZONE_CHANGED_NEW_AREA ", self.InInstance, " - ", self.InstanceType);
 		end
 		self.DoCheck.All = true;
-		self:Message("DoCheck.All: ZONE_CHANGED_NEW_AREA");
+		--self:ShowText("DoCheck.All: ZONE_CHANGED_NEW_AREA");
 	end
 end
 
@@ -603,7 +603,7 @@ function PowaAuras:VehicleCheck(unit, entered)
 	if unit ~= "player" then return; end
 	if (self.ModTest == false) then
 		self.DoCheck.All = true;
-		self:Message("DoCheck.All: VehicleCheck");
+		--self:ShowText("DoCheck.All: VehicleCheck");
 	end	
 	self.WeAreInVehicle = entered;
 end
@@ -642,7 +642,7 @@ function PowaAuras:FlagsChanged(unit)
 			--self:ShowText("UNIT_FACTION Player PvP = ",flag);
 			if (self.ModTest == false) then
 				self.DoCheck.All = true;
-				self:Message("DoCheck.All: FlagsChanged");
+				--self:ShowText("DoCheck.All: FlagsChanged");
 			end
 		end
 		return;

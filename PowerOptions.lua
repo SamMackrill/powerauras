@@ -428,7 +428,7 @@ function PowaAuras:OptionNewEffect()
 	self:CalculateAuraSequence();
 
 	aura.Active = true;
-	self:ShowText("OptionNewEffect RecreateFrames");
+	--self:ShowText("OptionNewEffect RecreateFrames");
 	aura:RecreateFrames();
 	
 	self:DisplayAura(i);
@@ -1291,7 +1291,7 @@ function PowaAuras:MainOptionShow()
 end
 
 function PowaAuras:MainOptionClose()
-	self:ShowText("MainOptionClose");
+	--self:ShowText("MainOptionClose");
 	self:DisableMoveMode();
 	self.ModTest = false;
 	if ColorPickerFrame:IsVisible() then
@@ -2902,7 +2902,7 @@ function PowaAuras:EditorShow()
 	if (aura) then
 		if (not aura.Showing) then 
 			aura.Active = true;
-			self:ShowText("EditorShow RecreateFrames");
+			--self:ShowText("EditorShow RecreateFrames");
 			aura:RecreateFrames();
 			self:DisplayAura(aura.id);
 		end
@@ -2974,13 +2974,14 @@ end
 
 function PowaAuras:ShowTimerChecked(control)
 	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
+	local timer = self.Auras[self.CurrentAuraId].Timer;
 	if (control:GetChecked()) then
-		self.Auras[self.CurrentAuraId].Timer.enabled = true;
-		self:CreateTimerFrameIfMissing(self.CurrentAuraId);
+		timer.enabled = true;
+		timer:CreateFrameIfMissing(self.CurrentAuraId);
 		self:UpdateOptionsTimer(self.CurrentAuraId)
 	else
-		self.Auras[self.CurrentAuraId].Timer.enabled = false;
-		self.Auras[self.CurrentAuraId].Timer:Dispose();
+		timer.enabled = false;
+		timer:Dispose();
 	end
 end
 
@@ -3499,7 +3500,7 @@ function PowaAuras:ToggleTesting()
 		aura.Active = false;
 	else
 		aura.Active = true;
-		self:ShowText("ToggleTesting RecreateFrames");
+		--self:ShowText("ToggleTesting RecreateFrames");
 		aura:RecreateFrames();
 		self:DisplayAura(aura.id);
 	end
@@ -3512,7 +3513,7 @@ function PowaAuras:TestAllAuras()
 	for id, aura in pairs(self.Auras) do
 		if (not aura.off) then 
 			aura.Active = true;
-			self:ShowText("TestAllAuras RecreateFrames");
+			--self:ShowText("TestAllAuras RecreateFrames");
 			aura:RecreateFrames();
 			self:DisplayAura(aura.id);
 		end
@@ -3546,7 +3547,7 @@ function PowaAuras:RedisplayAuras()
 			if (aura.Timer) then aura.Timer:Hide(); end
 			if (aura.Stacks) then aura.Stacks:Hide(); end
 			aura.Active = true;
-			self:ShowText("RedisplayAuras RecreateFrames");
+			--self:ShowText("RedisplayAuras RecreateFrames");
 			aura:RecreateFrames();
 			self:DisplayAura(aura.id);
 		end
@@ -3580,7 +3581,7 @@ function PowaAuras:RedisplayAura(auraId, recreateTriggers) ---Re-show aura after
 	aura:Hide("RedisplayAura");
 	aura:CreateFrames();
 	if (recreateTriggers) then
-		self:ShowText("RedisplayAura ", aura.id," Recreate Triggers");
+		--self:ShowText("RedisplayAura ", aura.id," Recreate Triggers");
 		aura:CreateDefaultTriggers();
 	end
 	if (showing) then
