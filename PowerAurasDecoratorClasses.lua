@@ -406,10 +406,9 @@ function cPowaTimer:CreateFrameIfMissing(aura)
 	if (PowaAuras.TimerFrame[self.id]) then
 		return PowaAuras.TimerFrame[self.id][1], PowaAuras.TimerFrame[self.id][2];
 	end
-	local frame1, frame2;
 	PowaAuras.TimerFrame[self.id] = {};
-	frame1 = PowaAuras:CreateTimerFrame(self.id, 1);
-	frame2 = PowaAuras:CreateTimerFrame(self.id, 2);
+	local frame1 = PowaAuras:CreateTimerFrame(self.id, 1);
+	local frame2 = PowaAuras:CreateTimerFrame(self.id, 2);
 	--PowaAuras:ShowText("Created missing TimerFrames for aura ", self.id, " frame1=", frame1, " frame2=", frame2);		
 	return frame1, frame2;
 end
