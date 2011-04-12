@@ -3258,8 +3258,8 @@ local function OptionsOK()
 			if (aura.Timer and aura.Timer.Texture == "Default") then
 				aura.Timer:Hide();
 				PowaAuras.TimerFrame[auraId] = {};
-				PowaAuras:CreateTimerFrame(auraId, 1);
-				PowaAuras:CreateTimerFrame(auraId, 2);
+				aura.Timer:CreateFrame(aura, 1);
+				aura.Timer:CreateFrame(aura, 2);
 			end
 		end
 	end

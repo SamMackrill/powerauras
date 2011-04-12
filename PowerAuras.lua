@@ -404,21 +404,6 @@ end
 
 -->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-function PowaAuras:CreateTimerFrame(auraId, index)
-	local frame = CreateFrame("Frame", nil, UIParent);
-	self.TimerFrame[auraId][index] = frame;
-	local aura = self.Auras[auraId];
-	
-	frame:SetFrameStrata(aura.strata);
-	frame:Hide(); 
-
-	frame.texture = frame:CreateTexture(nil,"BACKGROUND");
-	frame.texture:SetBlendMode("ADD");
-	frame.texture:SetAllPoints(frame);
-	frame.texture:SetTexture(aura.Timer:GetTexture());
-	return frame, texture;
-end
-
 function PowaAuras:CreateEffectLists()
 	
 	for k in pairs(self.AurasByType) do
