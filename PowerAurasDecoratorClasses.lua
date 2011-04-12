@@ -40,7 +40,7 @@ function cPowaDecorator:CheckActive(aura, testing)
 	self.InvertCount = 0;
 
 	if (not testing) then
-		self:CheckTriggers(aura);
+		self:CheckDecoratorTriggers(aura, true);
 	end
 
 	--PowaAuras:ShowText(GetTime(), self.Type, ".InvertCount=", self.InvertCount, " Showing=", self.Showing);
@@ -337,7 +337,7 @@ function cPowaStacks:Dispose()
 	PowaAuras:Dispose("StacksFrames", self.id);
 end
 
-function cPowaStacks:CheckTriggers(aura)
+function cPowaStacks:CheckDecoratorTriggers(aura, invertOnly)
 end
 
 --===== Timer =====
@@ -532,12 +532,12 @@ function cPowaTimer:Display(aura, newvalue)
 	
 end
 
-function cPowaTimer:CheckTriggers(aura)
+function cPowaTimer:CheckDecoratorTriggers(aura, invertOnly)
 	local newvalue = self:GetDisplayValue(aura, 0);
 	
 	--PowaAuras:ShowText("Timer CheckActive: Re-evaluate timer triggers @", newvalue);
-	aura:CheckTriggers("Timer", newvalue);
-	aura:CheckTriggers("Duration", newvalue);
+	aura:CheckTriggers("Timer", newvalue, nil, invertOnly);
+	aura:CheckTriggers("Duration", newvalue, nil, invertOnly);
 	aura:ProcessTriggerQueue();
 end
 

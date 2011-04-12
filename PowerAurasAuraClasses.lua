@@ -443,7 +443,7 @@ function cPowaAura:ProcessTriggerQueue()
 	end
 end
 
-function cPowaAura:CheckTriggers(triggerType, value, qualifier)
+function cPowaAura:CheckTriggers(triggerType, value, qualifier, invertOnly)
 	local triggersByType = self.TriggersByType[triggerType];
 	if (not triggersByType or #triggersByType==0) then return; end
 	--if (PowaAuras.DebugTriggers) then
@@ -456,23 +456,25 @@ function cPowaAura:CheckTriggers(triggerType, value, qualifier)
 		--	PowaAuras:DisplayText("==TF [", trigger.Name, "] ", trigger.AuraId, "_", trigger.Id, " (", trigger.Type, ")");
 		--end
 		if (trigger:Check(value, qualifier)) then
-			self:QueueActions(trigger);
+			self:QueueActions(trigger, invertOnly);
 		end
 		i = i + 1;
 	end
 end
 
-function cPowaAura:QueueActions(trigger)
+function cPowaAura:QueueActions(trigger, invertOnly)
 	if (not trigger or not trigger.Actions or #trigger.Actions==0) then return; end
 	local i = 1;
 	while i<=#trigger.Actions do
 		local action = trigger.Actions[i];
-		action.TriggerValue = trigger.Value;
-		local insertPosition = #self.TriggerActionQueue + 1;
-		if (PowaAuras.DebugTriggers) then
-			PowaAuras:DisplayText("==AQ [", trigger.Name, ":", action.Name, "] ",  action.AuraId, "_", action.Trigger.Id, "_", action.Id, " insert@=", insertPosition);
+		if (not invertOnly or action.Type == "Invert") then
+			action.TriggerValue = trigger.Value;
+			local insertPosition = #self.TriggerActionQueue + 1;
+			if (PowaAuras.DebugTriggers) then
+				PowaAuras:DisplayText("==AQ [", trigger.Name, ":", action.Name, "] ",  action.AuraId, "_", action.Trigger.Id, "_", action.Id, " insert@=", insertPosition);
+			end
+			self.TriggerActionQueue[insertPosition] = action;
 		end
-		self.TriggerActionQueue[insertPosition] = action;
 		i = i + 1;
 	end
 end
