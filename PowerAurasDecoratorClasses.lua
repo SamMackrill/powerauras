@@ -403,14 +403,14 @@ function cPowaTimer:CreateFrameIfMissing(aura)
 		self.Showing = false;
 		return;
 	end
-	if (PowaAuras.TimerFrame[aura.id]) then
-		return PowaAuras.TimerFrame[aura.id][1], PowaAuras.TimerFrame[aura.id][2];
+	if (PowaAuras.TimerFrame[self.id]) then
+		return PowaAuras.TimerFrame[self.id][1], PowaAuras.TimerFrame[self.id][2];
 	end
 	local frame1, frame2;
-	PowaAuras.TimerFrame[aura.id] = {};
-	frame1 = PowaAuras:CreateTimerFrame(aura.id, 1);
-	frame2 = PowaAuras:CreateTimerFrame(aura.id, 2);
-	--PowaAuras:ShowText("Created missing TimerFrames for aura ", aura.id, " frame1=", frame1, " frame2=", frame2);		
+	PowaAuras.TimerFrame[self.id] = {};
+	frame1 = PowaAuras:CreateTimerFrame(self.id, 1);
+	frame2 = PowaAuras:CreateTimerFrame(self.id, 2);
+	--PowaAuras:ShowText("Created missing TimerFrames for aura ", self.id, " frame1=", frame1, " frame2=", frame2);		
 	return frame1, frame2;
 end
 
@@ -423,7 +423,29 @@ function cPowaTimer:SetShowOnAuraHide(aura)
 	--PowaAuras:Message("ShowActivation=", self.ShowActivation);
 	self.ShowOnAuraHide = self.ShowActivation~=true and ((aura.CooldownAura and (not aura.inverse and aura.CanHaveTimer)) or (not aura.CooldownAura and (aura.inverse and aura.CanHaveTimerOnInverse)));
 	--PowaAuras:Message("ShowOnAuraHide=", self.ShowOnAuraHide);
- end
+end
+
+
+function cPowaTimer:UpdateOptions()
+
+	if (not (PowaAuras.VariablesLoaded and PowaAuras.SetupDone)) then return; end
+		
+    local frame1, frame2 = self:CreateFrameIfMissing(aura);	
+	frame1:SetAlpha(math.min(self.a,0.99));
+	frame1:SetWidth(20 * self.h);
+	frame1:SetHeight(20 * self.h);
+	if (self:IsRelative()) then
+		frame1:SetPoint(PowaAuras.RelativeToParent[self.Relative], PowaAuras.Frames[self.id], self.Relative, self.x, self.y);
+	else
+		frame1:SetPoint("CENTER", self.x, self.y);
+	end
+
+	frame2:SetAlpha(self.a * 0.75);
+	frame2:SetWidth(14 * self.h);
+	frame2:SetHeight(14 * self.h);
+	frame2:SetPoint("LEFT", frame1, "RIGHT", 1, -1.5);
+
+end
 
 function cPowaTimer:GetTexture()
 	local texture = PowaMisc.DefaultTimerTexture;
