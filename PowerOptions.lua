@@ -3055,7 +3055,8 @@ function PowaAuras:ShowStacksChecked(control)
 	local stacks = aura.Stacks;
 	if (control:GetChecked()) then
 		stacks.enabled = true;
-		self:UpdateOptionsStacks(aura.id)
+		local frame1 = stacks:CreateFrameIfMissing(aura);	
+		stacks:UpdateOptionsStacks(frame1);
 		stacks:CheckActive(aura, true);
 	else
 		stacks.enabled = false;
