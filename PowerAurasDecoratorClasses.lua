@@ -149,7 +149,7 @@ function cPowaStacks:CreateFrameIfMissing(aura)
 		self.Showing = false;
 		return;
 	end
-	local frame = PowaAuras.StacksFrames[self.id];
+	local frame = self:GetFrame();
 	if (not frame) then
 		--PowaAuras:ShowText("Creating missing StacksFrame for aura "..tostring(self.id));		
 		frame = CreateFrame("Frame", nil, UIParent);
@@ -176,7 +176,6 @@ function cPowaStacks:UpdateOptions(frame)
 	frame:SetAlpha(math.min(self.a, 0.99));
 	frame:SetWidth(20 * self.h);
 	frame:SetHeight(20 * self.h);
-	frame:SetPoint("Center", self.x, self.y);
 	if (self:IsRelative()) then
 		--PowaAuras:ShowText(PowaAuras.Frames[auraId],": self.Relative=", self.Relative, " RelativeToParent=", PowaAuras.RelativeToParent[self.Relative], " x=", self.x, " y=",self.y);
 		frame:SetPoint(PowaAuras.RelativeToParent[self.Relative], PowaAuras.Frames[auraId], self.Relative, self.x, self.y);
@@ -429,15 +428,35 @@ function cPowaTimer:CreateFrameIfMissing(aura)
 		self.Showing = false;
 		return;
 	end
+	local frame1, frame2;
 	if (PowaAuras.TimerFrame[self.id]) then
-		return PowaAuras.TimerFrame[self.id][1], PowaAuras.TimerFrame[self.id][2];
+		frame1, frame2 = PowaAuras.TimerFrame[self.id][1], PowaAuras.TimerFrame[self.id][2];
+	else
+		PowaAuras.TimerFrame[self.id] = {};
 	end
-	PowaAuras.TimerFrame[self.id] = {};
-	local frame1 = PowaAuras:CreateTimerFrame(self.id, 1);
-	local frame2 = PowaAuras:CreateTimerFrame(self.id, 2);
+	if (not frame1) then
+		frame1 = self:CreateFrame(aura, 1);
+	end
+	if (not frame2 and self.cents) then
+		frame2 = self:CreateFrame(aura, 2);
+	end
 	--PowaAuras:ShowText("Created missing TimerFrames for aura ", self.id, " frame1=", frame1, " frame2=", frame2);		
     self:UpdateOptions(frame1, frame2);
 	return frame1, frame2;
+end
+
+function cPowaTimer:CreateFrame(aura, index)
+	local frame = CreateFrame("Frame", nil, UIParent);
+	PowaAuras.TimerFrame[self.id][index] = frame;
+	
+	frame:SetFrameStrata(aura.strata);
+	frame:Hide(); 
+
+	frame.texture = frame:CreateTexture(nil,"BACKGROUND");
+	frame.texture:SetBlendMode("ADD");
+	frame.texture:SetAllPoints(frame);
+	frame.texture:SetTexture(self:GetTexture());
+	return frame, texture;
 end
 
 function cPowaTimer:UpdateOptions(frame1, frame2)		
@@ -449,11 +468,12 @@ function cPowaTimer:UpdateOptions(frame1, frame2)
 	else
 		frame1:SetPoint("CENTER", self.x, self.y);
 	end
-
-	frame2:SetAlpha(self.a * 0.75);
-	frame2:SetWidth(14 * self.h);
-	frame2:SetHeight(14 * self.h);
-	frame2:SetPoint("LEFT", frame1, "RIGHT", 1, -1.5);
+	if (frame2) then
+		frame2:SetAlpha(self.a * 0.75);
+		frame2:SetWidth(14 * self.h);
+		frame2:SetHeight(14 * self.h);
+		frame2:SetPoint("LEFT", frame1, "RIGHT", 1, -1.5);
+	end
 end
 
 function cPowaTimer:GetTexture()
