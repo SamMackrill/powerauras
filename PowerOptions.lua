@@ -362,8 +362,6 @@ function PowaAuras:DeleteAura(aura)
 	if (not aura) then return; end
 	--self:Message("DeleteAura ", aura.id);
 
-	aura:Hide("DeleteAura");
-
 	if (aura.Timer) then aura.Timer:Dispose(); end
 	if (aura.Stacks) then aura.Stacks:Dispose(); end
 	aura:Dispose();
@@ -1307,12 +1305,12 @@ function PowaAuras:MainOptionClose()
     
 	self:FindAllChildren();
 	self:CreateEffectLists();	
-	self.DoCheck.All = true;
 	self:CheckAllMarkedAuras();
  	self:MemorizeActions();
 	self:CreateAllAuraTriggers();
 
-	
+	self.DoCheck.All = true;
+
 	self:ReregisterEvents(PowaAuras_Frame);
 
 end
@@ -2974,11 +2972,13 @@ end
 
 function PowaAuras:ShowTimerChecked(control)
 	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
-	local timer = self.Auras[self.CurrentAuraId].Timer;
+	local aura = self.Auras[self.CurrentAuraId];
+	local timer = aura.Timer;
 	if (control:GetChecked()) then
 		timer.enabled = true;
-		timer:CreateFrameIfMissing(self.CurrentAuraId);
-		self:UpdateOptionsTimer(self.CurrentAuraId)
+		timer:CreateFrameIfMissing(aura.id);
+		self:UpdateOptionsTimer(aura.id)
+		timer:CheckActive(aura, true);
 	else
 		timer.enabled = false;
 		timer:Dispose();
@@ -3096,11 +3096,16 @@ end
 
 function PowaAuras:ShowStacksChecked(control)
 	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
+	local aura = self.Auras[self.CurrentAuraId];
+	local stacks = aura.Stacks;
 	if (control:GetChecked()) then
-		self.Auras[self.CurrentAuraId].Stacks.enabled = true;
+		stacks.enabled = true;
+		stacks:CreateFrameIfMissing(aura.id);
+		self:UpdateOptionsStacks(aura.id)
+		stacks:CheckActive(aura, true);
 	else
-		self.Auras[self.CurrentAuraId].Stacks.enabled = false;
-		self.Auras[self.CurrentAuraId].Stacks:Dispose();
+		stacks.enabled = false;
+		stacks:Dispose();
 	end
 end
 
@@ -3544,22 +3549,6 @@ function PowaAuras:OptionHideAll(now) --- Hide all auras
 
 end
 
-function PowaAuras:RedisplayAuras()
-	for id, aura in pairs(self.Auras) do
-		--aura.Active = false;
-		if (aura.Showing) then
-			aura:CheckActive(false true, true);
-			--aura:Hide("RedisplayAuras");
-			--if (aura.Timer) then aura.Timer:Hide(); end
-			--if (aura.Stacks) then aura.Stacks:Hide(); end
-			--aura.Active = true;
-			--self:ShowText("RedisplayAuras RecreateFrames");
-			aura:RecreateFrames();
-			--self:DisplayAura(aura.id);
-			aura:CheckActive(true true, true);
-		end
-	end	
-end
 
 function PowaAuras:SetLockButtonText()
 	if (PowaMisc.Locked) then
@@ -3575,6 +3564,13 @@ function PowaAuras:ToggleLock()
 	self:RedisplayAuras();
 end
 
+
+function PowaAuras:RedisplayAuras(recreateTriggers)
+	for id, _ in pairs(self.Auras) do
+		self:RedisplayAura(id, recreateTriggers)
+	end	
+end
+
 function PowaAuras:RedisplayAura(auraId, recreateTriggers) ---Re-show aura after options changed
 
 	if (not (self.VariablesLoaded and self.SetupDone)) then return; end 
@@ -3584,16 +3580,16 @@ function PowaAuras:RedisplayAura(auraId, recreateTriggers) ---Re-show aura after
 		return;
 	end
 	--self:ShowText("RedisplayAura auraId=", aura.id, " showing=", aura.Showing);
-	local showing = aura.Showing;
-	aura:Hide("RedisplayAura");
-	aura:CreateFrames();
 	if (recreateTriggers) then
 		--self:ShowText("RedisplayAura ", aura.id," Recreate Triggers");
 		aura:CreateDefaultTriggers();
 	end
-	if (showing) then
-		self:DisplayAura(aura.id);
+	if (aura.Showing) then
+		aura:CheckActive(false, true, true);
+		aura:RecreateFrames();
+		aura:CheckActive(true, true, true);
 	end
+
 end
 
 function PowaAuras:ResetSlotsToEmpty()
