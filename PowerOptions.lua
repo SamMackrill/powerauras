@@ -2898,12 +2898,9 @@ function PowaAuras:EditorShow()
 	end
 	local aura = self.Auras[self.CurrentAuraId];
 	if (aura) then
-		if (not aura.Showing) then 
-			aura.Active = true;
-			--self:ShowText("EditorShow RecreateFrames");
-			aura:RecreateFrames();
-			self:DisplayAura(aura.id);
-		end
+		--self:ShowText("EditorShow RecreateFrames");
+		aura:RecreateFrames();
+		aura:CheckActive(true, true, true);
 		self:InitPage(aura);
 		PowaBarConfigFrame:Show();
 		PlaySound("TalentScreenOpen");
@@ -2976,7 +2973,6 @@ function PowaAuras:ShowTimerChecked(control)
 	local timer = aura.Timer;
 	if (control:GetChecked()) then
 		timer.enabled = true;
-		timer:CreateFrameIfMissing(aura.id);
 		self:UpdateOptionsTimer(aura.id)
 		timer:CheckActive(aura, true);
 	else
@@ -3100,7 +3096,6 @@ function PowaAuras:ShowStacksChecked(control)
 	local stacks = aura.Stacks;
 	if (control:GetChecked()) then
 		stacks.enabled = true;
-		stacks:CreateFrameIfMissing(aura.id);
 		self:UpdateOptionsStacks(aura.id)
 		stacks:CheckActive(aura, true);
 	else
@@ -3521,10 +3516,6 @@ function PowaAuras:TestAllAuras()
 		if (not aura.off) then
 			aura:RecreateFrames();
 			aura:CheckActive(true, true, true);
-			--aura.Active = true;
-			--self:ShowText("TestAllAuras RecreateFrames");
-			--aura:RecreateFrames();
-			--self:DisplayAura(aura.id);
 		end
 	end
 	
@@ -3533,7 +3524,6 @@ end
 function PowaAuras:OptionHideAll(now) --- Hide all auras
 	--self:ShowText("Hide All Frames now=", now);
 	for id, aura in pairs(self.Auras) do
-		aura.Active = false;
 		self:ResetDragging(aura, self.Frames[aura.id]);
 		aura:CheckActive(false, true, true);
 		--if now then
