@@ -194,6 +194,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 
 	ListePlayer = "Page",
 	ListeGlobal = "Global",
+	ListeClass = "Class",
 	aideMove = "Move the effect here.",
 	aideCopy = "Copy the effect here.",
 	nomRename = "Rename",

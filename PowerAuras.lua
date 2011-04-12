@@ -44,6 +44,8 @@ PowaTimer = {};
 
 PowaGlobalSet = {};
 PowaGlobalListe = {};
+PowaClassSet = {};
+PowaClassListe = {};
 PowaPlayerListe = {};
 
 --Default page names
