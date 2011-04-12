@@ -700,7 +700,7 @@ function PowaAuras:OnUpdate(elapsed)
 	for i = 1, #self.AuraSequence do
 		local aura = self.AuraSequence[i];
 		--self:Message("UpdateAura Call id=", aura.id, " ", aura);
-		if (aura:UpdateAura() and not skipTimerUpdate and aura.Timer) then
+		if (aura:UpdateAura(self.ModTest) and not skipTimerUpdate and aura.Timer) then
 			aura.Timer:Update(timerElapsed);
 		end
 	end
@@ -832,7 +832,7 @@ function PowaAuras:TestThisEffect(auraId, giveReason, ignoreCascade)
 		self:Message("shouldShow=", shouldShow, " because ", reason);
 	end
 	
-	aura:CheckActive(shouldShow);
+	aura:CheckActive(shouldShow, ignoreCascade);
 	
 	return shouldShow, reason;
 end
@@ -1042,7 +1042,7 @@ function PowaAuras:DisplayAura(auraId)
 		aura.Timer.Start = GetTime();
 	end
 	
-	aura:Show();
+	aura:Show(PowaAuras.ModTest);
 
 end
 

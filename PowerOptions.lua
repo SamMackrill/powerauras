@@ -3496,26 +3496,30 @@ function PowaAuras:ToggleTesting()
 	end
 
 	if (aura.Showing) then 
-		aura:SetHideRequest("ToggleTesting", true);
-		aura.Active = false;
+		--aura:SetHideRequest("ToggleTesting", true, true);
+		--aura.Active = false;
+		aura:CheckActive(false, true, true);
 	else
-		aura.Active = true;
+		--aura.Active = true;
 		--self:ShowText("ToggleTesting RecreateFrames");
 		aura:RecreateFrames();
-		self:DisplayAura(aura.id);
+		aura:CheckActive(true, true, true);
+		--self:DisplayAura(aura.id);
 	end
 end
 
 function PowaAuras:TestAllAuras()
 
 	PowaAuras:OptionHideAll(true);
-	--self:ShowText("Test All Active Frames now=", now);
+	--self:ShowText("Test All Active Auras");
 	for id, aura in pairs(self.Auras) do
-		if (not aura.off) then 
-			aura.Active = true;
-			--self:ShowText("TestAllAuras RecreateFrames");
+		if (not aura.off) then
 			aura:RecreateFrames();
-			self:DisplayAura(aura.id);
+			aura:CheckActive(true, true, true);
+			--aura.Active = true;
+			--self:ShowText("TestAllAuras RecreateFrames");
+			--aura:RecreateFrames();
+			--self:DisplayAura(aura.id);
 		end
 	end
 	
@@ -3526,30 +3530,33 @@ function PowaAuras:OptionHideAll(now) --- Hide all auras
 	for id, aura in pairs(self.Auras) do
 		aura.Active = false;
 		self:ResetDragging(aura, self.Frames[aura.id]);
-		if now then
-			--self:ShowText("Hide aura id=", id);
-			aura:Hide("OptionHideAll");
-			if (aura.Timer) then aura.Timer:Hide(); end 
-			if (aura.Stacks) then aura.Stacks:Hide(); end
-		else
-			aura:SetHideRequest("OptionHideAll", true);
-			if (aura.Timer)  then aura.Timer.HideRequest  = true; end
-		end
+		aura:CheckActive(false, true, true);
+		--if now then
+		--	--self:ShowText("Hide aura id=", id);
+		--	aura:Hide("OptionHideAll");
+		--	if (aura.Timer) then aura.Timer:Hide(); end 
+		--	if (aura.Stacks) then aura.Stacks:Hide(); end
+		--else
+		--	aura:SetHideRequest("OptionHideAll", true);
+		--	if (aura.Timer)  then aura.Timer.HideRequest  = true; end
+		--end
 	end	
 
 end
 
 function PowaAuras:RedisplayAuras()
 	for id, aura in pairs(self.Auras) do
-		aura.Active = false;
+		--aura.Active = false;
 		if (aura.Showing) then
-			aura:Hide("RedisplayAuras");
-			if (aura.Timer) then aura.Timer:Hide(); end
-			if (aura.Stacks) then aura.Stacks:Hide(); end
-			aura.Active = true;
+			aura:CheckActive(false true, true);
+			--aura:Hide("RedisplayAuras");
+			--if (aura.Timer) then aura.Timer:Hide(); end
+			--if (aura.Stacks) then aura.Stacks:Hide(); end
+			--aura.Active = true;
 			--self:ShowText("RedisplayAuras RecreateFrames");
 			aura:RecreateFrames();
-			self:DisplayAura(aura.id);
+			--self:DisplayAura(aura.id);
+			aura:CheckActive(true true, true);
 		end
 	end	
 end

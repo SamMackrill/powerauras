@@ -27,15 +27,21 @@ function cPowaDecorator:Show()
 	PowaAuras.Auras[self.id]:CheckTriggers(self.Type.."Show");	
 end
 
-function cPowaDecorator:CheckActive(aura)
+function cPowaDecorator:CheckActive(aura, testing)
 	local oldActive = self.Active;
-	self.Active = PowaAuras.ModTest or (aura.Active and not self.ShowOnAuraHide) or (not aura.Active and self.ShowOnAuraHide);	
+	if (testing) then
+		self.Active = aura.Active;	
+	else
+		self.Active = (aura.Active and not self.ShowOnAuraHide) or (not aura.Active and self.ShowOnAuraHide);	
+	end
 	--PowaAuras:DisplayText(aura.id, " CheckActive: ", self.Type, " AuraActive=", aura.Active, " ShowOnAuraHide=", self.ShowOnAuraHide);
 	--PowaAuras:DisplayText(GetTime(), " ", self.Type, "(", self.id, ") Active=", self.Active, " (was ", oldActive, ")");
 	if (oldActive==self.Active) then return; end
 	self.InvertCount = 0;
 
-	self:CheckTriggers(aura);
+	if (not testing) then
+		self:CheckTriggers(aura);
+	end
 
 	--PowaAuras:ShowText(GetTime(), self.Type, ".InvertCount=", self.InvertCount, " Showing=", self.Showing);
 
