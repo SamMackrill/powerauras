@@ -4,7 +4,7 @@
 -- Each widget has its own init function, and a shared pool of closures available to all widgets.
 -- You can initialize a widget by calling PowaAuras.UI.[widget]().
 -- Each definition should be placed it its own lua file.
-PowaAuras.UI = {	
+PowaAuras.UI = {
 	-- Turns the definition tables into metatables with constructor-like functionality.
 	DefineWidget = function(self, widget)
 		if(not self[widget]) then PowaAuras:ShowText("No widget definition exists for: ", widget); return; end

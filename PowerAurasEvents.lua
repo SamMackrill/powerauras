@@ -40,6 +40,16 @@ function PowaAuras:VARIABLES_LOADED(...)
 	end
 	
 	_, self.playerclass = UnitClass("player");
+	
+	-- Load class auras.
+	local class = UnitClass("player");
+	if(not PowaClassListe) then PowaClassListe = {}; end
+	if(not PowaClassListe[class]) then
+		PowaClassListe[class] = {};
+		for i=1,5 do
+			PowaClassListe[class][i] = PowaAuras.Text.ListeClass .. i;
+		end
+	end
 
 	self:LoadAuras();
 
