@@ -149,9 +149,10 @@ function cPowaStacks:CreateFrameIfMissing(aura)
 		self.Showing = false;
 		return;
 	end
-	if (not PowaAuras.StacksFrames[self.id]) then
+	local frame = PowaAuras.StacksFrames[self.id];
+	if (not frame) then
 		--PowaAuras:ShowText("Creating missing StacksFrame for aura "..tostring(self.id));		
-		local frame = CreateFrame("Frame", nil, UIParent);
+		frame = CreateFrame("Frame", nil, UIParent);
 		PowaAuras.StacksFrames[self.id] = frame;
 		
 		frame:SetFrameStrata(aura.strata);
@@ -167,13 +168,11 @@ function cPowaStacks:CreateFrameIfMissing(aura)
 		};
 		
 	end
-	self:UpdateOptions(self.id);
-	return PowaAuras.StacksFrames[self.id];
+	self:UpdateOptions(frame);
+	return frame;
 end
 
-
-function cPowaStacks:UpdateOptions(auraId)
-    local frame = self:GetFrame();	
+function cPowaStacks:UpdateOptions(frame)
 	frame:SetAlpha(math.min(self.a, 0.99));
 	frame:SetWidth(20 * self.h);
 	frame:SetHeight(20 * self.h);
