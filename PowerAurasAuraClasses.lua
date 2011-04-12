@@ -560,10 +560,10 @@ function cPowaAura:DecrementInvertCount(now)
 end
 
 function cPowaAura:SetHideRequest(source, now, testing)
-	--if (self.Debug) then
+	if (self.Debug) then
 		PowaAuras:Message(GetTime()," SetHideRequest ", self.HideRequest, " showing=", self.Showing, " from=", source, " now=", now);
 		PowaAuras:Message(GetTime()," from=", source, " now=", now, " testing=", testing);
-	--end
+	end
 
 	if ((self.HideRequest and not now) or not self.Showing) then return; end
 
@@ -607,7 +607,7 @@ function cPowaAura:CheckActive(shouldShow, ignoreCascade, testing)
 		end
 		self.Active = true;			
 		self.InvertCount = 0;
-		PowaAuras:ShowText(GetTime(),"=== Aura(", self.id, ") ACTIVE");
+		--PowaAuras:ShowText(GetTime(),"=== Aura(", self.id, ") ACTIVE");
 		
 		if (self.Timer) then self.Timer:CheckActive(self, testing); end
 		if (self.Stacks) then self.Stacks:CheckActive(self, testing); end
@@ -618,7 +618,7 @@ function cPowaAura:CheckActive(shouldShow, ignoreCascade, testing)
 	end
 	
 	if (self.Active) then
-		PowaAuras:ShowText(GetTime(),"=== Aura(", self.id, ") INACTIVE");
+		--PowaAuras:ShowText(GetTime(),"=== Aura(", self.id, ") INACTIVE");
 		
 		self.Active = false;	
 		self.InvertCount = 0;
@@ -631,9 +631,9 @@ function cPowaAura:CheckActive(shouldShow, ignoreCascade, testing)
 	
 	--PowaAuras:ShowText(GetTime()," Aura(", self.id, ") Showing=", self.Showing, " InvertCount=",self.InvertCount);
 	if (self.Showing and ((self.InvertCount or 0)==0) or testing) then
-		--if (debugEffectTest) then
+		if (debugEffectTest) then
 			PowaAuras:Message("HideAura ", self.buffname, " (",self.id,") ", reason);
-		--end
+		end
 		self:SetHideRequest("TestThisEffect: false & showing", false, testing);
 	end
 

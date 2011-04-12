@@ -2925,31 +2925,14 @@ end
 -- <<<<<<<<<<<<<<<<<<< ADV. OPTIONS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 -- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-
-function PowaAuras:UpdateOptionsStacks(auraId)
-	if (not (self.VariablesLoaded and self.SetupDone)) then return; end  
-	
-	local stacks = self.Auras[auraId].Stacks;
-    local frame = stacks:GetFrame();	
-	frame:SetAlpha(math.min(stacks.a, 0.99));
-	frame:SetWidth(20 * stacks.h);
-	frame:SetHeight(20 * stacks.h);
-	frame:SetPoint("Center", stacks.x, stacks.y);
-	if (stacks:IsRelative()) then
-		--PowaAuras:ShowText(self.Frames[auraId],": stacks.Relative=", stacks.Relative, " RelativeToParent=", self.RelativeToParent[stacks.Relative], " x=", stacks.x, " y=",stacks.y);
-		frame:SetPoint(self.RelativeToParent[stacks.Relative], self.Frames[auraId], stacks.Relative, stacks.x, stacks.y);
-	else
-		frame:SetPoint("CENTER", stacks.x, stacks.y);
-	end
-end
-
 function PowaAuras:ShowTimerChecked(control)
 	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
 	local aura = self.Auras[self.CurrentAuraId];
 	local timer = aura.Timer;
 	if (control:GetChecked()) then
 		timer.enabled = true;
-		timer:UpdateOptions();
+		local frame1, frame2 = timer:CreateFrameIfMissing(aura);	
+		timer:UpdateOptions(frame1, frame2);
 		timer:CheckActive(aura, true);
 	else
 		timer.enabled = false;
