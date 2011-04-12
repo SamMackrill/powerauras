@@ -669,8 +669,12 @@ function PowaAuras:OnUpdate(elapsed)
 	
 	local skipTimerUpdate = false
 	local timerElapsed = 0;
-	if (PowaMisc.AnimationLimit > 0 and self.TimerUpdateThrottleTimer < PowaMisc.AnimationLimit) then
-		skipTimerUpdate = true and not self.DebugCycle;
+	local timerUpdateLimit = PowaMisc.AnimationLimit;
+	if (self.ModTest) then
+		timerUpdateLimit = 1; -- Limit testing updates to 1 per second
+	end
+	if (timerUpdateLimit > 0 and self.TimerUpdateThrottleTimer < timerUpdateLimit) then
+		skipTimerUpdate = not self.DebugCycle;
 	else
 		timerElapsed = self.TimerUpdateThrottleTimer;
 		self.TimerUpdateThrottleTimer = 0;

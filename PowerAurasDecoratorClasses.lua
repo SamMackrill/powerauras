@@ -6,16 +6,19 @@ function cPowaDecorator:IsRelative()
 end
 
 function cPowaDecorator:Show()
-	--PowaAuras:ShowText(self.Type, " Show() Showing=", self.Showing, " InvertCount=", self.InvertCount);
+	PowaAuras:ShowText(self.Type, " Show() Showing=", self.Showing, " InvertCount=", self.InvertCount);
 	if (self.Showing) then return; end
-	local frame1, frame2 = self:CreateFrameIfMissing(self.id);
-	if (frame1 == nil) then return; end
+	local aura = PowaAuras.Auras[self.id];
+	local frame1, frame2 = self:CreateFrameIfMissing(aura);
+	if (frame1 == nil) then
+		--PowaAuras:ShowText(self.Type, " Show() frame1 nil!");
+		return;
+	end
 
 	if (self.Debug) then
-		PowaAuras:Message(self.Type, " Show() ", self.id, " frame:Show() ", frame);
+		PowaAuras:Message(self.Type, " Show() ", self.id, " frame:Show() ", frame1);
 	end
-	
-	
+		
 	frame1:Show();
 	if (frame2) then frame2:Show(); end
 
@@ -24,7 +27,9 @@ function cPowaDecorator:Show()
 	
 	self:DisplayCurrent();
 	
-	PowaAuras.Auras[self.id]:CheckTriggers(self.Type.."Show");	
+	if (not PowaAuras.ModTest) then
+		aura:CheckTriggers(self.Type.."Show");
+	end
 end
 
 function cPowaDecorator:CheckActive(aura, testing)
@@ -34,8 +39,8 @@ function cPowaDecorator:CheckActive(aura, testing)
 	else
 		self.Active = (aura.Active and not self.ShowOnAuraHide) or (not aura.Active and self.ShowOnAuraHide);	
 	end
-	--PowaAuras:DisplayText(aura.id, " CheckActive: ", self.Type, " AuraActive=", aura.Active, " ShowOnAuraHide=", self.ShowOnAuraHide);
-	--PowaAuras:DisplayText(GetTime(), " ", self.Type, "(", self.id, ") Active=", self.Active, " (was ", oldActive, ")");
+	PowaAuras:DisplayText(aura.id, " CheckActive: ", self.Type, " AuraActive=", aura.Active, " ShowOnAuraHide=", self.ShowOnAuraHide);
+	PowaAuras:DisplayText(GetTime(), " ", self.Type, "(", self.id, ") Active=", self.Active, " (was ", oldActive, ")");
 	if (oldActive==self.Active) then return; end
 	self.InvertCount = 0;
 
@@ -43,16 +48,16 @@ function cPowaDecorator:CheckActive(aura, testing)
 		self:CheckDecoratorTriggers(aura, true);
 	end
 
-	--PowaAuras:ShowText(GetTime(), self.Type, ".InvertCount=", self.InvertCount, " Showing=", self.Showing);
+	PowaAuras:ShowText(GetTime(), " ", self.Type, ".InvertCount=", self.InvertCount, " Showing=", self.Showing);
 
 	if (not self.Active) then
-		--PowaAuras:ShowText(GetTime(),"=== ", self.Type, " INACTIVE ", auraId);
+		PowaAuras:ShowText(GetTime(),"=== ", self.Type, " INACTIVE ", auraId);
 		self:Hide();
 		return;
 	end
 
-	--PowaAuras:ShowText(GetTime(),"=== ", self.Type, " ACTIVE ", auraId);
-	if (self.InvertCount>0) then
+	PowaAuras:ShowText(GetTime(),"=== ", self.Type, " ACTIVE ", auraId);
+	if (self.InvertCount>0 and not testing) then
 		self:Hide();
 	else
 		self:Show();
@@ -138,16 +143,15 @@ function cPowaStacks:CreateAuraString()
 	return tempstr;
 end
 
-function cPowaStacks:CreateFrameIfMissing(auraId)
-	local aura = PowaAuras.Auras[auraId];
-	if (not PowaAuras.Frames[auraId] and self:IsRelative()) then
+function cPowaStacks:CreateFrameIfMissing(aura)
+	if (not PowaAuras.Frames[aura.id] and self:IsRelative()) then
 		aura.Stacks.Showing = false;
 		return;
 	end
-	if (not PowaAuras.StacksFrames[auraId]) then
-		--PowaAuras:ShowText("Creating missing StacksFrame for aura "..tostring(auraId));		
+	if (not PowaAuras.StacksFrames[aura.id]) then
+		--PowaAuras:ShowText("Creating missing StacksFrame for aura "..tostring(aura.id));		
 		local frame = CreateFrame("Frame", nil, UIParent);
-		PowaAuras.StacksFrames[auraId] = frame;
+		PowaAuras.StacksFrames[aura.id] = frame;
 		
 		frame:SetFrameStrata(aura.strata);
 		frame:Hide(); 
@@ -162,8 +166,8 @@ function cPowaStacks:CreateFrameIfMissing(auraId)
 		};
 		
 	end
-	PowaAuras:UpdateOptionsStacks(auraId);
-	return PowaAuras.StacksFrames[auraId];
+	PowaAuras:UpdateOptionsStacks(aura.id);
+	return PowaAuras.StacksFrames[aura.id];
 end
 
 function cPowaStacks:GetTexture()
@@ -394,21 +398,19 @@ function cPowaTimer:CreateAuraString()
 	return tempstr;
 end
 
-function cPowaTimer:CreateFrameIfMissing(auraId)
-	local aura = PowaAuras.Auras[auraId];
-	if (not PowaAuras.Frames[auraId] and self:IsRelative()) then
+function cPowaTimer:CreateFrameIfMissing(aura)
+	if (not aura and self:IsRelative()) then
 		self.Showing = false;
 		return;
 	end
-	local frame1, frame2;
-	if (not PowaAuras.TimerFrame[auraId]) then
-		--PowaAuras:ShowText("Creating missing TimerFrames for aura "..tostring(auraId));		
-		PowaAuras.TimerFrame[auraId] = {};
-		frame1 = PowaAuras:CreateTimerFrame(auraId, 1);
-		frame2 = PowaAuras:CreateTimerFrame(auraId, 2);
-	else
-		frame1, frame2 = PowaAuras.TimerFrame[auraId][1], PowaAuras.TimerFrame[auraId][2];
+	if (PowaAuras.TimerFrame[aura.id]) then
+		return PowaAuras.TimerFrame[aura.id][1], PowaAuras.TimerFrame[aura.id][2];
 	end
+	local frame1, frame2;
+	PowaAuras.TimerFrame[aura.id] = {};
+	frame1 = PowaAuras:CreateTimerFrame(aura.id, 1);
+	frame2 = PowaAuras:CreateTimerFrame(aura.id, 2);
+	--PowaAuras:ShowText("Created missing TimerFrames for aura ", aura.id, " frame1=", frame1, " frame2=", frame2);		
 	return frame1, frame2;
 end
 
@@ -473,14 +475,13 @@ function cPowaTimer:Display(aura, newvalue)
 		
 	if (not newvalue or newvalue <= 0) then
 		if (self.Showing) then
-			if (PowaAuras.DebugCycle) then
-				PowaAuras:Message("HideTimerFrames"); --OK
-			end
-			self:Hide();
+			self:CheckActive(aura, false, PowaAuras.ModTest);
 			PowaAuras:TestThisEffect(self.id);
 		end
 		return;
 	end
+	
+	PowaAuras:ShowText("Timer Display=", newvalue, " Showing=", self.Showing);
 
 	local split = 60;
 	if (self.Seconds99) then
@@ -527,8 +528,6 @@ function cPowaTimer:Display(aura, newvalue)
 		self:ShowValue(aura, 1, large);
 		self.lastShownLarge=large;
 	end
-
-	self.Showing = true;
 	
 end
 
@@ -578,15 +577,17 @@ function cPowaTimer:Update(elapsed)
 
 	local newvalue = self:GetDisplayValue(aura, elapsed);
 	
-	if (self.ShowOnAuraHide and aura.Active)  or (not self.ShowOnAuraHide and not aura.Active) then
-		if (self.Showing) then
-			self:Hide();
-		end
-		return;
-	end
+	--if (self.ShowOnAuraHide and aura.Active)  or (not self.ShowOnAuraHide and not aura.Active) then
+	--	if (self.Showing) then
+	--		self:Hide();
+	--	end
+	--	return;
+	--end
 
-	aura:CheckTriggers("Timer", newvalue);
-	aura:CheckTriggers("Duration", self.Duration);
+	if (not PowaAuras.ModTest) then
+		aura:CheckTriggers("Timer", newvalue);
+		aura:CheckTriggers("Duration", self.Duration);
+	end
 	
 	if (self.Showing) then
 		self:Display(aura, newvalue);
