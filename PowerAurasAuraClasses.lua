@@ -627,7 +627,7 @@ function cPowaAura:CheckActive(shouldShow, ignoreCascade, testing)
 	end
 	
 	--PowaAuras:ShowText(GetTime()," Aura(", self.id, ") Showing=", self.Showing, " InvertCount=",self.InvertCount);
-	if (self.Showing and ((self.InvertCount or 0)==0) or testing)) then
+	if (self.Showing and ((self.InvertCount or 0)==0) or testing) then
 		if (debugEffectTest) then
 			PowaAuras:Message("HideAura ", self.buffname, " (",self.id,") ", reason);
 		end
