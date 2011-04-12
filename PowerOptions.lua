@@ -2925,30 +2925,6 @@ end
 -- <<<<<<<<<<<<<<<<<<< ADV. OPTIONS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 -- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-function PowaAuras:UpdateOptionsTimer(auraId)
-
-	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
-	
-	local timer = self.Auras[auraId].Timer;
-	
-    local frame1 = self.TimerFrame[auraId][1];	
-	frame1:SetAlpha(math.min(timer.a,0.99));
-	frame1:SetWidth(20 * timer.h);
-	frame1:SetHeight(20 * timer.h);
-	if (timer:IsRelative()) then
-		frame1:SetPoint(self.RelativeToParent[timer.Relative], self.Frames[auraId], timer.Relative, timer.x, timer.y);
-	else
-		frame1:SetPoint("CENTER", timer.x, timer.y);
-	end
-
-    local frame2 = self.TimerFrame[auraId][2];
-	frame2:SetAlpha(timer.a * 0.75);
-	frame2:SetWidth(14 * timer.h);
-	frame2:SetHeight(14 * timer.h);
-	frame2:SetPoint("LEFT", frame1, "RIGHT", 1, -1.5);
-
-end
-
 
 function PowaAuras:UpdateOptionsStacks(auraId)
 	if (not (self.VariablesLoaded and self.SetupDone)) then return; end  
@@ -2973,7 +2949,7 @@ function PowaAuras:ShowTimerChecked(control)
 	local timer = aura.Timer;
 	if (control:GetChecked()) then
 		timer.enabled = true;
-		self:UpdateOptionsTimer(aura.id)
+		timer:UpdateOptions();
 		timer:CheckActive(aura, true);
 	else
 		timer.enabled = false;
