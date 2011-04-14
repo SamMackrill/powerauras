@@ -60,22 +60,50 @@ function cPowaDecorator:CheckActive(aura, testing)
 
 	if (not testing) then
 		self:CheckDecoratorTriggers(aura, true);
+		if (self.Active) then
+			self:CheckTriggers(self.Type.."Active");
+		else
+			self:CheckTriggers(self.Type.."Inactive");
+		end
 	end
 
 	--PowaAuras:ShowText(GetTime(), " ", self.Type, ".InvertCount=", self.InvertCount, " Showing=", self.Showing);
 
 	if (not self.Active) then
 		--PowaAuras:ShowText(GetTime(),"=== ", self.Type, " INACTIVE ", auraId);
-		self:Hide();
+		self:SetHideRequest(self.Type.." Inactive", now, testing);
 		return;
 	end
 
 	--PowaAuras:ShowText(GetTime(),"=== ", self.Type, " ACTIVE ", auraId);
 	if (self.InvertCount>0 and not testing) then
-		self:Hide();
+		self:SetHideRequest(self.Type.." Active and InvertCount>0", now, testing);
 	else
 		self:Show();
 	end	
+end
+
+function cPowaDecorator:SetHideRequest(source, now, testing)
+
+	if (self.Debug) then
+		PowaAuras:Message(GetTime()," ", self.Type, " SetHideRequest ", self.HideRequest, " showing=", self.Showing, " from=", source, " now=", now);
+		PowaAuras:Message(GetTime()," from=", source, " now=", now, " testing=", testing);
+	end
+
+	if ((self.HideRequest and not now) or not self.Showing) then return; end
+
+	self.HideRequest = (not now);
+	self.Showing = false;
+
+	if (not PowaAuras.ModTest) then
+		aura:CheckTriggers(self.Type.."Hide");
+	end
+
+	if (now or testing) then
+		self:Hide();
+		return;
+	end
+
 end
 
 function cPowaDecorator:IncrementInvertCount()
@@ -86,7 +114,7 @@ function cPowaDecorator:IncrementInvertCount()
 	end
 	if (self.InvertCount==1) then
 		if (aura.Active or self.ShowOnAuraHide) then
-			self:Hide();
+			self:SetHideRequest(self.Type," Trigger Hide Action Active/ShowOnHide & InvertCount=1", now);
 		else
 			self:Show();
 		end
@@ -103,7 +131,7 @@ function cPowaDecorator:DecrementInvertCount(now)
 		if (aura.Active or self.ShowOnAuraHide) then
 			self:Show();
 		else
-			self:Hide();
+			self:SetHideRequest(self.Type," Trigger Hide Action Inactive/ not ShowOnHide & InvertCount=0", now);
 		end
 	end
 end
@@ -359,6 +387,7 @@ function cPowaStacks:Hide()
 		frame:Hide();
 	end
 	self.Showing = false;
+	self.HideRequest = false;
 	self.UpdateValueTo = nil;
 	self.LastShownValue = nil;
 	self.InvertCount = nil;
@@ -729,6 +758,7 @@ function cPowaTimer:Hide()
 	self.lastShownLarge = nil;
 	self.lastShownSmall = nil;
 	self.Showing = false;
+	self.HideRequest = false;
 	self.InvertCount = nil;
 	--PowaAuras:ShowText(">>>>> Hide timer frame");
 end
