@@ -1,4 +1,4 @@
-
+--===== Base class for Timers and Stacks (virtual) =====
 cPowaDecorator = PowaClass();
 
 function cPowaDecorator:IsRelative()
@@ -32,8 +32,18 @@ function cPowaDecorator:Show()
 	end
 end
 
+function cPowaDecorator:Redisplay(aura, testing)
+	self:Dispose();
+	self:SetShowOnAuraHide(aura);
+	self:CreateFrameIfMissing(aura);	
+	timer:CheckActive(aura, testing);
+end
+
 function cPowaDecorator:CheckActive(aura, testing)
-    if (not self.enabled) then return; end
+    if (not self.enabled) then
+		self.Active = false;
+		return;
+	end
 	local oldActive = self.Active;
 	if (testing) then
 		self.Active = aura.Active;	
@@ -151,17 +161,25 @@ function cPowaStacks:CreateFrameIfMissing(aura)
 	end
 	local frame = self:GetFrame();
 	if (not frame) then
-		--PowaAuras:ShowText("Creating missing StacksFrame for aura "..tostring(self.id));		
+		PowaAuras:ShowText("Created missing Stacks Frame for aura ", self.id, " frame=", frame);		
 		frame = CreateFrame("Frame", nil, UIParent);
 		PowaAuras.StacksFrames[self.id] = frame;
 		
 		frame:SetFrameStrata(aura.strata);
-		frame:Hide(); 
-		
+		frame:Hide(); 	
 		frame.texture = frame:CreateTexture(nil, "BACKGROUND");
 		frame.texture:SetBlendMode("ADD");
 		frame.texture:SetAllPoints(frame);
 		frame.texture:SetTexture(self:GetTexture());
+		frame:SetAlpha(math.min(self.a, 0.99));
+		frame:SetWidth(20 * self.h);
+		frame:SetHeight(20 * self.h);
+		if (self:IsRelative()) then
+			--PowaAuras:ShowText(PowaAuras.Frames[auraId],": self.Relative=", self.Relative, " RelativeToParent=", PowaAuras.RelativeToParent[self.Relative], " x=", self.x, " y=",self.y);
+			frame:SetPoint(PowaAuras.RelativeToParent[self.Relative], PowaAuras.Frames[auraId], self.Relative, self.x, self.y);
+		else
+			frame:SetPoint("CENTER", self.x, self.y);
+		end
 		
 		frame.textures = {
 			[1] = frame.texture
@@ -173,15 +191,7 @@ function cPowaStacks:CreateFrameIfMissing(aura)
 end
 
 function cPowaStacks:UpdateOptions(frame)
-	frame:SetAlpha(math.min(self.a, 0.99));
-	frame:SetWidth(20 * self.h);
-	frame:SetHeight(20 * self.h);
-	if (self:IsRelative()) then
-		--PowaAuras:ShowText(PowaAuras.Frames[auraId],": self.Relative=", self.Relative, " RelativeToParent=", PowaAuras.RelativeToParent[self.Relative], " x=", self.x, " y=",self.y);
-		frame:SetPoint(PowaAuras.RelativeToParent[self.Relative], PowaAuras.Frames[auraId], self.Relative, self.x, self.y);
-	else
-		frame:SetPoint("CENTER", self.x, self.y);
-	end
+
 end
 
 function cPowaStacks:GetTexture()
@@ -435,13 +445,25 @@ function cPowaTimer:CreateFrameIfMissing(aura)
 		PowaAuras.TimerFrame[self.id] = {};
 	end
 	if (not frame1) then
+		PowaAuras:ShowText("Created missing Timer Frame for aura ", self.id, " frame1=", frame1);		
 		frame1 = self:CreateFrame(aura, 1);
+		frame1:SetAlpha(math.min(self.a,0.99));
+		frame1:SetWidth(20 * self.h);
+		frame1:SetHeight(20 * self.h);
+		if (self:IsRelative()) then
+			frame1:SetPoint(PowaAuras.RelativeToParent[self.Relative], PowaAuras.Frames[self.id], self.Relative, self.x, self.y);
+		else
+			frame1:SetPoint("CENTER", self.x, self.y);
+		end
 	end
 	if (not frame2 and self.cents) then
+		PowaAuras:ShowText("Created missing Timer Frame for aura ", self.id, " frame2=", frame2);		
 		frame2 = self:CreateFrame(aura, 2);
+		frame2:SetAlpha(self.a * 0.75);
+		frame2:SetWidth(14 * self.h);
+		frame2:SetHeight(14 * self.h);
+		frame2:SetPoint("LEFT", frame1, "RIGHT", 1, -1.5);
 	end
-	--PowaAuras:ShowText("Created missing TimerFrames for aura ", self.id, " frame1=", frame1, " frame2=", frame2);		
-    self:UpdateOptions(frame1, frame2);
 	return frame1, frame2;
 end
 
@@ -457,23 +479,6 @@ function cPowaTimer:CreateFrame(aura, index)
 	frame.texture:SetAllPoints(frame);
 	frame.texture:SetTexture(self:GetTexture());
 	return frame, texture;
-end
-
-function cPowaTimer:UpdateOptions(frame1, frame2)		
-	frame1:SetAlpha(math.min(self.a,0.99));
-	frame1:SetWidth(20 * self.h);
-	frame1:SetHeight(20 * self.h);
-	if (self:IsRelative()) then
-		frame1:SetPoint(PowaAuras.RelativeToParent[self.Relative], PowaAuras.Frames[self.id], self.Relative, self.x, self.y);
-	else
-		frame1:SetPoint("CENTER", self.x, self.y);
-	end
-	if (frame2) then
-		frame2:SetAlpha(self.a * 0.75);
-		frame2:SetWidth(14 * self.h);
-		frame2:SetHeight(14 * self.h);
-		frame2:SetPoint("LEFT", frame1, "RIGHT", 1, -1.5);
-	end
 end
 
 function cPowaTimer:GetTexture()
