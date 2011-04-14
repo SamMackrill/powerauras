@@ -237,16 +237,6 @@ end
 function cPowaAura:CustomEvents()
 end
 
-function cPowaAura:TimerShowing()
-	if (not self.Timer) then return false; end
-	return self.Timer.Showing;
-end
-
-function cPowaAura:StacksShowing()
-	if (not self.Stacks) then return false; end
-	return self.Stacks.Showing;
-end
-
 function cPowaAura:FullTimerAllowed()
 	--PowaAuras:ShowText("TimerAllowed CanHaveTimer", self.CanHaveTimer, " inverse ", self.inverse, " CanHaveTimerOnInverse ", self.CanHaveTimerOnInverse);
 	return (self.CanHaveTimer and not self.inverse) or (self.CanHaveTimerOnInverse and self.inverse);
@@ -293,7 +283,7 @@ function cPowaAura:CreateDefaultTriggers()
 	local trigger=self:CreateTrigger(cPowaAuraShowTrigger, {Name="PA_AuraShow", Debug=false});
 	--trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Show Aura"});
 	if (self.begin>0) then
-		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_ShowAnim", Frame=frame, HideFrame=frame2, Animation=self.begin, Speed=self.speed, Alpha=self.alpha, BeginSpin=self.beginSpin, State=1, StateName="AnimationState"});
+		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_ShowAnim", Frame=frame, HideFrame=frame2, Animation=self.begin, Speed=self.speed, Alpha=self.alpha, BeginSpin=self.beginSpin, StateValue=1, StateName="AnimationState"});
 	elseif (self.anim1>0 or self.anim2>0) then
 		trigger:AddAction(cPowaAuraStateAction, {Name="PA_StartState", StateName="AnimationState", StateValue=1});
 	end			
@@ -309,7 +299,7 @@ function cPowaAura:CreateDefaultTriggers()
 	trigger=self:CreateTrigger(cPowaAuraHideTrigger, {Name="PA_AuraHide", Debug=false});
 	--trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Hide Aura"});
 	if (self.finish>0) then
-		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_HideAnim", Frame=frame, HideFrame=frame2, Animation=self.finish + 100, Speed=self.speed, Alpha=self.alpha, Hide=true, State=0, StateName="AnimationState"});
+		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_HideAnim", Frame=frame, HideFrame=frame2, Animation=self.finish + 100, Speed=self.speed, Alpha=self.alpha, Hide=true, StateValue=0, StateName="AnimationState"});
 	else
 		trigger:AddAction(cPowaAuraHideAction, {Name="PA_Hide", All=true});
 		trigger:AddAction(cPowaAuraStateAction, {Name="PA_State", StateName="AnimationState", StateValue=0});
@@ -320,9 +310,9 @@ function cPowaAura:CreateDefaultTriggers()
 		trigger:AddAction(cPowaAuraPlaySoundAction, {Name="PA_Sound", Sound=self.soundend});
 	end			
 	
-	-- =======
+	-- ==========
 	-- After Show
-	-- =======		
+	-- ==========		
 	if (self.anim1>1 or self.anim2>0) then
 		--PowaAuras:ShowText("Main animation trigger, anim1=", self.anim1, " anim2=", self.anim2);
 		trigger=self:CreateTrigger(cPowaStateTrigger, {Name="PA_MainAnim", Value=1, Qualifier="AnimationState", Compare="="});
@@ -341,9 +331,9 @@ function cPowaAura:CreateDefaultTriggers()
 		end
 	end
 	
-	-- =======
+	-- =====
 	-- Timer
-	-- =======		
+	-- =====		
 	if (self.Timer) then
 		if (self.Timer.enabled) then
 			local frame1, frame2 = self.Timer:CreateFrameIfMissing(self)
@@ -380,9 +370,9 @@ function cPowaAura:CreateDefaultTriggers()
 		end		
 	end
 	
-	-- =======
+	-- ======
 	-- Stacks
-	-- =======		
+	-- ======		
 	if (self.Stacks and self.Stacks.UpdatePing) then
 		local frame = self.Stacks:CreateFrameIfMissing(self)
 		trigger=self:CreateTrigger(cPowaStacksTrigger, {Name="PA_StacksPing"});
@@ -538,7 +528,7 @@ function cPowaAura:IncrementInvertCount(now)
 	end
 	if (self.InvertCount==1) then
 		if (self.Active) then
-			self:SetHideRequest("Trigger Hide Action", now);
+			self:SetHideRequest("Trigger Hide Action Active & InvertCount=1", now);
 		else
 			self:Show();
 		end
@@ -554,7 +544,7 @@ function cPowaAura:DecrementInvertCount(now)
 		if (self.Active) then
 			self:Show();
 		else
-			self:Hide();
+			self:SetHideRequest("Trigger Hide Action Inactive & InvertCount=0", now);
 		end
 	end
 end

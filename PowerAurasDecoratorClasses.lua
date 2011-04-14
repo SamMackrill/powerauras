@@ -33,6 +33,7 @@ function cPowaDecorator:Show()
 end
 
 function cPowaDecorator:Redisplay(aura, testing)
+	PowaAuras:DisplayText(GetTime(), " ", self.Type, "(", self.id, ") Redisplay request");
 	self:Dispose();
 	self:SetShowOnAuraHide(aura);
 	self:CreateFrameIfMissing(aura);	
@@ -41,14 +42,16 @@ end
 
 function cPowaDecorator:CheckActive(aura, testing)
     if (not self.enabled) then
-		self.Active = false;
+		if (self.Active) then
+			self:Dispose();
+		end
 		return;
 	end
 	local oldActive = self.Active;
 	if (testing) then
 		self.Active = aura.Active;	
 	else
-		self.Active = (aura.Active and not self.ShowOnAuraHide) or (not aura.Active and self.ShowOnAuraHide);	
+		self.Active = (aura.Active and not self.ShowOnAuraHide) or (not aura.Active and self.ShowOnAuraHide);	-- where is xor when you need it?
 	end
 	--PowaAuras:DisplayText(aura.id, " CheckActive: ", self.Type, " AuraActive=", aura.Active, " ShowOnAuraHide=", self.ShowOnAuraHide);
 	--PowaAuras:DisplayText(GetTime(), " ", self.Type, "(", self.id, ") Active=", self.Active, " (was ", oldActive, ")");
@@ -105,8 +108,9 @@ function cPowaDecorator:DecrementInvertCount(now)
 	end
 end
 
-
+--==================
 --===== Stacks =====
+--==================
 
 cPowaStacks = PowaClass(cPowaDecorator, function(stacker, aura, base)
 	
@@ -368,7 +372,9 @@ end
 function cPowaStacks:CheckDecoratorTriggers(aura, invertOnly)
 end
 
+--=================
 --===== Timer =====
+--=================
 
 cPowaTimer = PowaClass(cPowaDecorator, function(timer, aura, base)
 
@@ -456,13 +462,18 @@ function cPowaTimer:CreateFrameIfMissing(aura)
 			frame1:SetPoint("CENTER", self.x, self.y);
 		end
 	end
-	if (not frame2 and self.cents) then
-		PowaAuras:ShowText("Created missing Timer Frame for aura ", self.id, " frame2=", frame2);		
-		frame2 = self:CreateFrame(aura, 2);
-		frame2:SetAlpha(self.a * 0.75);
-		frame2:SetWidth(14 * self.h);
-		frame2:SetHeight(14 * self.h);
-		frame2:SetPoint("LEFT", frame1, "RIGHT", 1, -1.5);
+	if (self.cents) then
+		if (not frame2) then
+			PowaAuras:ShowText("Created missing Timer Frame for aura ", self.id, " frame2=", frame2);		
+			frame2 = self:CreateFrame(aura, 2);
+			frame2:SetAlpha(self.a * 0.75);
+			frame2:SetWidth(14 * self.h);
+			frame2:SetHeight(14 * self.h);
+			frame2:SetPoint("LEFT", frame1, "RIGHT", 1, -1.5);
+		end
+	elseif (frame2) then
+		PowaAuras:Dispose("TimerFrame", self.id, 2);
+		frame2 = nil;
 	end
 	return frame1, frame2;
 end
@@ -595,7 +606,6 @@ function cPowaTimer:CheckDecoratorTriggers(aura, invertOnly)
 	aura:CheckTriggers("Duration", newvalue, nil, invertOnly);
 	aura:ProcessTriggerQueue();
 end
-
 
 function cPowaTimer:DisplayCurrent()
 	self:Update(0);

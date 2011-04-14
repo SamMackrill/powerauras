@@ -3456,21 +3456,15 @@ function PowaAuras:ToggleTesting()
 	end
 
 	if (aura.Showing) then 
-		--aura:SetHideRequest("ToggleTesting", true, true);
-		--aura.Active = false;
 		aura:CheckActive(false, true, true);
 	else
-		--aura.Active = true;
-		--self:ShowText("ToggleTesting RecreateFrames");
 		aura:RecreateFrames();
 		aura:CheckActive(true, true, true);
-		--self:DisplayAura(aura.id);
 	end
 end
 
 function PowaAuras:TestAllAuras()
-
-	PowaAuras:OptionHideAll(true);
+	PowaAuras:OptionHideAll();
 	--self:ShowText("Test All Active Auras");
 	for id, aura in pairs(self.Auras) do
 		if (not aura.off) then
@@ -3478,25 +3472,14 @@ function PowaAuras:TestAllAuras()
 			aura:CheckActive(true, true, true);
 		end
 	end
-	
 end
 
-function PowaAuras:OptionHideAll(now) --- Hide all auras
-	--self:ShowText("Hide All Frames now=", now);
+function PowaAuras:OptionHideAll()
+	--self:ShowText("Hide All Auras");
 	for id, aura in pairs(self.Auras) do
 		self:ResetDragging(aura, self.Frames[aura.id]);
 		aura:CheckActive(false, true, true);
-		--if now then
-		--	--self:ShowText("Hide aura id=", id);
-		--	aura:Hide("OptionHideAll");
-		--	if (aura.Timer) then aura.Timer:Hide(); end 
-		--	if (aura.Stacks) then aura.Stacks:Hide(); end
-		--else
-		--	aura:SetHideRequest("OptionHideAll", true);
-		--	if (aura.Timer)  then aura.Timer.HideRequest  = true; end
-		--end
 	end	
-
 end
 
 
