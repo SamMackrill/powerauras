@@ -3526,8 +3526,8 @@ function PowaAuras:RedisplayAura(auraId, recreateTriggers) ---Re-show aura after
 		aura:RecreateFrames();
 		aura:CheckActive(true, true, true);
 	end
-	if (aura.Timer) then aura.Timer:Redisplay(aura, true);
-	if (aura.Stacks) then aura.Stacks:Redisplay(aura, true);
+	if (aura.Timer) then aura.Timer:Redisplay(aura, true); end
+	if (aura.Stacks) then aura.Stacks:Redisplay(aura, true); end
 
 end
 
