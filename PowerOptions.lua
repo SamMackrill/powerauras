@@ -3020,10 +3020,11 @@ function PowaAuras:TimerChecked(control, setting)
 	local aura = self.Auras[self.CurrentAuraId];
 	local timer = aura.Timer;
 	if (control:GetChecked()) then
-		aura.Timer[setting] = true;
+		timer[setting] = true;
 	else
-		aura.Timer[setting] = false;
+		timer[setting] = false;
 	end
+	if (not timer.enabled) then return; end
 	timer:Redisplay(aura, true);
 end
 
@@ -3459,21 +3460,15 @@ function PowaAuras:ToggleTesting()
 	end
 
 	if (aura.Showing) then 
-		--aura:SetHideRequest("ToggleTesting", true, true);
-		--aura.Active = false;
 		aura:CheckActive(false, true, true);
 	else
-		--aura.Active = true;
-		--self:ShowText("ToggleTesting RecreateFrames");
 		aura:RecreateFrames();
 		aura:CheckActive(true, true, true);
-		--self:DisplayAura(aura.id);
 	end
 end
 
 function PowaAuras:TestAllAuras()
-
-	PowaAuras:OptionHideAll(true);
+	PowaAuras:OptionHideAll();
 	--self:ShowText("Test All Active Auras");
 	for id, aura in pairs(self.Auras) do
 		if (not aura.off) then
@@ -3481,25 +3476,14 @@ function PowaAuras:TestAllAuras()
 			aura:CheckActive(true, true, true);
 		end
 	end
-	
 end
 
-function PowaAuras:OptionHideAll(now) --- Hide all auras
-	--self:ShowText("Hide All Frames now=", now);
+function PowaAuras:OptionHideAll()
+	--self:ShowText("Hide All Auras");
 	for id, aura in pairs(self.Auras) do
 		self:ResetDragging(aura, self.Frames[aura.id]);
 		aura:CheckActive(false, true, true);
-		--if now then
-		--	--self:ShowText("Hide aura id=", id);
-		--	aura:Hide("OptionHideAll");
-		--	if (aura.Timer) then aura.Timer:Hide(); end 
-		--	if (aura.Stacks) then aura.Stacks:Hide(); end
-		--else
-		--	aura:SetHideRequest("OptionHideAll", true);
-		--	if (aura.Timer)  then aura.Timer.HideRequest  = true; end
-		--end
 	end	
-
 end
 
 
@@ -3538,10 +3522,12 @@ function PowaAuras:RedisplayAura(auraId, recreateTriggers) ---Re-show aura after
 		aura:CreateDefaultTriggers();
 	end
 	if (aura.Showing) then
-		aura:CheckActive(false, true, true);
+		aura:Dispose();
 		aura:RecreateFrames();
 		aura:CheckActive(true, true, true);
 	end
+	if (aura.Timer) then aura.Timer:Redisplay(aura, true);
+	if (aura.Stacks) then aura.Stacks:Redisplay(aura, true);
 
 end
 

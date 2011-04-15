@@ -1,4 +1,4 @@
-
+--===== Base class for Timers and Stacks (virtual) =====
 cPowaDecorator = PowaClass();
 
 function cPowaDecorator:IsRelative()
@@ -54,12 +54,17 @@ function cPowaDecorator:ValidValue(aura, testing)
 end
 
 function cPowaDecorator:CheckActive(aura, testing)
-    if (not self.enabled) then return; end
+    if (not self.enabled) then
+		if (self.Active) then
+			self:Dispose();
+		end
+		return;
+	end
 	local oldActive = self.Active;
 	if (testing) then
 		self.Active = aura.Active;	
 	else
-		self.Active = (aura.Active and not self.ShowOnAuraHide) or (not aura.Active and self.ShowOnAuraHide);	
+		self.Active = (aura.Active and not self.ShowOnAuraHide) or (not aura.Active and self.ShowOnAuraHide);	-- where is xor when you need it?
 	end
 	--PowaAuras:DisplayText(aura.id, " CheckActive: ", self.Type, " AuraActive=", aura.Active, " ShowOnAuraHide=", self.ShowOnAuraHide);
 	--PowaAuras:DisplayText(GetTime(), " ", self.Type, "(", self.id, ") Active=", self.Active, " (was ", oldActive, ")");
@@ -68,19 +73,24 @@ function cPowaDecorator:CheckActive(aura, testing)
 
 	if (not testing) then
 		self:CheckDecoratorTriggers(aura, true);
+		if (self.Active) then
+			self:CheckTriggers(self.Type.."Active");
+		else
+			self:CheckTriggers(self.Type.."Inactive");
+		end
 	end
 
 	--PowaAuras:ShowText(GetTime(), " ", self.Type, ".InvertCount=", self.InvertCount, " Showing=", self.Showing);
 
 	if (not self.Active) then
 		--PowaAuras:ShowText(GetTime(),"=== ", self.Type, " INACTIVE ", auraId);
-		self:Hide();
+		self:SetHideRequest(self.Type.." Inactive", now, testing);
 		return;
 	end
 
 	--PowaAuras:ShowText(GetTime(),"=== ", self.Type, " ACTIVE ", auraId);
 	if (self.InvertCount>0 and not testing) then
-		self:Hide();
+		self:SetHideRequest(self.Type.." Active and InvertCount>0", now, testing);
 	else
 		self:Show(aura, "Active");
 	end	
@@ -94,6 +104,29 @@ function cPowaDecorator:Redisplay(aura, testing)
 	self:CheckActive(aura, testing);
 end
 
+function cPowaDecorator:SetHideRequest(source, now, testing)
+
+	if (self.Debug) then
+		PowaAuras:Message(GetTime()," ", self.Type, " SetHideRequest ", self.HideRequest, " showing=", self.Showing, " from=", source, " now=", now);
+		PowaAuras:Message(GetTime()," from=", source, " now=", now, " testing=", testing);
+	end
+
+	if ((self.HideRequest and not now) or not self.Showing) then return; end
+
+	self.HideRequest = (not now);
+	self.Showing = false;
+
+	if (not PowaAuras.ModTest) then
+		aura:CheckTriggers(self.Type.."Hide");
+	end
+
+	if (now or testing) then
+		self:Hide();
+		return;
+	end
+
+end
+
 function cPowaDecorator:IncrementInvertCount(aura)
 	self.InvertCount = (self.InvertCount or 0) + 1;
 	local aura = PowaAuras.Auras[self.id];
@@ -102,7 +135,7 @@ function cPowaDecorator:IncrementInvertCount(aura)
 	end
 	if (self.InvertCount==1) then
 		if (aura.Active or self.ShowOnAuraHide) then
-			self:Hide();
+			self:SetHideRequest(self.Type," Trigger Hide Action Active/ShowOnHide & InvertCount=1", now);
 		else
 			self:Show(aura, self.Type.." InvertCount=1");
 		end
@@ -119,13 +152,14 @@ function cPowaDecorator:DecrementInvertCount(aura, now)
 		if (aura.Active or self.ShowOnAuraHide) then
 			self:Show(aura, self.Type.." InvertCount=0");
 		else
-			self:Hide();
+			self:SetHideRequest(self.Type," Trigger Hide Action Inactive/ not ShowOnHide & InvertCount=0", now);
 		end
 	end
 end
 
-
+--==================
 --===== Stacks =====
+--==================
 
 cPowaStacks = PowaClass(cPowaDecorator, function(stacker, aura, base)
 	
@@ -190,8 +224,7 @@ function cPowaStacks:CreateFrameIfMissing(aura)
 		PowaAuras.StacksFrames[self.id] = frame;
 		
 		frame:SetFrameStrata(aura.strata);
-		frame:Hide(); 
-		
+		frame:Hide(); 	
 		frame.texture = frame:CreateTexture(nil, "BACKGROUND");
 		frame.texture:SetBlendMode("ADD");
 		frame.texture:SetAllPoints(frame);
@@ -385,6 +418,7 @@ function cPowaStacks:Hide()
 		frame:Hide();
 	end
 	self.Showing = false;
+	self.HideRequest = false;
 	self.UpdateValueTo = nil;
 	self.LastShownValue = nil;
 	self.InvertCount = nil;
@@ -398,7 +432,9 @@ end
 function cPowaStacks:CheckDecoratorTriggers(aura, invertOnly)
 end
 
+--=================
 --===== Timer =====
+--=================
 
 cPowaTimer = PowaClass(cPowaDecorator, function(timer, aura, base)
 
@@ -495,8 +531,9 @@ function cPowaTimer:CreateFrameIfMissing(aura)
 			frame2:SetHeight(14 * self.h);
 			frame2:SetPoint("LEFT", frame1, "RIGHT", 1, -1.5);
 		end
-	else
+	elseif (frame2) then
 		PowaAuras:Dispose("TimerFrame", self.id, 2);
+		frame2 = nil;
 	end
 	return frame1, frame2;
 end
@@ -630,7 +667,6 @@ function cPowaTimer:CheckDecoratorTriggers(aura, invertOnly)
 	aura:ProcessTriggerQueue();
 end
 
-
 function cPowaTimer:DisplayCurrent()
 	self:Update(0);
 end
@@ -753,6 +789,7 @@ function cPowaTimer:Hide()
 	self.lastShownLarge = nil;
 	self.lastShownSmall = nil;
 	self.Showing = false;
+	self.HideRequest = false;
 	self.InvertCount = nil;
 	--PowaAuras:ShowText(">>>>> Hide timer frame");
 end
