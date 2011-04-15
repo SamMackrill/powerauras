@@ -81,7 +81,7 @@ function PowaAuras:Toggle(enable)
 			PowaAuras_Frame:UnregisterAllEvents();
 			PowaAuras_Frame:Hide();
 		end
-		self:OptionHideAll(true);
+		self:OptionHideAll();
 		PowaMisc.Disabled = true;
 		self:DisplayText("Power Auras "..self.Colors.Red..ADDON_DISABLED.."|r");
 	end
@@ -1088,17 +1088,7 @@ function PowaAuras:InitialiseAuraFrame(aura, frame, texture, alpha)
 	  end	
 	end
 
-	frame.baseH = 256 * aura.size * (2-aura.torsion);
-	if (aura.textaura == true) then
-		local fontsize = math.min(33, math.max(10, math.floor(frame.baseH / 12.8)));
-		local checkfont = texture:SetFont(self.Fonts[aura.aurastextfont], fontsize, "OUTLINE, MONOCHROME");
-		if not checkfont then
-			texture:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE, MONOCHROME");
-		end
-		frame.baseL = texture:GetStringWidth() + 5;
-	else
-		frame.baseL = 256 * aura.size * aura.torsion;
-	end
+	PowaAuras:SetFrameSize(frame, aura.size, aura.torsion, aura.textaura, aura.aurastextfont);
 
 	frame:SetAlpha(math.min(alpha,0.99));
 	frame:SetPoint("CENTER",aura.x, aura.y);
@@ -1106,6 +1096,20 @@ function PowaAuras:InitialiseAuraFrame(aura, frame, texture, alpha)
 	frame:SetHeight(frame.baseH);
 	
 
+end
+
+function PowaAuras:SetFrameSize(frame, size, torsion, textaura, aurastextfont)
+	frame.baseH = 256 * size * (2-torsion);
+	if (textaura == true) then
+		local fontsize = math.min(33, math.max(10, math.floor(frame.baseH / 12.8)));
+		local checkfont = texture:SetFont(self.Fonts[aurastextfont], fontsize, "OUTLINE, MONOCHROME");
+		if not checkfont then
+			texture:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE, MONOCHROME");
+		end
+		frame.baseL = texture:GetStringWidth() + 5;
+	else
+		frame.baseL = 256 * size * torsion;
+	end
 end
 
 function PowaAuras:SetupStaticPopups()
