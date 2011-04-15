@@ -82,10 +82,10 @@ function cPowaAuraInvertAction:Fire()
 		aura:IncrementInvertCount(self.Parameters.Now);
 	end
 	if (aura.Timer and (self.Parameters.All or self.Parameters.Timer)) then
-		aura.Timer:IncrementInvertCount(self.Parameters.Now);
+		aura.Timer:IncrementInvertCount(aura);
 	end
 	if (aura.Stacks and (self.Parameters.All or self.Parameters.Stacks)) then
-		aura.Stacks:IncrementInvertCount(self.Parameters.Now);
+		aura.Stacks:IncrementInvertCount(aura);
 	end
 end
 
@@ -95,13 +95,13 @@ function cPowaAuraInvertAction:Reset()
 	end
 	local aura = PowaAuras.Auras[self.AuraId];
 	if (self.Parameters.All or self.Parameters.Aura) then
-		aura:DecrementInvertCount(self.Parameters.Now);
+		aura:DecrementInvertCount();
 	end
 	if (aura.Timer and (self.Parameters.All or self.Parameters.Timer)) then
-		aura.Timer:DecrementInvertCount(self.Parameters.Now);
+		aura.Timer:DecrementInvertCount(aura);
 	end
 	if (aura.Stacks and (self.Parameters.All or self.Parameters.Stacks)) then
-		aura.Stacks:DecrementInvertCount(self.Parameters.Now);
+		aura.Stacks:DecrementInvertCount(aura);
 	end
 end
 
