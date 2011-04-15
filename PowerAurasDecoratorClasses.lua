@@ -66,57 +66,57 @@ function cPowaDecorator:CheckActive(aura, testing)
 	else
 		self.Active = (aura.Active and not self.ShowOnAuraHide) or (not aura.Active and self.ShowOnAuraHide);	-- where is xor when you need it?
 	end
-	--PowaAuras:DisplayText(aura.id, " CheckActive: ", self.Type, " AuraActive=", aura.Active, " ShowOnAuraHide=", self.ShowOnAuraHide);
-	--PowaAuras:DisplayText(GetTime(), " ", self.Type, "(", self.id, ") Active=", self.Active, " (was ", oldActive, ")");
+	PowaAuras:DisplayText(aura.id, " CheckActive: ", self.Type, " AuraActive=", aura.Active, " ShowOnAuraHide=", self.ShowOnAuraHide);
+	PowaAuras:DisplayText(GetTime(), " ", self.Type, "(", self.id, ") Active=", self.Active, " (was ", oldActive, ")");
 	if (oldActive==self.Active) then return; end
 	self.InvertCount = 0;
 
 	if (not testing) then
 		self:CheckDecoratorTriggers(aura, true);
 		if (self.Active) then
-			self:CheckTriggers(self.Type.."Active");
+			aura:CheckTriggers(self.Type.."Active");
 		else
-			self:CheckTriggers(self.Type.."Inactive");
+			aura:CheckTriggers(self.Type.."Inactive");
 		end
 	end
 
 	--PowaAuras:ShowText(GetTime(), " ", self.Type, ".InvertCount=", self.InvertCount, " Showing=", self.Showing);
 
 	if (not self.Active) then
-		--PowaAuras:ShowText(GetTime(),"=== ", self.Type, " INACTIVE ", auraId);
-		self:SetHideRequest(self.Type.." Inactive", now, testing);
+		PowaAuras:ShowText(GetTime(),"=== ", self.Type, " INACTIVE ", auraId);
+		self:SetHideRequest(aura, self.Type.." Inactive", now, testing);
 		return;
 	end
 
-	--PowaAuras:ShowText(GetTime(),"=== ", self.Type, " ACTIVE ", auraId);
+	PowaAuras:ShowText(GetTime(),"=== ", self.Type, " ACTIVE ", auraId);
 	if (self.InvertCount>0 and not testing) then
-		self:SetHideRequest(self.Type.." Active and InvertCount>0", now, testing);
+		self:SetHideRequest(aura, self.Type.." Active and InvertCount>0", now, testing);
 	else
 		self:Show(aura, "Active");
 	end	
 end
 
 function cPowaDecorator:Redisplay(aura, testing)
-	--PowaAuras:ShowText(self.Type, " Redisplay ", auraId);
+	PowaAuras:ShowText(self.Type, " Redisplay ", auraId);
 	self:Dispose();
 	self:CreateFrameIfMissing(aura);
 	self:SetShowOnAuraHide(aura);
 	self:CheckActive(aura, testing);
 end
 
-function cPowaDecorator:SetHideRequest(source, now, testing)
+function cPowaDecorator:SetHideRequest(aura, source, now, testing)
 
-	if (self.Debug) then
+	--if (self.Debug) then
 		PowaAuras:Message(GetTime()," ", self.Type, " SetHideRequest ", self.HideRequest, " showing=", self.Showing, " from=", source, " now=", now);
 		PowaAuras:Message(GetTime()," from=", source, " now=", now, " testing=", testing);
-	end
+	--end
 
 	if ((self.HideRequest and not now) or not self.Showing) then return; end
 
 	self.HideRequest = (not now);
 	self.Showing = false;
 
-	if (not PowaAuras.ModTest) then
+	if (not testing) then
 		aura:CheckTriggers(self.Type.."Hide");
 	end
 
@@ -135,7 +135,7 @@ function cPowaDecorator:IncrementInvertCount(aura)
 	end
 	if (self.InvertCount==1) then
 		if (aura.Active or self.ShowOnAuraHide) then
-			self:SetHideRequest(self.Type," Trigger Hide Action Active/ShowOnHide & InvertCount=1", now);
+			self:SetHideRequest(aura, self.Type.." Trigger Hide Action Active/ShowOnHide & InvertCount=1", now, PowaAuras.ModTest);
 		else
 			self:Show(aura, self.Type.." InvertCount=1");
 		end
@@ -152,7 +152,7 @@ function cPowaDecorator:DecrementInvertCount(aura, now)
 		if (aura.Active or self.ShowOnAuraHide) then
 			self:Show(aura, self.Type.." InvertCount=0");
 		else
-			self:SetHideRequest(self.Type," Trigger Hide Action Inactive/ not ShowOnHide & InvertCount=0", now);
+			self:SetHideRequest(aura, self.Type.." Trigger Hide Action Inactive/ not ShowOnHide & InvertCount=0", now, PowaAuras.ModTest);
 		end
 	end
 end
@@ -601,6 +601,7 @@ end
 function cPowaTimer:Display(aura, newvalue)
 		
 	if (not newvalue or newvalue <= 0) then
+		PowaAuras:ShowText("Timer Value=", newvalue, " Showing=", self.Showing);
 		if (self.Showing) then
 			self:CheckActive(aura, false, PowaAuras.ModTest);
 			PowaAuras:TestThisEffect(self.id);
