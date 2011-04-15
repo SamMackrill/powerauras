@@ -19,7 +19,7 @@ function PowaAuras:AddAnimation(action, frame, animation, group, speed, alpha, b
 	function(self, forced)
 		--PowaAuras:ShowText("EndAnimation OnFinished ", self:GetName(), " Action=", self.Action.Id);
 		if (self.Action) then
-			self.Action:Finished();
+			self.Action:PlayNextAnimation();
 		end
 	end);
 	
@@ -124,7 +124,7 @@ function PowaAuras:AddLoopingAnimation(aura, action, frame, animation, group, sp
 	animationGroup:SetScript("OnFinished",
 	function(self, forced)
 		if (self.Action) then
-			self.Action:Finished();
+			self.Action:PlayNextAnimation();
 		end
 	end);
 
