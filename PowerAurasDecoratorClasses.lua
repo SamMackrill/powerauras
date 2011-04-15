@@ -5,9 +5,20 @@ function cPowaDecorator:IsRelative()
 	return (self.Relative and self.Relative~="NONE");
 end
 
-function cPowaDecorator:Show()
-	--PowaAuras:ShowText(self.Type, " Show() Showing=", self.Showing, " InvertCount=", self.InvertCount);
+function cPowaDecorator:Show(aura, source)
+	if (not self.enabled) then
+		if (self.Showing) then
+			self:Hide();
+		end
+		return;
+	end
+	--PowaAuras:ShowText(self.Type, " Show() Showing=", self.Showing, " source=", source);
 	if (self.Showing) then return; end
+	if (not self:ValidValue(aura, PowaAuras.ModTest)) then
+		--PowaAuras:ShowText(self.Type, " Show() Invalid value");
+		return;
+	end
+	
 	local aura = PowaAuras.Auras[self.id];
 	local frame1, frame2 = self:CreateFrameIfMissing(aura);
 	if (frame1 == nil) then
@@ -16,11 +27,14 @@ function cPowaDecorator:Show()
 	end
 
 	if (self.Debug) then
-		PowaAuras:Message(self.Type, " Show() ", self.id, " frame:Show() ", frame1);
+		PowaAuras:Message(self.Type, " Show() ", self.id, " frame1:Show() ", frame1);
 	end
 		
 	frame1:Show();
-	if (frame2) then frame2:Show(); end
+	if (frame2) then 
+		--PowaAuras:Message(self.Type, " Show() ", self.id, " frame2:Show() ", frame2);
+		frame2:Show();
+	end
 
 	self.Showing = true;
 	self.HideRequest = false;
@@ -30,6 +44,13 @@ function cPowaDecorator:Show()
 	if (not PowaAuras.ModTest) then
 		aura:CheckTriggers(self.Type.."Show");
 	end
+end
+
+function cPowaDecorator:ValidValue(aura, testing)
+	if (testing) then return true; end
+	local displayValue = self:GetDisplayValue(aura, 0);
+	--PowaAuras:ShowText(self.Type, " ValidValue()=", displayValue);
+	return (displayValue and displayValue>0);
 end
 
 function cPowaDecorator:CheckActive(aura, testing)
@@ -61,11 +82,19 @@ function cPowaDecorator:CheckActive(aura, testing)
 	if (self.InvertCount>0 and not testing) then
 		self:Hide();
 	else
-		self:Show();
+		self:Show(aura, "Active");
 	end	
 end
 
-function cPowaDecorator:IncrementInvertCount()
+function cPowaDecorator:Redisplay(aura, testing)
+	--PowaAuras:ShowText(self.Type, " Redisplay ", auraId);
+	self:Dispose();
+	self:CreateFrameIfMissing(aura);
+	self:SetShowOnAuraHide(aura);
+	self:CheckActive(aura, testing);
+end
+
+function cPowaDecorator:IncrementInvertCount(aura)
 	self.InvertCount = (self.InvertCount or 0) + 1;
 	local aura = PowaAuras.Auras[self.id];
 	if (PowaAuras.DebugTriggers or aura.Debug) then
@@ -75,12 +104,12 @@ function cPowaDecorator:IncrementInvertCount()
 		if (aura.Active or self.ShowOnAuraHide) then
 			self:Hide();
 		else
-			self:Show();
+			self:Show(aura, self.Type.." InvertCount=1");
 		end
 	end
 end
 
-function cPowaDecorator:DecrementInvertCount(now)
+function cPowaDecorator:DecrementInvertCount(aura, now)
 	self.InvertCount = (self.InvertCount or 1) - 1;
 	local aura = PowaAuras.Auras[self.id];
 	if (aura.Debug) then
@@ -88,7 +117,7 @@ function cPowaDecorator:DecrementInvertCount(now)
 	end
 	if (self.InvertCount==0) then
 		if (aura.Active or self.ShowOnAuraHide) then
-			self:Show();
+			self:Show(aura, self.Type.." InvertCount=0");
 		else
 			self:Hide();
 		end
@@ -110,14 +139,14 @@ cPowaStacks = PowaClass(cPowaDecorator, function(stacker, aura, base)
 	
 	stacker.Showing = false;
 	stacker.id = aura.id;
-	stacker.ShowOnAuraHide = false;
+	stacker:SetShowOnAuraHide(aura);
 	stacker.Type = "Stacks";
 end);
 
 -- This is the set of values that will be exported with their default values
 -- Be very careful if you change this as it may break old exports, adding new values is safe
 -- Stings must always be set as at least an empty string
--- Numbers an booleans can be set interchangable (e.g. for tri-states)
+-- Numbers and booleans can be set interchangable (e.g. for tri-states)
 cPowaStacks.ExportSettings = {
 	enabled = false,
 	x = 0,
@@ -136,6 +165,11 @@ cPowaStacks.ExportSettings = {
 	LegacySizing = false,
 }
 
+
+function cPowaStacks:SetShowOnAuraHide(aura)
+	self.ShowOnAuraHide = false;
+end
+
 function cPowaStacks:CreateAuraString()
 	local tempstr = "";
 	for k, default in pairs (self.ExportSettings) do
@@ -151,7 +185,7 @@ function cPowaStacks:CreateFrameIfMissing(aura)
 	end
 	local frame = self:GetFrame();
 	if (not frame) then
-		--PowaAuras:ShowText("Creating missing StacksFrame for aura "..tostring(self.id));		
+		--PowaAuras:ShowText("Creating missing StacksFrame for aura ", self.id);		
 		frame = CreateFrame("Frame", nil, UIParent);
 		PowaAuras.StacksFrames[self.id] = frame;
 		
@@ -162,26 +196,22 @@ function cPowaStacks:CreateFrameIfMissing(aura)
 		frame.texture:SetBlendMode("ADD");
 		frame.texture:SetAllPoints(frame);
 		frame.texture:SetTexture(self:GetTexture());
+		frame:SetAlpha(math.min(self.a, 0.99));
+		frame:SetWidth(20 * self.h);
+		frame:SetHeight(20 * self.h);
+		if (self:IsRelative()) then
+			--PowaAuras:ShowText(PowaAuras.Frames[auraId],": self.Relative=", self.Relative, " RelativeToParent=", PowaAuras.RelativeToParent[self.Relative], " x=", self.x, " y=",self.y);
+			frame:SetPoint(PowaAuras.RelativeToParent[self.Relative], PowaAuras.Frames[auraId], self.Relative, self.x, self.y);
+		else
+			frame:SetPoint("CENTER", self.x, self.y);
+		end
 		
 		frame.textures = {
 			[1] = frame.texture
 		};
 		
 	end
-	self:UpdateOptions(frame);
 	return frame;
-end
-
-function cPowaStacks:UpdateOptions(frame)
-	frame:SetAlpha(math.min(self.a, 0.99));
-	frame:SetWidth(20 * self.h);
-	frame:SetHeight(20 * self.h);
-	if (self:IsRelative()) then
-		--PowaAuras:ShowText(PowaAuras.Frames[auraId],": self.Relative=", self.Relative, " RelativeToParent=", PowaAuras.RelativeToParent[self.Relative], " x=", self.x, " y=",self.y);
-		frame:SetPoint(PowaAuras.RelativeToParent[self.Relative], PowaAuras.Frames[auraId], self.Relative, self.x, self.y);
-	else
-		frame:SetPoint("CENTER", self.x, self.y);
-	end
 end
 
 function cPowaStacks:GetTexture()
@@ -200,13 +230,21 @@ function cPowaStacks:GetFrame()
 	return PowaAuras.StacksFrames[self.id];
 end
 
+function cPowaStacks:GetDisplayValue()
+	if (PowaAuras.ModTest) then
+		return random(0,100);
+	end
+	return self.UpdateValueTo;
+end
+
 function cPowaStacks:ShowValue(aura, newvalue)
 	local frame = self:GetFrame();
-	if (PowaAuras.ModTest) then
-		newvalue = random(0,25000);
-	end
 	if (frame==nil or newvalue==nil) then
 		return;
+	end
+	
+	if (not self.Showing) then
+		self:Show(aura, "ShowValue");
 	end
 	
 	--PowaAuras:ShowText("Stacks Showvalue id=", self.id, " newvalue=", newvalue);
@@ -276,7 +314,7 @@ function cPowaStacks:SetStackCount(count)
 		return;
 	end
 
-	if (self.enabled==false or aura.InactiveDueToMulti) then 
+	if (not self.enabled or aura.InactiveDueToMulti) then 
 		--PowaAuras:UnitTestInfo("Stacks disabled");
 		--if (aura.Debug) then
 		--	PowaAuras:DisplayText("Stacks disabled");
@@ -289,12 +327,10 @@ function cPowaStacks:SetStackCount(count)
 	end
 
 	if (not count or count==0) then
-		local frame = self:GetFrame();
-		if (frame and frame:IsVisible()) then
-			frame:Hide();
+		if (self.Showing) then
+			aura:CheckTriggers("Stacks", 0);
+			self:Hide();
 		end
-		self.Showing = false;
-		self.LastShownValue = nil;
 		return;
 	end
 	
@@ -310,7 +346,7 @@ function cPowaStacks:SetStackCount(count)
 end
 
 function cPowaStacks:DisplayCurrent()
-	self.UpdateValueTo = self.LastShownValue;
+	--PowaAuras:ShowText("DisplayCurrent=", self.UpdateValueTo);		
 	self:Update()
 end
 
@@ -319,16 +355,20 @@ function cPowaStacks:Update()
 	local aura = PowaAuras.Auras[self.id];
 	if (aura == nil) then return;end
 	
-	if (self.ShowOnAuraHide and aura.Active)  or (not self.ShowOnAuraHide and not aura.Active) then
-		if (self.Showing) then
-			self:Hide();
-		end
+	--if (self.ShowOnAuraHide and aura.Active)  or (not self.ShowOnAuraHide and not aura.Active) then
+	--	if (self.Showing) then
+	--		self:Hide();
+	--	end
+	--	return;
+	--end
+	if (not self.Showing and self:ValidValue(aura, PowaAuras.ModTest)) then
+		self:Show(aura, "Not showing and value now valid")
 		return;
 	end
 	
-	--if (aura.Debug) then
+	if (aura.Debug) then
 		PowaAuras:DisplayText("Stacks Update UpdateValueTo=",self.UpdateValueTo);
-	--end
+	end
 	
 	if (self.Showing) then
 		self.LastShownValue=self.UpdateValueTo;
@@ -338,7 +378,7 @@ function cPowaStacks:Update()
 end
 
 function cPowaStacks:Hide()
-	--PowaAuras:ShowText("Hide Stacks Frame for ", self.id, " ", self.Showing, " ", PowaAuras.StacksFrames[self.id]);
+	--PowaAuras:ShowText("Hide Stacks Frame for ", self.id, " ", self.Showing);
 	if (not self.Showing) then return; end
 	local frame = self:GetFrame();
 	if (frame) then
@@ -435,13 +475,29 @@ function cPowaTimer:CreateFrameIfMissing(aura)
 		PowaAuras.TimerFrame[self.id] = {};
 	end
 	if (not frame1) then
+		--PowaAuras:ShowText("Created missing TimerFrames for aura ", self.id, " frame1=", frame1);		
 		frame1 = self:CreateFrame(aura, 1);
+		frame1:SetAlpha(math.min(self.a,0.99));
+		frame1:SetWidth(20 * self.h);
+		frame1:SetHeight(20 * self.h);
+		if (self:IsRelative()) then
+			frame1:SetPoint(PowaAuras.RelativeToParent[self.Relative], PowaAuras.Frames[self.id], self.Relative, self.x, self.y);
+		else
+			frame1:SetPoint("CENTER", self.x, self.y);
+		end
 	end
-	if (not frame2 and self.cents) then
-		frame2 = self:CreateFrame(aura, 2);
+	if (self.cents) then
+		if (not frame2) then
+			--PowaAuras:ShowText("Created missing TimerFrames for aura ", self.id, " frame2=", frame2);		
+			frame2 = self:CreateFrame(aura, 2);
+			frame2:SetAlpha(self.a * 0.75);
+			frame2:SetWidth(14 * self.h);
+			frame2:SetHeight(14 * self.h);
+			frame2:SetPoint("LEFT", frame1, "RIGHT", 1, -1.5);
+		end
+	else
+		PowaAuras:Dispose("TimerFrame", self.id, 2);
 	end
-	--PowaAuras:ShowText("Created missing TimerFrames for aura ", self.id, " frame1=", frame1, " frame2=", frame2);		
-    self:UpdateOptions(frame1, frame2);
 	return frame1, frame2;
 end
 
@@ -457,23 +513,6 @@ function cPowaTimer:CreateFrame(aura, index)
 	frame.texture:SetAllPoints(frame);
 	frame.texture:SetTexture(self:GetTexture());
 	return frame, texture;
-end
-
-function cPowaTimer:UpdateOptions(frame1, frame2)		
-	frame1:SetAlpha(math.min(self.a,0.99));
-	frame1:SetWidth(20 * self.h);
-	frame1:SetHeight(20 * self.h);
-	if (self:IsRelative()) then
-		frame1:SetPoint(PowaAuras.RelativeToParent[self.Relative], PowaAuras.Frames[self.id], self.Relative, self.x, self.y);
-	else
-		frame1:SetPoint("CENTER", self.x, self.y);
-	end
-	if (frame2) then
-		frame2:SetAlpha(self.a * 0.75);
-		frame2:SetWidth(14 * self.h);
-		frame2:SetHeight(14 * self.h);
-		frame2:SetPoint("LEFT", frame1, "RIGHT", 1, -1.5);
-	end
 end
 
 function cPowaTimer:GetTexture()

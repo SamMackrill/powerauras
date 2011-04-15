@@ -2931,9 +2931,7 @@ function PowaAuras:ShowTimerChecked(control)
 	local timer = aura.Timer;
 	if (control:GetChecked()) then
 		timer.enabled = true;
-		local frame1, frame2 = timer:CreateFrameIfMissing(aura);	
-		timer:UpdateOptions(frame1, frame2);
-		timer:CheckActive(aura, true);
+		timer:Redisplay(aura, true);
 	else
 		timer.enabled = false;
 		timer:Dispose();
@@ -3009,42 +3007,46 @@ function PowaAuras.DropDownMenu_OnClickTimerRelative(self)
 	UIDropDownMenu_SetSelectedValue(self.owner, self.value);
 	
 	--PowaAuras:ShowText(PowaAuras.Auras[PowaAuras.CurrentAuraId].id," change timer relative position ", self.value);
-	local timer = PowaAuras.Auras[PowaAuras.CurrentAuraId].Timer;
+	local aura = PowaAuras.Auras[PowaAuras.CurrentAuraId];
+	local timer = aura.Timer;
 	timer.x = 0;
 	timer.y = 0;
 	timer.Relative = self.value;
-	timer:Dispose();
+	timer:Redisplay(aura, true);
 end
 
 function PowaAuras:TimerChecked(control, setting)
 	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
 	local aura = self.Auras[self.CurrentAuraId];
+	local timer = aura.Timer;
 	if (control:GetChecked()) then
 		aura.Timer[setting] = true;
 	else
 		aura.Timer[setting] = false;
 	end
-	aura.Timer:Dispose();
-	aura.Timer:SetShowOnAuraHide(aura);
+	timer:Redisplay(aura, true);
 end
 
 function PowaAuras:SettingChecked(control, setting)
 	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
+	local aura = self.Auras[self.CurrentAuraId];
 	if (control:GetChecked()) then
-		self.Auras[self.CurrentAuraId][setting] = true;
+		aura[setting] = true;
 	else
-		self.Auras[self.CurrentAuraId][setting] = false;
+		aura[setting] = false;
 	end
 end
 
 function PowaAuras:TimerTransparentChecked(control)
 	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
+	local aura = self.Auras[self.CurrentAuraId];
+	local timer = aura.Timer;
 	if (control:GetChecked()) then
-		self.Auras[self.CurrentAuraId].Timer.Transparent = true;
+		timer.Transparent = true;
 	else
-		self.Auras[self.CurrentAuraId].Timer.Transparent = false;
+		timer.Transparent = false;
 	end
-	self.Auras[self.CurrentAuraId].Timer:Dispose();
+	timer:Redisplay(aura, true);
 end
 
 --==== Stacks ====
@@ -3055,9 +3057,7 @@ function PowaAuras:ShowStacksChecked(control)
 	local stacks = aura.Stacks;
 	if (control:GetChecked()) then
 		stacks.enabled = true;
-		local frame1 = stacks:CreateFrameIfMissing(aura);	
-		stacks:UpdateOptionsStacks(frame1);
-		stacks:CheckActive(aura, true);
+		stacks:Redisplay(aura, true);
 	else
 		stacks.enabled = false;
 		stacks:Dispose();
@@ -3108,21 +3108,24 @@ function PowaAuras.DropDownMenu_OnClickStacksRelative(self)
 	UIDropDownMenu_SetSelectedValue(self.owner, self.value);
 
 	--PowaAuras:ShowText(PowaAuras.Auras[PowaAuras.CurrentAuraId].id," change stacks relative position ", self.value);
-	local stacks = PowaAuras.Auras[PowaAuras.CurrentAuraId].Stacks;
+	local aura = self.Auras[self.CurrentAuraId];
+	local stacks = aura.Stacks;
 	stacks.x = 0;
 	stacks.y = 0;
 	stacks.Relative = self.value;
-	stacks:Dispose();	
+	stacks:Redisplay(aura, true);
 end
 
 function PowaAuras:StacksChecked(control, setting)
 	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
+	local aura = self.Auras[self.CurrentAuraId];
+	local stacks = aura.Stacks;
 	if (control:GetChecked()) then
-		self.Auras[self.CurrentAuraId].Stacks[setting] = true;
+		stacks[setting] = true;
 	else
-		self.Auras[self.CurrentAuraId].Stacks[setting] = false;
+		stacks[setting] = false;
 	end
-	self.Auras[self.CurrentAuraId].Stacks:Dispose();
+	stacks:Redisplay(aura, true);
 end
 
 function PowaAuras_CommanLine(msg)

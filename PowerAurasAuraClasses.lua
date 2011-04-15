@@ -579,24 +579,6 @@ function cPowaAura:SetHideRequest(source, now, testing)
 		return;
 	end
 	
-
---[[	
-	if (self.Timer) then
-		if (self.Timer.ShowOnAuraHide) then
-			self.Timer:Show();
-		else
-			self.Timer:Hide();
-		end
-	end
-	
-	if (self.Stacks) then
-		if (self.Stacks.ShowOnAuraHide) then
-			self.Stacks:Show();
-		else
-			self.Stacks:Hide();
-		end
-	end
-]]--
 end
 
 function cPowaAura:CheckActive(shouldShow, ignoreCascade, testing)
@@ -3476,7 +3458,7 @@ function cPowaSpellAlert:CheckIfShouldShow(giveReason, ignoreGCD)
 	end
 	if (self.Active and PowaAuras.Pending[self.id] and PowaAuras.Pending[self.id] > GetTime()) then
 		if (not giveReason) then return true; end
-		return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonAnimationDuration, casterName, info.SpellName);
+		return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonAnimationDuration);
 	end
 	
 	if (self:IsPlayerAura()) then
