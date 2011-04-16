@@ -48,11 +48,10 @@ end
 
 cPowaAuraHideAction = PowaClass(cPowaTriggerAction, { Type = "Hide" });
 
-function cPowaAuraHideAction:Fire()
+function cPowaAuraHideAction:Fire(aura)
 	if (PowaAuras.DebugTriggers or self.Debug) then
 		PowaAuras:DisplayText("HideAction: Fire!");
 	end
-	local aura = PowaAuras.Auras[self.AuraId];
 	if (self.Parameters.All or self.Parameters.Aura) then
 		aura:Hide();
 	end

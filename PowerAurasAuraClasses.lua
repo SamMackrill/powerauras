@@ -430,7 +430,7 @@ function cPowaAura:ProcessTriggerQueue()
 			local trigger = action.Trigger;
 			PowaAuras:DisplayText("==AF [", trigger.Name, ":", action.Name, "] ", action.AuraId, "_", trigger.Id, "_", action.Id, " (", trigger.Type, " : ", action.Type, ")");
 		end
-		action:Fire();
+		action:Fire(self);
 		i = i + 1;
 	end
 
