@@ -244,7 +244,7 @@ PowaAuras = {
 		Tracking = false,
 		
 		GTFO = false,
-		UnitTarget = false,
+		UnitMatch = false,
 
 		-- true if any type should be checked
 		CheckIt = false,
@@ -277,7 +277,7 @@ PowaAuras = {
 		Slots=23,
 		Tracking=24,
 		TypeBuff=25,
-		UnitTarget=26,
+		UnitMatch=26,
 		GTFO=50,
 	};
 
@@ -636,7 +636,7 @@ PowaAuras:RegisterAuraType('Slots');
 PowaAuras:RegisterAuraType('Items');
 PowaAuras:RegisterAuraType('Tracking');
 
-PowaAuras:RegisterAuraType('UnitTarget');
+PowaAuras:RegisterAuraType('UnitMatch');
 		
 PowaAuras:RegisterAuraType('GTFOHigh');
 PowaAuras:RegisterAuraType('GTFOLow');

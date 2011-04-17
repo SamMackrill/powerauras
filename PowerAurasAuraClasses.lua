@@ -1,3 +1,4 @@
+local strsplit = strsplit;
 --=========cPowaAura=========
 --   cPowaAura is the base class and is not instanced directly, the other classes inherit properties and methods from it
 --===========================
@@ -3902,20 +3903,19 @@ function cPowaStatic:SetFixedIcon()
 	self:SetIcon("Interface\\icons\\Spell_frost_frozencore");
 end
 
--- Unit Target Aura--
-cPowaUnitTarget= PowaClass(cPowaAura, { AuraType = "UnitTarget", ValueName = "Unit Target" });
-cPowaUnitTarget.OptionText = {
-	typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.UnitTarget],
-	buffNameTooltip=PowaAuras.Text.aideUnitTarget,
-	targetFriendText=PowaAuras.Text.nomCheckFriend, targetFriendTooltip=PowaAuras.Text.aideTargetFriend,
-}
-
-cPowaUnitTarget.CheckBoxes={
+-- Unit Match Aura--
+cPowaUnitMatch= PowaClass(cPowaAura, { AuraType = "UnitMatch", ValueName = "Unit Check" });
+cPowaUnitMatch.OptionText = {
+	typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.UnitMatch],
+	buffNameTooltip=PowaAuras.Text.aideUnitMatch,
+};
+cPowaUnitMatch.TooltipOptions = {
+	r=0.4, 
+	g=0.6, 
+	b=0.8
+};
+cPowaUnitMatch.CheckBoxes={
 	["PowaInverseButton"]=1,
-	["PowaTargetButton"]=1,
-	["PowaTargetButton"]=1,
-	["PowaFocusButton"]=1,
-	["PowaOptunitnButton"]=1,
 	["PowaIngoreCaseButton"]=1,
 	["PowaOwntexButton"]=1,
 	["PowaRoleTankButton"]=1,
@@ -3924,44 +3924,68 @@ cPowaUnitTarget.CheckBoxes={
 	["PowaRoleRangeDpsButton"]=1,
 }
 
-function cPowaUnitTarget:AddEffectAndEvents()
+function cPowaUnitMatch:AddEffectAndEvents()
 	table.insert(PowaAuras.AurasByType[self.AuraType], self.id);
 	PowaAuras.Events.UNIT_TARGET = true;
 end
 
-function cPowaUnitTarget:CheckIfShouldShow(giveReason)
-	-- Figure out what unit target to test.
-	local unit = "none";
-	if(self.target or self.targetfriend) then	
-		-- Target's target.
-		unit = "targettarget";
-	elseif(self.focus) then
-		-- Focus target.
-		unit = "focustarget";
-	elseif(self.unitn and self.unitn ~= "") then
-		-- Custom unit target.
-		unit = self.unitn .. "target";
+function cPowaUnitMatch:CheckIfShouldShow(giveReason)
+	-- Check to see if the two units match.
+	local unit1, unit2 = strsplit("/", self.buffname);
+	-- If one doesn't exist, replace with player.
+	if(not unit1 or unit1 == "") then unit1 = "player"; end
+	if(not unit2 or unit2 == "") then unit2 = "player"; end
+	-- If unit2 is *, then we only need to check if unit1 exists.
+	local result = false;
+	if(unit2 == "*") then
+		result = (UnitExists(unit1) and true or false);
 	else
-		-- Player target.
-		unit = "target";
-	end
-	-- If we're checking for *, then pass so long as the unit in question exists.
-	local result, reason = false;
-	if(self.buffname == "*") then
-		result = (UnitExists(unit) and true or false);
-	else
-		-- Check exact.
-		result = (UnitIsUnit(unit, (self.buffname ~= "" and self.buffname or "none")) and true or false);
-		-- Still failed? Do a unit name comparison.
+		-- Check unit match.
+		result = (UnitIsUnit(unit1, unit2) and true or false);
+		-- If it failed, do a unit name comparison for both.
 		if(not result) then
-			result = (((UnitName(unit) or "") == self.buffname) and true or false);
+			result = (UnitName(unit1) == unit2 and true or (UnitName(unit2) == unit1 and true or false));
 		end
 	end
-	-- Return!
-	return result, (giveReason and PowaAuras:InsertText((result and PowaAuras.Text.nomReasonUnitTarget or PowaAuras.Text.nomReasonNoUnitTarget), unit, self.buffname));
+	print(unit1, unit2, result);
+	-- Done.
+	if(not giveReason) then
+		return result, "";
+	else
+		return result, PowaAuras:InsertText((result and PowaAuras.Text.nomReasonUnitMatch or PowaAuras.Text.nomReasonNoUnitMatch), unit1, unit2);
+	end
+	-- -- -- Figure out what unit target to test.
+	-- -- local unit = "none";
+	-- -- if(self.target or self.targetfriend) then	
+		-- -- -- Target's target.
+		-- -- unit = "targettarget";
+	-- -- elseif(self.focus) then
+		-- -- -- Focus target.
+		-- -- unit = "focustarget";
+	-- -- elseif(self.unitn and self.unitn ~= "") then
+		-- -- -- Custom unit target.
+		-- -- unit = self.unitn .. "target";
+	-- -- else
+		-- -- -- Player target.
+		-- -- unit = "target";
+	-- -- end
+	-- -- -- If we're checking for *, then pass so long as the unit in question exists.
+	-- -- local result, reason = false;
+	-- -- if(self.buffname == "*") then
+		-- -- result = (UnitExists(unit) and true or false);
+	-- -- else
+		-- -- -- Check exact.
+		-- -- result = (UnitIsUnit(unit, (self.buffname ~= "" and self.buffname or "none")) and true or false);
+		-- -- -- Still failed? Do a unit name comparison.
+		-- -- if(not result) then
+			-- -- result = (((UnitName(unit) or "") == self.buffname) and true or false);
+		-- -- end
+	-- -- end
+	-- -- -- Return!
+	-- -- return result, (giveReason and PowaAuras:InsertText((result and PowaAuras.Text.nomReasonUnitTarget or PowaAuras.Text.nomReasonNoUnitTarget), unit, self.buffname));
 end
 
-function cPowaUnitTarget:SetFixedIcon()
+function cPowaUnitMatch:SetFixedIcon()
 	self.icon = nil;
 	self:SetIcon("Interface\\Icons\\Spell_Misc_EmotionAngry");
 end
@@ -3994,7 +4018,7 @@ PowaAuras.AuraClasses = {
 	[PowaAuras.BuffTypes.Tracking]=cPowaTracking,
 	[PowaAuras.BuffTypes.TypeBuff]=cPowaTypeBuff,
 	[PowaAuras.BuffTypes.Static]=cPowaStatic,
-	[PowaAuras.BuffTypes.UnitTarget]=cPowaUnitTarget,
+	[PowaAuras.BuffTypes.UnitMatch]=cPowaUnitMatch,
 }
 
 -- Instance concrete class based on type
