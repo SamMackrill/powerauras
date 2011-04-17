@@ -656,7 +656,7 @@ function PowaAuras:OnUpdate(elapsed)
 	local timerElapsed = 0;
 	local timerUpdateLimit = PowaMisc.AnimationLimit;
 	if (self.ModTest) then
-		timerUpdateLimit = 1; -- Limit testing updates to 1 per second
+		timerUpdateLimit = 5; -- Limit testing updates to 1 per second
 	end
 	if (timerUpdateLimit > 0 and self.TimerUpdateThrottleTimer < timerUpdateLimit) then
 		skipTimerUpdate = not self.DebugCycle;
@@ -689,8 +689,20 @@ function PowaAuras:OnUpdate(elapsed)
 	for i = 1, #self.AuraSequence do
 		local aura = self.AuraSequence[i];
 		--self:Message("UpdateAura Call id=", aura.id, " ", aura);
-		if (aura:UpdateAura(self.ModTest) and not skipTimerUpdate and aura.Timer) then
-			aura.Timer:Update(timerElapsed);
+		if (aura:UpdateAura(self.ModTest)) then
+		
+			if (not skipTimerUpdate) then
+
+				if (aura.Stacks and aura.Stacks.enabled) then	
+					aura.Stacks:Update(aura, 0, self.ModTest);
+				end		
+		
+				if (aura.Timer) then
+					aura.Timer:Update(aura, timerElapsed, self.ModTest);
+				end
+		
+				aura:ProcessTriggerQueue();
+			end
 		end
 	end
 	

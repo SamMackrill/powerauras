@@ -247,7 +247,8 @@ function cPowaAura:StacksAllowed()
 end
 
 function cPowaAura:ClearDefaultTriggers()
-	--PowaAuras:ShowText("Clearing default triggers ", #self.Triggers);
+	PowaAuras:ShowText("Clearing default triggers ", #self.Triggers);
+	self:ProcessTriggerQueue();
 	local triggerIndex = #self.Triggers;
 	while triggerIndex>0 do
 		local trigger = self.Triggers[triggerIndex];
@@ -272,7 +273,7 @@ function cPowaAura:ClearDefaultTriggers()
 end
 
 function cPowaAura:CreateDefaultTriggers()
-	--PowaAuras:ShowText("CreateDefaultTriggers");
+	PowaAuras:ShowText("CreateDefaultTriggers");
 	self:ClearDefaultTriggers();
 	if (self.off) then return; end
 	local frame, texture, frame2, texture2 = self:CreateFrames();
@@ -577,51 +578,47 @@ function cPowaAura:SetHideRequest(source, now, testing)
 	end
 	
 end
-
-function cPowaAura:CheckActive(shouldShow, ignoreCascade, testing)
-	if (shouldShow) then
-		if (self.Active) then return; end
-		if (debugEffectTest) then
-			PowaAuras:Message("ShowAura ", self.buffname, " (",self.id,") ", reason);
-		end
-		self.Active = true;	
-		self.InvertCount = 0;
-		--PowaAuras:ShowText(GetTime(),"=== Aura(", self.id, ") ACTIVE");
-		
-		if (self.Timer) then self.Timer:CheckActive(self, testing); end
-		if (self.Stacks) then self.Stacks:CheckActive(self, testing); end
-		
-		PowaAuras:DisplayAura(self.id);
-		
-		if (not testing) then
-			self:CheckTriggers("AuraActive");
-		end
-		
-		if (not ignoreCascade and not testing) then PowaAuras:AddChildrenToCascade(self); end
-		return
-	end
 	
-	if (self.Active) then
-		--PowaAuras:ShowText(GetTime(),"=== Aura(", self.id, ") INACTIVE");
-		
-		self.Active = false;	
+function cPowaAura:CheckActive(shouldShow, ignoreCascade, testing)
+
+	--PowaAuras:ShowText(GetTime(), " off=", self.off, " Children=", self.Children);
+	if (self.off and not self.Children) then 
+		return;
+	end
+
+	--PowaAuras:ShowText(GetTime(), " Aura ", self.id, " CheckActive shouldShow=", shouldShow, " ignoreCascade=", ignoreCascade, " testing=", testing);
+
+	local stateChanged = (((shouldShow and not self.Active)) or (not shouldShow and self.Active));
+	if (stateChanged) then
+		-- Active state has changed
+		self.Active = shouldShow;
 		self.InvertCount = 0;
 		
-		if (self.Timer) then self.Timer:CheckActive(self, testing); end
-		if (self.Stacks) then self.Stacks:CheckActive(self, testing); end
+		if (self.Active) then
+			PowaAuras:ShowText(GetTime(),"=== Aura(", self.id, ") ACTIVE");
+		else
+			PowaAuras:ShowText(GetTime(),"=== Aura(", self.id, ") INACTIVE");	
+		end
+
+		if (not ignoreCascade and not testing) then PowaAuras:AddChildrenToCascade(self); end
+	end
 		
-		if (not testing) then
+	if (self.Timer) then self.Timer:CheckActive(self, testing); end
+	if (self.Stacks) then self.Stacks:CheckActive(self, testing); end
+	
+	if (stateChanged) then
+		if (self.Active) then
+			self:CheckTriggers("AuraActive");
+		else
 			self:CheckTriggers("AuraInactive");
 		end
-		
-		if (not ignoreCascade and not testing) then PowaAuras:AddChildrenToCascade(self); end
 	end
 	
-	--PowaAuras:ShowText(GetTime()," Aura(", self.id, ") Showing=", self.Showing, " InvertCount=",self.InvertCount);
-	if (self.Showing and ((self.InvertCount or 0)==0) or testing) then
-		if (debugEffectTest) then
-			PowaAuras:Message("HideAura ", self.buffname, " (",self.id,") ", reason);
-		end
+	local inverted = ((self.InvertCount or 0)>0) and not testing;
+	local show = (self.Active and not inverted) or (not self.Active and inverted);
+	if (show and not self.Showing) then
+		PowaAuras:DisplayAura(self.id);
+	elseif (not show and self.Showing) then
 		self:SetHideRequest("TestThisEffect: false & showing", false, testing);
 	end
 
@@ -647,26 +644,6 @@ function cPowaAura:UpdateAura(testing)
 			return false;
 		end
 	end
-	
-	if (PowaAuras.DebugCycle) then
-		PowaAuras:DisplayText("====Aura"..self.id.."====");
-		PowaAuras:DisplayText("HideRequest=",self.HideRequest);
-		PowaAuras:DisplayText("Showing=",self.Showing);
-	end
-
-	if (self.Active and self.Stacks and self.Stacks.enabled) then
-		-- Generate random stacks count for testing
-		if (PowaAuras.ModTest) then
-			if (self.Stacks.SetStackCount) then
-				self.Stacks:SetStackCount(random(1,12));
-			else
-				PowaAuras:Message("aura.Stacks:SetStackCount nil!! ",self.id);			
-			end
-		end		
-		self.Stacks:Update();
-	end
-		
-	self:ProcessTriggerQueue();
 
 	return true;
 end
