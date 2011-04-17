@@ -506,13 +506,13 @@ function PowaAuras:UNIT_TARGET(...)
 		self:DisplayText("UNIT_TARGET ", unit);
 	end
 	if (self.ModTest == false) then
+		self.DoCheck.UnitMatch = true;
 		for existingTarget in pairs (PowaAuras.ChangedUnits.Targets) do
 			if (UnitIsUnit(target, existingTarget)) then
 				return;
 			end
 		end
 		self.ChangedUnits.Targets[target] = unit;
-		self.DoCheck.UnitTarget = true;
 		if (UnitCanAttack(target, "player")) then
 			self.DoCheck.StealableSpells = true;
 			self.DoCheck.PurgeableSpells = true;
