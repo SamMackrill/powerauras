@@ -3453,7 +3453,7 @@ end
 
 
 function PowaAuras:ToggleTesting()
-	--self:Message("ToggleTesting for ", self.CurrentAuraId);
+	self:ShowText("ToggleTesting for ", self.CurrentAuraId);
 	local aura = self.Auras[self.CurrentAuraId];
 	if (not aura or aura.buffname == "" or aura.buffname == " ") then
 		return;
@@ -3479,13 +3479,12 @@ function PowaAuras:TestAllAuras()
 end
 
 function PowaAuras:OptionHideAll()
-	--self:ShowText("Hide All Auras");
+	self:ShowText("Hide All Auras");
 	for id, aura in pairs(self.Auras) do
 		self:ResetDragging(aura, self.Frames[aura.id]);
 		aura:CheckActive(false, true, true);
 	end	
 end
-
 
 function PowaAuras:SetLockButtonText()
 	if (PowaMisc.Locked) then
@@ -3516,11 +3515,11 @@ function PowaAuras:RedisplayAura(auraId, recreateTriggers) ---Re-show aura after
 	if (not aura) then
 		return;
 	end
-	--self:ShowText("RedisplayAura auraId=", aura.id, " showing=", aura.Showing);
-	if (recreateTriggers) then
+	--self:ShowText("RedisplayAura auraId=", aura.id, " showing=", aura.Showing, " recreateTriggers=", recreateTriggers);
+	--if (recreateTriggers) then
 		--self:ShowText("RedisplayAura ", aura.id," Recreate Triggers");
-		aura:CreateDefaultTriggers();
-	end
+	--	aura:CreateDefaultTriggers();
+	--end
 	if (aura.Showing) then
 		aura:Dispose();
 		aura:RecreateFrames();
