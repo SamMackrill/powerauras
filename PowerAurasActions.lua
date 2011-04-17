@@ -285,13 +285,15 @@ end
 --=====Size Action========
 -- Parameters:
 --  Aura
+--  Frame
+--  Texture
 --  Value
 --  Revert (optional)
 
 cPowaAuraSizeAction = PowaClass(cPowaAuraSettingAction, { Type = "AuraSize" });
 
 function cPowaAuraSizeAction:Set(value)
-	PowaAuras:SetFrameSize(self.Parameters.Frame, value, self.Parameters.Aura.torsion, self.Parameters.Aura.textaura, self.Parameters.Aura.aurastextfont)
+	PowaAuras:SetFrameSize(self.Parameters.Frame, self.Parameters.Texture, value, self.Parameters.Aura.torsion, self.Parameters.Aura.textaura, self.Parameters.Aura.aurastextfont)
 end
 
 function cPowaAuraSizeAction:Get()

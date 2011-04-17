@@ -1088,7 +1088,7 @@ function PowaAuras:InitialiseAuraFrame(aura, frame, texture, alpha)
 	  end	
 	end
 
-	PowaAuras:SetFrameSize(frame, aura.size, aura.torsion, aura.textaura, aura.aurastextfont);
+	PowaAuras:SetFrameSize(frame, texture, aura.size, aura.torsion, aura.textaura, aura.aurastextfont);
 
 	frame:SetAlpha(math.min(alpha,0.99));
 	frame:SetPoint("CENTER",aura.x, aura.y);
@@ -1098,7 +1098,7 @@ function PowaAuras:InitialiseAuraFrame(aura, frame, texture, alpha)
 
 end
 
-function PowaAuras:SetFrameSize(frame, size, torsion, textaura, aurastextfont)
+function PowaAuras:SetFrameSize(frame, texture, size, torsion, textaura, aurastextfont)
 	frame.baseH = 256 * size * (2-torsion);
 	if (textaura == true) then
 		local fontsize = math.min(33, math.max(10, math.floor(frame.baseH / 12.8)));
