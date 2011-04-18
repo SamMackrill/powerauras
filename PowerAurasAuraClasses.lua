@@ -277,6 +277,13 @@ function cPowaAura:CreateDefaultTriggers()
 	self:ClearDefaultTriggers();
 	if (self.off) then return; end
 	local frame, texture, frame2, texture2 = self:CreateFrames();
+
+	-- =====================
+	-- Start/Main Animations
+	-- =====================
+	local AnimationChain = {};
+	
+
 	
 	-- =======
 	-- On Show
@@ -284,10 +291,28 @@ function cPowaAura:CreateDefaultTriggers()
 	local trigger=self:CreateTrigger(cPowaAuraShowTrigger, {Name="PA_AuraShow", Debug=false});
 	--trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Show Aura"});
 	if (self.begin>0) then
-		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_ShowAnim", Frame=frame, HideFrame=frame2, Animation=self.begin, Speed=self.speed, Alpha=self.alpha, BeginSpin=self.beginSpin, StateValue=1, StateName="AnimationState"});
-	elseif (self.anim1>0 or self.anim2>0) then
-		trigger:AddAction(cPowaAuraStateAction, {Name="PA_StartState", StateName="AnimationState", StateValue=1});
-	end			
+		table.insert(AnimationChain, {Name="PA_ShowAnim", Frame=frame, HideFrame=frame2, Animation=self.begin, Speed=self.speed, Alpha=self.alpha, BeginSpin=self.beginSpin, StateValue=1, StateName="AnimationState"});
+	end
+
+	if (self.anim1>1 or self.anim2>0) then
+		--PowaAuras:ShowText("Main animation trigger, anim1=", self.anim1, " anim2=", self.anim2);
+		if (self.anim1>0) then
+			table.insert(AnimationChain, {Name="PA_ShowAnim", Frame=frame, HideFrame=frame2, Animation=self.begin, Speed=self.speed, Alpha=self.alpha, BeginSpin=self.beginSpin});
+		end
+		if (self.anim2>0) then
+			local speed;
+			if (self.speed > 0.5) then
+				speed = self.speed - 0.1;
+			else
+				speed = self.speed / 2;
+			end
+			table.insert(AnimationChain, {Name="PA_Main2", Frame=frame2, Animation=self.anim2, Speed=speed, Alpha=self.alpha * 0.5, Loop=true, Secondary=true});
+		end
+	end	
+	if (#AnimationChain>0) then
+		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_ShowMainAnim", AnimationChain=AnimationChain});
+	end
+	
 	if (self.customsound~="") then
 		trigger:AddAction(cPowaAuraPlaySoundAction, {Name="PA_Sound", CustomSound=self.customsound});
 	elseif (self.sound>0) then
@@ -300,38 +325,16 @@ function cPowaAura:CreateDefaultTriggers()
 	trigger=self:CreateTrigger(cPowaAuraHideTrigger, {Name="PA_AuraHide", Debug=false});
 	--trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Hide Aura"});
 	if (self.finish>0) then
-		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_HideAnim", Frame=frame, HideFrame=frame2, Animation=self.finish + 100, Speed=self.speed, Alpha=self.alpha, Hide=true, StateValue=0, StateName="AnimationState"});
+		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_HideAnim", AnimationChain={{Name="PA_HideAnim", Frame=frame, HideFrame=frame2, Animation=self.finish + 100, Speed=self.speed, Alpha=self.alpha, Hide=self}}});
 	else
 		trigger:AddAction(cPowaAuraHideAction, {Name="PA_Hide", Aura=true});
-		trigger:AddAction(cPowaAuraStateAction, {Name="PA_State", StateName="AnimationState", StateValue=0});
 	end
 	if (self.customsoundend~="") then
 		trigger:AddAction(cPowaAuraPlaySoundAction, {Name="PA_Sound", CustomSound=self.customsoundend});
 	elseif (self.soundend>0) then
 		trigger:AddAction(cPowaAuraPlaySoundAction, {Name="PA_Sound", Sound=self.soundend});
-	end			
-	
-	-- ==========
-	-- After Show
-	-- ==========		
-	if (self.anim1>1 or self.anim2>0) then
-		--PowaAuras:ShowText("Main animation trigger, anim1=", self.anim1, " anim2=", self.anim2);
-		trigger=self:CreateTrigger(cPowaStateTrigger, {Name="PA_MainAnim", Value=1, Qualifier="AnimationState", Compare="="});
-		--trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! State Changed to %v"});
-		if (self.anim1>0) then
-			trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_Main1", Frame=frame, Animation=self.anim1, Speed=self.speed, Alpha=self.alpha, Loop=true});
-		end
-		if (self.anim2>0) then
-			local speed;
-			if (self.speed > 0.5) then
-				speed = self.speed - 0.1;
-			else
-				speed = self.speed / 2;
-			end
-			trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_Main2", Frame=frame2, Animation=self.anim2, Speed=speed, Alpha=self.alpha * 0.5, Loop=true, Secondary=true});
-		end
-	end
-	
+	end	
+
 	-- =====
 	-- Timer
 	-- =====		
@@ -340,7 +343,7 @@ function cPowaAura:CreateDefaultTriggers()
 			local frame1, frame2 = self.Timer:CreateFrameIfMissing(self)
 			if (self.Timer.UpdatePing) then
 				trigger=self:CreateTrigger(cPowaAuraTimerRefreshTrigger, {Name="PA_TimerPing"});
-				if (frame1) then trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_TimerPing1", Frame=frame1, Animation=1000, Alpha=self.alpha, Speed=1}); end
+				if (frame1) then trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_TimerPing1", AnimationChain={{Name="PA_TimerPing1", Frame=frame1, Animation=1000, Alpha=self.alpha, Speed=1}}}); end
 				--if (frame2) then trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_TimerPing2", Frame=frame2, Animation=1000, Alpha=self.alpha, Speed=1}); end
 			end
 			--trigger=self:CreateTrigger(cPowaAuraTimerTrigger, 12, nil, "<");
@@ -381,7 +384,7 @@ function cPowaAura:CreateDefaultTriggers()
 	if (self.Stacks and self.Stacks.UpdatePing and self.Stacks.enabled) then
 		local frame = self.Stacks:CreateFrameIfMissing(self)
 		trigger=self:CreateTrigger(cPowaStacksTrigger, {Name="PA_StacksPing"});
-		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_StacksPing", Frame=frame, Animation=1000, Alpha=self.alpha, Speed=1});
+		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_StacksPing", AnimationChain={{Name="PA_StacksPing", Frame=frame, Animation=1000, Alpha=self.alpha, Speed=1}}});
 		
 		trigger=self:CreateTrigger(cPowaAuraStacksHideTrigger, {Name="PA_StacksHide", Debug=false});
 		trigger:AddAction(cPowaAuraHideAction, {Name="PA_StacksHide", Stacks=true});
