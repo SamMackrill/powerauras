@@ -74,9 +74,9 @@ function cPowaDecorator:CheckActive(aura, testing)
 	if (not testing) then
 		self:CheckDecoratorTriggers(aura, true);
 		if (self.Active) then
-			self:CheckTriggers(self.Type.."Active");
+			aura:CheckTriggers(self.Type.."Active");
 		else
-			self:CheckTriggers(self.Type.."Inactive");
+			aura:CheckTriggers(self.Type.."Inactive");
 		end
 	end
 

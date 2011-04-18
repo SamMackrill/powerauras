@@ -324,7 +324,7 @@ function cPowaAura:CreateDefaultTriggers()
 	trigger=self:CreateTrigger(cPowaAuraHideTrigger, {Name="PA_AuraHide", Debug=false});
 	--trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Hide Aura"});
 	if (self.finish>0) then
-		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_HideAnim", AnimationChain={Name="PA_HideAnim", Frame=frame, HideFrame=frame2, Animation=self.finish + 100, Speed=self.speed, Alpha=self.alpha, Hide=self}});
+		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_HideAnim", AnimationChain={{Name="PA_HideAnim", Frame=frame, HideFrame=frame2, Animation=self.finish + 100, Speed=self.speed, Alpha=self.alpha, Hide=self}}});
 	else
 		trigger:AddAction(cPowaAuraHideAction, {Name="PA_Hide", Aura=true});
 	end
@@ -342,8 +342,8 @@ function cPowaAura:CreateDefaultTriggers()
 			local frame1, frame2 = self.Timer:CreateFrameIfMissing(self)
 			if (self.Timer.UpdatePing) then
 				trigger=self:CreateTrigger(cPowaAuraTimerRefreshTrigger, {Name="PA_TimerPing"});
-				if (frame1) then trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_TimerPing1", AnimationChain={Name="PA_TimerPing1", Frame=frame1, Animation=1000, Alpha=self.alpha, Speed=1}}); end
-				if (frame2) then trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_TimerPing2", AnimationChain={Name="PA_TimerPing2", Frame=frame2, Animation=1000, Alpha=self.alpha, Speed=1}}); end
+				if (frame1) then trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_TimerPing1", AnimationChain={{Name="PA_TimerPing1", Frame=frame1, Animation=1000, Alpha=self.alpha, Speed=1}}}); end
+				if (frame2) then trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_TimerPing2", AnimationChain={{Name="PA_TimerPing2", Frame=frame2, Animation=1000, Alpha=self.alpha, Speed=1}}}); end
 			end
 			--trigger=self:CreateTrigger(cPowaAuraTimerTrigger, 12, nil, "<");
 			--if (frame1 and frame1.texture) then trigger:AddAction(cPowaAuraColourAction, {Texture=frame1.texture, R=255, G=0, B=0, Revert=true}); end
@@ -383,7 +383,7 @@ function cPowaAura:CreateDefaultTriggers()
 	if (self.Stacks and self.Stacks.UpdatePing and self.Stacks.enabled) then
 		local frame = self.Stacks:CreateFrameIfMissing(self)
 		trigger=self:CreateTrigger(cPowaStacksTrigger, {Name="PA_StacksPing"});
-		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_StacksPing", AnimationChain={Name="PA_StacksPing", Frame=frame, Animation=1000, Alpha=self.alpha, Speed=1}});
+		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_StacksPing", AnimationChain={{Name="PA_StacksPing", Frame=frame, Animation=1000, Alpha=self.alpha, Speed=1}}});
 		
 		trigger=self:CreateTrigger(cPowaAuraStacksHideTrigger, {Name="PA_StacksHide", Debug=false});
 		trigger:AddAction(cPowaAuraHideAction, {Name="PA_StacksHide", Stacks=true});

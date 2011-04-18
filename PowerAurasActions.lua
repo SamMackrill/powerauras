@@ -156,9 +156,9 @@ function cPowaAuraAnimationAction:Init()
 	local aura = PowaAuras.Auras[self.AuraId];
 	for index, animation in pairs(self.Parameters.AnimationChain) do
 		local groupName = "Trigger" .. self.Trigger.Id .. "_" .. self.Id .. "_" .. index;
-		if (PowaAuras.DebugTriggers or self.Debug) then
+		--if (PowaAuras.DebugTriggers or self.Debug) then
 			PowaAuras:DisplayText("Add Animation: ", animation.Animation, " (", animation.Name, ") Group=", groupName );
-		end
+		--end
 		if (animation.Loop) then
 			animation.AnimationGroup =  PowaAuras:AddLoopingAnimation(aura, self, animation.Frame, animation.Animation, groupName, animation.Speed, animation.Alpha, animation.Secondary, "REPEAT");
 			return;
