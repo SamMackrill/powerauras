@@ -881,12 +881,12 @@ end
 local function stopFrameMoving(frame)
 	if (frame==nil or not frame.isMoving) then return; end
 	frame.isMoving = false;
-	--PowaAuras:ShowText("stopMove id=", frame.aura.id);
+	PowaAuras:ShowText("stopMove id=", frame.aura.id);
 	frame:StopMovingOrSizing();
 	frame.aura.x = math.floor(frame:GetLeft() + (frame:GetWidth()  - UIParent:GetWidth())  / 2 + 0.5);
 	frame.aura.y = math.floor(frame:GetTop()  - (frame:GetHeight() + UIParent:GetHeight()) / 2 + 0.5);
-	if (PowaAuras.CurrentAuraId == frame.aura.id) then
-		PowaAuras:InitPage(frame.aura);
+	if (PowaAuras.CurrentAuraId == frame.aura.id and PowaBarConfigFrame:IsVisible()) then
+		PowaAuras:UpdateLocation(frame.aura);
 	end
 end
 
@@ -939,8 +939,8 @@ local function keyUp(frame, key)
 	elseif (key=="RIGHT") then
 		frame.aura.x = frame.aura.x + 1;
 	end
-	if (PowaAuras.CurrentAuraId == frame.aura.id) then
-		PowaAuras:InitPage(frame.aura);
+	if (PowaAuras.CurrentAuraId == frame.aura.id and PowaBarConfigFrame:IsVisible()) then
+		PowaAuras:UpdateLocation(frame.aura);
 	end
 	PowaAuras:RedisplayAura(frame.aura.id, false);
 end

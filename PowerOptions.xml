@@ -427,7 +427,7 @@
 						PowaEditButtonText:SetText(PowaAuras.Text.nomEdit);
 					</OnLoad>
 					<OnClick>
-						PowaAuras:EditorShow();
+						PowaAuras:EditorToggle();
 						PlaySound("igCharacterInfoTab");
 					</OnClick>
 				</Scripts>
