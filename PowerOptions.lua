@@ -3483,6 +3483,7 @@ function PowaAuras:OptionHideAll()
 	for id, aura in pairs(self.Auras) do
 		self:ResetDragging(aura, self.Frames[aura.id]);
 		aura:CheckActive(false, true, true);
+		aura:ProcessTriggerQueue();
 	end	
 end
 
