@@ -97,7 +97,7 @@ function PowaAuras:IconClick(owner, button)
 		end
 	elseif (self.CurrentAuraId == aura.id) then
 		if (button == "RightButton") then
-			self:EditorShow();
+			self:EditorToggle();
 			return;
 		else
 			if (aura.Showing) then 
@@ -111,7 +111,7 @@ function PowaAuras:IconClick(owner, button)
 		self:SetCurrent(owner, aura.id);
 		self:InitPage(aura);
 		if (button == "RightButton") then
-			self:EditorShow();
+			self:EditorToggle();
 		end
 	end
 end
@@ -432,7 +432,8 @@ function PowaAuras:OptionNewEffect()
 	self:DisplayAura(i);
 
 	self:UpdateMainOption();
-	self:UpdateTimerOptions();
+	self:UpdateStacksOptions(); 
+	self:UpdateTimerOptions(aura);
 	self:InitPage(aura);
 
 	self:UpdateMainOption();
@@ -1318,97 +1319,97 @@ end
 -- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< MAIN OPTIONS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 -- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-function PowaAuras:UpdateTimerOptions()
+function PowaAuras:UpdateTimerOptions(aura)
 
-	local aura = self.Auras[self.CurrentAuraId];
+	if (not aura) then
+		aura = self.Auras[self.CurrentAuraId];
+	end
 	
 	if (not aura.Timer) then
 		aura.Timer = cPowaTimer(aura);
 	end
 	local timer = aura.Timer;
 	
-	if (timer) then
+	if (not timer) then return; end
 		
-		PowaShowTimerButton:SetChecked(timer.enabled);
+	PowaShowTimerButton:SetChecked(timer.enabled);
 
-		PowaTimerAlphaSlider:SetValue(timer.a);
-		PowaTimerSizeSlider:SetValue(timer.h);
-		-- ajuste slider Y
-		PowaTimerCoordSlider:SetMinMaxValues(timer.y-5000,timer.y+5000);
-		PowaTimerCoordSliderLow:SetText(timer.y-100);
-		PowaTimerCoordSliderHigh:SetText(timer.y+100);
-		PowaTimerCoordSlider:SetValue(timer.y);
-		PowaTimerCoordSlider:SetMinMaxValues(timer.y-100,timer.y+100);
-		-- ajuste slider X
-		PowaTimerCoordXSlider:SetMinMaxValues(timer.x-5000,timer.x+5000);
-		PowaTimerCoordXSliderLow:SetText(timer.x-100);
-		PowaTimerCoordXSliderHigh:SetText(timer.x+100);
-		PowaTimerCoordXSlider:SetValue(timer.x);
-		PowaTimerCoordXSlider:SetMinMaxValues(timer.x-100,timer.x+100);
+	PowaTimerAlphaSlider:SetValue(timer.a);
+	PowaTimerSizeSlider:SetValue(timer.h);
+	-- adjust slider Y
+	PowaTimerCoordSlider:SetMinMaxValues(timer.y-5000,timer.y+5000);
+	PowaTimerCoordSliderLow:SetText(timer.y-100);
+	PowaTimerCoordSliderHigh:SetText(timer.y+100);
+	PowaTimerCoordSlider:SetValue(timer.y);
+	PowaTimerCoordSlider:SetMinMaxValues(timer.y-100,timer.y+100);
+	-- adjust slider X
+	PowaTimerCoordXSlider:SetMinMaxValues(timer.x-5000,timer.x+5000);
+	PowaTimerCoordXSliderLow:SetText(timer.x-100);
+	PowaTimerCoordXSliderHigh:SetText(timer.x+100);
+	PowaTimerCoordXSlider:SetValue(timer.x);
+	PowaTimerCoordXSlider:SetMinMaxValues(timer.x-100,timer.x+100);
 
-		PowaBuffTimerCentsButton:SetChecked(timer.cents);
-		PowaBuffTimerLeadingZerosButton:SetChecked(timer.HideLeadingZeros);
-		
-		PowaBuffTimerTransparentButton:SetChecked(timer.Transparent);
-		
-		if (aura:FullTimerAllowed()) then 
-			-- show full timer options
-			PowaBuffTimerUpdatePingButton:SetChecked(timer.UpdatePing);
-			self:EnableCheckBox("PowaBuffTimerUpdatePingButton");
-			PowaBuffTimerActivationTime:Enable();
-		else
-			-- Show cut-down timer options
-			PowaBuffTimerUpdatePingButton:SetChecked(false);
-			self:DisableCheckBox("PowaBuffTimerUpdatePingButton");
-			timer.ShowActivation = true;
-			PowaBuffTimerActivationTime:Disable();
-		end
-		PowaBuffTimerActivationTime:SetChecked(timer.ShowActivation);
-		PowaBuffTimerUseOwnColorButton:SetChecked(timer.UseOwnColor);
-		
-		PowaTimerColorNormalTexture:SetVertexColor(timer.r,timer.g,timer.b);
-
-		UIDropDownMenu_SetSelectedValue(PowaBuffTimerRelative, timer.Relative);		
-		UIDropDownMenu_SetSelectedValue(PowaDropDownTimerTexture, timer.Texture);
-		
-		PowaTimerInvertAuraSlider:SetValue(aura.InvertAuraBelow);
-
+	PowaBuffTimerCentsButton:SetChecked(timer.cents);
+	PowaBuffTimerLeadingZerosButton:SetChecked(timer.HideLeadingZeros);
+	
+	PowaBuffTimerTransparentButton:SetChecked(timer.Transparent);
+	
+	if (aura:FullTimerAllowed()) then 
+		-- show full timer options
+		PowaBuffTimerUpdatePingButton:SetChecked(timer.UpdatePing);
+		self:EnableCheckBox("PowaBuffTimerUpdatePingButton");
+		PowaBuffTimerActivationTime:Enable();
+	else
+		-- Show cut-down timer options
+		PowaBuffTimerUpdatePingButton:SetChecked(false);
+		self:DisableCheckBox("PowaBuffTimerUpdatePingButton");
+		timer.ShowActivation = true;
+		PowaBuffTimerActivationTime:Disable();
 	end
+	PowaBuffTimerActivationTime:SetChecked(timer.ShowActivation);
+	PowaBuffTimerUseOwnColorButton:SetChecked(timer.UseOwnColor);
+	
+	PowaTimerColorNormalTexture:SetVertexColor(timer.r,timer.g,timer.b);
+
+	UIDropDownMenu_SetSelectedValue(PowaBuffTimerRelative, timer.Relative);		
+	UIDropDownMenu_SetSelectedValue(PowaDropDownTimerTexture, timer.Texture);
+	
+	PowaTimerInvertAuraSlider:SetValue(aura.InvertAuraBelow);
+
 end
 
 function PowaAuras:UpdateStacksOptions()
 
 	local stacks = self.Auras[self.CurrentAuraId].Stacks;
-	if (stacks) then
+	if (not stacks) then return; end
 		
-		PowaShowStacksButton:SetChecked(stacks.enabled);
+	PowaShowStacksButton:SetChecked(stacks.enabled);
 
-		PowaStacksAlphaSlider:SetValue(stacks.a);
-		PowaStacksSizeSlider:SetValue(stacks.h);
-		-- ajuste slider Y
-		PowaStacksCoordSlider:SetMinMaxValues(stacks.y-5000,stacks.y+5000);
-		PowaStacksCoordSliderLow:SetText(stacks.y-100);
-		PowaStacksCoordSliderHigh:SetText(stacks.y+100);
-		PowaStacksCoordSlider:SetValue(stacks.y);
-		PowaStacksCoordSlider:SetMinMaxValues(stacks.y-100,stacks.y+100);
-		-- ajuste slider X
-		PowaStacksCoordXSlider:SetMinMaxValues(stacks.x-5000,stacks.x+5000);
-		PowaStacksCoordXSliderLow:SetText(stacks.x-100);
-		PowaStacksCoordXSliderHigh:SetText(stacks.x+100);
-		PowaStacksCoordXSlider:SetValue(stacks.x);
-		PowaStacksCoordXSlider:SetMinMaxValues(stacks.x-100,stacks.x+100);
+	PowaStacksAlphaSlider:SetValue(stacks.a);
+	PowaStacksSizeSlider:SetValue(stacks.h);
+	-- ajuste slider Y
+	PowaStacksCoordSlider:SetMinMaxValues(stacks.y-5000,stacks.y+5000);
+	PowaStacksCoordSliderLow:SetText(stacks.y-100);
+	PowaStacksCoordSliderHigh:SetText(stacks.y+100);
+	PowaStacksCoordSlider:SetValue(stacks.y);
+	PowaStacksCoordSlider:SetMinMaxValues(stacks.y-100,stacks.y+100);
+	-- ajuste slider X
+	PowaStacksCoordXSlider:SetMinMaxValues(stacks.x-5000,stacks.x+5000);
+	PowaStacksCoordXSliderLow:SetText(stacks.x-100);
+	PowaStacksCoordXSliderHigh:SetText(stacks.x+100);
+	PowaStacksCoordXSlider:SetValue(stacks.x);
+	PowaStacksCoordXSlider:SetMinMaxValues(stacks.x-100,stacks.x+100);
 
-		PowaBuffStacksTransparentButton:SetChecked(stacks.Transparent);
-		PowaBuffStacksUpdatePingButton:SetChecked(stacks.UpdatePing);
+	PowaBuffStacksTransparentButton:SetChecked(stacks.Transparent);
+	PowaBuffStacksUpdatePingButton:SetChecked(stacks.UpdatePing);
 
-		PowaBuffStacksUseOwnColorButton:SetChecked(stacks.UseOwnColor);
+	PowaBuffStacksUseOwnColorButton:SetChecked(stacks.UseOwnColor);
 
-		PowaStacksColorNormalTexture:SetVertexColor(stacks.r,stacks.g,stacks.b);
-			
-		UIDropDownMenu_SetSelectedValue(PowaBuffStacksRelative, stacks.Relative);		
-		UIDropDownMenu_SetSelectedValue(PowaDropDownStacksTexture, stacks.Texture);
+	PowaStacksColorNormalTexture:SetVertexColor(stacks.r,stacks.g,stacks.b);
+		
+	UIDropDownMenu_SetSelectedValue(PowaBuffStacksRelative, stacks.Relative);		
+	UIDropDownMenu_SetSelectedValue(PowaDropDownStacksTexture, stacks.Texture);
 
-	end
 end
 
 
@@ -1518,15 +1519,13 @@ end
 
 function PowaAuras:InitPage(aura)
 
-	--self:ShowText("InitPage ", self.CurrentAuraId);
+	self:ShowText("InitPage ", self.CurrentAuraId);
 
 	if (aura==nil) then
 		--self:ShowText("InitPage - Unknown aura resetting to: ", self.CurrentAuraId)
 		aura = self.Auras[self.CurrentAuraId];
 	end
 	
-	self:UpdateTimerOptions();
-
 	PowaDropDownAnim1Text:SetText(self.Anim[aura.anim1]);
 	PowaDropDownAnim2Text:SetText(self.Anim[aura.anim2]);
 	PowaDropDownAnimBeginText:SetText(self.BeginAnimDisplay[aura.begin]);
@@ -1633,20 +1632,8 @@ function PowaAuras:InitPage(aura)
 	-- Auras visuals
 	PowaBarAuraAlphaSlider:SetValue(aura.alpha);
 	PowaBarAuraSizeSlider:SetValue(aura.size);
-	-- adjust slider Y
-	PowaBarAuraCoordSlider:SetMinMaxValues(aura.y-5000,aura.y+5000);
-	PowaBarAuraCoordSliderLow:SetText(aura.y-200);
-	PowaBarAuraCoordSliderHigh:SetText(aura.y+200);
-	PowaBarAuraCoordSlider:SetValue(aura.y);
-	PowaBarAuraCoordSlider:SetMinMaxValues(aura.y-200,aura.y+200);
-	PowaBarAuraCoordYEdit:SetText(aura.y);
-	-- adjust slider X
-	PowaBarAuraCoordXSlider:SetMinMaxValues(aura.x-5000,aura.x+5000);
-	PowaBarAuraCoordXSliderLow:SetText(aura.x-200);
-	PowaBarAuraCoordXSliderHigh:SetText(aura.x+200);
-	PowaBarAuraCoordXSlider:SetValue(aura.x);
-	PowaBarAuraCoordXSlider:SetMinMaxValues(aura.x-200,aura.x+200);
-	PowaBarAuraCoordXEdit:SetText(aura.x);
+	
+	self:UpdateLocation(aura);
 
 	PowaBarAuraAnimSpeedSlider:SetValue(aura.speed);
 	
@@ -1674,7 +1661,7 @@ function PowaAuras:InitPage(aura)
 	PowaBarBuffStacks:SetText(aura:StacksText());
 	
 	PowaAuras:UpdateStacksOptions(); 
-	PowaAuras:UpdateTimerOptions(); 
+	PowaAuras:UpdateTimerOptions(aura); 
 
 	if (aura.optunitn == true) then
 		self:EnableTextfield("PowaBarUnitn");
@@ -1768,6 +1755,23 @@ function PowaAuras:InitPage(aura)
 	PowaColor_SwatchBg.b = aura.b;
 
 	PowaHeader:SetText(self.Text.nomEffectEditor.." ("..aura.id..")");
+end
+
+function PowaAuras:UpdateLocation(aura)
+	-- adjust slider Y
+	PowaBarAuraCoordSlider:SetMinMaxValues(aura.y-5000,aura.y+5000);
+	PowaBarAuraCoordSliderLow:SetText(aura.y-200);
+	PowaBarAuraCoordSliderHigh:SetText(aura.y+200);
+	PowaBarAuraCoordSlider:SetValue(aura.y);
+	PowaBarAuraCoordSlider:SetMinMaxValues(aura.y-200,aura.y+200);
+	PowaBarAuraCoordYEdit:SetText(aura.y);
+	-- adjust slider X
+	PowaBarAuraCoordXSlider:SetMinMaxValues(aura.x-5000,aura.x+5000);
+	PowaBarAuraCoordXSliderLow:SetText(aura.x-200);
+	PowaBarAuraCoordXSliderHigh:SetText(aura.x+200);
+	PowaBarAuraCoordXSlider:SetValue(aura.x);
+	PowaBarAuraCoordXSlider:SetMinMaxValues(aura.x-200,aura.x+200);
+	PowaBarAuraCoordXEdit:SetText(aura.x);
 end
 
 function PowaAuras:SetThresholdSlider(aura)
@@ -2891,14 +2895,15 @@ function PowaAuras.FontScrollBar_Update(owner)
 end
 
 
-function PowaAuras:EditorShow()
+function PowaAuras:EditorToggle()
 	if (PowaBarConfigFrame:IsVisible()) then
+		self:ShowText("EditorToggle Close");
 		self:EditorClose();
 		return;
 	end
 	local aura = self.Auras[self.CurrentAuraId];
 	if (aura) then
-		--self:ShowText("EditorShow RecreateFrames");
+		self:ShowText("EditorToggle RecreateFrames");
 		aura:RecreateFrames();
 		aura:CheckActive(true, true, true);
 		self:InitPage(aura);
