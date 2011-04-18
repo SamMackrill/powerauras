@@ -106,56 +106,64 @@ end
 
 --=====Animation Action========
 -- Parameters:
---  Frame
---  HideFrame (optional)
---  Animation
---  Loop
---  Speed
---  Alpha
---  Secondary
---  BeginSpin
---  Hide
---  StateName
---  StateValue
+--  Name
+--  AnimationChain
+--    Name  
+--    Frame
+--    HideFrame (optional)
+--    Animation
+--    Loop
+--    Speed
+--    Alpha
+--    Secondary
+--    BeginSpin
+--    Hide
 
 cPowaAuraAnimationAction = PowaClass(cPowaTriggerAction, { Type = "Animation" });
 
 function cPowaAuraAnimationAction:Fire()
 	if (PowaAuras.DebugTriggers or self.Debug) then
-		PowaAuras:DisplayText("Animation Play: ", self.AnimationGroup:GetName() );
+		PowaAuras:DisplayText("Animation Play: ", self.AnimationGroup:GetName(), " chain size=", #self.Parameters.AnimationChain);
 	end
-	if (self.Parameters.HideFrame) then
-		self.Parameters.HideFrame:StopAnimating();
-		self.Parameters.HideFrame:Hide();
+	self.Current = 0;
+	self:PlayNextAnimation();
+end
+
+function cPowaAuraAnimationAction:PlayNextAnimation()
+	animation = self.Parameters.AnimationChain[self.Current];
+	if (animation) then
+		if (PowaAuras.DebugTriggers or self.Debug) then
+			PowaAuras:DisplayText("Animation Finished Hide=", animation.Hide);
+		end
+		if (animation.Hide and animation.Hide.Hide) then
+			animation.Hide:Hide("cPowaAuraAnimationAction Finished");
+		end			
 	end
-	self.Parameters.Frame:StopAnimating();
-	self.Parameters.Frame:Show();
-	self.AnimationGroup:Play();
+	self.Current = self.Current + 1;
+	animation = self.Parameters.AnimationChain[self.Current];
+	if (not animation) then return;	end
+	if (animation.HideFrame) then
+		animation.HideFrame:StopAnimating();
+		animation.HideFrame:Hide();
+	end
+	animation.Frame:StopAnimating();
+	animation.Frame:Show();
+	animation.AnimationGroup:Play();
 end
 
 function cPowaAuraAnimationAction:Init()
 	local aura = PowaAuras.Auras[self.AuraId];
-	local groupName = "Trigger" .. self.Trigger.Id .. "_" .. self.Id;
-	if (PowaAuras.DebugTriggers or self.Debug) then
-		PowaAuras:DisplayText("Add Animation: ", self.Parameters.Animation, " Group=", groupName );
-	end
-	if (self.Parameters.Loop) then
-		self.AnimationGroup =  PowaAuras:AddLoopingAnimation(aura, self, self.Parameters.Frame, self.Parameters.Animation, groupName, self.Parameters.Speed, self.Parameters.Alpha, self.Parameters.Secondary, "REPEAT")
-	else
-		self.AnimationGroup =  PowaAuras:AddAnimation(self, self.Parameters.Frame, self.Parameters.Animation, groupName, self.Parameters.Speed, self.Parameters.Alpha, self.Parameters.BeginSpin, self.Parameters.Hide, self.Parameters.StateValue);
-	end
-end
-
-function cPowaAuraAnimationAction:Finished()
-	if (PowaAuras.DebugTriggers or self.Debug) then
-		PowaAuras:DisplayText("Animation Finished Hide=", self.Parameters.Hide, " StateValue=", self.Parameters.StateValue );
-	end
-	local aura = PowaAuras.Auras[self.AuraId];
-	if (self.Parameters.Hide) then
-		aura:Hide("cPowaAuraAnimationAction Finished");
-	end	
-	if (self.Parameters.StateValue) then
-		aura:SetState(self.Parameters.StateName, self.Parameters.StateValue);
+	for index, animation in pairs(self.Parameters.AnimationChain) do
+		local groupName = "Trigger" .. self.Trigger.Id .. "_" .. self.Id .. "_" .. index;
+		--if (PowaAuras.DebugTriggers or self.Debug) then
+			PowaAuras:DisplayText("Add Animation: ", animation.Animation, " (", animation.Name, ") Group=", groupName );
+		--end
+		if (animation.Loop) then
+			animation.AnimationGroup =  PowaAuras:AddLoopingAnimation(aura, self, animation.Frame, animation.Animation, groupName, animation.Speed, animation.Alpha, animation.Secondary, "REPEAT");
+			return;
+		else
+			animation.AnimationGroup =  PowaAuras:AddAnimation(self, animation.Frame, animation.Animation, groupName, animation.Speed, animation.Alpha, animation.BeginSpin, animation.Hide);
+		end
 	end
 end
 
