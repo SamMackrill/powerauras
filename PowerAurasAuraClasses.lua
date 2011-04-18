@@ -283,8 +283,6 @@ function cPowaAura:CreateDefaultTriggers()
 	-- =====================
 	local AnimationChain = {};
 	
-
-	
 	-- =======
 	-- On Show
 	-- =======
@@ -297,7 +295,7 @@ function cPowaAura:CreateDefaultTriggers()
 	if (self.anim1>1 or self.anim2>0) then
 		--PowaAuras:ShowText("Main animation trigger, anim1=", self.anim1, " anim2=", self.anim2);
 		if (self.anim1>0) then
-			table.insert(AnimationChain, {Name="PA_ShowAnim", Frame=frame, HideFrame=frame2, Animation=self.begin, Speed=self.speed, Alpha=self.alpha, BeginSpin=self.beginSpin});
+			table.insert(AnimationChain, {Name="PA_Main1", Frame=frame, Animation=self.anim1, Speed=self.speed, Alpha=self.alpha, Loop=true});
 		end
 		if (self.anim2>0) then
 			local speed;
