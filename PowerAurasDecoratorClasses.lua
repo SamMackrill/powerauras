@@ -49,7 +49,7 @@ end
 function cPowaDecorator:ValidValue(aura, testing)
 	if (testing) then return true; end
 	local displayValue = self:GetDisplayValue(aura, 0);
-	--PowaAuras:ShowText(self.Type, " ValidValue()=", displayValue);
+	--PowaAuras:ShowText(GetTime()," ", self.Type, " ValidValue()=", displayValue);
 	return (displayValue and displayValue>0);
 end
 
@@ -102,7 +102,7 @@ end
 
 function cPowaDecorator:Redisplay(aura, testing)
 	if (not self.Showing) then return; end
-	PowaAuras:ShowText(self.Type, " Redisplay ", auraId);
+	PowaAuras:ShowText(GetTime()," ", self.Type, " Redisplay ", auraId);
 	self:Dispose();
 	self:CreateFrameIfMissing(aura);
 	self:SetShowOnAuraHide(aura);
@@ -286,7 +286,7 @@ function cPowaStacks:ShowValue(aura, newvalue)
 	--	self:Show(aura, "ShowValue");
 	--end
 	
-	PowaAuras:ShowText("Stacks Showvalue id=", self.id, " newvalue=", newvalue);
+	PowaAuras:ShowText(GetTime()," Stacks Showvalue id=", self.id, " newvalue=", newvalue);
 	
 	-- Create textures dynamically to support > 9 stacks.
 	local texcount = #(frame.textures);
@@ -406,7 +406,7 @@ function cPowaStacks:Update(aura, dummy, testing)
 	--end
 	
 	--if (aura.Debug) then
-		PowaAuras:DisplayText("Stacks Update UpdateValueTo=",self.UpdateValueTo);
+		PowaAuras:DisplayText(GetTime()," Stacks Update UpdateValueTo=",self.UpdateValueTo);
 	--end
 	
 	if (self.Showing) then
@@ -417,7 +417,7 @@ function cPowaStacks:Update(aura, dummy, testing)
 end
 
 function cPowaStacks:Hide()
-	PowaAuras:ShowText("Hide Stacks Frame for ", self.id, " ", self.Showing);
+	PowaAuras:ShowText(GetTime()," Hide Stacks Frame for ", self.id, " ", self.Showing);
 	--if (not self.Showing) then return; end
 	local frame = self:GetFrame();
 	if (frame) then
@@ -505,6 +505,28 @@ function cPowaTimer:SetShowOnAuraHide(aura)
 	--PowaAuras:Message("ShowOnAuraHide=", self.ShowOnAuraHide);
 end
 
+function cPowaTimer:InitFrame(aura, frame)
+	if (aura.texmode == 1) then
+		frame.texture:SetBlendMode("ADD");
+	else
+		frame.texture:SetBlendMode("DISABLE");
+	end
+	if (self.UseOwnColor) then
+		frame.texture:SetVertexColor(self.r,self.g,self.b);
+	else
+		local auraTexture = PowaAuras.Textures[self.id];
+		if (auraTexture) then
+			if auraTexture:GetObjectType() == "Texture" then
+				frame.texture:SetVertexColor(auraTexture:GetVertexColor());
+			elseif auraTexture:GetObjectType() == "FontString" then
+				frame.texture:SetVertexColor(auraTexture:GetTextColor());
+			end
+		else
+			frame.texture:SetVertexColor(aura.r,aura.g,aura.b);
+		end
+	end
+end
+
 function cPowaTimer:CreateFrameIfMissing(aura)
 	if (not aura and self:IsRelative()) then
 		self.Showing = false;
@@ -517,8 +539,8 @@ function cPowaTimer:CreateFrameIfMissing(aura)
 		PowaAuras.TimerFrame[self.id] = {};
 	end
 	if (not frame1) then
-		--PowaAuras:ShowText("Created missing TimerFrames for aura ", self.id, " frame1=", frame1);		
 		frame1 = self:CreateFrame(aura, 1);
+		PowaAuras:ShowText("Created missing TimerFrames for aura ", self.id, " frame1=", frame1);		
 		frame1:SetAlpha(math.min(self.a,0.99));
 		frame1:SetWidth(20 * self.h);
 		frame1:SetHeight(20 * self.h);
@@ -527,15 +549,18 @@ function cPowaTimer:CreateFrameIfMissing(aura)
 		else
 			frame1:SetPoint("CENTER", self.x, self.y);
 		end
+		self:InitFrame(aura, frame1)
 	end
+	
 	if (self.cents) then
 		if (not frame2) then
-			--PowaAuras:ShowText("Created missing TimerFrames for aura ", self.id, " frame2=", frame2);		
 			frame2 = self:CreateFrame(aura, 2);
+			PowaAuras:ShowText("Created missing TimerFrames for aura ", self.id, " frame2=", frame2);		
 			frame2:SetAlpha(self.a * 0.75);
 			frame2:SetWidth(14 * self.h);
 			frame2:SetHeight(14 * self.h);
 			frame2:SetPoint("LEFT", frame1, "RIGHT", 1, -1.5);
+			self:InitFrame(aura, frame2)
 		end
 	elseif (frame2) then
 		PowaAuras:Dispose("TimerFrame", self.id, 2);
@@ -734,35 +759,12 @@ function cPowaTimer:ExtractDigits(displayValue)
 end
 
 function cPowaTimer:ShowValue(aura, frameIndex, displayValue)
-	if (PowaAuras.TimerFrame==nil) then return; end
-	if (PowaAuras.TimerFrame[self.id]==nil) then return; end
+	if (not PowaAuras.TimerFrame or not PowaAuras.TimerFrame[self.id]) then return; end
 	local timerFrame = PowaAuras.TimerFrame[self.id][frameIndex];
-	if (timerFrame==nil) then return; end
-	
-	if (not self.Showing) then
-		if (aura.texmode == 1) then
-			timerFrame.texture:SetBlendMode("ADD");
-		else
-			timerFrame.texture:SetBlendMode("DISABLE");
-		end
-		if (self.UseOwnColor) then
-			timerFrame.texture:SetVertexColor(self.r,self.g,self.b);
-		else
-			local auraTexture = PowaAuras.Textures[self.id];
-			if (auraTexture) then
-				if auraTexture:GetObjectType() == "Texture" then
-					timerFrame.texture:SetVertexColor(auraTexture:GetVertexColor());
-				elseif auraTexture:GetObjectType() == "FontString" then
-					timerFrame.texture:SetVertexColor(auraTexture:GetTextColor());
-				end
-			else
-				timerFrame.texture:SetVertexColor(aura.r,aura.g,aura.b);
-			end
-		end
-	end
+	if (not timerFrame) then return; end
 	
 	local deci, uni = self:ExtractDigits(displayValue);
-	--PowaAuras:ShowText("Show timer: ",deci, " ", uni, " ", PowaAuras.Auras[k].Timer.HideLeadingZeros);
+	PowaAuras:ShowText(GetTime()," Show timer: ",deci, " ", uni, " frame?=", timerFrame:IsVisible());
 	local tStep = PowaAuras.Tstep;
 	if (deci==0 and self.HideLeadingZeros) then
 		timerFrame.texture:SetTexCoord(tStep , tStep * 1.5, tStep * uni, tStep * (uni+1));
@@ -774,7 +776,7 @@ end
 
 function cPowaTimer:HideFrame(i)
 	if (PowaAuras.TimerFrame[self.id] and PowaAuras.TimerFrame[self.id][i]) then
-		--PowaAuras:ShowText("Hide Timer Frame ", i," for ", self.id);
+		PowaAuras:ShowText(GetTime()," Hide Timer Frame ", i," for ", self.id);
 		PowaAuras.TimerFrame[self.id][i]:Hide();
 	end
 end
