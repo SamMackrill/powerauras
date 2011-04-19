@@ -881,7 +881,7 @@ end
 local function stopFrameMoving(frame)
 	if (frame==nil or not frame.isMoving) then return; end
 	frame.isMoving = false;
-	PowaAuras:ShowText("stopMove id=", frame.aura.id);
+	--PowaAuras:ShowText("stopMove id=", frame.aura.id);
 	frame:StopMovingOrSizing();
 	frame.aura.x = math.floor(frame:GetLeft() + (frame:GetWidth()  - UIParent:GetWidth())  / 2 + 0.5);
 	frame.aura.y = math.floor(frame:GetTop()  - (frame:GetHeight() + UIParent:GetHeight()) / 2 + 0.5);

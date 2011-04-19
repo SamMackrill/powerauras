@@ -247,8 +247,8 @@ function cPowaAura:StacksAllowed()
 end
 
 function cPowaAura:ClearDefaultTriggers()
-	PowaAuras:ShowText("Clearing default triggers ", #self.Triggers);
-	self:ProcessTriggerQueue();
+	--PowaAuras:ShowText("Clearing default triggers ", #self.Triggers);
+	self:ClearTriggerQueue();
 	local triggerIndex = #self.Triggers;
 	while triggerIndex>0 do
 		local trigger = self.Triggers[triggerIndex];
@@ -273,7 +273,7 @@ function cPowaAura:ClearDefaultTriggers()
 end
 
 function cPowaAura:CreateDefaultTriggers()
-	PowaAuras:ShowText("CreateDefaultTriggers");
+	--PowaAuras:ShowText("CreateDefaultTriggers");
 	self:ClearDefaultTriggers();
 	if (self.off) then return; end
 	local frame, texture, frame2, texture2 = self:CreateFrames();
@@ -420,10 +420,14 @@ function cPowaAura:DeleteTrigger(trigger)
 	end
 end
 
+function cPowaAura:ClearTriggerQueue()
+	wipe(self.TriggerActionQueue);
+end
+
 function cPowaAura:ProcessTriggerQueue()
 	if (not self.TriggerActionQueue or #self.TriggerActionQueue==0 or PowaAuras.ModTest) then return; end
 	if (PowaAuras.DebugTriggers) then
-		PowaAuras:DisplayText("ProcessTriggerQueue ", #self.TriggerActionQueue);
+		PowaAuras:DisplayText("Aura ", self.id, " ProcessTriggerQueue ", #self.TriggerActionQueue);
 	end
 	local i = 1;
 	while i<=#self.TriggerActionQueue do
@@ -479,16 +483,6 @@ function cPowaAura:QueueActions(trigger, invertOnly)
 end
 
 
---[[
-function cPowaAura:RemoveAction(action, triggerId, force)
-	if(self.TriggerActions[action] and self.TriggerActions[action] == triggerId or force) then
-		self.TriggerActions[action] = nil;
-		return true;
-	else
-		return false;
-	end
-end
---]]
 --==========================
 
 
@@ -521,8 +515,6 @@ end
 function cPowaAura:Hide(source)	
 	--PowaAuras:UnitTestInfo("Aura.Hide ", self.id);
 	--PowaAuras:ShowText(GetTime()," Aura.Hide ", self.id, " from=", source);
-	--if (self.Timer) then self.Timer:Hide(); end
-	--if (self.Stacks) then self.Stacks:Hide(); end
 	self:HideFrame(self:GetFrame());
 	self:HideFrame(self:GetFrame(true));
 
@@ -574,7 +566,7 @@ function cPowaAura:SetHideRequest(source, now, testing)
 	end
 
 	if (now or testing) then
-		self:Hide();
+		self:Hide("Hide Request now or testing");
 		return;
 	end
 	
@@ -595,11 +587,11 @@ function cPowaAura:CheckActive(shouldShow, ignoreCascade, testing)
 		self.Active = shouldShow;
 		self.InvertCount = 0;
 		
-		if (self.Active) then
-			PowaAuras:ShowText(GetTime(),"=== Aura(", self.id, ") ACTIVE");
-		else
-			PowaAuras:ShowText(GetTime(),"=== Aura(", self.id, ") INACTIVE");	
-		end
+		--if (self.Active) then
+		--	PowaAuras:ShowText(GetTime(),"=== Aura(", self.id, ") ACTIVE");
+		--else
+		--	PowaAuras:ShowText(GetTime(),"=== Aura(", self.id, ") INACTIVE");	
+		--end
 
 		if (not ignoreCascade and not testing) then PowaAuras:AddChildrenToCascade(self); end
 	end

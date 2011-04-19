@@ -425,9 +425,7 @@ function PowaAuras:OptionNewEffect()
 	
 	self:CalculateAuraSequence();
 
-	aura.Active = true;
-	--self:ShowText("OptionNewEffect RecreateFrames");
-	aura:RecreateFrames();
+	aura:CheckActive(true, true, true);
 	
 	self:DisplayAura(i);
 
@@ -1302,7 +1300,7 @@ function PowaAuras:MainOptionClose()
 	PowaOptionsFrame:Hide();
 	PlaySound("TalentScreenClose");
 
-	PowaAuras:OptionHideAll();
+	self:OptionHideAll();
     
 	self:FindAllChildren();
 	self:CreateEffectLists();	
@@ -1519,7 +1517,7 @@ end
 
 function PowaAuras:InitPage(aura)
 
-	self:ShowText("InitPage ", self.CurrentAuraId);
+	--self:ShowText("InitPage ", self.CurrentAuraId);
 
 	if (aura==nil) then
 		--self:ShowText("InitPage - Unknown aura resetting to: ", self.CurrentAuraId)
@@ -2897,14 +2895,12 @@ end
 
 function PowaAuras:EditorToggle()
 	if (PowaBarConfigFrame:IsVisible()) then
-		self:ShowText("EditorToggle Close");
+		--self:ShowText("EditorToggle Close");
 		self:EditorClose();
 		return;
 	end
 	local aura = self.Auras[self.CurrentAuraId];
 	if (aura) then
-		self:ShowText("EditorToggle RecreateFrames");
-		aura:RecreateFrames();
 		aura:CheckActive(true, true, true);
 		self:InitPage(aura);
 		PowaBarConfigFrame:Show();
@@ -3458,7 +3454,7 @@ end
 
 
 function PowaAuras:ToggleTesting()
-	self:ShowText("ToggleTesting for ", self.CurrentAuraId);
+	--self:ShowText("ToggleTesting for ", self.CurrentAuraId);
 	local aura = self.Auras[self.CurrentAuraId];
 	if (not aura or aura.buffname == "" or aura.buffname == " ") then
 		return;
@@ -3473,22 +3469,20 @@ function PowaAuras:ToggleTesting()
 end
 
 function PowaAuras:TestAllAuras()
-	PowaAuras:OptionHideAll();
+	self:OptionHideAll();
 	--self:ShowText("Test All Active Auras");
 	for id, aura in pairs(self.Auras) do
 		if (not aura.off) then
-			aura:RecreateFrames();
 			aura:CheckActive(true, true, true);
 		end
 	end
 end
 
 function PowaAuras:OptionHideAll()
-	self:ShowText("Hide All Auras");
+	--self:ShowText("Hide All Auras");
 	for id, aura in pairs(self.Auras) do
 		self:ResetDragging(aura, self.Frames[aura.id]);
 		aura:CheckActive(false, true, true);
-		aura:ProcessTriggerQueue();
 	end	
 end
 
@@ -3526,11 +3520,12 @@ function PowaAuras:RedisplayAura(auraId, recreateTriggers) ---Re-show aura after
 		--self:ShowText("RedisplayAura ", aura.id," Recreate Triggers");
 	--	aura:CreateDefaultTriggers();
 	--end
-	if (aura.Showing) then
-		aura:Dispose();
-		aura:RecreateFrames();
+	--if (aura.Showing) then
+		--aura:Dispose();
+		--aura.Active = false;
+		--aura:RecreateFrames();
 		aura:CheckActive(true, true, true);
-	end
+	--end
 	if (aura.Timer) then aura.Timer:Redisplay(aura, true); end
 	if (aura.Stacks) then aura.Stacks:Redisplay(aura, true); end
 
