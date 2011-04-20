@@ -1,6 +1,3 @@
--- a3528830@jnxjn.com
--- (Ignore that, just a disposable email I used for a battle.net account for a wow trial)
-
 -- Each widget has its own init function, and a shared pool of closures available to all widgets.
 -- You can initialize a widget by calling PowaAuras.UI.[widget]().
 -- Each definition should be placed it its own lua file.
