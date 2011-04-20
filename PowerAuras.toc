@@ -1,4 +1,4 @@
-﻿## Interface: 40000
+﻿## Interface: 40100
 ## Title: Power Auras Classic
 ## Author: Smacker & Meorawr 'lolcat',Driizt 'classic',Garstiger 'continued',Sinsthar 'base'
 ## Version: 5.0
