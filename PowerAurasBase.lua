@@ -1089,7 +1089,8 @@ function PowaAuras:Different(o1, o2)
 end
 
 function PowaAuras:GetSettingForExport(prefix, k, v, default)
-	if (not self:Different(v, default)) then return ""; end
+	-- Causes an unreproducable bug. Will increase size of export codes, but at least they work.
+	-- if (not self:Different(v, default)) then return ""; end
 	local varType = type(v);
 	local setting = prefix..k..":";
 	if (varType == "string") then
