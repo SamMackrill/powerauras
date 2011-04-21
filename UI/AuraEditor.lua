@@ -1,6 +1,18 @@
 -- More definitions, yes please.
 PowaAuras.UI:Register("AuraEditor", {
-
+	Hooks = {
+		"Show",
+		"Hide",
+	},
+	Init = function(self)
+		print("init");
+	end,
+	Hide = function(self)
+	
+	end,
+	Show = function(self)
+	
+	end,
 });
 
 
