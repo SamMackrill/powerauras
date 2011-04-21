@@ -311,7 +311,6 @@ PowaAuras:MergeTables(PowaAuras.Text,
 
 	nomUpdateSpeed = "Update speed",
 	nomSpeed = "Animation speed",
-	nomFPS = "Global Animation FPS",
 	nomTimerUpdate = "Timer update speed",
 	nomBegin = "Begin Animation",
 	nomEnd = "End Animation",
@@ -771,6 +770,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomBlockIncomingAuras = "Block Incoming Auras",
 	aideFixExports = "Check this when aura exports are not functioning correctly and leave you with a blank textbox.",
 	nomFixExports = "Alternative Exports",
+	aideAnimationsAreBrokenSorry = "|cFFFF0000Note: |rIf your animations appear to skip or increase in size randomly, you should enable Old Animations.",
 
 });
 

@@ -3283,14 +3283,6 @@ end
 local function OptionsOK()
 	--PowaAuras:DisplayText("OptionsOK");
 	PowaMisc.OnUpdateLimit = (100 - PowaOptionsUpdateSlider2:GetValue()) / 200;
-	local newFps = PowaOptionsAnimationsSlider2:GetValue();
-	if (newFps~=PowaMisc.AnimationFps) then
-		PowaMisc.AnimationFps = newFps;
-		for auraId in pairs(PowaAuras.Auras) do
-			PowaAuras:RedisplayAura(auraId);
-		end
-	end
-	PowaMisc.AnimationLimit = (100 - PowaOptionsTimerUpdateSlider2:GetValue()) / 1000;
 	PowaMisc.UserSetMaxTextures = PowaOptionsTextureCount:GetValue();
 	if (PowaMisc.OverrideMaxTextures) then
 		PowaAuras.MaxTextures = PowaMisc.UserSetMaxTextures;
@@ -3355,7 +3347,6 @@ local function OptionsRefresh()
 	--PowaAuras:ShowText("debug=", PowaMisc.debug);
 	--PowaAuras:ShowText("UserSetMaxTextures=", PowaMisc.UserSetMaxTextures);
 	PowaOptionsUpdateSlider2:SetValue(100-200*PowaMisc.OnUpdateLimit); 
-	PowaOptionsAnimationsSlider2:SetValue(PowaMisc.AnimationFps);
 	PowaOptionsTimerUpdateSlider2:SetValue(100-1000*PowaMisc.AnimationLimit);
 	PowaOptionsTextureCount:SetValue(PowaMisc.UserSetMaxTextures);
 	PowaOverrideTextureCountButton:SetChecked(PowaMisc.OverrideMaxTextures ~= true);
@@ -3383,10 +3374,6 @@ end
 
 function PowaAuras:PowaOptionsUpdateSliderChanged2(control)
 	PowaOptionsUpdateSlider2Text:SetText(self.Text.nomUpdateSpeed.." : "..control:GetValue().."%");
-end
-
-function PowaAuras:PowaOptionsAnimationsSliderChanged2(control)
-	PowaOptionsAnimationsSlider2Text:SetText(self.Text.nomFPS.." : "..control:GetValue().." FPS");
 end
 
 function PowaAuras:PowaOptionsTimerUpdateSliderChanged2(control)
