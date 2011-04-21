@@ -66,6 +66,10 @@
 					self.isMoving = false;
 				end
 			</OnHide>
+			<OnLoad>
+				self.Title:SetText(format("Power Auras %s", PowaAuras.Version));
+				PowaAuras.UI:AuraBrowser(self);
+			</OnLoad>
 		</Scripts>
 		<Layers>
 			<Layer level="ARTWORK">
@@ -152,7 +156,7 @@
 											<TexCoords left="0" right="0.818359375" top="0.013671875" bottom="0.017578125" />
 											<Color r="0.3" g="0.3" b="0.3" a="1.0" />
 										</Texture>
-										<FontString parentKey="SelectedTitle" justifyH="LEFT" justifyV="TOP" font="GameFontNormalLarge" text="Aura %d|%d Selected Auras|Create New Aura">
+										<FontString parentKey="SelectedTitle" justifyH="LEFT" justifyV="TOP" font="GameFontNormalLarge" text="Aura %d|Create New Aura">
 											<Size x="225" y="24" />
 											<Anchors>
 												<Anchor point="TOPLEFT" x="15" y="-250" />
@@ -236,11 +240,5 @@
 				</Scripts>
 			</Frame>
 		</Frames>
-		<Scripts>
-			<OnLoad>
-				self.Title:SetText(format("Power Auras %s", PowaAuras.Version));
-				PowaAuras.UI:AuraBrowser(self);
-			</OnLoad>
-		</Scripts>
 	</Frame>
 </Ui>

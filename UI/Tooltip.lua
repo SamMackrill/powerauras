@@ -31,8 +31,8 @@ PowaAuras.UI:Register("Tooltip", {
 	end,
 	ApplyScript = function(self, frame, script, callback)
 		-- Prevents overwriting scripts.
-		if(not frame.HasScript) then return; end
-		if(frame:HasScript(script)) then
+		if(not frame.GetScript) then return; end
+		if(frame:GetScript(script)) then
 			frame:HookScript(script, callback);
 		else
 			frame:SetScript(script, callback);
