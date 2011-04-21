@@ -5,30 +5,34 @@ PowaAuras.UI:Register("AuraEditor", {
 		"Hide",
 	},
 	Init = function(self)
-		print("init");
+		-- Hide advanced elements.
+		self.Advanced:SetChecked(false);
+		self:ToggleAdvanced(false);
 	end,
 	Hide = function(self)
 	
 	end,
 	Show = function(self)
-	
+		-- Make sure this stuff is correct...
+		self:ToggleAdvanced(self.Advanced:GetChecked());		
+	end,
+	ToggleAdvanced = function(self, state, parent)
+		-- Make sure a parent is specified.
+		if(not parent) then parent = self; end
+		-- Needs a GetChildren function.
+		if(not parent.GetChildren) then return; end
+		-- Go over children.
+		for _, child in ipairs({ parent:GetChildren() }) do
+			-- Is it flagged as advanced?
+			if(child.GetFlag and child:GetFlag(0x1)) then
+				if(state) then
+					child:Show();
+				else
+					child:Hide();
+				end
+			end
+			-- Go over the children of this element...
+			self:ToggleAdvanced(state, child);
+		end
 	end,
 });
-
-
-function PowaAuras:RegisterAdvancedElement(element)
-	-- tinsert(PowaAuras.UI:AdvancedElements, (element:GetName() or element));
-end
-
-function PowaAuras:ToggleAdvancedElements(state)
-	-- for i,v in pairs(PowaAuras.UI:AdvancedElements) do
-		-- if(type(v) == "string") then v = _G[v]; end
-		-- if(state == true) then v:Show(); else v:Hide(); end
-		-- if(v:GetParent().UpdateLayout) then v:GetParent():UpdateLayout(); end
-	-- end
-end
-
-function PowaAuras:ShowAuraEditor()
-	-- Make sure advanced things are shown/hidden.
-	PowaAuras:ToggleAdvancedElements(PowaEditor.Advanced:GetChecked());
-end
