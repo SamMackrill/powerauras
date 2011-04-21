@@ -175,6 +175,7 @@ function PowaAuras:PARTY_MEMBERS_CHANGED(...)
 		self.DoCheck.GroupOrSelfBuffs = true;
 		self.DoCheck.PartyHealth = true;
 		self.DoCheck.PartyMana = true;
+		self.DoCheck.UnitMatch = true;
 		self.DoCheck.CheckIt = true;
 	end
 	local partyCount = GetNumPartyMembers();
@@ -189,6 +190,7 @@ function PowaAuras:RAID_ROSTER_UPDATE(...)
 		self.DoCheck.GroupOrSelfBuffs = true;
 		self.DoCheck.RaidHealth = true;
 		self.DoCheck.RaidMana = true;
+		self.DoCheck.UnitMatch = true;
 		self.DoCheck.CheckIt = true;
 	end
 	local raidCount = GetNumRaidMembers();
@@ -400,6 +402,7 @@ function PowaAuras:PLAYER_FOCUS_CHANGED(...)
 		self.DoCheck.FocusSpells = true;
 		self.DoCheck.StealableFocusSpells = true;
 		self.DoCheck.PurgeableFocusSpells = true;
+		self.DoCheck.UnitMatch = true;
 		self.DoCheck.CheckIt = true;
 	end
 end
@@ -494,6 +497,7 @@ function PowaAuras:PLAYER_TARGET_CHANGED(...)
 		self.DoCheck.StealableTargetSpells = true;
 		self.DoCheck.PurgeableTargetSpells = true;
 		self.DoCheck.Combo = true;
+		self.DoCheck.UnitMatch = true;
 		self.DoCheck.CheckIt = true;
 	end
 end
@@ -562,6 +566,7 @@ function PowaAuras:UNIT_PET(...)
 	if (unit ~= "player") then return; end
 	if (self.ModTest == false) then
 		self.DoCheck.Pet = true;
+		self.DoCheck.UnitMatch = true;
 		self.DoCheck.CheckIt = true;
 	end
 end
@@ -856,5 +861,20 @@ function PowaAuras:UNIT_THREAT_SITUATION_UPDATE(...)
 			self.DoCheck.RaidAggro = true;
 			self.DoCheck.CheckIt = true;
 		end
+	end
+end
+
+-- Enables the boss1-boss3 units.
+function PowaAuras:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
+	if (self.ModTest == false) then
+		self.DoCheck.UnitMatch = true;
+		self.DoCheck.CheckIt = true;
+	end
+end
+
+function PowaAuras:UPDATE_MOUSEOVER_UNIT()
+	if (self.ModTest == false) then
+		self.DoCheck.UnitMatch = true;
+		self.DoCheck.CheckIt = true;
 	end
 end
