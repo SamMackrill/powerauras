@@ -3927,6 +3927,10 @@ cPowaUnitMatch.CheckBoxes={
 function cPowaUnitMatch:AddEffectAndEvents()
 	table.insert(PowaAuras.AurasByType[self.AuraType], self.id);
 	PowaAuras.Events.UNIT_TARGET = true;
+	PowaAuras.Events.INSTANCE_ENCOUNTER_ENGAGE_UNIT = true;
+	PowaAuras.Events.PLAYER_TARGET_CHANGED = true;
+	PowaAuras.Events.PLAYER_FOCUS_CHANGED = true;
+	PowaAuras.Events.UPDATE_MOUSEOVER_UNIT = true;
 end
 
 function cPowaUnitMatch:CheckIfShouldShow(giveReason)
