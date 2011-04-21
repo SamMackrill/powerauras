@@ -40,9 +40,9 @@
 					self.isMoving = false;
 				end
 			</OnHide>
-			<OnShow>
-				PowaAuras:ToggleAdvancedElements(self.Advanced:GetChecked() and true or false);
-			</OnShow>
+			<OnLoad>
+				PowaAuras.UI:AuraEditor(self);
+			</OnLoad>
 		</Scripts>
 		<Layers>
 			<Layer level="ARTWORK">
@@ -329,7 +329,7 @@
 																self:AddChild(self.Deform);
 																self:AddChild(self.Strata);
 																-- I'm advanced!
-																self:SetFlag(0x1);
+																tinsert(PowaAuras.UI.AuraEditor.AdvancedElements, self);
 															</OnLoad>
 														</Scripts>
 													</Frame>
@@ -690,15 +690,10 @@
 				<Scripts>
 					<OnLoad>
 						PowaAuras.UI:Checkbox(self, "Debug");
-						self:SetFlag(0x1);
+						tinsert(PowaAuras.UI.AuraEditor.AdvancedElements, self);
 					</OnLoad>
 				</Scripts>
 			</CheckButton>
 		</Frames>
-		<Scripts>
-			<OnLoad>
-				PowaAuras.UI:AuraEditor(self);
-			</OnLoad>
-		</Scripts>
 	</Frame>
 </Ui>

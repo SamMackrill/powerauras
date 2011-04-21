@@ -193,23 +193,29 @@ cPowaAura.ExportSettings = {
 cPowaAura.ExportSettings = {
 	Enabled = false,    -- On/Off.
 	
-	Activation = {},    -- Would be a table of all activation classes?
+	Type = 1,
+	Data = "???",
 	
 	TexGlow = 1,
 	TexSource = 1,      -- 1 = Normal, 2 = WoW, 3 = Custom, 4 = Text, 5 = Own.
 	-- realaura = 1,    -- No idea what this is.
 	TexNum = 1,         -- Texture or font number.
-	TexPath = "",       -- Texture or font path.
+	TexPath = "",       -- Texture or font path. Replaces icon path too.
 	TexText = "",       -- Text being displayed.
-	-- icon = "",       -- Ability icon path? Store in TexPath.
 	TexStrata = "LOW",  -- Was strata ever implemented? Could do it now.
-
-	Duration = 0,       -- Duration of aura based on timer.
+	TexRotate = 0,      -- Rotation.
+	TexOpacity = 0.75,
+	TexSize = 0.75,
+	TexDeform = 1,
+	TexFlip = 0,
+	PosX = 0,
+	PosY = 0,
+	ColorRandom = false,
+	ColorR = 1.0,
+	ColorG = 1.0,
+	ColorB = 1.0,
 	
-	-- Sound Settings
-	SoundNum = 0,          -- Sound number.
-	SoundPath = "",	       -- Path to sound file.
-	SoundRepeatDelay = 0;  -- Repeats the sound after a certain duration has passed. 0 means no repeat.
+	Inverse = false,
 }
 --]]
 

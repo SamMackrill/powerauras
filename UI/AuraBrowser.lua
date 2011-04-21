@@ -11,6 +11,8 @@ PowaAuras.UI:Register("AuraBrowser", {
 		self.Tabs.Auras.Tree.OnSelectionChanged = self.OnSelectionChanged;
 		-- Check...
 		if(PowaAuras.VariablesLoaded) then self:OnVariablesLoaded(); end
+		-- Close on escape key.
+		-- tinsert(UISpecialFrames, self:GetName());
 	end,
 	GetPageName = function(self)
 		local page = self.Tabs.Auras.Tree:GetSelectedKey();
@@ -102,6 +104,10 @@ PowaAuras.UI:Register("AuraBrowser", {
 	SetSelectedAura = function(self, id)
 		-- Set it.
 		self.SelectedAura = id;
+		-- Update the editor.
+		if(PowaEditor:IsShown()) then
+			PowaEditor:Show();
+		end
 		-- Update buttons.
 		self:UpdateAuraButtons();
 	end,
@@ -192,12 +198,6 @@ PowaAuras.UI:Register("AuraButton", {
 		return self.CreateAura;
 	end,
 	SetAuraID = function(self, id)
-		-- Don't allow dragging of non-existant things :)
-		if(not PowaAuras.Auras[id]) then
-			self:RegisterForDrag(nil);
-		else
-			self:RegisterForDrag("LeftButton");
-		end
 		-- You have been invited to join <World of War> for the 19th time. Would you like to e-punch one of the guild members in the face? [Y/N]
 		self.AuraID = id;
 	end,
@@ -212,7 +212,7 @@ PowaAuras.UI:Register("AuraButton", {
 				print("|cFF527FCCDEBUG (AuraBrowser): |rCreate aura: " .. self.AuraID);
 				PowaBrowser:SetSelectedAura(self.AuraID);
 			else
-				PowaBrowser:SetSelectedAura(self.AuraID);			
+				PowaBrowser:SetSelectedAura(self.AuraID);
 			end
 			-- Is the alt key down?
 			if(IsAltKeyDown()) then

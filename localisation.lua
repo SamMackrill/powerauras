@@ -781,6 +781,18 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	UI_ClassAuras          = "Class Auras",
 	UI_GlobAuras           = "Global Auras",
 	
+	UI_CreateAura          = "Create New Aura",
+	UI_CreateAuraNew       = "Blank Aura",
+	UI_CreateAuraPreset    = "Preset Aura",
+	
+	UI_SelAura_Title       = "Aura %d",
+	UI_SelAura_Edit        = "Edit",
+	UI_SelAura_Move        = "Move",
+	UI_SelAura_Copy        = "Copy",
+	UI_SelAura_Delete      = "Delete",
+	UI_SelAura_Test        = "Test",
+	UI_SelAura_TestDesc    = "Tests the currently selected aura.\n\n",
+	
 	UI_Debug               = "Debug",
 	UI_DebugDesc           = "Enables debugging output for this aura. Don't enable it if you don't need to :)",
 	UI_Advanced            = "Advanced",
