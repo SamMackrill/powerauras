@@ -124,6 +124,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		[PowaAuras.BuffTypes.Items] = "Nom d'objet",
 		[PowaAuras.BuffTypes.Tracking] = "Pistage",
 		[PowaAuras.BuffTypes.TypeBuff] = "Type d'amélioration",
+		[PowaAuras.BuffTypes.UnitMatch] = "Unit Match",
 		[PowaAuras.BuffTypes.GTFO] = "Alerte GTFO",
 	},
 	

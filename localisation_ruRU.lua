@@ -125,6 +125,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		[PowaAuras.BuffTypes.Tracking] = "Выслеживание",
 		[PowaAuras.BuffTypes.GTFO] = "Предупреждение GTFO",
 		[PowaAuras.BuffTypes.TypeBuff] = "Buff type",
+		[PowaAuras.BuffTypes.UnitMatch] = "Unit Match",
 	},
 	
 	PowerType =

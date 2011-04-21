@@ -124,6 +124,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		[PowaAuras.BuffTypes.Items] = "Nombre de objetos",
 		[PowaAuras.BuffTypes.Tracking] = "Rastreo",
 		[PowaAuras.BuffTypes.TypeBuff] = "Bufo (tipo)",
+		[PowaAuras.BuffTypes.UnitMatch] = "Unit Match",
 		[PowaAuras.BuffTypes.GTFO] = "Alerta ¡Muévete!",
 	},
 	

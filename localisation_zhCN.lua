@@ -88,6 +88,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		[PowaAuras.BuffTypes.StealableSpell] = "可偷取法术",
 		[PowaAuras.BuffTypes.PurgeableSpell] = "可净化法术",
 		[PowaAuras.BuffTypes.TypeBuff] = "Buff type",
+		[PowaAuras.BuffTypes.UnitMatch] = "Unit Match",
 	},
 	
 	-- main
