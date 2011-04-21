@@ -770,7 +770,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomBlockIncomingAuras = "Block Incoming Auras",
 	aideFixExports = "Check this when aura exports are not functioning correctly and leave you with a blank textbox.",
 	nomFixExports = "Alternative Exports",
-	aideAnimationsAreBrokenSorry = "|cFFFF0000Note: |rIf your animations appear to skip or increase in size randomly, you should enable Old Animations.",
+	aideAnimationsAreBrokenSorry = "If your animations appear to skip or increase in size randomly, you should enable Old Animations.",
 
 });
 
