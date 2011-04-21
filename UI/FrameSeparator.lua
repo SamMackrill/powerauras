@@ -1,5 +1,5 @@
 -- Create definition.
-PowaAuras.UI["FrameSeparator"] = {
+PowaAuras.UI:Register("FrameSeparator", {
 	Init = function(self, text, key)
 		-- Go go go.
 		self:SetText(text or "");
@@ -77,6 +77,4 @@ PowaAuras.UI["FrameSeparator"] = {
 			end
 		end
 	end
-};
--- Register.
-PowaAuras.UI:DefineWidget("FrameSeparator");
+});

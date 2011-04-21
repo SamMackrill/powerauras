@@ -6,7 +6,7 @@ local MOD_SHIFT = 0x4;
 -- Add a definition for the browser frame. We'll only ever make one, but I'm sick of a lot of functions 
 -- inside that big one. Besides, I like this system, do you? It's more memory efficient...I think. 
 -- Does defining the same closure repeatedly cost more memory, rather than referencing a single defined closure?
-PowaAuras.UI["AuraBrowser"] = {
+PowaAuras.UI:Register("AuraBrowser", {
 	Init = function(self)
 		-- Variables.
 		self.SelectedAuras = {};
@@ -36,14 +36,6 @@ PowaAuras.UI["AuraBrowser"] = {
 	IsAuraSelected = function(self, id)
 		return tContains(self.SelectedAuras, id);
 	end,
-	-- -- OnAuraDragged = function(self)
-		-- -- local browser, str = PowaBrowser, "";
-		-- -- print("|cFF527FCCDEBUG (AuraBrowser): |rRecieved aura drag onto page: " .. self.Key .. " (Ctrl: " .. (IsControlKeyDown() and "true" or "false") .. ")");
-		-- -- for _,v in ipairs(browser.SelectedAuras) do
-			-- -- str = str .. " " .. v;
-		-- -- end
-		-- -- print("|cFF527FCCDEBUG (AuraBrowser): |rAuras" .. str .. " should be " .. (IsControlKeyDown() and "copied" or "moved") .. " to page " .. self.Key .. ".");		
-	-- -- end,
 	OnSelectionChanged = function(self, key)
 		-- Save page.
 		PowaBrowser.SelectedPage = key;
@@ -71,26 +63,23 @@ PowaAuras.UI["AuraBrowser"] = {
 		self.Tabs.Auras.Tree:AddItem("CHAR", PowaAuras.Text["UI_CharAuras"], nil, nil, true);
 		for i=1,playerPageCount do
 			self.Tabs.Auras.Tree:AddItem(i, PowaPlayerListe[i], "CHAR");
-			-- -- self.Tabs.Auras.Tree:GetItem(i):SetScript("OnReceiveDrag", self.OnAuraDragged);
 		end
 		-- Global auras.
 		self.Tabs.Auras.Tree:AddItem("GLOBAL", PowaAuras.Text["UI_GlobAuras"], nil, nil, true);
 		for i=1,globalPageCount do
 			self.Tabs.Auras.Tree:AddItem(i+playerPageCount, PowaGlobalListe[i], "GLOBAL");
-			-- -- self.Tabs.Auras.Tree:GetItem(i+playerPageCount):SetScript("OnReceiveDrag", self.OnAuraDragged);
 		end
 		-- Class auras.
 		self.Tabs.Auras.Tree:AddItem("CLASS", PowaAuras.Text["UI_ClassAuras"], nil, nil, true);
 		for i=1,classPageCount do
 			self.Tabs.Auras.Tree:AddItem(i+playerPageCount+globalPageCount, PowaClassListe[class][i], "CLASS");
-			-- -- self.Tabs.Auras.Tree:GetItem(i+playerPageCount+globalPageCount):SetScript("OnReceiveDrag", self.OnAuraDragged);
 		end
 		-- Add 24 beautiful buttons.
 		self.Tabs.Auras.Page:SetLocked(true);
 		for i=1,24 do
 			-- Make button.
 			local button = CreateFrame("Button", nil, self.Tabs.Auras.Page, "PowaAuraButtonTemplate");
-			PowaAuras.UI.AuraButton(button);		
+			PowaAuras.UI:AuraButton(button);		
 			-- Save.
 			self.Tabs.Auras.Page:AddItem(button);
 			self.Tabs.Auras.Page["Aura" .. i] = button;
@@ -226,14 +215,12 @@ PowaAuras.UI["AuraBrowser"] = {
 		-- No longer need you, mister linkedAuras.
 		if(linkedAuras) then wipe(linkedAuras); end
 	end
-}
+});
 
 -- And a definition for the button.
-PowaAuras.UI["AuraButton"] = {
+PowaAuras.UI:Register("AuraButton", {
 	Scripts = {
 		"OnClick",
-		-- -- "OnDragStart",
-		-- -- "OnDragStop",
 	},
 	Init = function(self, icon)
 		-- Set things up.
@@ -280,18 +267,6 @@ PowaAuras.UI["AuraButton"] = {
 			print("|cFF527FCCDEBUG (AuraBrowser): |rOpen aura editor: " .. self.AuraID);			
 		end
 	end,
-	-- -- OnDragStart = function(self, button)
-		-- -- -- Select aura if needed.
-		-- -- if(not PowaBrowser:IsAuraSelected(self.AuraID)) then
-			-- -- PowaBrowser:SetSelectedAura(self.AuraID, MOD_NONE); -- Single selection forced if moving/copying unselected aura.
-		-- -- end
-		-- -- -- Cursor update.
-		-- -- SetCursor(self.Icon:GetTexture());
-	-- -- end,
-	-- -- OnDragStop = function(self)
-		-- -- -- Reset cursor.
-		-- -- SetCursor(nil);
-	-- -- end,
 	SetCreateAura = function(self, create)
 		self.CreateAura = create;
 	end,
@@ -313,8 +288,4 @@ PowaAuras.UI["AuraButton"] = {
 			texture:SetVertexColor(0.75, 0.325, 0.325);
 		end
 	end,
-};
-
--- Register.
-PowaAuras.UI:DefineWidget("AuraBrowser");
-PowaAuras.UI:DefineWidget("AuraButton");
+});
