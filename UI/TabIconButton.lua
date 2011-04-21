@@ -1,5 +1,5 @@
 -- Create definition.
-PowaAuras.UI["TabIconButton"] = {
+PowaAuras.UI:Register("TabIconButton", {
 	Init = function(self, id, icon, parent)
 		-- Stores status for tab.
 		self.Selected = false;
@@ -39,6 +39,4 @@ PowaAuras.UI["TabIconButton"] = {
 		end
 		self.Selected = selected;
 	end
-};
--- Register.
-PowaAuras.UI:DefineWidget("TabIconButton");
+});

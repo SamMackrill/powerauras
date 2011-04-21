@@ -1,5 +1,5 @@
 -- Create definition.
-PowaAuras.UI["TabFrame"] = {
+PowaAuras.UI:Register("TabFrame", {
 	Init = function(frame, tabType, offset)
 		-- Current tab.
 		frame.Tab = 1;
@@ -20,11 +20,11 @@ PowaAuras.UI["TabFrame"] = {
 			if(self.TabType == 1) then
 				tabButton = CreateFrame("Button", nil, self, "PowaTabButtonTemplate");
 				tab.TabButton = tabButton;
-				PowaAuras.UI.TabButton(tab.TabButton, #(self.Tabs), text, self);
+				PowaAuras.UI:TabButton(tab.TabButton, #(self.Tabs), text, self);
 			elseif(self.TabType == 2) then
 				tabButton = CreateFrame("Button", nil, self, "PowaTabSidebarButtonTemplate");
 				tab.TabButton = tabButton;
-				PowaAuras.UI.TabSidebarButton(tab.TabButton, #(self.Tabs), text, self);
+				PowaAuras.UI:TabSidebarButton(tab.TabButton, #(self.Tabs), text, self);
 			elseif(self.TabType == 3) then
 				-- No tab button.
 				tab.TabButton = nil;
@@ -32,7 +32,7 @@ PowaAuras.UI["TabFrame"] = {
 				-- Icon tab button.
 				tabButton = CreateFrame("Button", nil, self, "PowaTabIconButtonTemplate");
 				tab.TabButton = tabButton;
-				PowaAuras.UI.TabIconButton(tab.TabButton, #(self.Tabs), text, self);
+				PowaAuras.UI:TabIconButton(tab.TabButton, #(self.Tabs), text, self);
 			end
 		end
 		-- Update tabs.
@@ -90,6 +90,4 @@ PowaAuras.UI["TabFrame"] = {
 			end
 		end
 	end
-};
--- Register.
-PowaAuras.UI:DefineWidget("TabFrame");
+});

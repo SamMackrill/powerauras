@@ -1,5 +1,5 @@
 -- Create definition.
-PowaAuras.UI["Checkbox"] = {
+PowaAuras.UI:Register("Checkbox", {
 	Init = function(self, property, tooltipDesc)
 		-- Update text to the localized variant.
 		local localeKey = self:GetText();
@@ -17,7 +17,7 @@ PowaAuras.UI["Checkbox"] = {
 			self:SetScript("OnClick", property);
 		end
 		-- Add tooltip.
-		PowaAuras.UI.Tooltip(self, localeKey, tooltipDesc or localeKey .. "Desc");
+		PowaAuras.UI:Tooltip(self, localeKey, tooltipDesc or localeKey .. "Desc");
 		-- Update colours...
 		self:UpdateColors();
 	end,
@@ -36,6 +36,4 @@ PowaAuras.UI["Checkbox"] = {
 			end
 		end
 	end
-};
--- Register.
-PowaAuras.UI:DefineWidget("Checkbox");
+});

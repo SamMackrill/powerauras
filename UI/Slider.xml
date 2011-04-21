@@ -83,7 +83,7 @@
 						-- Setting justifyH in the XML doesn't work.
 						self:SetJustifyH("CENTER");
 						-- Initialize me!
-						PowaAuras.UI.EditBox(self);
+						PowaAuras.UI:EditBox(self);
 					</OnLoad>
 				</Scripts>
 			</EditBox>

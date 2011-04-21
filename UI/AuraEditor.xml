@@ -169,7 +169,7 @@
 										</Anchors>
 										<Scripts>
 											<OnLoad>
-												PowaAuras.UI.Checkbox(self, "Glow");
+												PowaAuras.UI:Checkbox(self, "Glow");
 											</OnLoad>
 										</Scripts>
 									</CheckButton>
@@ -218,21 +218,21 @@
 															<Slider name="$parentOpacity" minValue="1" maxValue="100" defaultValue="75" valueStep="1" parentKey="Opacity" inherits="PowaSliderTemplate">
 																<Scripts>
 																	<OnLoad>
-																		PowaAuras.UI.Slider(self, "UI_Aura_TexOpacity", "%");
+																		PowaAuras.UI:Slider(self, "UI_Aura_TexOpacity", "%");
 																	</OnLoad>
 																</Scripts>
 															</Slider>
 															<Slider name="$parentScale" minValue="1" maxValue="500" defaultValue="75" valueStep="1" parentKey="Scale" inherits="PowaSliderTemplate">
 																<Scripts>
 																	<OnLoad>
-																		PowaAuras.UI.Slider(self, "UI_Aura_TexScale", "%");
+																		PowaAuras.UI:Slider(self, "UI_Aura_TexScale", "%");
 																	</OnLoad>
 																</Scripts>
 															</Slider>
 															<Slider name="$parentRotate" minValue="0" maxValue="360" defaultValue="0" valueStep="1" parentKey="Rotate" inherits="PowaSliderTemplate">
 																<Scripts>
 																	<OnLoad>
-																		PowaAuras.UI.Slider(self, "UI_Aura_TexRotate");
+																		PowaAuras.UI:Slider(self, "UI_Aura_TexRotate");
 																	</OnLoad>
 																</Scripts>
 															</Slider>
@@ -256,14 +256,14 @@
 																			elseif(value == "XY") then return 4;
 																			else return 1; end
 																		end
-																		PowaAuras.UI.Slider(self, "UI_Aura_TexFlip", "", "None", "XY");
+																		PowaAuras.UI:Slider(self, "UI_Aura_TexFlip", "", "None", "XY");
 																	</OnLoad>
 																</Scripts>
 															</Slider>
 														</Frames>
 														<Scripts>
 															<OnLoad>
-																PowaAuras.UI.FrameSeparator(self, "UI_Aura_Separator1", "DisplayAuraStyle");
+																PowaAuras.UI:FrameSeparator(self, "UI_Aura_Separator1", "DisplayAuraStyle");
 																-- Add children.
 																self:AddChild(self.Opacity);
 																self:AddChild(self.Scale);
@@ -277,7 +277,7 @@
 															<EditBox name="$parentX" parentKey="X" inherits="PowaEditBoxTemplate">
 																<Scripts>
 																	<OnLoad>
-																		PowaAuras.UI.EditBox(self, "X", "UI_Aura_TexX");
+																		PowaAuras.UI:EditBox(self, "X", "UI_Aura_TexX");
 																		self:SetText(0);
 																	</OnLoad>
 																</Scripts>
@@ -285,7 +285,7 @@
 															<EditBox name="$parentY" parentKey="Y" inherits="PowaEditBoxTemplate">
 																<Scripts>
 																	<OnLoad>
-																		PowaAuras.UI.EditBox(self, "Y", "UI_Aura_TexY");
+																		PowaAuras.UI:EditBox(self, "Y", "UI_Aura_TexY");
 																		self:SetText(0);
 																	</OnLoad>
 																</Scripts>
@@ -293,7 +293,7 @@
 														</Frames>
 														<Scripts>
 															<OnLoad>
-																PowaAuras.UI.FrameSeparator(self, "UI_Aura_Separator2", "DisplayAuraPosition");
+																PowaAuras.UI:FrameSeparator(self, "UI_Aura_Separator2", "DisplayAuraPosition");
 																-- Add children.
 																self:AddChild(self.X);
 																self:AddChild(self.Y);
@@ -310,21 +310,21 @@
 																			return format("%.2f", value);
 																		end
 																		-- Set 0.1 and 2.0 as the min/max labels in string form to prevent the huge precision mess.
-																		PowaAuras.UI.Slider(self, "UI_Aura_TexDeform", "", "0.1", "2.0");
+																		PowaAuras.UI:Slider(self, "UI_Aura_TexDeform", "", "0.1", "2.0");
 																	</OnLoad>
 																</Scripts>
 															</Slider>
 															<Slider name="$parentStrata" minValue="-65536" maxValue="65536" defaultValue="0" valueStep="1" parentKey="Strata" inherits="PowaSliderTemplate">
 																<Scripts>
 																	<OnLoad>
-																		PowaAuras.UI.Slider(self, "UI_Aura_TexStrata");
+																		PowaAuras.UI:Slider(self, "UI_Aura_TexStrata");
 																	</OnLoad>
 																</Scripts>
 															</Slider>
 														</Frames>
 														<Scripts>
 															<OnLoad>
-																PowaAuras.UI.FrameSeparator(self, "UI_Aura_Separator3", "DisplayAuraAdvanced");
+																PowaAuras.UI:FrameSeparator(self, "UI_Aura_Separator3", "DisplayAuraAdvanced");
 																-- Add children.
 																self:AddChild(self.Deform);
 																self:AddChild(self.Strata);
@@ -335,7 +335,7 @@
 												<Scripts>
 													<OnLoad>
 														-- Layout needed.
-														PowaAuras.UI.LayoutFrame(self, 0, 0, 1, true, true);
+														PowaAuras.UI:LayoutFrame(self, 0, 0, 1, true, true);
 														self:AddColumn(0.5);
 														self:AddColumn(0.5);
 														
@@ -392,7 +392,7 @@
 												</Layers>
 												<Scripts>
 													<OnLoad>
-														PowaAuras.UI.BrowserFrame(self, 1, 9999, function()
+														PowaAuras.UI:BrowserFrame(self, 1, 9999, function()
 															-- Automatic sizing trick. Set it to auto initially, then read the size and cap if needed!
 															self.Texture:SetSize(0, 0);
 															self.Texture:SetTexture("Interface\\AddOns\\PowerAuras\\Auras\\Aura" .. self.Page .. ".tga")
@@ -438,7 +438,7 @@
 												</Layers>
 												<Scripts>
 													<OnLoad>
-														PowaAuras.UI.BrowserFrame(self, 1, #(PowaAuras.WowTextures), function(self, page)
+														PowaAuras.UI:BrowserFrame(self, 1, #(PowaAuras.WowTextures), function(self, page)
 															-- Automatic sizing trick. Set it to auto initially, then read the size and cap if needed!
 															self.Texture:SetSize(0, 0);
 															self.Texture:SetTexture(PowaAuras.WowTextures[page]);
@@ -489,7 +489,7 @@
 														</Anchors>
 														<Scripts>
 															<OnLoad>
-																PowaAuras.UI.EditBox(self, nil, "UI_BrowserTex");
+																PowaAuras.UI:EditBox(self, nil, "UI_BrowserTex");
 																self:SetText("");
 															</OnLoad>
 															<OnEnterPressed>
@@ -516,7 +516,7 @@
 												<Scripts>
 													<OnLoad>
 														-- Initialize the frame.
-														PowaAuras.UI.BrowserFrame(self, 1, #(PowaGlobalMisc["CustomTextures"])+1, function(self, page)
+														PowaAuras.UI:BrowserFrame(self, 1, #(PowaGlobalMisc["CustomTextures"])+1, function(self, page)
 															-- Texture on this page?
 															if(PowaGlobalMisc["CustomTextures"][page]) then
 																local texpath, texture = PowaGlobalMisc["PathToAuras"], PowaGlobalMisc["CustomTextures"][page];
@@ -587,7 +587,7 @@
 											</OnHide>
 											<OnLoad>
 												-- Uses the tab sidebar template.
-												PowaAuras.UI.TabFrame(self, 2);
+												PowaAuras.UI:TabFrame(self, 2);
 												self:RegisterTab(self.Default, "UI_Aura_SrcNorm");
 												self:RegisterTab(self.WoW, "UI_Aura_SrcWoW");
 												self:RegisterTab(self.Custom, "UI_Aura_SrcCust");
@@ -607,7 +607,7 @@
 								<Scripts>
 									<OnLoad>
 										-- This is actually a tab enabled frame, but we hide all the tabs.
-										PowaAuras.UI.TabFrame(self, 3);
+										PowaAuras.UI:TabFrame(self, 3);
 										self:RegisterTab(self.Config);
 										self:RegisterTab(self.Selector);
 									</OnLoad>
@@ -616,7 +616,7 @@
 						</Frames>
 						<Scripts>
 							<OnLoad>
-								PowaAuras.UI.LayoutFrame(self, 0, 0, 1, true);
+								PowaAuras.UI:LayoutFrame(self, 0, 0, 1, true);
 								self:AddColumn(0.3, 1);
 								self:AddColumn(0.7, 1);
 								self:SetItem(self.Sidebar);
@@ -631,7 +631,7 @@
 				</Frames>
 				<Scripts>
 					<OnLoad>
-						PowaAuras.UI.TabFrame(self, 1);
+						PowaAuras.UI:TabFrame(self, 1);
 						self:RegisterTab(self.Aura, "UI_Aura");
 						self:RegisterTab(self.Timer, "UI_Timer");
 						self:RegisterTab(self.Stacks, "UI_Stacks");
@@ -655,7 +655,7 @@
 				</Frames>
 				<Scripts>
 					<OnLoad>
-						PowaAuras.UI.TabFrame(self, 1);
+						PowaAuras.UI:TabFrame(self, 1);
 						self:RegisterTab(self.Rules, "UI_Rules");
 						self:RegisterTab(self.Anim, "UI_Anim");
 						self:RegisterTab(self.Sound, "UI_Sound");
@@ -673,7 +673,7 @@
 				<Scripts>
 					<OnLoad>
 						-- Use our own oncheck handler for advanced element showing/hiding.
-						PowaAuras.UI.Checkbox(self, function(self)
+						PowaAuras.UI:Checkbox(self, function(self)
 							-- Amichecked? Am I?
 							PowaAuras:ToggleAdvancedElements(self:GetChecked() and true or false);
 						end);
@@ -689,7 +689,7 @@
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-						PowaAuras.UI.Checkbox(self, "Debug");
+						PowaAuras.UI:Checkbox(self, "Debug");
 						PowaAuras:RegisterAdvancedElement(self);
 					</OnLoad>
 				</Scripts>

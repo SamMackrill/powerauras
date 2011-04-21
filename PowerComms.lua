@@ -34,6 +34,7 @@ Registers the POWA header for addon communications. Note that this requires a pa
 --]]
 function PowaComms:Register()
 	-- Register prefix.
+	if(not RegisterAddonMessagePrefix) then return false; end
 	RegisterAddonMessagePrefix("POWA");
 	-- Check to see if it's registered (RegisterAddonMessagePrefix may return true even if it fails, just playing safe!).
 	if(not IsAddonMessagePrefixRegistered("POWA")) then

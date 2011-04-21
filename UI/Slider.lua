@@ -1,18 +1,18 @@
 -- Create definition.
-PowaAuras.UI["Slider"] = {
+PowaAuras.UI:Register("Slider", {
 	Hooks = {
-		GetValue = "__GetValue",
-		SetValue = "__SetValue",
+		"GetValue",
+		"SetValue",
 	},
-	Init = function(frame, title, unit, minLabel, maxLabel, tooltipDesc)
+	Init = function(self, title, unit, minLabel, maxLabel, tooltipDesc)
 		-- Call them.
-		frame:SetMinMaxLabels(minLabel, maxLabel);
-		frame:SetUnit(unit or "");
-		frame:SetTitle(title or "");
+		self:SetMinMaxLabels(minLabel, maxLabel);
+		self:SetUnit(unit or "");
+		self:SetTitle(title or "");
 		-- Add tooltips to the slider, background frame and editbox.
-		PowaAuras.UI.Tooltip(frame, title, tooltipDesc or title .. "Desc", { "Value" });
+		PowaAuras.UI:Tooltip(self, title, tooltipDesc or title .. "Desc", { "Value" });
 		-- Update editbox value.
-		frame.Value:SetText(frame:GetValue());
+		self.Value:SetText(self:GetValue());
 	end,
 	GetMinValue = function(self)
 		return select(1, self:GetMinMaxValues());
@@ -54,6 +54,4 @@ PowaAuras.UI["Slider"] = {
 			return self:__SetValue(value);
 		end		
 	end
-};
--- Register.
-PowaAuras.UI:DefineWidget("Slider");
+});

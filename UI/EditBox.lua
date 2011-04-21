@@ -1,5 +1,5 @@
 -- Create definition.
-PowaAuras.UI["EditBox"] = {
+PowaAuras.UI:Register("EditBox", {
 	Init = function(self, property, title, tooltipDesc)
 		-- Property handling not yet implemented.
 		
@@ -14,7 +14,7 @@ PowaAuras.UI["EditBox"] = {
 		end
 		-- Tooltip me up!
 		if(title) then
-			PowaAuras.UI.Tooltip(self, title, tooltipDesc or title .. "Desc");
+			PowaAuras.UI:Tooltip(self, title, tooltipDesc or title .. "Desc");
 		end
 		-- Update colours...
 		self:UpdateColors();		
@@ -37,6 +37,4 @@ PowaAuras.UI["EditBox"] = {
 			end
 		end		
 	end
-};
--- Register.
-PowaAuras.UI:DefineWidget("EditBox");
+});
