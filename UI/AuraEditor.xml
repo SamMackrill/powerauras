@@ -328,6 +328,8 @@
 																-- Add children.
 																self:AddChild(self.Deform);
 																self:AddChild(self.Strata);
+																-- I'm advanced!
+																self:SetFlag(0x1);
 															</OnLoad>
 														</Scripts>
 													</Frame>
@@ -353,8 +355,6 @@
 														self:SetItem(self.Separator3.Deform, 1, { 2, 4, 0, 0 }, { 0, 0, 16, 20 });
 														self:SetItem(self.Separator3.Strata, 1, { 4, -2, 0, 0 }, { 0, 0, 16, 20 });
 														
-														-- Register last separator as advanced element.
-														PowaAuras:RegisterAdvancedElement(self.Separator3);
 														-- Unlock layout.
 														self:SetLocked(false);
 													</OnLoad>
@@ -675,7 +675,7 @@
 						-- Use our own oncheck handler for advanced element showing/hiding.
 						PowaAuras.UI:Checkbox(self, function(self)
 							-- Amichecked? Am I?
-							PowaAuras:ToggleAdvancedElements(self:GetChecked() and true or false);
+							self.Parent:ToggleAdvanced((self:GetChecked() and true or false));
 						end);
 					</OnLoad>
 				</Scripts>
@@ -690,7 +690,7 @@
 				<Scripts>
 					<OnLoad>
 						PowaAuras.UI:Checkbox(self, "Debug");
-						PowaAuras:RegisterAdvancedElement(self);
+						self:SetFlag(0x1);
 					</OnLoad>
 				</Scripts>
 			</CheckButton>

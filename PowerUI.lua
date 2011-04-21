@@ -81,6 +81,13 @@ PowaAuras.UI:Register("Base", {
 		-- Set the parent key if we can..
 		if(not self or not self.GetParent or not self:GetParent()) then return; end
 		self.Parent = self:GetParent();
+		self.Flags = 0;
+	end,
+	SetFlag = function(self, flag)
+		self.Flags = bit.bor(self.Flags, flag);
+	end,
+	GetFlag = function(self, flag)
+		return (bit.band(self.Flags, flag) == flag and true or false);
 	end,
 });
 
