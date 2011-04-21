@@ -3930,7 +3930,7 @@ function cPowaUnitMatch:AddEffectAndEvents()
 	PowaAuras.Events.INSTANCE_ENCOUNTER_ENGAGE_UNIT = true;
 	PowaAuras.Events.PLAYER_TARGET_CHANGED = true;
 	PowaAuras.Events.PLAYER_FOCUS_CHANGED = true;
-	PowaAuras.Events.UPDATE_MOUSEOVER_UNIT = true;
+	PowaAuras.Events.UNIT_NAME_UPDATE = true; -- Supposedly fires whenever a unit spawns too.
 end
 
 function cPowaUnitMatch:CheckIfShouldShow(giveReason)

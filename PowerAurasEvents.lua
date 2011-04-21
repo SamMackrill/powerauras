@@ -872,7 +872,7 @@ function PowaAuras:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
 	end
 end
 
-function PowaAuras:UPDATE_MOUSEOVER_UNIT()
+function PowaAuras:UNIT_NAME_UPDATE()
 	if (self.ModTest == false) then
 		self.DoCheck.UnitMatch = true;
 		self.DoCheck.CheckIt = true;
