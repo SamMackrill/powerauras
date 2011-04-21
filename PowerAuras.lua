@@ -17,7 +17,6 @@ PowaMisc =
 		DefaultStacksTexture = "Original",
 		TimerRoundUp = true,
 		AllowInspections = true,
-		AnimationFps = 30,
 		UseGTFO = nil,
 		UserSetMaxTextures = PowaAuras.TextureCount,
 		OverrideMaxTextures = false,
@@ -30,6 +29,7 @@ PowaMisc =
 		PathToSounds = "Interface\\AddOns\\PowerAuras\\Sounds\\",
 		PathToAuras = "Interface\\Addons\\PowerAuras\\Custom\\",
 		BlockIncomingAuras = false,
+		FixExports = false,
 	};
 
 PowaAuras.PowaMiscDefault = PowaAuras:CopyTable(PowaMisc);

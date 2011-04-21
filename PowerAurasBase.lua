@@ -1090,7 +1090,7 @@ end
 
 function PowaAuras:GetSettingForExport(prefix, k, v, default)
 	-- Causes an unreproducable bug. Will increase size of export codes, but at least they work.
-	-- if (not self:Different(v, default)) then return ""; end
+	if (not self:Different(v, default) and not PowaGlobalMisc.FixExports) then return ""; end
 	local varType = type(v);
 	local setting = prefix..k..":";
 	if (varType == "string") then

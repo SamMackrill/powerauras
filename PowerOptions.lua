@@ -445,7 +445,7 @@ function PowaAuras:OptionNewEffect()
 	
 	if (not PowaBarConfigFrame:IsVisible()) then
 		PowaBarConfigFrame:Show();
-		PlaySound("TalentScreenOpen");
+		PlaySound("TalentScreenOpen", PowaMisc.SoundChannel);
 	end
 	--self:Debug("New aura ", i);
 	--aura:Display();
@@ -1285,7 +1285,7 @@ function PowaAuras:MainOptionShow()
 		self.ModTest = true;
 		self:UpdateMainOption();
 		PowaOptionsFrame:Show();
-		PlaySound("TalentScreenOpen");
+		PlaySound("TalentScreenOpen", PowaMisc.SoundChannel);
 		if (PowaMisc.Disabled) then
 			self:DisplayText("Power Auras "..self.Colors.Red..ADDON_DISABLED.."|r");
 		end
@@ -1303,7 +1303,7 @@ function PowaAuras:MainOptionClose()
 	FontSelectorFrame:Hide();
 	PowaBarConfigFrame:Hide();
 	PowaOptionsFrame:Hide();
-	PlaySound("TalentScreenClose");
+	PlaySound("TalentScreenClose", PowaMisc.SoundChannel);
 
 	PowaAuras:OptionHideAll();
     
@@ -2079,7 +2079,7 @@ function PowaAuras:CustomSoundTextChanged(force)
 				pathToSound = PowaGlobalMisc.PathToSounds..aura.customsound;
 			end
 			--self:ShowText("Playing sound "..pathToSound);
-			local played = PlaySoundFile(pathToSound);
+			local played = PlaySoundFile(pathToSound, PowaMisc.SoundChannel);
 			--self:ShowText("played = "..played);
 			if (not played) then
 				self:DisplayText("Failed to play sound "..pathToSound);
@@ -2111,7 +2111,7 @@ function PowaAuras:CustomSoundEndTextChanged(force)
 				--self:ShowText("Playing sound "..pathToSound);
 			end
 			--self:ShowText("Playing sound "..pathToSound);
-			local played = PlaySoundFile(pathToSound);
+			local played = PlaySoundFile(pathToSound, PowaMisc.SoundChannel);
 			--self:ShowText("played = "..played);
 			if (not played) then
 				self:DisplayText("Failed to play sound "..pathToSound);
@@ -2654,10 +2654,10 @@ function PowaAuras.DropDownMenu_OnClickSound(self)
 
 	if (string.find(PowaAuras.Sound[self.value], "%.")) then
 		--PowaAuras:ShowText("Playing sound "..PowaGlobalMisc.PathToSounds..PowaAuras.Sound[self.value]);
-		PlaySoundFile(PowaGlobalMisc.PathToSounds..PowaAuras.Sound[self.value]);
+		PlaySoundFile(PowaGlobalMisc.PathToSounds..PowaAuras.Sound[self.value], PowaMisc.SoundChannel);
 	else
 		--PowaAuras:ShowText("Playing WoW sound "..PowaAuras.Sound[self.value]);
-		PlaySound(PowaAuras.Sound[self.value]);
+		PlaySound(PowaAuras.Sound[self.value], PowaMisc.SoundChannel);
 	end
 end;
 
@@ -2681,10 +2681,10 @@ function PowaAuras.DropDownMenu_OnClickSoundEnd(self)
 
 	if (string.find(PowaAuras.Sound[self.value], "%.")) then
 		--PowaAuras:ShowText("Playing sound "..PowaGlobalMisc.PathToSounds..PowaAuras.Sound[self.value]);
-		PlaySoundFile(PowaGlobalMisc.PathToSounds..PowaAuras.Sound[self.value]);
+		PlaySoundFile(PowaGlobalMisc.PathToSounds..PowaAuras.Sound[self.value], PowaMisc.SoundChannel);
 	else
 		--PowaAuras:ShowText("Playing WoW sound "..PowaAuras.Sound[self.value]);
-		PlaySound(PowaAuras.Sound[self.value]);
+		PlaySound(PowaAuras.Sound[self.value], PowaMisc.SoundChannel);
 	end
 
 end
@@ -2905,7 +2905,7 @@ function PowaAuras:EditorShow()
 		end
 		self:InitPage(aura);
 		PowaBarConfigFrame:Show();
-		PlaySound("TalentScreenOpen");
+		PlaySound("TalentScreenOpen", PowaMisc.SoundChannel);
 	end
 end
 
@@ -2919,7 +2919,7 @@ function PowaAuras:EditorClose()
 			ColorPickerFrame:Hide();
 		end
 		PowaBarConfigFrame:Hide();
-		PlaySound("TalentScreenClose");
+		PlaySound("TalentScreenClose", PowaMisc.SoundChannel);
 	end
 end
 
