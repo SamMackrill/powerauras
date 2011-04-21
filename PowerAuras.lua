@@ -407,8 +407,8 @@ function PowaAuras:CreateTimerFrame(auraId, index, updatePing)
 	if (updatePing) then
 		--self:ShowText("Creating Ping animation ", auraId, " ", index);
 		frame.PingAnimationGroup = frame:CreateAnimationGroup("Ping");
-		self:AddJumpScaleAndReturn(frame.PingAnimationGroup, 1.1, 1.1, 0.3, PowaMisc.AnimationFps, 1)
-		self:AddBrightenAndReturn(frame.PingAnimationGroup, 1.2, aura.alpha, 0.3, PowaMisc.AnimationFps, 1);
+		self:AddJumpScaleAndReturn(frame.PingAnimationGroup, 1.1, 1.1, 0.3, 1)
+		self:AddBrightenAndReturn(frame.PingAnimationGroup, 1.2, aura.alpha, 0.3, 1);
 	end
 	
 end
@@ -455,8 +455,8 @@ function PowaAuras:CreateStacksFrameIfMissing(auraId, updatePing)
 		if (updatePing) then
 			--self:ShowText("Creating Ping animation ", auraId, " ", index);
 			frame.PingAnimationGroup = frame:CreateAnimationGroup("Ping");
-			self:AddJumpScaleAndReturn(frame.PingAnimationGroup, 1.1, 1.1, 0.3, PowaMisc.AnimationFps, 1)
-			self:AddBrightenAndReturn(frame.PingAnimationGroup, 1.2, aura.alpha, 0.3, PowaMisc.AnimationFps, 1);
+			self:AddJumpScaleAndReturn(frame.PingAnimationGroup, 1.1, 1.1, 0.3, 1)
+			self:AddBrightenAndReturn(frame.PingAnimationGroup, 1.2, aura.alpha, 0.3, 1);
 		end
 	end
 	self:UpdateOptionsStacks(auraId);

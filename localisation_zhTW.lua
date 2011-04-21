@@ -181,7 +181,6 @@ PowaAuras:MergeTables(PowaAuras.Text,
 
 	nomUpdateSpeed = "更新速度",
 	nomSpeed = "運動速度",
-	nomFPS = "全局動畫幀數",
 	nomTimerUpdate = "計時器更新速度",
 	nomBegin = "進場效果",
 	nomEnd = "結束效果",

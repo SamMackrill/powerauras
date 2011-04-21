@@ -2374,7 +2374,10 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               </BackgroundInsets>
             </Backdrop>
             <Scripts>
-              <OnLoad>self:SetBackdropBorderColor(0.0, 0.0, 0.0); self:SetBackdropColor(0.1, 0.1, 0.1);</OnLoad>
+              <OnLoad>
+					self:SetBackdropBorderColor(0.0, 0.0, 0.0);
+					self:SetBackdropColor(0.1, 0.1, 0.1);
+				</OnLoad>
             </Scripts>
             <Frames>
               <Frame name="PowaDropDownAnimBegin"

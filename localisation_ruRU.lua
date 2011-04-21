@@ -302,7 +302,6 @@ PowaAuras:MergeTables(PowaAuras.Text,
 
 	nomUpdateSpeed = "Скорость обновления",
 	nomSpeed = "Скорость анимации",
-	nomFPS = "FPS основной анимации",
 	nomTimerUpdate = "Скорость обновления таймера",
 	nomBegin = "Начало анимации",
 	nomEnd = "Конец анимации",
