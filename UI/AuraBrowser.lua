@@ -1,23 +1,16 @@
--- Couple of locals.
-local MOD_NONE  = 0x1;
-local MOD_CTRL  = 0x2;
-local MOD_SHIFT = 0x4;
-
 -- Add a definition for the browser frame. We'll only ever make one, but I'm sick of a lot of functions 
 -- inside that big one. Besides, I like this system, do you? It's more memory efficient...I think. 
 -- Does defining the same closure repeatedly cost more memory, rather than referencing a single defined closure?
 PowaAuras.UI:Register("AuraBrowser", {
 	Init = function(self)
 		-- Variables.
-		self.SelectedAuras = {};
+		self.SelectedAura = nil;
 		self.SelectedPage = 1;
+		self.ForceSingle = false;
 		-- Add OnSelectionChanged function to tree views.
 		self.Tabs.Auras.Tree.OnSelectionChanged = self.OnSelectionChanged;
 		-- Check...
 		if(PowaAuras.VariablesLoaded) then self:OnVariablesLoaded(); end
-	end,
-	CountSelectedAuras = function(self)
-		return #(self.SelectedAuras);
 	end,
 	GetPageName = function(self)
 		local page = self.Tabs.Auras.Tree:GetSelectedKey();
@@ -30,17 +23,17 @@ PowaAuras.UI:Register("AuraBrowser", {
 			return PowaClassListe[UnitClass("player")][page-15];
 		end
 	end,
-	GetSelectedAuras = function(self)
-		return self.SelectedAuras;
+	GetSelectedAura = function(self)
+		return self.SelectedAura;
 	end,
 	IsAuraSelected = function(self, id)
-		return tContains(self.SelectedAuras, id);
+		return (self.SelectedAura == id);
 	end,
 	OnSelectionChanged = function(self, key)
 		-- Save page.
 		PowaBrowser.SelectedPage = key;
 		-- Deselect any and all auras. This will trigger a button update.
-		PowaBrowser:SetSelectedAura(nil, MOD_NONE);
+		PowaBrowser:SetSelectedAura(nil);
 	end,
 	OnVariablesLoaded = function()
 		-- Easymode.
@@ -106,55 +99,9 @@ PowaAuras.UI:Register("AuraBrowser", {
 		-- Update listview.
 		self.Tabs.Auras.Tree:GetItem(page):SetText(name);
 	end,
-	SetSelectedAura = function(self, id, multiSelectMode)
-		-- Deselect if already selected.
-		if(id and tContains(self.SelectedAuras, id)) then
-			-- If ctrl is down, just deselect this one.
-			if(id and multiSelectMode == MOD_CTRL) then
-				for k,v in pairs(self.SelectedAuras) do
-					if(v == id) then
-						table.remove(self.SelectedAuras, k);
-						self:UpdateAuraButtons();
-						return;
-					end
-				end
-			elseif(id and multiSelectMode == MOD_NONE and #(self.SelectedAuras) > 1) then
-				-- You clicked one which was selected but didn't use a modifier key, so deselect all but this one.
-				wipe(self.SelectedAuras)
-				tinsert(self.SelectedAuras, id);
-				self:UpdateAuraButtons();
-			elseif(id and multiSelectMode == MOD_NONE and #(self.SelectedAuras) == 1) then
-				-- Deselect all.
-				wipe(self.SelectedAuras)
-				self:UpdateAuraButtons();
-			end
-			-- Done, either way...
-			return;
-		end
-		-- Wipe the auras table if no ID has been given, or if multiple selection is off.
-		if(not id or multiSelectMode == MOD_NONE) then
-			wipe(self.SelectedAuras);
-			if(not id) then
-				self:UpdateAuraButtons();
-				return;
-			end
-		end
-		-- If we got this far we probably should just add the aura...
-		if(multiSelectMode ~= MOD_SHIFT) then
-			tinsert(self.SelectedAuras, id);
-		else
-			-- Select all between the last selected aura and this one (shift key).
-			local lastID;
-			for _,v in ipairs(self.SelectedAuras) do
-				lastID = v;
-			end
-			wipe(self.SelectedAuras);
-			if(not lastID) then lastID = ((self.SelectedPage-1)*24)+1; end
-			-- Onwards!
-			for i=lastID, id, (lastID < id and 1 or -1) do
-				tinsert(self.SelectedAuras, i);
-			end
-		end		
+	SetSelectedAura = function(self, id)
+		-- Set it.
+		self.SelectedAura = id;
 		-- Update buttons.
 		self:UpdateAuraButtons();
 	end,
@@ -163,7 +110,7 @@ PowaAuras.UI:Register("AuraBrowser", {
 		-- Not strictly button related, but it prevents two function calls.
 		PowaBrowser.Tabs.Auras.Page.Title:SetText(self:GetPageName());
 		PowaBrowser.Tabs.Auras.Page.Title:ClearFocus();
-		-- Keep track on if we've displayed at least one empty button.
+		-- Keep track of if we've displayed at least one empty button.
 		local hasDisplayedEmpty = nil;
 		-- Go over buttons.
 		for i=1,24 do
@@ -174,7 +121,7 @@ PowaAuras.UI:Register("AuraBrowser", {
 			-- ...Was there an aura?
 			if(buttonAura) then
 				-- Select/deselect.
-				if(not tContains(self.SelectedAuras, button:GetAuraID())) then
+				if(self.SelectedAura ~= button:GetAuraID()) then
 					button:SetSelected(false);
 				else
 					button:SetSelected(true);
@@ -206,6 +153,12 @@ PowaAuras.UI:Register("AuraBrowser", {
 					-- Icon fixes (use different texcoords as it slips to the right a bit here).
 					button.Icon:SetTexture("Interface\\GuildBankFrame\\UI-GuildBankFrame-NewTab");
 					button.Icon:SetTexCoord(0.11, 0.93, 0.07, 0.93);
+					-- Allow it to be selected.
+					if(self.SelectedAura ~= button:GetAuraID()) then
+						button:SetSelected(false);
+					else
+						button:SetSelected(true);
+					end
 					button:Show();
 				end
 			end
@@ -228,7 +181,6 @@ PowaAuras.UI:Register("AuraButton", {
 		self:SetIcon(icon or "");
 		-- Register clicks.
 		self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
-		-- -- self:RegisterForDrag("LeftButton");
 	end,
 	GetAura = function(self)
 		return PowaAuras.Auras[self.AuraID] or nil;
@@ -257,14 +209,20 @@ PowaAuras.UI:Register("AuraButton", {
 		if(button == "LeftButton") then
 			-- Select aura, or create.
 			if(self.CreateAura) then
-				-- Todo: Make clicking this add a new aura.
 				print("|cFF527FCCDEBUG (AuraBrowser): |rCreate aura: " .. self.AuraID);
+				PowaBrowser:SetSelectedAura(self.AuraID);
 			else
-				PowaBrowser:SetSelectedAura(self.AuraID, (IsControlKeyDown() and MOD_CTRL or IsShiftKeyDown() and MOD_SHIFT or MOD_NONE));			
+				PowaBrowser:SetSelectedAura(self.AuraID);			
+			end
+			-- Is the alt key down?
+			if(IsAltKeyDown()) then
+				-- Test the aura too.
 			end
 		elseif(button == "RightButton" and not self.CreateAura) then
 			-- Shortcut for edit.
-			print("|cFF527FCCDEBUG (AuraBrowser): |rOpen aura editor: " .. self.AuraID);			
+			PowaBrowser:SetSelectedAura(self.AuraID);
+			PowaEditor:Show();
+			print("|cFF527FCCDEBUG (AuraBrowser): |rOpen aura editor: " .. self.AuraID);
 		end
 	end,
 	SetCreateAura = function(self, create)
