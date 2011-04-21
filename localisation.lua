@@ -769,6 +769,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideCommsRegisterFailure = "There was an error when setting up addon communications.",
 	aideBlockIncomingAuras = "Prevent anybody sending you auras",
 	nomBlockIncomingAuras = "Block Incoming Auras",
+	aideFixExports = "Check this when aura exports are not functioning correctly and leave you with a blank textbox.",
+	nomFixExports = "Alternative Exports",
 
 });
 
