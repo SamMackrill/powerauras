@@ -122,7 +122,7 @@ PowaAuras.UI:Register("AuraBrowser", {
 		for i=1,24 do
 			local button, buttonAura = self.Tabs.Auras.Page["Aura" .. i], nil;
 			-- Fix button and aura.
-			button:SetAuraID((((self.SelectedPage or 1)-1)*24)+i);
+			button:SetAuraID(((self.SelectedPage-1)*24)+i);
 			buttonAura = button:GetAura();
 			-- ...Was there an aura?
 			if(buttonAura) then

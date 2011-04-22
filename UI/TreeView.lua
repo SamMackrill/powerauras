@@ -11,6 +11,8 @@ PowaAuras.UI:Register("TreeView", {
 		self:UpdateItems();
 	end,
 	AddItem = function(self, key, text, parent, position, disable)
+		-- DO NOT LET KEYS CONFLICT FOR THE LOVE OF GOD PLEASE DO NOT.
+		if(self.ItemsByKey[key]) then return; end
 		-- Got a parent? If so, find it.
 		if(parent) then parent = self:FindItemByKey(parent); end
 		if(not parent) then parent = self.ItemsByOrder; end
@@ -197,7 +199,7 @@ PowaAuras.UI:Register("TreeViewItem", {
 			-- Yay!
 			local item = self._Items[1];
 			tremove(self._Items, 1);
-			print("|cFF527FCCDEBUG (TreeViewItem): |rRecycling item!");
+			print("|cFF527FCCDEBUG (TreeViewItem): |rRecycling item! Total available: " .. #(self._Items));
 			return item;
 		else
 			-- Get making.
