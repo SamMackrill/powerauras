@@ -25,6 +25,13 @@ PowaAuras.UI:Register("TreeView", {
 		self:UpdateItems();
 		return true;
 	end,
+	ClearItems = function(self)
+		-- Go go go.
+		for k,_ in pairs(self.ItemsByKey) do
+			self:RemoveItem(k);
+		end
+		self:UpdateItems();
+	end,
 	FindItemByKey = function(self, key, items)
 		-- Go go power rangers.
 		if(not items) then items = self.ItemsByOrder; end
@@ -77,6 +84,7 @@ PowaAuras.UI:Register("TreeView", {
 	end,
 	RemoveItem = function(self, key)
 		-- Find the item...
+		if(not self.ItemsByKey[key]) then return; end
 		local item, index, parentTable = self.ItemsByKey[key], 0, nil;
 		-- Find its parents table.
 		parentTable = (item:GetParentKey() and self:FindItemByKey(item:GetParentKey()) or self.ItemsByOrder);
@@ -189,10 +197,12 @@ PowaAuras.UI:Register("TreeViewItem", {
 			-- Yay!
 			local item = self._Items[1];
 			tremove(self._Items, 1);
+			print("|cFF527FCCDEBUG (TreeViewItem): |rRecycling item!");
 			return item;
 		else
 			-- Get making.
 			local item = CreateFrame("Button", nil, nil, "PowaTreeViewItemTemplate");
+			print("|cFF527FCCDEBUG (TreeViewItem): |rCreating item!");
 			return item;
 		end
 	end,
