@@ -679,7 +679,7 @@
 					</OnLoad>
 				</Scripts>
 			</Frame>
-			<Frame name="$parentActivation" inherits="PowaBorderedFrameTemplate">
+			<Frame name="$parentActivation" parentKey="Activation" inherits="PowaBorderedFrameTemplate">
 				<Size>
 				  <AbsDimension y="258" />
 				</Size>
