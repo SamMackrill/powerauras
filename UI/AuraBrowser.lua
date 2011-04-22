@@ -122,7 +122,7 @@ PowaAuras.UI:Register("AuraBrowser", {
 		for i=1,24 do
 			local button, buttonAura = self.Tabs.Auras.Page["Aura" .. i], nil;
 			-- Fix button and aura.
-			button:SetAuraID(((self.SelectedPage-1)*24)+i);
+			button:SetAuraID((((self.SelectedPage or 1)-1)*24)+i);
 			buttonAura = button:GetAura();
 			-- ...Was there an aura?
 			if(buttonAura) then
@@ -187,6 +187,10 @@ PowaAuras.UI:Register("AuraButton", {
 		self:SetIcon(icon or "");
 		-- Register clicks.
 		self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
+		-- I demand a tooltip.
+		PowaAuras.UI:Tooltip(self);
+		-- I also demand using the right tooltip function...
+		self.TooltipRefresh = PowaAuras.UI.AuraButton.TooltipRefresh;
 	end,
 	GetAura = function(self)
 		return PowaAuras.Auras[self.AuraID] or nil;
@@ -231,6 +235,19 @@ PowaAuras.UI:Register("AuraButton", {
 	SetSelected = function(self, selected)
 		self.Selected = selected;
 		self:Update();
+	end,
+	TooltipRefresh = function(self)
+		-- Hide tip.
+		GameTooltip:Hide();
+		-- Reparent.
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0);
+		-- Set back up.
+		GameTooltip:SetText("AURA_TYPE");
+		GameTooltip:AddLine("|cID: ", 1, 1, 1, true);
+		GameTooltip:AddDoubleLine("BUFF_NAME I/REALLY/LIKE/PIE/AND/POWER WORD FORTITUDE", "49", 1,0,0, 0,0,1);
+		GameTooltip:AddLine("I on the other hand really hate priests. I really, really do!", 1, 1, 1, true);
+		-- Show tip.
+		GameTooltip:Show();
 	end,
 	Update = function(self)
 		local texture = self:GetNormalTexture();

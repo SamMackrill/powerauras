@@ -1,19 +1,28 @@
 -- Create definition.
 PowaAuras.UI:Register("Tooltip", {
-	Init = function(frame, title, text, children)
+	PreInit = function(self, frame, title, text, children)
 		-- Store data.
 		frame.TooltipTitle = PowaAuras.Text[title];
 		frame.TooltipText = PowaAuras.Text[text];
+		-- Copy our functions over manually if needed.
+		if(not frame.TooltipRefresh) then
+			frame.TooltipRefresh = self.TooltipRefresh;
+		end
+		if(not frame.TooltipLeave) then
+			frame.TooltipLeave = self.TooltipLeave;
+		end
 		-- Use the RefreshTooltip function as a display method.
-		frame:ApplyScript(frame, "OnEnter", frame.TooltipRefresh);
-		frame:ApplyScript(frame, "OnLeave", frame.TooltipLeave);
+		self:ApplyScript(frame, "OnEnter", frame.TooltipRefresh);
+		self:ApplyScript(frame, "OnLeave", frame.TooltipLeave);
 		-- Add to children too.
 		if(children) then
 			for _, child in pairs(children) do
-				frame:ApplyScript(frame[child], "OnEnter", function() frame:TooltipRefresh(); end);
-				frame:ApplyScript(frame[child], "OnLeave", function() frame:TooltipLeave(); end);
+				self:ApplyScript(frame[child], "OnEnter", function() frame:TooltipRefresh(); end);
+				self:ApplyScript(frame[child], "OnLeave", function() frame:TooltipLeave(); end);
 			end
 		end
+		-- We force the widget initializer to skip copying our functions over.
+		return;
 	end,
 	TooltipRefresh = function(self)
 		-- Hide tip.
