@@ -1,4 +1,4 @@
-﻿## Interface: 40100
+﻿## Interface: 40000
 ## Title: Power Auras Classic
 ## Author: Smacker & Meorawr 'lolcat',Driizt 'classic',Garstiger 'continued',Sinsthar 'base'
 ## Version: 5.0
@@ -23,11 +23,11 @@ localisation_esES.lua
 localisation_esMX.lua
 PowerAurasRole.lua
 PowerAurasDump.lua
-PowerAurasTriggerClasses.lua
+PowerAurasTriggers.lua
+PowerAurasActions.lua
 PowerAurasDecoratorClasses.lua
 PowerAurasAuraClasses.lua
 PowerAurasAnimations.lua
-PowerAurasAnimationsOld.lua
 PowerAuras.lua
 PowerAurasEvents.lua
 PowerComms.lua
