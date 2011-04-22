@@ -909,6 +909,7 @@ function PowaAuras:ExportDialogInit(self)
 				-- Status 6 - Addon comms failure.
 				-- Don't need this for the import dialog, as that only pops up if comms work in the first place.
 				self.Title:SetText(PowaAuras.Text.aideCommsRegisterFailure);
+				self.CancelButton:Enable();
 				PowaAuras:SetDialogTimeout(self, 0);
 			end
 		end	
