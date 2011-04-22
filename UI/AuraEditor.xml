@@ -706,10 +706,6 @@
 								<Scripts>
 									<OnLoad>
 										PowaAuras.UI:TreeView(self);
-										self:AddItem(1, "Test1");
-										self:AddItem(2, "Test2");
-										self:AddItem(3, "Test3", 1);
-										self:AddItem(4, "Test4", 3);
 									</OnLoad>
 								</Scripts>
 							</Frame>
