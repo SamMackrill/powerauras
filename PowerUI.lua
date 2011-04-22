@@ -9,8 +9,10 @@ PowaAuras.UI = {
 		-- Add a metatable to the widget definition.
 		setmetatable(data, {
 			__call = function(self, _, widget, ...)
-				-- Run pre-init function, it can directly modify the widget too.
-				widget = (self.PreInit and self:PreInit(widget) or widget);
+				-- Run pre-init function, it can directly modify or even remove the widget too.
+				widget = (self.PreInit and self:PreInit(widget, ...) or widget);
+				-- You need a widget to continue.
+				if(not widget) then return; end
 				-- Has a parent class?
 				if(self.Base) then
 					self.Base(_, widget, ...);
