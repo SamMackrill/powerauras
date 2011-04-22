@@ -278,6 +278,22 @@ function cPowaAura:ClearDefaultTriggers()
 	--PowaAuras:ShowText("Aura trigger count now=", #self.Triggers);
 end
 
+function cPowaAura:UpdateTriggerTree(triggersTree)
+	triggersTree:Init();
+	local triggerIndex = #self.Triggers;
+	while triggerIndex>0 do
+		local trigger = self.Triggers[triggerIndex];
+		triggersTree:AddItem(triggerIndex, trigger.Name);
+		local actionIndex = #trigger.Actions;
+		while actionIndex>0 do
+			local action = trigger.Actions[actionIndex];
+			triggersTree:AddItem(triggerIndex.."_"..actionIndex, action.Name, triggerIndex);
+			actionIndex = actionIndex - 1;
+		end
+		triggerIndex = triggerIndex - 1;
+	end
+end
+
 function cPowaAura:CreateDefaultTriggers()
 	--PowaAuras:ShowText("CreateDefaultTriggers");
 	self:ClearDefaultTriggers();
