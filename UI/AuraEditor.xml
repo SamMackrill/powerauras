@@ -626,8 +626,49 @@
 							</OnLoad>
 						</Scripts>
 					</Frame>
-					<Frame name="$parentTimer" parentKey="Timer" inherits="BasicFrameTemplate" hidden="true" />
-					<Frame name="$parentStacks" parentKey="Stacks" inherits="BasicFrameTemplate" hidden="true" />
+					<Frame name="$parentTimer" parentKey="Timer" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="4" y="-4" />
+							<Anchor point="BOTTOMRIGHT" x="-4" y="5" />
+						</Anchors>
+						<Frames>
+							<Frame name="$parentTree" parentKey="Tree" inherits="PowaTreeViewTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT" x="2" y="-2" />
+									<Anchor point="BOTTOMLEFT" x="2" y="2" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										PowaAuras.UI:TreeView(self);
+										self:AddItem(1, "Test1");
+										self:AddItem(2, "Test2");
+										self:AddItem(3, "Test3", 1);
+										self:AddItem(4, "Test4", 3);
+									</OnLoad>
+								</Scripts>
+							</Frame>
+						</Frames>					
+					</Frame>
+					<Frame name="$parentStacks" parentKey="Stacks" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="4" y="-4" />
+							<Anchor point="BOTTOMRIGHT" x="-4" y="5" />
+						</Anchors>
+						<Frames>
+							<Frame name="$parentTree" parentKey="Tree" inherits="PowaTreeViewTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT" x="2" y="-2" />
+									<Anchor point="BOTTOMLEFT" x="2" y="2" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										PowaAuras.UI:TreeView(self);
+										self:AddItem(1, PowaAuras.Text["UI_"]);
+									</OnLoad>
+								</Scripts>
+							</Frame>
+						</Frames>	
+					</Frame>
 				</Frames>
 				<Scripts>
 					<OnLoad>

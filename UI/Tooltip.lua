@@ -5,17 +5,17 @@ PowaAuras.UI:Register("Tooltip", {
 		frame.TooltipTitle = PowaAuras.Text[title];
 		frame.TooltipText = PowaAuras.Text[text];
 		-- Use the RefreshTooltip function as a display method.
-		frame:ApplyScript(frame, "OnEnter", frame.Refresh);
-		frame:ApplyScript(frame, "OnLeave", frame.Leave);
+		frame:ApplyScript(frame, "OnEnter", frame.TooltipRefresh);
+		frame:ApplyScript(frame, "OnLeave", frame.TooltipLeave);
 		-- Add to children too.
 		if(children) then
 			for _, child in pairs(children) do
-				frame:ApplyScript(frame[child], "OnEnter", function() frame:Refresh(); end);
-				frame:ApplyScript(frame[child], "OnLeave", function() GameTooltip:Hide(); end);
+				frame:ApplyScript(frame[child], "OnEnter", function() frame:TooltipRefresh(); end);
+				frame:ApplyScript(frame[child], "OnLeave", function() frame:TooltipLeave(); end);
 			end
 		end
 	end,
-	Refresh = function(self)
+	TooltipRefresh = function(self)
 		-- Hide tip.
 		GameTooltip:Hide();
 		-- Reparent.
@@ -26,7 +26,7 @@ PowaAuras.UI:Register("Tooltip", {
 		-- Show tip.
 		GameTooltip:Show();
 	end,
-	Leave = function(self)
+	TooltipLeave = function(self)
 		GameTooltip:Hide();
 	end,
 	ApplyScript = function(self, frame, script, callback)

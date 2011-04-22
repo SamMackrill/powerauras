@@ -1,7 +1,6 @@
 -- More definitions, yes please.
 PowaAuras.UI:Register("AuraEditor", {
-	AdvancedElements = {
-	},
+	AdvancedElements = {}, -- It'll reference, but that's no problem. There's only 1 aura editor.
 	Hooks = {
 		"Show",
 	},
@@ -39,6 +38,7 @@ PowaAuras.UI:Register("AuraEditor", {
 		if(not aura) then return; end
 		-- Toggle advanced elements.
 		self:ToggleAdvanced(self.Advanced:GetChecked());
+		-- Update some values.
 		-- Done.
 		return true;
 	end,
