@@ -87,7 +87,6 @@ cPowaAura.ExportSettings = {
 	customtex = false,
 	textaura = false,
 	owntex = false,
-	realaura = 1,
 	texture = 1,
 	customname = "",
 	aurastext = "",
@@ -197,7 +196,7 @@ cPowaAura.ExportSettings = {
 	Data = "???",
 	
 	TexGlow = 1,
-	TexSource = 1,      -- 1 = Normal, 2 = WoW, 3 = Custom, 4 = Text, 5 = Own.
+	TexSource = 1,      -- 1 = Normal, 2 = WoW, 3 = Custom, 4 = Text, 5 = Icon.
 	-- realaura = 1,    -- No idea what this is.
 	TexNum = 1,         -- Texture or font number.
 	TexPath = "",       -- Texture or font path. Replaces icon path too.
