@@ -83,7 +83,7 @@ function PowaAuras:Toggle(enable)
 			PowaAuras_Frame:UnregisterAllEvents();
 			PowaAuras_Frame:Hide();
 		end
-		self:OptionHideAll(true);
+		self:OptionHideAll();
 		PowaMisc.Disabled = true;
 		self:DisplayText("Power Auras "..self.Colors.Red..ADDON_DISABLED.."|r");
 	end
@@ -406,21 +406,6 @@ end
 
 -->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-function PowaAuras:CreateTimerFrame(auraId, index)
-	local frame = CreateFrame("Frame", nil, UIParent);
-	self.TimerFrame[auraId][index] = frame;
-	local aura = self.Auras[auraId];
-	
-	frame:SetFrameStrata(aura.strata);
-	frame:Hide(); 
-
-	frame.texture = frame:CreateTexture(nil,"BACKGROUND");
-	frame.texture:SetBlendMode("ADD");
-	frame.texture:SetAllPoints(frame);
-	frame.texture:SetTexture(aura.Timer:GetTexture());
-	return frame, texture;
-end
-
 function PowaAuras:CreateEffectLists()
 	
 	for k in pairs(self.AurasByType) do
@@ -599,7 +584,7 @@ function PowaAuras:OnUpdate(elapsed)
 	local checkAura = false;
 	local onUpdateLimit = PowaMisc.OnUpdateLimit;
 	if (self.ModTest) then
-		onUpdateLimit = 1; -- Limit testing updates to 1 per second
+		onUpdateLimit = 0.5; -- Limit testing updates to every 1/2 second
 	end
 	if (onUpdateLimit == 0 or self.ThrottleTimer >= onUpdateLimit) then
 		checkAura = true;
@@ -671,8 +656,12 @@ function PowaAuras:OnUpdate(elapsed)
 	
 	local skipTimerUpdate = false
 	local timerElapsed = 0;
-	if (PowaMisc.AnimationLimit > 0 and self.TimerUpdateThrottleTimer < PowaMisc.AnimationLimit) then
-		skipTimerUpdate = true and not self.DebugCycle;
+	local timerUpdateLimit = PowaMisc.AnimationLimit;
+	if (self.ModTest) then
+		timerUpdateLimit = 0.5; -- Limit testing updates to every 1/2 second
+	end
+	if (timerUpdateLimit > 0 and self.TimerUpdateThrottleTimer < timerUpdateLimit) then
+		skipTimerUpdate = not self.DebugCycle;
 	else
 		timerElapsed = self.TimerUpdateThrottleTimer;
 		self.TimerUpdateThrottleTimer = 0;
@@ -702,8 +691,20 @@ function PowaAuras:OnUpdate(elapsed)
 	for i = 1, #self.AuraSequence do
 		local aura = self.AuraSequence[i];
 		--self:Message("UpdateAura Call id=", aura.id, " ", aura);
-		if (aura:UpdateAura(self.ModTest) and not skipTimerUpdate and aura.Timer) then
-			aura.Timer:Update(timerElapsed);
+		if (aura:UpdateAura(self.ModTest)) then
+		
+			if (not skipTimerUpdate) then
+
+				if (aura.Stacks and aura.Stacks.enabled) then	
+					aura.Stacks:Update(aura, 0, self.ModTest);
+				end		
+		
+				if (aura.Timer) then
+					aura.Timer:Update(aura, timerElapsed, self.ModTest);
+				end
+		
+				aura:ProcessTriggerQueue();
+			end
 		end
 	end
 	
@@ -886,8 +887,8 @@ local function stopFrameMoving(frame)
 	frame:StopMovingOrSizing();
 	frame.aura.x = math.floor(frame:GetLeft() + (frame:GetWidth()  - UIParent:GetWidth())  / 2 + 0.5);
 	frame.aura.y = math.floor(frame:GetTop()  - (frame:GetHeight() + UIParent:GetHeight()) / 2 + 0.5);
-	if (PowaAuras.CurrentAuraId == frame.aura.id) then
-		PowaAuras:InitPage(frame.aura);
+	if (PowaAuras.CurrentAuraId == frame.aura.id and PowaBarConfigFrame:IsVisible()) then
+		PowaAuras:UpdateLocation(frame.aura);
 	end
 end
 
@@ -940,8 +941,8 @@ local function keyUp(frame, key)
 	elseif (key=="RIGHT") then
 		frame.aura.x = frame.aura.x + 1;
 	end
-	if (PowaAuras.CurrentAuraId == frame.aura.id) then
-		PowaAuras:InitPage(frame.aura);
+	if (PowaAuras.CurrentAuraId == frame.aura.id and PowaBarConfigFrame:IsVisible()) then
+		PowaAuras:UpdateLocation(frame.aura);
 	end
 	PowaAuras:RedisplayAura(frame.aura.id, false);
 end
@@ -1101,17 +1102,7 @@ function PowaAuras:InitialiseAuraFrame(aura, frame, texture, alpha)
 	  end	
 	end
 
-	frame.baseH = 256 * aura.size * (2-aura.torsion);
-	if (aura.textaura == true) then
-		local fontsize = math.min(33, math.max(10, math.floor(frame.baseH / 12.8)));
-		local checkfont = texture:SetFont(self.Fonts[aura.aurastextfont], fontsize, "OUTLINE, MONOCHROME");
-		if not checkfont then
-			texture:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE, MONOCHROME");
-		end
-		frame.baseL = texture:GetStringWidth() + 5;
-	else
-		frame.baseL = 256 * aura.size * aura.torsion;
-	end
+	PowaAuras:SetFrameSize(frame, texture, aura.size, aura.torsion, aura.textaura, aura.aurastextfont);
 
 	frame:SetAlpha(math.min(alpha,0.99));
 	frame:SetPoint("CENTER",aura.x, aura.y);
@@ -1119,6 +1110,20 @@ function PowaAuras:InitialiseAuraFrame(aura, frame, texture, alpha)
 	frame:SetHeight(frame.baseH);
 	
 
+end
+
+function PowaAuras:SetFrameSize(frame, texture, size, torsion, textaura, aurastextfont)
+	frame.baseH = 256 * size * (2-torsion);
+	if (textaura == true) then
+		local fontsize = math.min(33, math.max(10, math.floor(frame.baseH / 12.8)));
+		local checkfont = texture:SetFont(self.Fonts[aurastextfont], fontsize, "OUTLINE, MONOCHROME");
+		if not checkfont then
+			texture:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE, MONOCHROME");
+		end
+		frame.baseL = texture:GetStringWidth() + 5;
+	else
+		frame.baseL = 256 * size * torsion;
+	end
 end
 
 function PowaAuras:SetupStaticPopups()

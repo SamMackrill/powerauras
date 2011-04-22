@@ -36,6 +36,10 @@ PowaAuras.UI:Register("AuraEditor", {
 		-- Get the aura.
 		local aura = PowaAuras.Auras[auraID];
 		if(not aura) then return; end
+		
+		-- Initialise controls
+		aura:UpdateTriggerTree(PowaEditorActivation.Triggers.Tree);
+		
 		-- Toggle advanced elements.
 		self:ToggleAdvanced(self.Advanced:GetChecked());
 		-- Update some values.
