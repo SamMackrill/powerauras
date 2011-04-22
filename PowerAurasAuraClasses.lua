@@ -279,7 +279,7 @@ function cPowaAura:ClearDefaultTriggers()
 end
 
 function cPowaAura:UpdateTriggerTree(triggersTree)
-	triggersTree:Init();
+	triggersTree:ClearItems();
 	local triggerIndex = #self.Triggers;
 	while triggerIndex>0 do
 		local trigger = self.Triggers[triggerIndex];
