@@ -1,5 +1,5 @@
 -- Create definition.
-PowaAuras.UI["LayoutFrame"] = {
+PowaAuras.UI:Register("LayoutFrame", {
 	Init = function(self, x, y, alignMode, locked, isScrollChild, debug)
 		-- Set up some things. My comments are ever descriptive tonight.
 		self.Columns = {};
@@ -210,7 +210,7 @@ PowaAuras.UI["LayoutFrame"] = {
 				-- Size.
 				frame.Texture:SetTexture(1, 0, 0, 1);
 				frame:SetAllPoints(item); -- Just do a setallpoints for width/height...				
-				PowaAuras.UI.Tooltip(frame, item:GetName(), "Width: " .. fcW .. "\nHeight: " .. fcH .. 
+				PowaAuras.UI:Tooltip(frame, item:GetName(), "Width: " .. fcW .. "\nHeight: " .. fcH .. 
 					"\nReal Width: " .. cW .. "\nReal Height: " .. cH .. 
 					"\n\nPadding (L): " .. pL .. "\nPadding (R): " .. pR .. "\nPadding (T): " .. pT .. "\nPadding (B): " .. pB .. 
 					"\n\nMargin (L): " .. mL .. "\nMargin (R): " .. mR .. "\nMargin (T): " .. mT .. "\nMargin (B): " .. mB .. 
@@ -220,22 +220,22 @@ PowaAuras.UI["LayoutFrame"] = {
 				frame.Texture:SetTexture(0, 1, 0, 1);
 				if(i == 2) then
 					frame:SetPoint("RIGHT", item, "LEFT");
-					PowaAuras.UI.Tooltip(frame, item:GetName(), "Padding (L): " .. pL);
+					PowaAuras.UI:Tooltip(frame, item:GetName(), "Padding (L): " .. pL);
 					frame:SetWidth(math.abs(pL));
 					frame:SetHeight(math.abs(cH));
 				elseif(i == 3) then
 					frame:SetPoint("LEFT", item, "RIGHT");
-					PowaAuras.UI.Tooltip(frame, item:GetName(), "Padding (R): " .. pR);
+					PowaAuras.UI:Tooltip(frame, item:GetName(), "Padding (R): " .. pR);
 					frame:SetWidth(math.abs(pR));
 					frame:SetHeight(math.abs(cH));
 				elseif(i == 4) then
 					frame:SetPoint("BOTTOM", item, "TOP");
-					PowaAuras.UI.Tooltip(frame, item:GetName(), "Padding (T): " .. pT);
+					PowaAuras.UI:Tooltip(frame, item:GetName(), "Padding (T): " .. pT);
 					frame:SetHeight(math.abs(pT));
 					frame:SetWidth(math.abs(cW));
 				elseif(i == 5) then
 					frame:SetPoint("TOP", item, "BOTTOM");
-					PowaAuras.UI.Tooltip(frame, item:GetName(), "Padding (B): " .. pB);
+					PowaAuras.UI:Tooltip(frame, item:GetName(), "Padding (B): " .. pB);
 					frame:SetHeight(math.abs(pB));
 					frame:SetWidth(math.abs(cW));
 				end
@@ -244,22 +244,22 @@ PowaAuras.UI["LayoutFrame"] = {
 				frame.Texture:SetTexture(0, 0, 1, 1);
 				if(i == 6) then
 					frame:SetPoint("RIGHT", item, "LEFT", -pL, 0);
-					PowaAuras.UI.Tooltip(frame, item:GetName(), "Margin (L): " .. mL);
+					PowaAuras.UI:Tooltip(frame, item:GetName(), "Margin (L): " .. mL);
 					frame:SetWidth(math.abs(mL));
 					frame:SetHeight(math.abs(cH));
 				elseif(i == 7) then
 					frame:SetPoint("LEFT", item, "RIGHT", pR, 0);
-					PowaAuras.UI.Tooltip(frame, item:GetName(), "Margin (R): " .. mR);
+					PowaAuras.UI:Tooltip(frame, item:GetName(), "Margin (R): " .. mR);
 					frame:SetWidth(math.abs(mR));
 					frame:SetHeight(math.abs(cH));
 				elseif(i == 8) then
 					frame:SetPoint("BOTTOM", item, "TOP", 0, pT);
-					PowaAuras.UI.Tooltip(frame, item:GetName(), "Margin (T): " .. mT);
+					PowaAuras.UI:Tooltip(frame, item:GetName(), "Margin (T): " .. mT);
 					frame:SetHeight(math.abs(mT));
 					frame:SetWidth(math.abs(cW));
 				elseif(i == 9) then
 					frame:SetPoint("TOP", item, "BOTTOM", 0, -pB);
-					PowaAuras.UI.Tooltip(frame, item:GetName(), "Margin (B): " .. mB);
+					PowaAuras.UI:Tooltip(frame, item:GetName(), "Margin (B): " .. mB);
 					frame:SetHeight(math.abs(mB));
 					frame:SetWidth(math.abs(cW));
 				end
@@ -268,6 +268,4 @@ PowaAuras.UI["LayoutFrame"] = {
 			item["Debug" .. i] = frame;
 		end
 	end
-};
--- Register.
-PowaAuras.UI:DefineWidget("LayoutFrame");
+});

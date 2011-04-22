@@ -1,18 +1,18 @@
 -- Add a definition for the browser frame. We'll only ever make one, but I'm sick of a lot of functions 
 -- inside that big one. Besides, I like this system, do you? It's more memory efficient...I think. 
 -- Does defining the same closure repeatedly cost more memory, rather than referencing a single defined closure?
-PowaAuras.UI["AuraBrowser"] = {
+PowaAuras.UI:Register("AuraBrowser", {
 	Init = function(self)
 		-- Variables.
-		self.SelectedAuras = {};
+		self.SelectedAura = nil;
 		self.SelectedPage = 1;
+		self.ForceSingle = false;
 		-- Add OnSelectionChanged function to tree views.
 		self.Tabs.Auras.Tree.OnSelectionChanged = self.OnSelectionChanged;
 		-- Check...
 		if(PowaAuras.VariablesLoaded) then self:OnVariablesLoaded(); end
-	end,
-	CountSelectedAuras = function(self)
-		return #(self.SelectedAuras);
+		-- Close on escape key.
+		-- tinsert(UISpecialFrames, self:GetName());
 	end,
 	GetPageName = function(self)
 		local page = self.Tabs.Auras.Tree:GetSelectedKey();
@@ -25,25 +25,17 @@ PowaAuras.UI["AuraBrowser"] = {
 			return PowaClassListe[UnitClass("player")][page-15];
 		end
 	end,
-	GetSelectedAuras = function(self)
-		return self.SelectedAuras;
+	GetSelectedAura = function(self)
+		return self.SelectedAura;
 	end,
 	IsAuraSelected = function(self, id)
-		return tContains(self.SelectedAuras, id);
-	end,
-	OnAuraDragged = function(self)
-		local browser, str = PowaBrowser, "";
-		print("|cFF527FCCDEBUG (AuraBrowser): |rRecieved aura drag onto page: " .. self.Key .. " (Ctrl: " .. (IsControlKeyDown() and "true" or "false") .. ")");
-		for _,v in ipairs(browser.SelectedAuras) do
-			str = str .. " " .. v;
-		end
-		print("|cFF527FCCDEBUG (AuraBrowser): |rAuras" .. str .. " should be " .. (IsControlKeyDown() and "copied" or "moved") .. " to page " .. self.Key .. ".");		
+		return (self.SelectedAura == id);
 	end,
 	OnSelectionChanged = function(self, key)
 		-- Save page.
 		PowaBrowser.SelectedPage = key;
 		-- Deselect any and all auras. This will trigger a button update.
-		PowaBrowser:SetSelectedAura(nil, 0x1);
+		PowaBrowser:SetSelectedAura(nil);
 	end,
 	OnVariablesLoaded = function()
 		-- Easymode.
@@ -59,41 +51,30 @@ PowaAuras.UI["AuraBrowser"] = {
 			-- Don't bother showing the version upgrade dialog if it's the first run.
 			self.ShowVersionDialog = false;
 		end
-		-- Fix class auras. (TODO: Move this elsewhere)
-		local class = UnitClass("player");
-		if(not PowaClassListe) then PowaClassListe = {}; end
-		if(not PowaClassListe[class]) then
-			PowaClassListe[class] = {};
-			for i=1,5 do
-				PowaClassListe[class][i] = "Class " .. i;
-			end
-		end
 		-- Counts.
+		local class = UnitClass("player");
 		local playerPageCount, globalPageCount, classPageCount = #(PowaPlayerListe), #(PowaGlobalListe), #(PowaClassListe[class]);
 		-- Character auras.
 		self.Tabs.Auras.Tree:AddItem("CHAR", PowaAuras.Text["UI_CharAuras"], nil, nil, true);
 		for i=1,playerPageCount do
 			self.Tabs.Auras.Tree:AddItem(i, PowaPlayerListe[i], "CHAR");
-			self.Tabs.Auras.Tree:GetItem(i):SetScript("OnReceiveDrag", self.OnAuraDragged);
 		end
 		-- Global auras.
 		self.Tabs.Auras.Tree:AddItem("GLOBAL", PowaAuras.Text["UI_GlobAuras"], nil, nil, true);
 		for i=1,globalPageCount do
 			self.Tabs.Auras.Tree:AddItem(i+playerPageCount, PowaGlobalListe[i], "GLOBAL");
-			self.Tabs.Auras.Tree:GetItem(i+playerPageCount):SetScript("OnReceiveDrag", self.OnAuraDragged);
 		end
 		-- Class auras.
 		self.Tabs.Auras.Tree:AddItem("CLASS", PowaAuras.Text["UI_ClassAuras"], nil, nil, true);
 		for i=1,classPageCount do
 			self.Tabs.Auras.Tree:AddItem(i+playerPageCount+globalPageCount, PowaClassListe[class][i], "CLASS");
-			self.Tabs.Auras.Tree:GetItem(i+playerPageCount+globalPageCount):SetScript("OnReceiveDrag", self.OnAuraDragged);
 		end
 		-- Add 24 beautiful buttons.
 		self.Tabs.Auras.Page:SetLocked(true);
 		for i=1,24 do
 			-- Make button.
 			local button = CreateFrame("Button", nil, self.Tabs.Auras.Page, "PowaAuraButtonTemplate");
-			PowaAuras.UI.AuraButton(button);		
+			PowaAuras.UI:AuraButton(button);		
 			-- Save.
 			self.Tabs.Auras.Page:AddItem(button);
 			self.Tabs.Auras.Page["Aura" .. i] = button;
@@ -120,55 +101,13 @@ PowaAuras.UI["AuraBrowser"] = {
 		-- Update listview.
 		self.Tabs.Auras.Tree:GetItem(page):SetText(name);
 	end,
-	SetSelectedAura = function(self, id, multiSelectMode)
-		-- Deselect if already selected.
-		if(id and tContains(self.SelectedAuras, id)) then
-			-- If ctrl is down, just deselect this one.
-			if(id and multiSelectMode == 0x2) then
-				for k,v in pairs(self.SelectedAuras) do
-					if(v == id) then
-						table.remove(self.SelectedAuras, k);
-						self:UpdateAuraButtons();
-						return;
-					end
-				end
-			elseif(id and multiSelectMode == 0x1 and #(self.SelectedAuras) > 1) then
-				-- You clicked one which was selected but didn't use a modifier key, so deselect all but this one.
-				wipe(self.SelectedAuras)
-				tinsert(self.SelectedAuras, id);
-				self:UpdateAuraButtons();
-			elseif(id and multiSelectMode == 0x1 and #(self.SelectedAuras) == 1) then
-				-- Deselect all.
-				wipe(self.SelectedAuras)
-				self:UpdateAuraButtons();
-			end
-			-- Done, either way...
-			return;
+	SetSelectedAura = function(self, id)
+		-- Set it.
+		self.SelectedAura = id;
+		-- Update the editor.
+		if(PowaEditor:IsShown()) then
+			PowaEditor:Show();
 		end
-		-- Wipe the auras table if no ID has been given, or if multiple selection is off.
-		if(not id or multiSelectMode == 0x1) then
-			wipe(self.SelectedAuras);
-			if(not id) then
-				self:UpdateAuraButtons();
-				return;
-			end
-		end
-		-- If we got this far we probably should just add the aura...
-		if(multiSelectMode ~= 0x4) then
-			tinsert(self.SelectedAuras, id);
-		else
-			-- Select all between the last selected aura and this one (shift key).
-			local lastID;
-			for _,v in ipairs(self.SelectedAuras) do
-				lastID = v;
-			end
-			wipe(self.SelectedAuras);
-			if(not lastID) then lastID = ((self.SelectedPage-1)*24)+1; end
-			-- Onwards!
-			for i=lastID, id, (lastID < id and 1 or -1) do
-				tinsert(self.SelectedAuras, i);
-			end
-		end		
 		-- Update buttons.
 		self:UpdateAuraButtons();
 	end,
@@ -177,7 +116,7 @@ PowaAuras.UI["AuraBrowser"] = {
 		-- Not strictly button related, but it prevents two function calls.
 		PowaBrowser.Tabs.Auras.Page.Title:SetText(self:GetPageName());
 		PowaBrowser.Tabs.Auras.Page.Title:ClearFocus();
-		-- Keep track on if we've displayed at least one empty button.
+		-- Keep track of if we've displayed at least one empty button.
 		local hasDisplayedEmpty = nil;
 		-- Go over buttons.
 		for i=1,24 do
@@ -188,7 +127,7 @@ PowaAuras.UI["AuraBrowser"] = {
 			-- ...Was there an aura?
 			if(buttonAura) then
 				-- Select/deselect.
-				if(not tContains(self.SelectedAuras, button:GetAuraID())) then
+				if(self.SelectedAura ~= button:GetAuraID()) then
 					button:SetSelected(false);
 				else
 					button:SetSelected(true);
@@ -220,6 +159,12 @@ PowaAuras.UI["AuraBrowser"] = {
 					-- Icon fixes (use different texcoords as it slips to the right a bit here).
 					button.Icon:SetTexture("Interface\\GuildBankFrame\\UI-GuildBankFrame-NewTab");
 					button.Icon:SetTexCoord(0.11, 0.93, 0.07, 0.93);
+					-- Allow it to be selected.
+					if(self.SelectedAura ~= button:GetAuraID()) then
+						button:SetSelected(false);
+					else
+						button:SetSelected(true);
+					end
 					button:Show();
 				end
 			end
@@ -229,14 +174,12 @@ PowaAuras.UI["AuraBrowser"] = {
 		-- No longer need you, mister linkedAuras.
 		if(linkedAuras) then wipe(linkedAuras); end
 	end
-}
+});
 
--- And a definition for the item.
-PowaAuras.UI["AuraButton"] = {
+-- And a definition for the button.
+PowaAuras.UI:Register("AuraButton", {
 	Scripts = {
 		"OnClick",
-		"OnDragStart",
-		"OnDragStop",
 	},
 	Init = function(self, icon)
 		-- Set things up.
@@ -244,7 +187,6 @@ PowaAuras.UI["AuraButton"] = {
 		self:SetIcon(icon or "");
 		-- Register clicks.
 		self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
-		self:RegisterForDrag("LeftButton");
 	end,
 	GetAura = function(self)
 		return PowaAuras.Auras[self.AuraID] or nil;
@@ -256,12 +198,6 @@ PowaAuras.UI["AuraButton"] = {
 		return self.CreateAura;
 	end,
 	SetAuraID = function(self, id)
-		-- Don't allow dragging of non-existant things :)
-		if(not PowaAuras.Auras[id]) then
-			self:RegisterForDrag(nil);
-		else
-			self:RegisterForDrag("LeftButton");
-		end
 		-- You have been invited to join <World of War> for the 19th time. Would you like to e-punch one of the guild members in the face? [Y/N]
 		self.AuraID = id;
 	end,
@@ -273,27 +209,21 @@ PowaAuras.UI["AuraButton"] = {
 		if(button == "LeftButton") then
 			-- Select aura, or create.
 			if(self.CreateAura) then
-				-- Todo: Make clicking this add a new aura.
 				print("|cFF527FCCDEBUG (AuraBrowser): |rCreate aura: " .. self.AuraID);
+				PowaBrowser:SetSelectedAura(self.AuraID);
 			else
-				PowaBrowser:SetSelectedAura(self.AuraID, (IsControlKeyDown() and 0x2 or IsShiftKeyDown() and 0x4 or 0x1));			
+				PowaBrowser:SetSelectedAura(self.AuraID);
+			end
+			-- Is the alt key down?
+			if(IsAltKeyDown()) then
+				-- Test the aura too.
 			end
 		elseif(button == "RightButton" and not self.CreateAura) then
 			-- Shortcut for edit.
-			print("|cFF527FCCDEBUG (AuraBrowser): |rOpen aura editor: " .. self.AuraID);			
+			PowaBrowser:SetSelectedAura(self.AuraID);
+			PowaEditor:Show();
+			print("|cFF527FCCDEBUG (AuraBrowser): |rOpen aura editor: " .. self.AuraID);
 		end
-	end,
-	OnDragStart = function(self, button)
-		-- Set cursor up.
-		SetCursor(self.Icon:GetTexture());
-		-- Select aura if needed.
-		if(not PowaBrowser:IsAuraSelected(self.AuraID)) then
-			PowaBrowser:SetSelectedAura(self.AuraID, 0x1); -- Single selection forced if moving/copying unselected aura.
-		end
-	end,
-	OnDragStop = function(self)
-		-- Reset cursor.
-		SetCursor(nil);
 	end,
 	SetCreateAura = function(self, create)
 		self.CreateAura = create;
@@ -316,7 +246,4 @@ PowaAuras.UI["AuraButton"] = {
 			texture:SetVertexColor(0.75, 0.325, 0.325);
 		end
 	end,
-};
--- Register.
-PowaAuras.UI:DefineWidget("AuraBrowser");
-PowaAuras.UI:DefineWidget("AuraButton");
+});

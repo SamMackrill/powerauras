@@ -33,7 +33,11 @@ Registers the POWA header for addon communications. Note that this requires a pa
 ------------------------------------------------------------------------------------------------------------------------
 --]]
 function PowaComms:Register()
-	if(RegisterAddonMessagePrefix("POWA") == false) then
+	-- Register prefix.
+	if(not RegisterAddonMessagePrefix) then return false; end
+	RegisterAddonMessagePrefix("POWA");
+	-- Check to see if it's registered (RegisterAddonMessagePrefix may return true even if it fails, just playing safe!).
+	if(not IsAddonMessagePrefixRegistered("POWA")) then
 		if(PowaMisc.debug) then PowaAuras:ShowText("PowaComms:Register() |cFFFF0000failed!|r"); end
 		self.Registered = false;
 		return false;
@@ -51,7 +55,7 @@ Returns the status of the PowaComms addon message header.
 ------------------------------------------------------------------------------------------------------------------------
 --]]
 function PowaComms:IsRegistered()
-	-- In the PTR build I was testing, IsAddonMessagePrefixRegistered didn't exist. We'll just use a boolean.
+	-- Stored the result of IsAddonMessagePrefixRegistered in a boolean during register func.
 	return self.Registered;
 end
 --[[
@@ -62,43 +66,23 @@ Responds to the CHAT_MSG_ADDON event. This will parse the header (or prefix) and
 handle the data.
 ------------------------------------------------------------------------------------------------------------------------
 --]]
-if(PowaAuras.WoWBuild < 13726) then
-	function PowaAuras:CHAT_MSG_ADDON(header, data, channel, from)
-		-- Check the first 4 chars of the header for POWA.
-		if(strsub(header, 1, 4) ~= "POWA") then return; end
-		-- A good header is always in the following format: POWA|INSTRUCTION|SEGMENT_INDEX|SEGMENT_COUNT
-		local stx = strfind(header, "|", 1, true);
-		local segpos = strfind(header, "|", stx+1, true);
-		local segtotal = strfind(header, "|", segpos+1, true);
-		-- They all need to be present.
-		if(not stx or not segpos or not segtotal) then return; end
-		-- Replace segpos/segtotal with their actual values. Extract the instruction too.
-		local instruction, segpos, segtotal = strsub(header, stx+1, segpos-1),
-			tonumber(strsub(header, segpos+1, segtotal-1), 10),
-			tonumber(strsub(header, segtotal+1), 10);
-		-- Fire handlers.
-		if(PowaMisc.debug) then self:ShowText("Comms: Firing handler for instruction " .. instruction); end
-		self.Comms:FireHandler(instruction, data, from, segpos, segtotal);
-	end
-else
-	function PowaAuras:CHAT_MSG_ADDON(header, data, channel, from)
-		-- Check the header.
-		if(header ~= "POWA") then return; end
-		-- A good data message is always in the following format: <INSTRUCTION;SEGMENT_INDEX;SEGMENT_COUNT;/>
-		local stx = strfind(data, "<", 1, true);
-		local segpos = strfind(data, ";", stx+1, true);
-		local segtotal = strfind(data, ";", segpos+1, true);
-		local datasegment = strfind(data, "/>", segtotal+1, true);
-		-- They all need to be present.
-		if(not stx or not segpos or not segtotal or not datasegment) then return; end
-		-- Replace segpos/segtotal with their actual values. Extract the instruction too.
-		local instruction, segpos, segtotal, datasegment = strsub(data, stx+1, segpos-1),
-			tonumber(strsub(data, segpos+1, segtotal-1), 10),
-			tonumber(strsub(data, segtotal+1, datasegment-1), 10),
-			strsub(data, datasegment+2);
-		-- Fire handlers.
-		self.Comms:FireHandler(instruction, datasegment, from, segpos, segtotal);
-	end
+function PowaAuras:CHAT_MSG_ADDON(header, data, channel, from)
+	-- Check the header.
+	if(header ~= "POWA") then return; end
+	-- A good data message is always in the following format: <INSTRUCTION;SEGMENT_INDEX;SEGMENT_COUNT;/>
+	local stx = strfind(data, "<", 1, true);
+	local segpos = strfind(data, ";", stx+1, true);
+	local segtotal = strfind(data, ";", segpos+1, true);
+	local datasegment = strfind(data, "/>", segtotal+1, true);
+	-- They all need to be present.
+	if(not stx or not segpos or not segtotal or not datasegment) then return; end
+	-- Replace segpos/segtotal with their actual values. Extract the instruction too.
+	local instruction, segpos, segtotal, datasegment = strsub(data, stx+1, segpos-1),
+		tonumber(strsub(data, segpos+1, segtotal-1), 10),
+		tonumber(strsub(data, segtotal+1, datasegment-1), 10),
+		strsub(data, datasegment+2);
+	-- Fire handlers.
+	self.Comms:FireHandler(instruction, datasegment, from, segpos, segtotal);
 end
 --[[
 ------------------------------------------------------------------------------------------------------------------------

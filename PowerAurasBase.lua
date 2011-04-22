@@ -245,7 +245,7 @@ PowaAuras = {
 		Tracking = false,
 		
 		GTFO = false,
-		UnitTarget = false,
+		UnitMatch = false,
 
 		-- true if any type should be checked
 		CheckIt = false,
@@ -278,7 +278,7 @@ PowaAuras = {
 		Slots=23,
 		Tracking=24,
 		TypeBuff=25,
-		UnitTarget=26,
+		UnitMatch=26,
 		GTFO=50,
 	};
 
@@ -667,7 +667,7 @@ PowaAuras:RegisterAuraType('Slots');
 PowaAuras:RegisterAuraType('Items');
 PowaAuras:RegisterAuraType('Tracking');
 
-PowaAuras:RegisterAuraType('UnitTarget');
+PowaAuras:RegisterAuraType('UnitMatch');
 		
 PowaAuras:RegisterAuraType('GTFOHigh');
 PowaAuras:RegisterAuraType('GTFOLow');
@@ -699,7 +699,6 @@ PowaAuras.PowerRanges = {
 	[SPELL_POWER_RAGE] = 100,
 	[SPELL_POWER_FOCUS] = 100,
 	[SPELL_POWER_ENERGY] = 100,
-	[4] = 3, -- SPELL_POWER_HAPPINESS gone in 4.1, but it represented a 4. Use this for compatibility between both versions.
 	[SPELL_POWER_RUNES] = 100,
 	[SPELL_POWER_RUNIC_POWER] = 100,
 	[SPELL_POWER_SOUL_SHARDS] = 3,
@@ -714,7 +713,6 @@ PowaAuras.RangeType = {
 	[SPELL_POWER_RAGE] = "%",
 	[SPELL_POWER_FOCUS] = "%",
 	[SPELL_POWER_ENERGY] = "%",
-	[4] = "",
 	[SPELL_POWER_RUNES] = "%",
 	[SPELL_POWER_RUNIC_POWER] = "%",
 	[SPELL_POWER_SOUL_SHARDS] = "",
@@ -730,7 +728,6 @@ PowaAuras.PowerTypeIcon = {
 	[SPELL_POWER_RAGE] = "ability_warrior_rampage",
 	[SPELL_POWER_FOCUS] = "ability_hunter_mastermarksman",
 	[SPELL_POWER_ENERGY] = "inv_battery_02",
-	[4] = "inv_misc_celebrationcake_01",
 	[SPELL_POWER_RUNES] = "spell_deathknight_runetap",
 	[SPELL_POWER_RUNIC_POWER] = "spell_arcane_arcane01",
 	[SPELL_POWER_SOUL_SHARDS] = "inv_misc_gem_amethyst_02",
@@ -852,7 +849,7 @@ PowaAuras.DebuffTypeSpellIds={
 	[87204] = PowaAuras.DebuffCatType.CC,		-- Sin and Punishment fear/horror.
 	[9484]  = PowaAuras.DebuffCatType.CC,		-- Shackle Undead (works against Death Knights using Lichborne)
 	[15487] = PowaAuras.DebuffCatType.Silence,	-- Silence
-	[64058] = PowaAuras.DebuffCatType.Disarm,	-- Psychic Horror
+	-- [64058] = PowaAuras.DebuffCatType.Disarm,	-- Psychic Horror
 	[15407] = PowaAuras.DebuffCatType.Snare,	-- Mind Flay
 	[88625] = PowaAuras.DebuffCatType.CC,	    -- Holy Word: Chastise
 	-- Rogue
@@ -869,6 +866,7 @@ PowaAuras.DebuffTypeSpellIds={
 	[51585] = PowaAuras.DebuffCatType.Snare,	-- Blade Twisting II
 	[3409]  = PowaAuras.DebuffCatType.Snare,	-- Crippling Poison
 	[26679] = PowaAuras.DebuffCatType.Snare,	-- Deadly Throw
+	[51696] = PowaAuras.DebuffCatType.Snare,	-- Waylay
 	-- Shaman
 	[39796] = PowaAuras.DebuffCatType.Stun,		-- Stoneclaw Stun
 	[51514] = PowaAuras.DebuffCatType.CC,		-- Hex (although effectively a silence+disarm effect, it is conventionally thought of as a CC, plus you can trinket out of it)
@@ -892,7 +890,7 @@ PowaAuras.DebuffTypeSpellIds={
 	[60946] = PowaAuras.DebuffCatType.Snare,	-- Nightmare (Improved Fear I)
 	[60947] = PowaAuras.DebuffCatType.Snare,	-- Nightmare (Improved Fear II)
 	[85387] = PowaAuras.DebuffCatType.Stun,	    -- Aftermath (stun effect from rain of fire)
-	[89777] = PowaAuras.DebuffCatType.Stun,	    -- Axe Toss (from a felguard)
+	[89766] = PowaAuras.DebuffCatType.Stun,	    -- Axe Toss (from a felguard)
 	[93975] = PowaAuras.DebuffCatType.Stun,	    -- Aura of Foreboding I (stun effect)
 	[93974] = PowaAuras.DebuffCatType.Snare,	-- Aura of Foreboding I (root effect)
 	[93986] = PowaAuras.DebuffCatType.Stun,	    -- Aura of Foreboding II (stun effect)
@@ -1121,7 +1119,8 @@ function PowaAuras:Different(o1, o2)
 end
 
 function PowaAuras:GetSettingForExport(prefix, k, v, default)
-	if (not self:Different(v, default)) then return ""; end
+	-- Causes an unreproducable bug. Will increase size of export codes, but at least they work.
+	-- if (not self:Different(v, default)) then return ""; end
 	local varType = type(v);
 	local setting = prefix..k..":";
 	if (varType == "string") then

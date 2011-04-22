@@ -1,5 +1,5 @@
 -- Create definition.
-PowaAuras.UI["TreeView"] = {
+PowaAuras.UI:Register("TreeView", {
 	Init = function(self, title, callback)
 		-- Store our items in these...
 		self.ItemsByOrder = {};
@@ -18,7 +18,7 @@ PowaAuras.UI["TreeView"] = {
 		if(not position) then position = #(parent)+1; end
 		-- Let's do it.
 		tinsert(parent, position, { Key = key });
-		self.ItemsByKey[key] = PowaAuras.UI.TreeViewItem(nil, self, parent["Key"], key, text);
+		self.ItemsByKey[key] = PowaAuras.UI:TreeViewItem(nil, self, parent["Key"], key, text);
 		-- Disable if needed.
 		if(disable) then self:DisableItem(key); else self:EnableItem(key); end
 		-- Update.
@@ -179,12 +179,10 @@ PowaAuras.UI["TreeView"] = {
 			end
 		end
 	end,
-};
--- Register.
-PowaAuras.UI:DefineWidget("TreeView");
+});
 
 -- And a definition for the item.
-PowaAuras.UI["TreeViewItem"] = {
+PowaAuras.UI:Register("TreeViewItem", {
 	PreInit = function(self)
 		-- Got any items or not?
 		if(self._Items[1]) then
@@ -264,6 +262,4 @@ PowaAuras.UI["TreeViewItem"] = {
 		end
 	end,
 	_Items = {}, -- Private.
-};
--- Register.
-PowaAuras.UI:DefineWidget("TreeViewItem");
+});

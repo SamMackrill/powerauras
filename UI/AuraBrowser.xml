@@ -12,7 +12,7 @@
 			<TexCoords left="0.0078125" right="0.2734375" top="0.80859375" bottom="0.94140625" />
 			<Color r="0.75" g="0.325" b="0.325" />
 		</NormalTexture>
-		<HighlightTexture file="Interface\Buttons\UI-TotemBar" setAllPoints="true">
+		<HighlightTexture file="Interface\Buttons\UI-TotemBar" alphaMode="ADD" setAllPoints="true">
 			<TexCoords left="0.0078125" right="0.2734375" top="0.80859375" bottom="0.94140625" />
 		</HighlightTexture>
 		<Layers>
@@ -66,6 +66,10 @@
 					self.isMoving = false;
 				end
 			</OnHide>
+			<OnLoad>
+				self.Title:SetText(format("Power Auras %s", PowaAuras.Version));
+				PowaAuras.UI:AuraBrowser(self);
+			</OnLoad>
 		</Scripts>
 		<Layers>
 			<Layer level="ARTWORK">
@@ -123,7 +127,7 @@
 								</Anchors>
 								<Scripts>
 									<OnLoad>
-										PowaAuras.UI.TreeView(self);
+										PowaAuras.UI:TreeView(self);
 									</OnLoad>
 								</Scripts>
 							</Frame>
@@ -152,7 +156,7 @@
 											<TexCoords left="0" right="0.818359375" top="0.013671875" bottom="0.017578125" />
 											<Color r="0.3" g="0.3" b="0.3" a="1.0" />
 										</Texture>
-										<FontString parentKey="SelectedTitle" justifyH="LEFT" justifyV="TOP" font="GameFontNormalLarge" text="Aura %d|%d Selected Auras">
+										<FontString parentKey="SelectedTitle" justifyH="LEFT" justifyV="TOP" font="GameFontNormalLarge" text="Aura %d|Create New Aura">
 											<Size x="225" y="24" />
 											<Anchors>
 												<Anchor point="TOPLEFT" x="15" y="-250" />
@@ -190,7 +194,7 @@
 								<Scripts>
 									<OnLoad>
 										-- Init layout frame, lock layout to speed up load.
-										PowaAuras.UI.LayoutFrame(self, 0, 49, 2, true);
+										PowaAuras.UI:LayoutFrame(self, 0, 49, 2, true);
 										-- Add columns.
 										self:AddColumn(48, 48);
 										self:AddColumn(48, 48);
@@ -219,7 +223,7 @@
 								</Anchors>
 								<Scripts>
 									<OnLoad>
-										PowaAuras.UI.TreeView(self);
+										PowaAuras.UI:TreeView(self);
 									</OnLoad>
 								</Scripts>
 							</Frame>
@@ -228,7 +232,7 @@
 				</Frames>
 				<Scripts>
 					<OnLoad>
-						PowaAuras.UI.TabFrame(self, 4);
+						PowaAuras.UI:TabFrame(self, 4);
 						self:RegisterTab(self.Auras, "Interface\\GossipFrame\\TrainerGossipIcon");
 						self:RegisterTab(self.Config, "Interface\\GossipFrame\\BinderGossipIcon");
 						self:RegisterTab(self.Help, { "Interface\\WorldMap\\UI-WorldMap-QuestIcon", 12, 17, 0.171875, 0.359375, 0.109375, 0.375 });
@@ -236,11 +240,5 @@
 				</Scripts>
 			</Frame>
 		</Frames>
-		<Scripts>
-			<OnLoad>
-				self.Title:SetText(format("Power Auras %s", PowaAuras.Version));
-				PowaAuras.UI.AuraBrowser(self);
-			</OnLoad>
-		</Scripts>
 	</Frame>
 </Ui>

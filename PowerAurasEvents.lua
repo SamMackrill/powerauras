@@ -40,6 +40,16 @@ function PowaAuras:VARIABLES_LOADED(...)
 	end
 	
 	_, self.playerclass = UnitClass("player");
+	
+	-- Load class auras.
+	local class = UnitClass("player");
+	if(not PowaClassListe) then PowaClassListe = {}; end
+	if(not PowaClassListe[class]) then
+		PowaClassListe[class] = {};
+		for i=1,5 do
+			PowaClassListe[class][i] = PowaAuras.Text.ListeClass .. i;
+		end
+	end
 
 	self:LoadAuras();
 
@@ -101,9 +111,7 @@ function PowaAuras:Setup()
 	self.WeAreMounted = (IsMounted() == 1 and true or self:IsDruidTravelForm());
 	self.WeAreInVehicle = (UnitInVehicle("player")~=nil);
 	
-	if(self.WoWBuild >= 13726) then
-		self.Comms:Register();
-	end
+	self.Comms:Register();
 
 	self.ActiveTalentGroup = GetActiveTalentGroup();
 	
@@ -520,13 +528,13 @@ function PowaAuras:UNIT_TARGET(...)
 		self:DisplayText("UNIT_TARGET ", unit);
 	end
 	if (self.ModTest == false) then
+		self.DoCheck.UnitMatch = true;
 		for existingTarget in pairs (PowaAuras.ChangedUnits.Targets) do
 			if (UnitIsUnit(target, existingTarget)) then
 				return;
 			end
 		end
 		self.ChangedUnits.Targets[target] = unit;
-		self.DoCheck.UnitTarget = true;
 		if (UnitCanAttack(target, "player")) then
 			self.DoCheck.StealableSpells = true;
 			self.DoCheck.PurgeableSpells = true;
@@ -681,12 +689,7 @@ function PowaAuras:COMBAT_LOG_EVENT_UNFILTERED(...)
 	--self:ShowText("COMBAT_LOG_EVENT_UNFILTERED");
 	if (self.ModTest) then return end
 	-- 4.1 backwards compat (will remove when 4.1 is live, prevents needing to time a release to fix this).
-	local timestamp,event,casterHidden,sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags, spellId, spellName, spellType;
-	if(self.WoWBuild >= 13682) then
-		timestamp,event,casterHidden,sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags, spellId, spellName, _, spellType = ...;	
-	else
-		timestamp,event,sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags, spellId, spellName, _, spellType = ...;
-	end
+	local timestamp,event,casterHidden,sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags, spellId, spellName, _, spellType = ...;		
 	if (not spellName) then return end
 	--self:ShowText("CLEU: ", event, " by me=", sourceGUID==UnitGUID("player"), " on me=", destGUID==UnitGUID("player"), " ", spellName);
 	--self:ShowText("Player=", UnitGUID("player"), " sourceGUID=", sourceGUID, " destGUID=", destGUID);

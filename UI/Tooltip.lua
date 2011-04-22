@@ -1,5 +1,5 @@
 -- Create definition.
-PowaAuras.UI["Tooltip"] = {
+PowaAuras.UI:Register("Tooltip", {
 	Init = function(frame, title, text, children)
 		-- Store data.
 		frame.TooltipTitle = PowaAuras.Text[title];
@@ -31,13 +31,11 @@ PowaAuras.UI["Tooltip"] = {
 	end,
 	ApplyScript = function(self, frame, script, callback)
 		-- Prevents overwriting scripts.
-		if(not frame.HasScript) then return; end
-		if(frame:HasScript(script)) then
+		if(not frame.GetScript) then return; end
+		if(frame:GetScript(script)) then
 			frame:HookScript(script, callback);
 		else
 			frame:SetScript(script, callback);
 		end
 	end
-};
--- Register.
-PowaAuras.UI:DefineWidget("Tooltip");
+});

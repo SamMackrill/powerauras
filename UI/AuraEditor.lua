@@ -1,16 +1,45 @@
-function PowaAuras:RegisterAdvancedElement(element)
-	tinsert(PowaAuras.UI.AdvancedElements, (element:GetName() or element));
-end
-
-function PowaAuras:ToggleAdvancedElements(state)
-	for i,v in pairs(PowaAuras.UI.AdvancedElements) do
-		if(type(v) == "string") then v = _G[v]; end
-		if(state == true) then v:Show(); else v:Hide(); end
-		if(v:GetParent().UpdateLayout) then v:GetParent():UpdateLayout(); end
-	end
-end
-
-function PowaAuras:ShowAuraEditor()
-	-- Make sure advanced things are shown/hidden.
-	PowaAuras:ToggleAdvancedElements(PowaEditor.Advanced:GetChecked());
-end
+-- More definitions, yes please.
+PowaAuras.UI:Register("AuraEditor", {
+	AdvancedElements = {
+	},
+	Hooks = {
+		"Show",
+	},
+	Init = function(self)
+		-- Hide advanced elements.
+		self.Advanced:SetChecked(false);
+		self:ToggleAdvanced(false);
+		-- Close on escape key.
+		tinsert(UISpecialFrames, self:GetName());
+	end,
+	Show = function(self)
+		-- Make sure this stuff is correct...
+		if(not self:UpdateElements(PowaBrowser:GetSelectedAura())) then
+			self:Hide();
+		else
+			self:__Show();
+		end
+	end,
+	RegisterAdvanced = function(self, element)
+		tinsert(self.AdvancedElements, element);
+	end,
+	ToggleAdvanced = function(self, state)
+		for _,v in ipairs(self.AdvancedElements) do
+			if(state) then
+				v:Show();
+			else
+				v:Hide();
+			end
+			if(v.Parent and v.Parent.UpdateLayout) then v.Parent:UpdateLayout(); end
+		end
+	end,
+	UpdateElements = function(self, auraID)
+		-- Get the aura.
+		local aura = PowaAuras.Auras[auraID];
+		if(not aura) then return; end
+		-- Toggle advanced elements.
+		self:ToggleAdvanced(self.Advanced:GetChecked());
+		-- Done.
+		return true;
+	end,
+});

@@ -1,5 +1,5 @@
 -- Create definition.
-PowaAuras.UI["TabSidebarButton"] = {
+PowaAuras.UI:Register("TabSidebarButton", {
 	Init = function(tab, id, text, parent)
 		-- Stores status for tab.
 		tab.Selected = false;
@@ -17,6 +17,4 @@ PowaAuras.UI["TabSidebarButton"] = {
 			self:Enable();
 		end
 	end
-};
--- Register.
-PowaAuras.UI:DefineWidget("TabSidebarButton");
+});

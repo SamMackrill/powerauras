@@ -1,5 +1,5 @@
 -- Create definition.
-PowaAuras.UI["BrowserFrame"] = {
+PowaAuras.UI:Register("BrowserFrame", {
 	Init = function(frame, min, max, update)
 		-- Set up some values.
 		frame.Page = 1;
@@ -56,6 +56,4 @@ PowaAuras.UI["BrowserFrame"] = {
 		self.MaxPage = page;
 		self:SetPage(self.Page);
 	end
-};
--- Register.
-PowaAuras.UI:DefineWidget("BrowserFrame");
+});
