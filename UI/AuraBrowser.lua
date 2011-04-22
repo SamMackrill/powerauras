@@ -187,6 +187,10 @@ PowaAuras.UI:Register("AuraButton", {
 		self:SetIcon(icon or "");
 		-- Register clicks.
 		self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
+		-- I demand a tooltip.
+		PowaAuras.UI:Tooltip(self, "lol", "pie");
+		-- I also demand using the right tooltip function...
+		self.TooltipRefresh = PowaAuras.UI.AuraButton.TooltipRefresh;
 	end,
 	GetAura = function(self)
 		return PowaAuras.Auras[self.AuraID] or nil;
@@ -231,6 +235,18 @@ PowaAuras.UI:Register("AuraButton", {
 	SetSelected = function(self, selected)
 		self.Selected = selected;
 		self:Update();
+	end,
+	TooltipRefresh = function(self)
+		print("lololol.");
+		-- Hide tip.
+		GameTooltip:Hide();
+		-- Reparent.
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0);
+		-- Set back up.
+		GameTooltip:SetText(self.TooltipTitle or "");
+		GameTooltip:AddLine(self.TooltipText or "", 1, 1, 1, true);
+		-- Show tip.
+		GameTooltip:Show();
 	end,
 	Update = function(self)
 		local texture = self:GetNormalTexture();
