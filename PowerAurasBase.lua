@@ -931,7 +931,11 @@ PowaAuras.DebuffTypeSpellIds={
 };
 
 -- Debugging assistance, if we access a non-existant locale key it'll display the key.
-PowaAuras.Text = setmetatable({}, { __index = function(_,k) return k; end });
+PowaAuras.Text = setmetatable({}, { __index = function(_,k)
+	if(not k or k == "") then return; end
+	PowaAuras:ShowText("Missing Localization Key: ", k);
+	return k; end
+});
 
 function PowaAuras:UnitTestDebug(...)
 end

@@ -640,14 +640,54 @@
 								<Scripts>
 									<OnLoad>
 										PowaAuras.UI:TreeView(self);
-										self:AddItem(1, "Test1");
-										self:AddItem(2, "Test2");
-										self:AddItem(3, "Test3", 1);
-										self:AddItem(4, "Test4", 3);
+										self:AddItem(1, PowaAuras.Text["UI_SrcText"]);
+										self:AddItem(2, PowaAuras.Text["UI_SrcGfx"]);
+										self:SetSelectedKey(1);
 									</OnLoad>
 								</Scripts>
 							</Frame>
-						</Frames>					
+							<Frame parentKey="Page" inherits="PowaBorderedFrameTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT" x="177" y="-2" />
+									<Anchor point="BOTTOMRIGHT" x="-2" y="2" />
+								</Anchors>
+								<Layers>
+									<Layer level="ARTWORK">
+										<!-- Maybe do a preview here? -->
+									</Layer>
+								</Layers>
+								<Frames>
+								</Frames>
+								<Scripts>
+									<OnLoad>
+										-- Init layout frame, lock layout to speed up load.
+										PowaAuras.UI:LayoutFrame2(self);
+										-- Add columns.
+										--[[
+										self:AddColumn(0.5);
+										self:AddColumn(0.5);
+										for i=1,300 do
+											local item = CreateFrame("Frame", nil, self);
+											item.Texture = item:CreateTexture(nil);
+											item.Texture:SetPoint("TOPLEFT");
+											item.Texture:SetPoint("BOTTOMRIGHT");
+											if(mod(i, 2) == 0) then
+												item.Texture:SetTexture(1-(i*0.003), 0, 0);
+											elseif(mod(i, 3) == 0) then
+												item.Texture:SetTexture(0, 1-(i*0.003), 0);
+											else
+												item.Texture:SetTexture(0, 0, 1-(i*0.003));
+											end
+											item:SetHeight(3);
+											self:AddItem(item);
+										end
+										-- Unlock layout. This will trigger 1 update, as opposed to about 8 updates while initializing.
+										self:SetLocked(false);
+										--]]
+									</OnLoad>
+								</Scripts>
+							</Frame>
+						</Frames>
 					</Frame>
 					<Frame name="$parentStacks" parentKey="Stacks" hidden="true">
 						<Anchors>
@@ -663,11 +703,13 @@
 								<Scripts>
 									<OnLoad>
 										PowaAuras.UI:TreeView(self);
-										self:AddItem(1, PowaAuras.Text["UI_"]);
+										self:AddItem(1, PowaAuras.Text["UI_SrcText"]);
+										self:AddItem(2, PowaAuras.Text["UI_SrcGfx"]);
+										self:SetSelectedKey(1);
 									</OnLoad>
 								</Scripts>
 							</Frame>
-						</Frames>	
+						</Frames>
 					</Frame>
 				</Frames>
 				<Scripts>
