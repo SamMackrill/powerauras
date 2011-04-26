@@ -16,11 +16,11 @@ PowaMisc =
 		DefaultTimerTexture = "Original",
 		DefaultStacksTexture = "Original",
 		TimerRoundUp = true,
-		AllowInspections = true,
+		AllowInspections = false,
 		UseGTFO = nil,
 		UserSetMaxTextures = PowaAuras.TextureCount,
 		OverrideMaxTextures = false,
-		Locked = false,
+		Locked = true,
 		SoundChannel = "Master",
 	};
 
