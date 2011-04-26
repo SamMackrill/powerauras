@@ -1199,8 +1199,3 @@ function PowaAuras:SetupStaticPopups()
 	};
 
 end
-
--- Just putting this here so I don't keep getting errors from my damn addon.
-function PowaAuras:SetAuraHideRequest(auraId)
-
-end
