@@ -160,8 +160,8 @@ function PowaAuras:AddMainAnimation(aura, frame)
 	elseif (aura.anim1==PowaAuras.AnimationTypes.Pulse) then
 		self:AddScale(animationGroup, 1.1, 1.1, duration/2, 1);
 		self:AddScale(animationGroup, 1/1.1, 1/1.1, duration/2, 2);
-		self:AddScale(animationGroup, 0.9, 0.9, duration/2, 2);
-		self:AddScale(animationGroup, 1/0.9, 1/0.9, duration/2, 2);
+		self:AddScale(animationGroup, 0.9, 0.9, duration, 3);
+		self:AddScale(animationGroup, 1/0.9, 1/0.9, duration/2, 4);
 	elseif (aura.anim1==PowaAuras.AnimationTypes.Shrinking) then
 		self:AddAlpha(animationGroup, -math.min(aura.alpha,0.99), duration, 1);
 		self:AddScale(animationGroup, 1.3, 1.3, 0, 2);
