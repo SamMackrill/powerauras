@@ -850,6 +850,9 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	UI_Anim                = "Animations",
 	UI_Triggers            = "Triggers",
 	UI_Sound               = "Sound",
+	
+	UI_TriggerAdd          = "Add",
+	UI_TriggerDelete       = "Delete",
 });
 
 --end

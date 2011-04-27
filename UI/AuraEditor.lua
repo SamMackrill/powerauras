@@ -8,6 +8,7 @@ PowaAuras.UI:Register("AuraEditor", {
 		-- Hide advanced elements.
 		self.Advanced:SetChecked(false);
 		self:ToggleAdvanced(false);
+		
 		-- Close on escape key.
 		tinsert(UISpecialFrames, self:GetName());
 	end,
@@ -37,7 +38,7 @@ PowaAuras.UI:Register("AuraEditor", {
 		local aura = PowaAuras.Auras[auraID];
 		if(not aura) then return; end
 		
-		-- Initialise controls
+		-- Update controls
 		aura:UpdateTriggerTree(PowaEditorActivation.Triggers.Tree);
 		
 		-- Toggle advanced elements.
@@ -45,5 +46,8 @@ PowaAuras.UI:Register("AuraEditor", {
 		-- Update some values.
 		-- Done.
 		return true;
+	end,
+	AddNewTrigger = function(self)
+		PowaAuras:ShowText("Add New Trigger auraId=", PowaBrowser:GetSelectedAura());
 	end,
 });
