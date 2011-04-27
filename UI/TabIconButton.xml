@@ -1,0 +1,92 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+    ..\..\FrameXML\UI.xsd">
+	<Script file="TabIconButton.lua" />
+	<Button name="PowaTabIconButtonTemplate" virtual="true">
+		<Size x="33" y="35" />
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture file="Interface\PaperDollFrame\PaperDollSidebarTabs" parentKey="TabBg">
+					<Size x="50" y="41" />
+					<TexCoords left="0.01562500" right="0.79687500" top="0.61328125" bottom="0.7734375" />
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="-9" y="0" />
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture parentKey="Icon">
+					<Size x="32" y="32" />
+					<Anchors>
+						<Anchor point="CENTER" x="1" y="-2" />
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="Hider" file="Interface\PaperDollFrame\PaperDollSidebarTabs">
+					<Size x="34" y="19" />
+					<TexCoords left="0.01562500" right="0.54687500" top="0.11328125" bottom="0.18750000" />
+					<Anchors>
+						<Anchor point="BOTTOM" />
+					</Anchors>
+				</Texture>
+				<Texture parentKey="Glow" alpha="0" file="Interface\Buttons\Micro-Highlight">
+					<Size x="44" y="39" />
+					<TexCoords left="0" right="0.515625" top="0" bottom="0.46875" />
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-5" y="4" />
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="StartAnimation">
+							<Alpha change="1" duration="0.5" startDelay="0" order="1" />
+							<Scripts>
+								<OnPlay>
+									self:GetParent().MainAnimation.Loop = true;
+									self:GetParent():GetParent().Highlight:Hide();
+								</OnPlay>
+								<OnFinished>
+									self:GetParent():SetAlpha(1);
+									self:GetParent().MainAnimation:Play();
+								</OnFinished>
+							</Scripts>
+						</AnimationGroup>
+						<AnimationGroup parentKey="MainAnimation">
+							<Alpha change="-0.375" duration="0.5" startDelay="0" order="1" />
+							<Alpha change="0.375" duration="0.5" startDelay="0" order="2" />
+							<Scripts>
+								<OnFinished>
+									if(self.Loop == true) then
+										self:Play();
+									else
+										self:GetParent().EndAnimation:Play();
+									end
+								</OnFinished>
+							</Scripts>
+						</AnimationGroup>
+						<AnimationGroup parentKey="EndAnimation">
+							<Alpha change="-1" duration="0.5" startDelay="0" order="1" />
+							<Scripts>
+								<OnFinished>
+									self:GetParent():SetAlpha(0);
+									if(not self:GetParent():GetParent().Selected) then
+										self:GetParent():GetParent().Highlight:Show();
+									end
+								</OnFinished>
+							</Scripts>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+			</Layer>
+			<Layer level="HIGHLIGHT">
+				<Texture parentKey="Highlight" file="Interface\PaperDollFrame\PaperDollSidebarTabs">
+					<Size x="31" y="31" />	
+					<TexCoords left="0.01562500" right="0.50000000" top="0.19531250" bottom="0.31640625" />
+					<Anchors>
+						<Anchor point="TOPLEFT" x="2" y="-3" />
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+	</Button>
+</Ui>
