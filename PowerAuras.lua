@@ -1223,7 +1223,7 @@ function PowaAuras:ShowAuraForFirstTime(aura)
 		else
 			aura.animation = self:AnimationMainFactory(aura.anim1, aura, frame);
 		end
-	else
+	elseif (aura.textaura ~= true) then -- Text aura animations is broken
 	
 		if (not aura.BeginAnimation) then aura.BeginAnimation = self:AddBeginAnimation(aura, frame); end
 		if (not aura.MainAnimation) then aura.MainAnimation = self:AddMainAnimation(aura, frame); end
