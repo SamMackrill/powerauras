@@ -279,18 +279,23 @@ function cPowaAura:ClearDefaultTriggers()
 end
 
 function cPowaAura:UpdateTriggerTree(triggersTree)
+
+	triggersTree.OnSelectionChanged = function(self, key)
+		PowaAuras:ShowText("Trigger Selection changed: ", (key or "nil"), " auraId=", PowaBrowser:GetSelectedAura());
+	end
+	
 	triggersTree:ClearItems();
-	local triggerIndex = #self.Triggers;
-	while triggerIndex>0 do
+	local triggerIndex = 1;
+	while triggerIndex<=#self.Triggers do
 		local trigger = self.Triggers[triggerIndex];
 		triggersTree:AddItem(triggerIndex, trigger.Name);
-		local actionIndex = #trigger.Actions;
-		while actionIndex>0 do
+		local actionIndex = 1;
+		while actionIndex<=#trigger.Actions do
 			local action = trigger.Actions[actionIndex];
 			triggersTree:AddItem(triggerIndex.."_"..actionIndex, action.Name, triggerIndex);
-			actionIndex = actionIndex - 1;
+			actionIndex = actionIndex + 1;
 		end
-		triggerIndex = triggerIndex - 1;
+		triggerIndex = triggerIndex + 1;
 	end
 end
 
