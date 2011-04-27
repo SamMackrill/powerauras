@@ -3,12 +3,11 @@
     xsi:schemaLocation="http://www.blizzard.com/wow/ui/
     ..\..\FrameXML\UI.xsd">
 	<Script file="TabIconButton.lua" />
-	<!-- When 4.1 hits, change the texture file path to Interface\PaperDollFrame\PaperDollSidebarTabs -->
 	<Button name="PowaTabIconButtonTemplate" virtual="true">
 		<Size x="33" y="35" />
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture file="Interface\AddOns\PowerAuras\UI\PaperDollSidebarTabs" parentKey="TabBg">
+				<Texture file="Interface\PaperDollFrame\PaperDollSidebarTabs" parentKey="TabBg">
 					<Size x="50" y="41" />
 					<TexCoords left="0.01562500" right="0.79687500" top="0.61328125" bottom="0.7734375" />
 					<Anchors>
@@ -25,7 +24,7 @@
 				</Texture>
 			</Layer>
 			<Layer level="OVERLAY">
-				<Texture parentKey="Hider" file="Interface\AddOns\PowerAuras\UI\PaperDollSidebarTabs">
+				<Texture parentKey="Hider" file="Interface\PaperDollFrame\PaperDollSidebarTabs">
 					<Size x="34" y="19" />
 					<TexCoords left="0.01562500" right="0.54687500" top="0.11328125" bottom="0.18750000" />
 					<Anchors>
@@ -80,7 +79,7 @@
 				</Texture>
 			</Layer>
 			<Layer level="HIGHLIGHT">
-				<Texture parentKey="Highlight" file="Interface\AddOns\PowerAuras\UI\PaperDollSidebarTabs">
+				<Texture parentKey="Highlight" file="Interface\PaperDollFrame\PaperDollSidebarTabs">
 					<Size x="31" y="31" />	
 					<TexCoords left="0.01562500" right="0.50000000" top="0.19531250" bottom="0.31640625" />
 					<Anchors>

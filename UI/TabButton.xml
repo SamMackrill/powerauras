@@ -10,14 +10,14 @@
 		<DisabledFont style="GameFontHighlightSmall"/>
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture file="Interface\AddOns\PowerAuras\UI\PaperDollSidebarTabs" parentKey="TabBgL">
+				<Texture file="Interface\PaperDollFrame\PaperDollSidebarTabs" parentKey="TabBgL">
 					<Size x="15" y="36" />
 					<TexCoords left="0.01562500" right="0.25" top="0.61328125" bottom="0.75390625" />
 					<Anchors>
 						<Anchor point="BOTTOMLEFT" x="0" y="0" />
 					</Anchors>
 				</Texture>
-				<Texture file="Interface\AddOns\PowerAuras\UI\PaperDollSidebarTabs" parentKey="TabBgM">
+				<Texture file="Interface\PaperDollFrame\PaperDollSidebarTabs" parentKey="TabBgM">
 					<Size x="50" y="36" />
 					<TexCoords left="0.25" right="0.625" top="0.61328125" bottom="0.75390625" />
 					<Anchors>
@@ -25,7 +25,7 @@
 						<Anchor point="BOTTOMRIGHT" x="-11" y="0" />
 					</Anchors>
 				</Texture>
-				<Texture file="Interface\AddOns\PowerAuras\UI\PaperDollSidebarTabs" parentKey="TabBgR">
+				<Texture file="Interface\PaperDollFrame\PaperDollSidebarTabs" parentKey="TabBgR">
 					<Size x="11" y="36" />
 					<TexCoords left="0.625" right="0.79687500" top="0.61328125" bottom="0.75390625" />
 					<Anchors>
@@ -34,7 +34,7 @@
 				</Texture>
 			</Layer>
 			<Layer level="OVERLAY">
-				<Texture parentKey="Hider" file="Interface\AddOns\PowerAuras\UI\PaperDollSidebarTabs">
+				<Texture parentKey="Hider" file="Interface\PaperDollFrame\PaperDollSidebarTabs">
 					<Size x="34" y="19" />
 					<TexCoords left="0.01562500" right="0.54687500" top="0.11328125" bottom="0.18750000" />
 					<Anchors>
@@ -44,14 +44,14 @@
 				</Texture>
 			</Layer>
 			<Layer level="HIGHLIGHT">
-				<Texture parentKey="HighlightL" file="Interface\AddOns\PowerAuras\UI\PaperDollSidebarTabs">
+				<Texture parentKey="HighlightL" file="Interface\PaperDollFrame\PaperDollSidebarTabs">
 					<Size x="4" y="26" />	
 					<TexCoords left="0.01562500" right="0.078125" top="0.19531250" bottom="0.296875" />
 					<Anchors>
 						<Anchor point="TOPLEFT" x="11" y="-8" />
 					</Anchors>
 				</Texture>
-				<Texture parentKey="HighlightM" file="Interface\AddOns\PowerAuras\UI\PaperDollSidebarTabs">
+				<Texture parentKey="HighlightM" file="Interface\PaperDollFrame\PaperDollSidebarTabs">
 					<Size x="31" y="26" />	
 					<TexCoords left="0.078125" right="0.4375" top="0.19531250" bottom="0.296875" />
 					<Anchors>
@@ -59,7 +59,7 @@
 						<Anchor point="TOPRIGHT" x="-12" y="-8" />
 					</Anchors>
 				</Texture>
-				<Texture parentKey="HighlightR" file="Interface\AddOns\PowerAuras\UI\PaperDollSidebarTabs">
+				<Texture parentKey="HighlightR" file="Interface\PaperDollFrame\PaperDollSidebarTabs">
 					<Size x="4" y="26" />	
 					<TexCoords left="0.4375" right="0.50000000" top="0.19531250" bottom="0.296875" />
 					<Anchors>
