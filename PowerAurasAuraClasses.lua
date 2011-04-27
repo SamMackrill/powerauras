@@ -2799,7 +2799,7 @@ function cPowaSpellCooldown:AddEffectAndEvents()
 	PowaAuras.Events.SPELL_UPDATE_USABLE = true;
 end
 
-function cPowaSpellCooldown:SkiptargetCheck()
+function cPowaSpellCooldown:SkipTargetChecks()
 	return true;
 end
 
@@ -3315,7 +3315,7 @@ function cPowaSpellAlert:AddEffectAndEvents()
 	end
 end
 
-function cPowaSpellAlert:SkiptargetCheck()
+function cPowaSpellAlert:SkipTargetChecks()
 	return self.Extra;
 end
 
