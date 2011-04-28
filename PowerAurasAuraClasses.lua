@@ -2652,6 +2652,14 @@ cPowaPowerType.ShowOptions={
 	["PowaDropDownPowerType"]=1,
 };
 
+function cPowaPowerType:Init()
+	-- Fix for happiness auras.
+	if(self.PowerType == 4) then
+		self.PowerType == -1;
+	end
+	self:SetFixedIcon();
+end
+
 function cPowaPowerType:SetFixedIcon()
 	self.icon = nil;
 	self:SetIcon("Interface\\icons\\"..PowaAuras.PowerTypeIcon[self.PowerType]);
