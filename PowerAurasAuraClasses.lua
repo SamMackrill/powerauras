@@ -2655,7 +2655,7 @@ cPowaPowerType.ShowOptions={
 function cPowaPowerType:Init()
 	-- Fix for happiness auras.
 	if(self.PowerType == 4) then
-		self.PowerType == -1;
+		self.PowerType = -1;
 	end
 	self:SetFixedIcon();
 end
