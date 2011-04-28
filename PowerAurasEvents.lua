@@ -547,7 +547,7 @@ function PowaAuras:PLAYER_REGEN_DISABLED(...)
 	self.WeAreInCombat = true;
 	if (self.ModTest == false) then
 		self.DoCheck.All = true;
-		--self:ShowText("DoCheck.All: PLAYER_REGEN_DISABLED");
+		--self:ShowText(GetTime()," DoCheck.All: PLAYER_REGEN_DISABLED");
 	end	   
 end
 	   
@@ -555,7 +555,7 @@ function PowaAuras:PLAYER_REGEN_ENABLED(...)
 	self.WeAreInCombat = false;
 	if (self.ModTest == false) then
 		self.DoCheck.All = true;
-		--self:ShowText("DoCheck.All: PLAYER_REGEN_ENABLED");
+		--self:ShowText(GetTime()," DoCheck.All: PLAYER_REGEN_ENABLED");
 	end
 end   
 

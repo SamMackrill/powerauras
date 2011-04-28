@@ -646,9 +646,9 @@ end
 
 function cPowaAura:UpdateAura(testing)
 	
-	if (self.Debug) then
-		PowaAuras:Message("UpdateAura ", self.id);
-	end
+	--if (self.Debug) then
+	--	PowaAuras:Message("UpdateAura ", self.id);
+	--end
 	
 	if (self.off) then
 		if (self.Showing) then
@@ -2808,6 +2808,7 @@ function cPowaSpellCooldown:CheckIfShouldShow(giveReason, ignoreGCD)
 	if (self.Debug) then
 		PowaAuras:Message("====SPELL COOLDOWN====");
 		PowaAuras:Message("Spell=", self.buffname);
+		PowaAuras:Message("ignoreGCD=", ignoreGCD);
 	end
 	for pword in string.gmatch(self.buffname, "[^/]+") do
 		local spellName, spellIcon, spellId = self:GetSpellFromMatch(pword);
@@ -2844,7 +2845,7 @@ function cPowaSpellCooldown:CheckIfShouldShow(giveReason, ignoreGCD)
 			
 			if (globalCD) then
 				if (self.Debug) then
-					--PowaAuras:Message("GCD no change");
+					PowaAuras:Message("GCD no change");
 				end
 				PowaAuras.Pending[self.id] = cdstart + cdduration;
 				if (not giveReason) then return -1; end

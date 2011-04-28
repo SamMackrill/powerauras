@@ -727,7 +727,7 @@ function PowaAuras:CheckAllMarkedAuras()
    	--self:UnitTestInfo("CheckAllMarkedAuras");
 
 	--if (self.DoCheck.All) then
-	--	self:ShowText("self.DoCheck.All");
+	--	self:ShowText(GetTime()," self.DoCheck.All");
 	--end
 	for i = 1, #self.AurasByTypeList do
 		local auraType = self.AurasByTypeList[i];
@@ -735,10 +735,10 @@ function PowaAuras:CheckAllMarkedAuras()
 		if ((self.DoCheck[auraType] or self.DoCheck.All) and #self.AurasByType[auraType]>0) then
 			--self:ShowText("Checking auraType ",auraType, " #", #self.AurasByType[auraType]);
 			--if (self.DoCheck.All) then
-				--self:ShowText("TestAuraTypes ",auraType," DoCheck ", self.DoCheck[auraType], " All ", self.DoCheck.All, " #", #self.AurasByType[auraType]);
+			--	self:ShowText(GetTime()," TestAuraTypes ",auraType," DoCheck ", self.DoCheck[auraType], " All ", self.DoCheck.All, " #", #self.AurasByType[auraType]);
 			--end
 			for k, v in pairs(self.AurasByType[auraType]) do
-				--self:ShowText(k," TestThisEffect ",v);
+				--self:ShowText(GetTime()," ", k," TestThisEffect ",v);
 				if (self.Auras[v] and self.Auras[v].Debug) then
 					self:DisplayText("TestThisEffect ",v);
 				end
@@ -804,7 +804,8 @@ function PowaAuras:TestThisEffect(auraId, giveReason, ignoreCascade)
 	
 	--self:ShowText("Test Aura ",auraId, " for Hide/Show showing=",aura.Showing);
 	aura.InactiveDueToMulti = nil;
-	local shouldShow, reason = aura:ShouldShow(giveReason or debugEffectTest or true, false, ignoreCascade);
+	local ignoreGCD = false; -- TODO: need to sort this out
+	local shouldShow, reason = aura:ShouldShow(giveReason or debugEffectTest or true, false, ignoreGCD); -- TODO: Remove "or true" for live!
 	--if (ignoreCascade) then
 	--	self:ShowText(GetTime()," Test Aura ", auraId, " for Hide/Show showing=", aura.Showing);
 	--	self:ShowText(GetTime()," shouldShow=", shouldShow, " Reason=", reason);
