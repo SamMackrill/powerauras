@@ -1,15 +1,39 @@
 -- Create definition.
 PowaAuras.UI:Register("BrowserFrame", {
-	Init = function(frame, min, max, update)
+	Init = function(self, min, max, update)
 		-- Set up some values.
-		frame.Page = 1;
+		self.Page = 1;
 		-- Setting either max/min to nil will result in no page limits.
-		frame.MaxPage = max;
-		frame.MinPage = min;
+		self.MaxPage = max;
+		self.MinPage = min;
 		-- This is supplied in the init function.
-		frame.UpdatePage = update;
+		self.OnPageChanged = (update or self.OnPageChanged);
 		-- Set page to 1.
-		frame:SetPage(1);
+		self:SetPage(1);
+	end,
+	FirstPage = function(self)
+		self:SetPage(self.MinPage or 1);
+	end,
+	LastPage = function(self)
+		self:SetPage(self.MaxPage or 1);	
+	end,
+	NextPage = function(self)
+		self:SetPage(self.Page+1);
+	end,
+	OnPageChanged = function(self)
+	end,
+	PrevPage = function(self)
+		self:SetPage(self.Page-1);
+	end,
+	SetMaxPage = function(self, page)
+		-- Update page.
+		self.MaxPage = page;
+		self:SetPage(self.Page);
+	end,
+	SetMinPage = function(self, page)
+		-- Update page.
+		self.MinPage = page;
+		self:SetPage(self.Page);
 	end,
 	SetPage = function(self, page)
 		-- Page boundaries.
@@ -17,7 +41,7 @@ PowaAuras.UI:Register("BrowserFrame", {
 		if(self.MaxPage and page > self.MaxPage) then page = self.MaxPage; end
 		-- Update page contents.
 		self.Page = page;
-		self:UpdatePage(page);
+		self:OnPageChanged(page);
 		-- Enable/Disable buttons.
 		if(not self.MinPage or self.Page > self.MinPage) then
 			self.PrevPageButton:Enable();
@@ -34,26 +58,4 @@ PowaAuras.UI:Register("BrowserFrame", {
 			self.PageBox:SetText(page);
 		end
 	end,
-	NextPage = function(self)
-		self:SetPage(self.Page+1);
-	end,
-	PrevPage = function(self)
-		self:SetPage(self.Page-1);
-	end,
-	FirstPage = function(self)
-		self:SetPage(self.MinPage or 1);
-	end,
-	LastPage = function(self)
-		self:SetPage(self.MaxPage or 1);	
-	end,
-	SetMinPage = function(self, page)
-		-- Update page.
-		self.MinPage = page;
-		self:SetPage(self.Page);
-	end,
-	SetMaxPage = function(self, page)
-		-- Update page.
-		self.MaxPage = page;
-		self:SetPage(self.Page);
-	end
 });
