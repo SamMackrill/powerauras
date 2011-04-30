@@ -98,3 +98,56 @@ function PowaAuras:SaveSetting(property, value, auraId)
 	-- self:RedisplayAura(auraId);
 	print("Saved: ", property, value, auraId);
 end
+
+-- Todo: Replace widget ctor code with following:
+--[[
+		-- Add a metatable to the widget definition.
+		setmetatable(data, {
+			__call = function(self, _, widget, ...)
+				-- Run constructor function. Only run it on the topmost widget.
+				widget = (self.Construct and self:Construct(widget, ...) or widget);
+				-- Allow nil returns.
+				if(not widget) then return; end
+				-- Handle hooks.
+				if(self.Hooks) then
+					for _, hook in ipairs(self.Hooks) do
+						widget["__" .. hook] = widget[hook];
+					end
+				end
+				-- Has a parent class?
+				if(self.Base) then
+					local base, classes = self.Base, { self };
+					repeat
+						-- Insert.
+						tinsert(classes, base);
+						-- Next element.
+						base = (base.Base or nil);
+					until(not base)
+					-- Go over them backwards.
+					for i=#(classes), 1, -1 do
+						-- Copy anything we have over automatically...
+						for k,v in pairs(classes[i]) do
+							-- Ignore _ prefixed elements, same with construct/hooks/scripts. Normal init is fine.
+							if(strsub(k, 1, 1) ~= "_" and k ~= "Construct" and k ~= "Hooks" and k ~= "Scripts") then
+								widget[k] = v;
+							end
+						end
+					end
+					-- Store base element.
+					widget.Base = self.Base;
+				end
+				-- Script handlers.
+				if(self.Scripts and widget.SetScript) then
+					for _,v in ipairs(self.Scripts) do
+						widget:SetScript(v, widget[v]);
+					end
+				end
+				-- Run widget ctor.
+				if(widget.Init) then
+					widget:Init(...);
+				end
+				-- Done.
+				return widget;
+			end,
+		});
+]]--
