@@ -65,7 +65,11 @@ function cPowaDecorator:CheckActive(aura, testing)
 	if (testing) then
 		self.Active = aura.Active;	
 	else
-		self.Active = (aura.Active and not self.ShowOnAuraHide) or (not aura.Active and self.ShowOnAuraHide);
+		if (aura.InactiveDueToState or aura.InactiveDueToMulti) then
+			self.Active = false;
+		else
+			self.Active = (aura.Active and not self.ShowOnAuraHide) or (not aura.Active and self.ShowOnAuraHide);
+		end
 	end
 	--PowaAuras:ShowText(GetTime()," ", aura.id, " CheckActive: ", self.Type, " AuraActive=", aura.Active, " ShowOnAuraHide=", self.ShowOnAuraHide);
 
