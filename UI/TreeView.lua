@@ -195,11 +195,11 @@ PowaAuras.UI:Register("TreeView", {
 PowaAuras.UI:Register("TreeViewItem", {
 	Construct = function(self)
 		-- Got any items or not?
-		if(self._Items[1]) then
+		if(self.Items[1]) then
 			-- Yay!
-			local item = self._Items[1];
-			tremove(self._Items, 1);
-			print("|cFF527FCCDEBUG (TreeViewItem): |rRecycled item! Total available: " .. #(self._Items));
+			local item = self.Items[1];
+			tremove(self.Items, 1);
+			print("|cFF527FCCDEBUG (TreeViewItem): |rRecycled item! Total available: " .. #(self.Items));
 			return item;
 		else
 			-- Get making.
@@ -218,6 +218,7 @@ PowaAuras.UI:Register("TreeViewItem", {
 		self:SetScript("OnClick", self.OnClick);
 		self:Show();
 	end,
+	Items = {}, -- Stores a list of reusable items.
 	GetExpanded = function(self)
 		return self.Expanded;
 	end,
@@ -233,8 +234,8 @@ PowaAuras.UI:Register("TreeViewItem", {
 	end,
 	Recycle = function(self)
 		-- Place in recycle table!
-		tinsert(PowaAuras.UI.TreeViewItem._Items, self);
-		print("|cFF527FCCDEBUG (TreeViewItem): |rRecycling item! Total available: " .. #(PowaAuras.UI.TreeViewItem._Items));
+		tinsert(self.Items, self);
+		print("|cFF527FCCDEBUG (TreeViewItem): |rRecycling item! Total available: " .. #(self.Items));
 		self:Hide();
 	end,
 	SetKey = function(self, key)
@@ -274,5 +275,4 @@ PowaAuras.UI:Register("TreeViewItem", {
 			self.Expand:SetDisabledTexture("Interface\\Buttons\\UI-PlusButton-Disabled");		
 		end
 	end,
-	_Items = {}, -- Private.
 });
