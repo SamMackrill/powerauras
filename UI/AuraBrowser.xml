@@ -229,41 +229,6 @@
 							</Frame>
 						</Frames>
 					</Frame>
-					<Frame parentKey="Test">
-						<Anchors>
-							<Anchor point="TOPLEFT" x="0" y="0" />
-							<Anchor point="BOTTOMRIGHT" x="0" y="0" />
-						</Anchors>
-						<Frames>
-						</Frames>
-						<Scripts>
-							<OnLoad>
-								-- Init layout frame, lock layout to speed up load.
-								PowaAuras.UI:LayoutFrame2(self, true);
-								-- Add columns.
-								self:AddColumn(0.3, 3);
-								self:AddColumn(0.3, 3);
-								self:AddColumn(0.4, 3);
-								for i=1,300 do
-									local item = CreateFrame("Frame", nil, self);
-									item.Texture = item:CreateTexture(nil);
-									item.Texture:SetPoint("TOPLEFT");
-									item.Texture:SetPoint("BOTTOMRIGHT");
-									if(mod(i, 2) == 0) then
-										item.Texture:SetTexture(1-(i*0.003), 0, 0);
-									elseif(mod(i, 3) == 0) then
-										item.Texture:SetTexture(0, 1-(i*0.003), 0);
-									else
-										item.Texture:SetTexture(0, 0, 1-(i*0.003));
-									end
-									item:SetHeight(3);
-									self:AddItem(item);
-								end
-								-- Unlock layout. This will trigger 1 update, as opposed to about 8 updates while initializing.
-								self:SetLocked(false);
-							</OnLoad>
-						</Scripts>
-					</Frame>
 				</Frames>
 				<Scripts>
 					<OnLoad>
@@ -271,8 +236,6 @@
 						self:RegisterTab(self.Auras, "Interface\\GossipFrame\\TrainerGossipIcon");
 						self:RegisterTab(self.Config, "Interface\\GossipFrame\\BinderGossipIcon");
 						self:RegisterTab(self.Help, { "Interface\\WorldMap\\UI-WorldMap-QuestIcon", 12, 17, 0.171875, 0.359375, 0.109375, 0.375 });
-						self:RegisterTab(self.Test, "");
-						self:SelectTab(4);
 					</OnLoad>
 				</Scripts>
 			</Frame>
