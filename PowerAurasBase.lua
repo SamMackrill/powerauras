@@ -15,7 +15,7 @@ PowaAuras = {
 	InspectDelay = 2;
 	ExportMaxSize = 4000;
 	ExportWidth = 500;
-	TextureCount = 186;
+	TextureCount = 238;
 	
 	DebugEvents = false;
 	--DebugAura = 3;
