@@ -2,6 +2,40 @@
 -- You can initialize a widget by calling PowaAuras.UI:[widget]().
 -- Each definition should be placed it its own lua file.
 PowaAuras.UI = {
+	-- Generic constructor for all elements.
+	Construct = function(self, _, widget, ...)
+		-- Allow nil returns.
+		if(not widget) then return; end
+		-- Handle hooks.
+		if(self.Hooks) then
+			for _, hook in ipairs(self.Hooks) do
+				widget["__" .. hook] = widget[hook];
+			end
+		end
+		-- Copy anything we have over automatically...
+		for k,v in pairs(self) do
+			-- Ignore these elements, they're reserved.
+			if(k ~= "Base" and k ~= "Construct" and k ~= "Hooks" and k ~= "Scripts") then
+				widget[k] = v;
+			end
+		end
+		-- Store base element.
+		if(self.Base) then
+			widget.Base = self.Base;
+		end
+		-- Script handlers.
+		if(self.Scripts and widget.SetScript) then
+			for _,v in ipairs(self.Scripts) do
+				widget:SetScript(v, widget[v]);
+			end
+		end
+		-- Run widget ctor.
+		if(widget.Init) then
+			widget:Init(...);
+		end
+		-- Done.
+		return widget;
+	end,
 	-- Turns the definition tables into metatables with constructor-like functionality.
 	Register = function(self, name, data)
 		-- Simple check...
@@ -49,46 +83,12 @@ PowaAuras.UI = {
 				end
 			end
 		end
+		-- Add constructor.
+		if(not data.Construct) then
+			data.Construct = self.Construct;
+		end
 		-- Add a metatable to the widget definition.
-		setmetatable(data, {
-			__call = function(self, _, widget, ...)
-				-- Run constructor function. Only run it on the topmost widget.
-				if(self.Construct) then
-					widget = self:Construct(widget, ...)
-				end
-				-- Allow nil returns.
-				if(not widget) then return; end
-				-- Handle hooks.
-				if(self.Hooks) then
-					for _, hook in ipairs(self.Hooks) do
-						widget["__" .. hook] = widget[hook];
-					end
-				end
-				-- Copy anything we have over automatically...
-				for k,v in pairs(self) do
-					-- Ignore these elements, they're reserved.
-					if(k ~= "Base" and k ~= "Construct" and k ~= "Hooks" and k ~= "Scripts") then
-						widget[k] = v;
-					end
-				end
-				-- Store base element.
-				if(self.Base) then
-					widget.Base = self.Base;
-				end
-				-- Script handlers.
-				if(self.Scripts and widget.SetScript) then
-					for _,v in ipairs(self.Scripts) do
-						widget:SetScript(v, widget[v]);
-					end
-				end
-				-- Run widget ctor.
-				if(widget.Init) then
-					widget:Init(...);
-				end
-				-- Done.
-				return widget;
-			end,
-		});
+		setmetatable(data, { __call = data.Construct });
 		-- Store widget table.
 		self[name] = data;
 	end,

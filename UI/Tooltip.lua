@@ -1,6 +1,6 @@
 -- Create definition.
 PowaAuras.UI:Register("Tooltip", {
-	Construct = function(self, frame, title, text, children)
+	Construct = function(self, _, frame, title, text, children)
 		-- Store data.
 		frame.TooltipTitle = PowaAuras.Text[title];
 		frame.TooltipText = PowaAuras.Text[text];
