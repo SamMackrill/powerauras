@@ -193,20 +193,21 @@ PowaAuras.UI:Register("TreeView", {
 
 -- And a definition for the item.
 PowaAuras.UI:Register("TreeViewItem", {
-	Construct = function(self)
+	Construct = function(self, item, ...)
 		-- Got any items or not?
+		local item = nil;
 		if(self.Items[1]) then
 			-- Yay!
-			local item = self.Items[1];
+			item = self.Items[1];
 			tremove(self.Items, 1);
 			print("|cFF527FCCDEBUG (TreeViewItem): |rRecycled item! Total available: " .. #(self.Items));
-			return item;
 		else
 			-- Get making.
-			local item = CreateFrame("Button", nil, nil, "PowaTreeViewItemTemplate");
+			item = CreateFrame("Button", nil, nil, "PowaTreeViewItemTemplate");
 			print("|cFF527FCCDEBUG (TreeViewItem): |rCreating item!");
-			return item;
 		end
+		-- Reuse existing constructor.
+		return PowaAuras.UI.Construct(self, _, item, ...);
 	end,
 	Init = function(self, parentTree, parentKey, key, text)
 		-- Set us up!
