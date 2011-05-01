@@ -193,7 +193,7 @@ PowaAuras.UI:Register("TreeView", {
 
 -- And a definition for the item.
 PowaAuras.UI:Register("TreeViewItem", {
-	Construct = function(self, item, ...)
+	Construct = function(self, ui, item, ...)
 		-- Got any items or not?
 		local item = nil;
 		if(self.Items[1]) then
@@ -207,7 +207,7 @@ PowaAuras.UI:Register("TreeViewItem", {
 			print("|cFF527FCCDEBUG (TreeViewItem): |rCreating item!");
 		end
 		-- Reuse existing constructor.
-		return PowaAuras.UI.Construct(self, _, item, ...);
+		return ui.Construct(self, _, item, ...);
 	end,
 	Init = function(self, parentTree, parentKey, key, text)
 		-- Set us up!

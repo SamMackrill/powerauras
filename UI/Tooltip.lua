@@ -21,7 +21,7 @@ PowaAuras.UI:Register("Tooltip", {
 				self:ApplyScript(frame[child], "OnLeave", function() frame:TooltipLeave(); end);
 			end
 		end
-		-- We force the widget initializer to skip copying our functions over.
+		-- We're done.
 		return;
 	end,
 	TooltipRefresh = function(self)
