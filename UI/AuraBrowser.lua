@@ -242,10 +242,14 @@ PowaAuras.UI:Register("AuraButton", {
 		-- Reparent.
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0);
 		-- Set back up.
-		GameTooltip:SetText("AURA_TYPE");
-		GameTooltip:AddLine("|cID: ", 1, 1, 1, true);
-		GameTooltip:AddDoubleLine("BUFF_NAME I/REALLY/LIKE/PIE/AND/POWER WORD FORTITUDE", "49", 1,0,0, 0,0,1);
-		GameTooltip:AddLine("I on the other hand really hate priests. I really, really do!", 1, 1, 1, true);
+		if(not self.CreateAura) then
+			GameTooltip:SetText(PowaAuras.Text.AuraType[PowaAuras.Auras[self.AuraID].bufftype]);
+			GameTooltip:AddLine(format("|cFFFFD100ID: |r%d", self.AuraID), 1, 1, 1, true);
+			if(PowaAuras.Auras[self.AuraID] and PowaAuras.Auras[self.AuraID].buffname) then
+				GameTooltip:AddLine(tostring(PowaAuras.Auras[self.AuraID].buffname), 1, 1, 1, true);
+			end
+		else
+		end
 		-- Show tip.
 		GameTooltip:Show();
 	end,

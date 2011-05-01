@@ -661,9 +661,9 @@
 								<Scripts>
 									<OnLoad>
 										-- Init layout frame, lock layout to speed up load.
-										PowaAuras.UI:LayoutFrame2(self);
-										-- Add columns.
 										--[[
+										PowaAuras.UI:LayoutFrame(self);
+										-- Add columns.
 										self:AddColumn(0.5);
 										self:AddColumn(0.5);
 										for i=1,300 do
