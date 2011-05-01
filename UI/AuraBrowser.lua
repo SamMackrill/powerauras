@@ -6,7 +6,6 @@ PowaAuras.UI:Register("AuraBrowser", {
 		-- Variables.
 		self.SelectedAura = nil;
 		self.SelectedPage = 1;
-		self.ForceSingle = false;
 		-- Add OnSelectionChanged function to tree views.
 		self.Tabs.Auras.Tree.OnSelectionChanged = self.OnSelectionChanged;
 		-- Check...
@@ -53,7 +52,8 @@ PowaAuras.UI:Register("AuraBrowser", {
 		end
 		-- Counts.
 		local class = UnitClass("player");
-		local playerPageCount, globalPageCount, classPageCount = #(PowaPlayerListe), #(PowaGlobalListe), #(PowaClassListe[class]);
+		local playerPageCount, globalPageCount, classPageCount = #(PowaPlayerListe), #(PowaGlobalListe), 
+			#(PowaClassListe[class]);
 		-- Character auras.
 		self.Tabs.Auras.Tree:AddItem("CHAR", PowaAuras.Text["UI_CharAuras"], nil, nil, true);
 		for i=1,playerPageCount do
@@ -110,6 +110,7 @@ PowaAuras.UI:Register("AuraBrowser", {
 		end
 		-- Update buttons.
 		self:UpdateAuraButtons();
+		-- Update our thing.
 	end,
 	UpdateAuraButtons = function(self)
 		print("|cFF527FCCDEBUG (AuraBrowser): |rUpdating aura buttons!");
@@ -189,8 +190,6 @@ PowaAuras.UI:Register("AuraButton", {
 		self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
 		-- I demand a tooltip.
 		PowaAuras.UI:Tooltip(self);
-		-- I also demand using the right tooltip function...
-		self.TooltipRefresh = PowaAuras.UI.AuraButton.TooltipRefresh;
 	end,
 	GetAura = function(self)
 		return PowaAuras.Auras[self.AuraID] or nil;
@@ -202,7 +201,6 @@ PowaAuras.UI:Register("AuraButton", {
 		return self.CreateAura;
 	end,
 	SetAuraID = function(self, id)
-		-- You have been invited to join <World of War> for the 19th time. Would you like to e-punch one of the guild members in the face? [Y/N]
 		self.AuraID = id;
 	end,
 	SetIcon = function(self, icon)
@@ -214,17 +212,17 @@ PowaAuras.UI:Register("AuraButton", {
 			-- Select aura, or create.
 			if(self.CreateAura) then
 				print("|cFF527FCCDEBUG (AuraBrowser): |rCreate aura: " .. self.AuraID);
-				PowaBrowser:SetSelectedAura(self.AuraID);
+				PowaBrowser:SetSelectedAura(self.AuraID, self.CreateAura);
 			else
-				PowaBrowser:SetSelectedAura(self.AuraID);
+				PowaBrowser:SetSelectedAura(self.AuraID, self.CreateAura);
 			end
-			-- Is the alt key down?
-			if(IsAltKeyDown()) then
-				-- Test the aura too.
+			-- Is the ctrl key down?
+			if(IsCtrlKeyDown()) then
+				-- Debug the aura too.
 			end
 		elseif(button == "RightButton" and not self.CreateAura) then
 			-- Shortcut for edit.
-			PowaBrowser:SetSelectedAura(self.AuraID);
+			PowaBrowser:SetSelectedAura(self.AuraID, self.CreateAura);
 			PowaEditor:Show();
 			print("|cFF527FCCDEBUG (AuraBrowser): |rOpen aura editor: " .. self.AuraID);
 		end
@@ -244,11 +242,14 @@ PowaAuras.UI:Register("AuraButton", {
 		-- Set back up.
 		if(not self.CreateAura) then
 			GameTooltip:SetText(PowaAuras.Text.AuraType[PowaAuras.Auras[self.AuraID].bufftype]);
-			GameTooltip:AddLine(format("|cFFFFD100ID: |r%d", self.AuraID), 1, 1, 1, true);
+			GameTooltip:AddLine(format("|cFFFFD100%s: |r%d", PowaAuras.Text.UI_ID, self.AuraID), 1, 1, 1, true);
 			if(PowaAuras.Auras[self.AuraID] and PowaAuras.Auras[self.AuraID].buffname) then
 				GameTooltip:AddLine(tostring(PowaAuras.Auras[self.AuraID].buffname), 1, 1, 1, true);
 			end
+			GameTooltip:AddLine(PowaAuras.Text["UI_SelAura_TooltipExt"], 1, 1, 1, true);
 		else
+			GameTooltip:SetText(PowaAuras.Text["UI_CreateAura"]);
+			GameTooltip:AddLine(PowaAuras.Text["UI_CreateAura_Tooltip"], 1, 1, 1, true);
 		end
 		-- Show tip.
 		GameTooltip:Show();
@@ -259,9 +260,6 @@ PowaAuras.UI:Register("AuraButton", {
 		if(self.Selected) then
 			texture:SetTexCoord(0.0078125, 0.2734375, 0.80859375, 0.94140625);
 			texture:SetVertexColor(1, 1, 1);
-		-- elseif(self.Linked) then
-			-- texture:SetTexCoord(0.0078125, 0.2734375, 0.671875, 0.8046875);
-			-- texture:SetVertexColor(1, 1, 1);
 		else
 			texture:SetTexCoord(0.0078125, 0.2734375, 0.80859375, 0.94140625);
 			texture:SetVertexColor(0.75, 0.325, 0.325);
