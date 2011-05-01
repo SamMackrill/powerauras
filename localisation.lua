@@ -776,16 +776,19 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	-- New UI strings.
 	UI_Cancel              = "Cancel",
 	UI_Save                = "Save",
+	UI_ID                  = "ID",
 	
 	UI_CharAuras           = "Character Auras",
 	UI_ClassAuras          = "Class Auras",
 	UI_GlobAuras           = "Global Auras",
 	
 	UI_CreateAura          = "Create New Aura",
+	UI_CreateAura_Tooltip  = "Creates a new aura on this page.\n\n|cFFFFD100Left-Click: |rOpen Creation Dialog",
 	UI_CreateAuraNew       = "Blank Aura",
 	UI_CreateAuraPreset    = "Preset Aura",
 	
 	UI_SelAura_Title       = "Aura %d",
+	UI_SelAura_TooltipExt  = "\n|cFFFFD100Left-Click: |rSelect Aura\n|cFFFFD100Right-Click: |rEdit Aura\n|cFFFFD100Ctrl-Click: |rDebug Aura",
 	UI_SelAura_Edit        = "Edit",
 	UI_SelAura_Move        = "Move",
 	UI_SelAura_Copy        = "Copy",

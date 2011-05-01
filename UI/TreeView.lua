@@ -193,13 +193,13 @@ PowaAuras.UI:Register("TreeView", {
 
 -- And a definition for the item.
 PowaAuras.UI:Register("TreeViewItem", {
-	PreInit = function(self)
+	Construct = function(self)
 		-- Got any items or not?
 		if(self._Items[1]) then
 			-- Yay!
 			local item = self._Items[1];
 			tremove(self._Items, 1);
-			print("|cFF527FCCDEBUG (TreeViewItem): |rRecycling item! Total available: " .. #(self._Items));
+			print("|cFF527FCCDEBUG (TreeViewItem): |rRecycled item! Total available: " .. #(self._Items));
 			return item;
 		else
 			-- Get making.
@@ -234,6 +234,7 @@ PowaAuras.UI:Register("TreeViewItem", {
 	Recycle = function(self)
 		-- Place in recycle table!
 		tinsert(PowaAuras.UI.TreeViewItem._Items, self);
+		print("|cFF527FCCDEBUG (TreeViewItem): |rRecycling item! Total available: " .. #(PowaAuras.UI.TreeViewItem._Items));
 		self:Hide();
 	end,
 	SetKey = function(self, key)
