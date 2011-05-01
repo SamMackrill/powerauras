@@ -217,7 +217,7 @@ PowaAuras.UI:Register("AuraButton", {
 				PowaBrowser:SetSelectedAura(self.AuraID, self.CreateAura);
 			end
 			-- Is the ctrl key down?
-			if(IsCtrlKeyDown()) then
+			if(IsControlKeyDown()) then
 				-- Debug the aura too.
 			end
 		elseif(button == "RightButton" and not self.CreateAura) then
