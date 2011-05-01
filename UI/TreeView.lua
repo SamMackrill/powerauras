@@ -201,13 +201,16 @@ PowaAuras.UI:Register("TreeViewItem", {
 			item = self.Items[1];
 			tremove(self.Items, 1);
 			print("|cFF527FCCDEBUG (TreeViewItem): |rRecycled item! Total available: " .. #(self.Items));
+			-- Skip to init.
+			item:Init(...);
+			return item;
 		else
 			-- Get making.
 			item = CreateFrame("Button", nil, nil, "PowaTreeViewItemTemplate");
 			print("|cFF527FCCDEBUG (TreeViewItem): |rCreating item!");
+			-- Reuse existing constructor.
+			return ui.Construct(self, _, item, ...);
 		end
-		-- Reuse existing constructor.
-		return ui.Construct(self, _, item, ...);
 	end,
 	Init = function(self, parentTree, parentKey, key, text)
 		-- Set us up!
