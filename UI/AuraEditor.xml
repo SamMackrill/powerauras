@@ -795,7 +795,7 @@
 						-- Use our own oncheck handler for advanced element showing/hiding.
 						PowaAuras.UI:Checkbox(self, function(self)
 							-- Amichecked? Am I?
-							self.Parent:ToggleAdvanced((self:GetChecked() and true or false));
+							self:GetParent():ToggleAdvanced((self:GetChecked() and true or false));
 						end);
 					</OnLoad>
 				</Scripts>

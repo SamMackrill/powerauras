@@ -30,7 +30,7 @@ PowaAuras.UI:Register("AuraEditor", {
 			else
 				v:Hide();
 			end
-			if(v.Parent and v.Parent.UpdateLayout) then v.Parent:UpdateLayout(); end
+			if(v:GetParent().UpdateLayout) then v:GetParent():UpdateLayout(); end
 		end
 	end,
 	UpdateElements = function(self, auraID)
