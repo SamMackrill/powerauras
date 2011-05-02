@@ -521,6 +521,17 @@ end
 
 
 --=== Run time ===--
+function PowaAuras:MarkAuras(auraType)
+	if (type(t)~="table") then
+		self.DoCheck[auraType] = true;
+	else
+		for i = 1, #auraType do
+			self.DoCheck[auraType[i]] = true;
+		end
+	end
+	self.DoCheck.CheckIt = true;
+end
+
 function PowaAuras:OnUpdate(elapsed)
 	--self:UnitTestInfo("OnUpdate", elapsed);
 	if (self.NextDebugCheck>0 and self.DebugTimer > self.NextDebugCheck) then
@@ -692,7 +703,7 @@ function PowaAuras:OnUpdate(elapsed)
 		local aura = self.AuraSequence[i];
 		--self:Message("UpdateAura Call id=", aura.id, " ", aura);
 		if (aura:UpdateAura(self.ModTest)) then
-		
+
 			if (not skipTimerUpdate) then
 
 				if (aura.Stacks and aura.Stacks.enabled) then	
@@ -702,9 +713,10 @@ function PowaAuras:OnUpdate(elapsed)
 				if (aura.Timer) then
 					aura.Timer:Update(aura, timerElapsed, self.ModTest);
 				end
-		
-				aura:ProcessTriggerQueue();
 			end
+		
+			aura:ProcessTriggerQueue();
+			
 		end
 	end
 	
@@ -726,13 +738,14 @@ end
 function PowaAuras:CheckAllMarkedAuras()
    	--self:UnitTestInfo("CheckAllMarkedAuras");
 
+	--self:ShowText(GetTime()," CheckAllMarkedAuras");
 	--if (self.DoCheck.All) then
-	--	self:ShowText(GetTime()," self.DoCheck.All");
+	--	self:ShowText(GetTime()," DoCheck.All");
 	--end
 	for i = 1, #self.AurasByTypeList do
 		local auraType = self.AurasByTypeList[i];
-		--self:ShowText("Check auraType ",auraType);
-		if ((self.DoCheck[auraType] or self.DoCheck.All) and #self.AurasByType[auraType]>0) then
+		--self:ShowText("Check auraType ",auraType, " OneShotAuras=", self.OneShotAuras[auraType]);
+		if ((self.DoCheck[auraType] or (self.DoCheck.All and not self.OneShotAuras[auraType])) and #self.AurasByType[auraType]>0) then
 			--self:ShowText("Checking auraType ",auraType, " #", #self.AurasByType[auraType]);
 			--if (self.DoCheck.All) then
 			--	self:ShowText(GetTime()," TestAuraTypes ",auraType," DoCheck ", self.DoCheck[auraType], " All ", self.DoCheck.All, " #", #self.AurasByType[auraType]);
@@ -790,7 +803,7 @@ function PowaAuras:TestThisEffect(auraId, giveReason, ignoreCascade)
 
 	if (debugEffectTest) then
 		self:Message("===================================");
-		self:Message("Test Aura for Hide or Show = ",auraId);
+		self:Message("Test Aura for Hide/Show = ",auraId);
 		self:Message("Active= ", aura.Active);
 		self:Message("Showing= ", aura.Showing);
 	end

@@ -123,7 +123,7 @@ cPowaAuraAnimationAction = PowaClass(cPowaTriggerAction, { Type = "Animation" })
 
 function cPowaAuraAnimationAction:Fire()
 	if (PowaAuras.DebugTriggers or self.Debug) then
-		PowaAuras:DisplayText("Animation Play: ", self.AnimationGroup:GetName(), " chain size=", #self.Parameters.AnimationChain);
+		PowaAuras:DisplayText("Animation Play: ", self.Name, " chain size=", #self.Parameters.AnimationChain);
 	end
 	self.Current = 0;
 	self:PlayNextAnimation();
