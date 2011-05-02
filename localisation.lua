@@ -795,6 +795,12 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	UI_CreateImport        = "Import Aura",
 	UI_CreateImportDesc    = "Import an aura or aura set from an export code.",
 	
+	UI_ConfigTitle         = "Configuration",
+	UI_Config_Enable       = "Enable Power Auras",
+	UI_Config_EnableDesc   = "If unchecked, Power Auras will be disabled.",
+	UI_ConfigTitlePerf     = "Performance",
+	UI_ConfigTitleCust     = "Textures and Sounds",
+	
 	UI_SelAura_None        = "No Aura Selected",
 	UI_SelAura_Title       = "Aura %d",
 	UI_SelAura_TooltipExt  = "\n|cFFFFD100Left-Click: |rSelect Aura\n|cFFFFD100Right-Click: |rEdit Aura\n|cFFFFD100Ctrl-Click: |rDebug Aura",

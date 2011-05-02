@@ -6,11 +6,14 @@ PowaAuras.UI:Register("FrameSeparator", {
 		-- Expand state.
 		self.Key = key;
 		self.Children = {};
-		-- Add some scripts...
-		self:SetScript("OnEnter", self.OnEnter);
-		self:SetScript("OnLeave", self.OnLeave);
-		self:SetScript("OnMouseUp", self.OnMouseUp);
-		self:SetScript("OnShow", self.OnShow);
+		self.State = true;
+		-- Add some scripts if needed.
+		if(key) then
+			self:SetScript("OnEnter", self.OnEnter);
+			self:SetScript("OnLeave", self.OnLeave);
+			self:SetScript("OnMouseUp", self.OnMouseUp);
+			self:SetScript("OnShow", self.OnShow);
+		end
 	end,
 	AddChild = function(self, child)
 		tinsert(self.Children, child);
@@ -33,7 +36,11 @@ PowaAuras.UI:Register("FrameSeparator", {
 	end,
 	OnShow = function(self)
 		-- Update state!
-		self.State = (PowaGlobalMisc["EditorCategoryState"][self.Key] == nil and true or PowaGlobalMisc["EditorCategoryState"][self.Key]);
+		if(not self.Key) then
+			self.State = true;
+		else
+			self.State = (PowaGlobalMisc["EditorCategoryState"][self.Key] == nil and true or PowaGlobalMisc["EditorCategoryState"][self.Key]);
+		end
 		self:ToggleExpand(self.State);
 	end,
 	SetText = function(self, text)
@@ -64,13 +71,13 @@ PowaAuras.UI:Register("FrameSeparator", {
 	end,
 	UpdateColors = function(self)
 		if(self.State == true) then
-			if(self:IsMouseOver()) then
+			if(self:IsMouseOver() or not self.Key) then
 				self.Line:SetVertexColor(1.0, 0.82, 0, 1);
 			else
 				self.Line:SetVertexColor(1.0, 0.82, 0, 0.8);
 			end
 		else
-			if(self:IsMouseOver()) then
+			if(self:IsMouseOver() or not self.Key) then
 				self.Line:SetVertexColor(0.3, 0.3, 0.3, 1);
 			else
 				self.Line:SetVertexColor(0.3, 0.3, 0.3, 0.8);

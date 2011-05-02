@@ -20,6 +20,20 @@ PowaAuras.Helpers = {
 		};
 		return true;
 	end,
+	GetSetting = function(self, key)
+		-- Make sure setting exists.
+		if(not self.SettingsByKey[key]) then return false; end
+		if(self.SettingsByKey[key].Location == self.SettingLocations.Aura and PowaBrowser.SelectedAura) then
+			-- Aura value.
+			return;
+		elseif(self.SettingsByKey[key].Location == self.SettingLocations.Global) then
+			-- Global value.
+			return PowaGlobalMisc[self.SettingsByKey[key].Name];
+		elseif(self.SettingsByKey[key].Location == self.SettingLocations.Char) then
+			-- Per-char value.
+			return PowaMisc[self.SettingsByKey[key].Name];
+		end
+	end,
 	SaveSetting = function(self, key, value)
 		-- Make sure setting exists.
 		if(not self.SettingsByKey[key]) then return false; end
