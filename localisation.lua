@@ -193,6 +193,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 
 	ListePlayer = "Page",
 	ListeGlobal = "Global",
+	ListeClass = "Class",
 	aideMove = "Move the effect here.",
 	aideCopy = "Copy the effect here.",
 	nomRename = "Rename",
@@ -545,7 +546,9 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomReasonShouldShow = "Should show because $1",
 	nomReasonWontShow   = "Won't show because $1",
 	
-	nomReasonMulti = "All multiples match $1", --$1=Multiple match ID list
+	nomReasonMulti         = "All multiples match $1", --$1=Multiple match ID list
+	nomReasonMultiInactive = "Aura $1 is not active", --$1=Multiple match Aura Id
+	nomReasonMultiActive   = "Aura $1 is active", --$1=Multiple match Aura Id
 	
 	nomReasonDisabled = "Power Auras Disabled",
 	nomReasonGlobalCooldown = "Ignore Global Cooldown",
@@ -624,12 +627,12 @@ PowaAuras:MergeTables(PowaAuras.Text,
 
 	nomReasonInverted        = "$1 (inverted)", -- $1 is the reason, but the inverted flag is set so the logic is reversed
 	
-	nomReasonSpellUsable     = "Spell $1 usable",
-	nomReasonSpellNotUsable  = "Spell $1 not usable",
-	nomReasonSpellNotReady   = "Spell $1 Not Ready, on cooldown, timer invert",
-	nomReasonSpellNotEnabled = "Spell $1 not enabled ",
-	nomReasonSpellNotFound   = "Spell $1 not found",
-	nomReasonSpellOnCooldown = "Spell $1 on Cooldown",
+	nomReasonSpellUsable     = "Spell: $1 usable",
+	nomReasonSpellNotUsable  = "Spell: $1 not usable",
+	nomReasonSpellNotReady   = "Spell: $1 Not Ready, on cooldown, timer invert",
+	nomReasonSpellNotEnabled = "Spell: $1 not enabled ",
+	nomReasonSpellNotFound   = "Spell: $1 not found",
+	nomReasonSpellOnCooldown = "Spell: $1 on Cooldown",
 	
 	nomReasonCastingOnMe	 = "$1 is casting $2 on me", --$1=CasterName $2=SpellName (e.g. "Rotface is casting Slime Spray on me")
 	nomReasonNotCastingOnMe	 = "No matching spell being cast on me",
@@ -639,19 +642,19 @@ PowaAuras:MergeTables(PowaAuras.Text,
 
 	nomReasonAnimationDuration  = "Still within custom duration",
 
-	nomReasonItemUsable     = "Item $1 usable",
-	nomReasonItemNotUsable  = "Item $1 not usable",
-	nomReasonItemNotReady   = "Item $1 Not Ready, on cooldown, timer invert",
-	nomReasonItemNotEnabled = "Item $1 not enabled ",
-	nomReasonItemNotFound   = "Item $1 not found",
-	nomReasonItemOnCooldown = "Item $1 on Cooldown",
+	nomReasonItemUsable     = "Item: $1 usable",
+	nomReasonItemNotUsable  = "Item: $1 not usable",
+	nomReasonItemNotReady   = "Item: $1 Not Ready, on cooldown, timer invert",
+	nomReasonItemNotEnabled = "Item: $1 not enabled ",
+	nomReasonItemNotFound   = "Item: $1 not found",
+	nomReasonItemOnCooldown = "Item: $1 on Cooldown",
 	
-	nomReasonItemEquipped    = "Item $1 equipped",
-	nomReasonItemNotEquipped = "Item $1 not equipped",
+	nomReasonItemEquipped    = "Item: $1 equipped",
+	nomReasonItemNotEquipped = "Item: $1 not equipped",
 						
-	nomReasonItemInBags      = "Item $1 in bags",
-	nomReasonItemNotInBags   = "Item $1 not in bags",
-	nomReasonItemNotOnPlayer = "Item $1 not carried",
+	nomReasonItemInBags      = "Item: $1 in bags",
+	nomReasonItemNotInBags   = "Item: $1 not in bags",
+	nomReasonItemNotOnPlayer = "Item: $1 not carried",
 
 	nomReasonSlotUsable     = "$1 Slot usable",
 	nomReasonSlotNotUsable  = "$1 Slot not usable",
@@ -771,7 +774,95 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideFixExports = "Check this when aura exports are not functioning correctly and leave you with a blank textbox.",
 	nomFixExports = "Alternative Exports",
 	aideAnimationsAreBrokenSorry = "If your animations appear to skip or increase in size randomly, you should enable Old Animations.",
-
+	
+	-- New UI strings.
+	UI_Cancel              = "Cancel",
+	UI_Save                = "Save",
+	UI_Back                = "Back",
+	UI_Next                = "Next",
+	UI_ID                  = "ID",
+	
+	UI_CharAuras           = "Character Auras",
+	UI_ClassAuras          = "Class Auras",
+	UI_GlobAuras           = "Global Auras",
+	
+	UI_CreateAura          = "Create New Aura",
+	UI_CreateAura_Tooltip  = "Creates a new aura on this page.\n\n|cFFFFD100Left-Click: |rOpen Creation Dialog",
+	UI_CreateNew           = "Blank Aura",
+	UI_CreateNewDesc       = "Create a new aura with the default settings.",
+	UI_CreatePreset        = "Preset Aura",
+	UI_CreatePresetDesc    = "Import an existing preset aura available to your class.",
+	
+	UI_SelAura_None        = "No Aura Selected",
+	UI_SelAura_Title       = "Aura %d",
+	UI_SelAura_TooltipExt  = "\n|cFFFFD100Left-Click: |rSelect Aura\n|cFFFFD100Right-Click: |rEdit Aura\n|cFFFFD100Ctrl-Click: |rDebug Aura",
+	UI_SelAura_Edit        = "Edit",
+	UI_SelAura_Move        = "Move",
+	UI_SelAura_Copy        = "Copy",
+	UI_SelAura_Delete      = "Delete",
+	UI_SelAura_Test        = "Test",
+	UI_SelAura_TestDesc    = "Tests the currently selected aura.\n\n",
+	
+	UI_Debug               = "Debug",
+	UI_DebugDesc           = "Enables debugging output for this aura. Don't enable it if you don't need to :)",
+	UI_Advanced            = "Advanced",
+	UI_AdvancedDesc        = "Toggles the displaying of advanced configuration items.",
+	
+	UI_BrowserPage         = "Page",
+	UI_BrowserPageDesc     = "Enter a page number here and press enter.",
+	UI_BrowserTex          = "Texture",
+	UI_BrowserTexDesc      = "Enter the name of the texture you wish to apply to this page here, and press enter. Make this field blank if you want to remove the texture.",
+	
+	UI_Aura                = "Aura",
+	UI_Aura_SrcNorm        = "Normal Textures",
+	UI_Aura_SrcWoW         = "WoW Textures",
+	UI_Aura_SrcCust        = "Custom Textures",
+	UI_Aura_SrcText        = "Text Aura",
+	UI_Aura_SrcIcon        = "Ability Icon",
+	
+	UI_Aura_TexErr         = "There was an error loading the texture:\n%s",
+	UI_Aura_TexErrCust     = "You have not assigned a custom texture to this page yet.\n\nCustom textures are loaded from:\n%s",
+	
+	UI_Aura_TexClick       = "Click the aura to change it.",
+	UI_Aura_Separator1     = "Style",
+	UI_Aura_Separator2     = "Position",
+	UI_Aura_Separator3     = "Advanced",
+	UI_Aura_TexOpacity     = "Opacity",
+	UI_Aura_TexOpacityDesc = "Changes the opacity of the aura texture. Lower values make the aura more transparent, higher ones make it more opaque.",
+	UI_Aura_TexScale       = "Scale",
+	UI_Aura_TexScaleDesc   = "Changes the scale of the texture. Higher values make it bigger, lower values make it smaller.",
+	UI_Aura_TexX           = "X",
+	UI_Aura_TexXDesc       = "Changes the horizontal positioning of the texture.",
+	UI_Aura_TexY           = "Y",
+	UI_Aura_TexYDesc       = "Changes the vertical positioning of the texture.",
+	UI_Aura_TexFlip        = "Flip",
+	UI_Aura_TexFlipDesc    = "Allows you to flip the aura texture from left to right, top to bottom or both.",
+	UI_Aura_TexDeform      = "Deformation",
+	UI_Aura_TexDeformDesc  = "Stretches the texture across either the horizontal or vertical axes.",
+	UI_Aura_TexStrata      = "Strata [NYI]",
+	UI_Aura_TexStrataDesc  = "Changes the frame strata (layer) of the texture. Setting this higher will make it overlay other auras and UI elements.",
+	UI_Aura_TexGlow        = "Glow",
+	UI_Aura_TexGlowDesc    = "If enabled, any darkened areas in the texture will become more transparent.",
+	UI_Aura_TexColor       = "Color",
+	UI_Aura_TexColorDesc   = "Allows you to apply color tinting to the aura texture. Right click to reset the color tint.",
+	UI_Aura_TexRotate      = "Rotation [NYI]",
+	UI_Aura_TexRotateDesc  = "Allows you to rotate the texture from its center by a given amount of degrees.",
+	UI_Aura_TexLock        = "Lock",
+	UI_Aura_TexLockDesc    = "Locks the aura in place, preventing you from moving the aura by dragging it.",
+	
+	UI_Timer               = "Timer",
+	UI_Stacks              = "Stacks",
+	UI_SrcText             = "Text Display",
+	UI_SrcGfx              = "Graphical Display",
+	
+	UI_Activation          = "Activation",
+	UI_Rules               = "Rules",
+	UI_Anim                = "Animations",
+	UI_Triggers            = "Triggers",
+	UI_Sound               = "Sound",
+	
+	UI_TriggerAdd          = "Add",
+	UI_TriggerDelete       = "Delete",
 });
 
 --end

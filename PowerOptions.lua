@@ -97,7 +97,7 @@ function PowaAuras:IconClick(owner, button)
 		end
 	elseif (self.CurrentAuraId == aura.id) then
 		if (button == "RightButton") then
-			self:EditorShow();
+			self:EditorToggle();
 			return;
 		else
 			if (aura.Showing) then 
@@ -105,13 +105,13 @@ function PowaAuras:IconClick(owner, button)
 			else
 				owner:SetAlpha(1.0);
 			end
-			PowaAuras:OptionTest();
+			PowaAuras:ToggleTesting();
 		end
 	elseif (self.CurrentAuraId ~= aura.id) then -- clicked a different button
 		self:SetCurrent(owner, aura.id);
 		self:InitPage(aura);
 		if (button == "RightButton") then
-			self:EditorShow();
+			self:EditorToggle();
 		end
 	end
 end
@@ -207,7 +207,6 @@ function PowaAuras:MainListClick(owner)
 				aura.off = allEnabled;
 				auraIcon:SetText(offText);
 			end
-			self.SecondaryAuras[i] = nil;
 		end
 		
 		self.DoCheck.All = true;
@@ -288,9 +287,8 @@ function PowaAuras:TriageIcones(nPage)
 	for i = min, max do
 		local aura = self.Auras[i];
 		if (aura) then
-			aura:Hide();
+			aura:Hide("TriageIcones");
 		end
-		self.SecondaryAuras[i] = nil;
 	end
 
 	local a = min;
@@ -355,7 +353,7 @@ function PowaAuras:Dispose(tableName, key, key2)
 		key = key2;
 	end
 	if (t[key].Hide) then
-		t[key]:Hide();
+		t[key]:Hide("General Dispose");
 	end
 	t[key] = nil;
 end
@@ -363,8 +361,6 @@ end
 function PowaAuras:DeleteAura(aura)
 	if (not aura) then return; end
 	--self:Message("DeleteAura ", aura.id);
-
-	aura:Hide();
 
 	if (aura.Timer) then aura.Timer:Dispose(); end
 	if (aura.Stacks) then aura.Stacks:Dispose(); end
@@ -419,7 +415,7 @@ function PowaAuras:OptionNewEffect()
 	self.CurrentAuraId = i;
 	self.CurrentAuraPage = self.CurrentAuraPage;
 	local aura = self:AuraFactory(self.BuffTypes.Buff, i);
-	--self:Message("Timer.enabled=", aura.Timer.enabled)
+	--self:Message("Timer.enabled=", aura.Timer.enabled);
 	aura:Init();
 	self.Auras[i] = aura;
 	-- effet global ?
@@ -429,14 +425,13 @@ function PowaAuras:OptionNewEffect()
 	
 	self:CalculateAuraSequence();
 
-	aura.Active = true;
-	aura:CreateFrames();
+	aura:CheckActive(true, true, true);
 	
-	self.SecondaryAuras[i] = nil; -- Force recreate
 	self:DisplayAura(i);
 
 	self:UpdateMainOption();
-	self:UpdateTimerOptions();
+	self:UpdateStacksOptions(); 
+	self:UpdateTimerOptions(aura);
 	self:InitPage(aura);
 
 	self:UpdateMainOption();
@@ -954,7 +949,7 @@ function PowaAuras:ExportDialogInit(self)
 	PowaComms:AddHandler("EXPORT_REJECT", function(_, data, from)
 		-- Were we sending to this person?
 		if(PowaAuraExportDialog.sendTo == from) then
-			if(PowaMisc.debug) then PowaAuras:ShowText("Comms: EXPORT_REJECT from " .. from); end
+			if(PowaMisc.debug) then PowaAuras:DisplayText("Comms: EXPORT_REJECT from " .. from); end
 			PowaAuraExportDialog.sendTo = nil;
 			PowaAuraExportDialog.errorReason = tonumber((data or 1), 10);
 			PowaAuraExportDialog:SetStatus(3);
@@ -965,7 +960,7 @@ function PowaAuras:ExportDialogInit(self)
 	PowaComms:AddHandler("EXPORT_ACCEPT", function(_, _, from)
 		-- Were we sending to this person?
 		if(PowaAuraExportDialog.sendTo == from) then
-			if(PowaMisc.debug) then PowaAuras:ShowText("Comms: EXPORT_ACCEPT from " .. from); end
+			if(PowaMisc.debug) then PowaAuras:DisplayText("Comms: EXPORT_ACCEPT from " .. from); end
 			PowaAuraExportDialog:SetStatus(4);
 			-- Let's get busy!
 			PowaComms:SendAddonMessage("EXPORT_DATA", PowaAuraExportDialog.sendString, from);
@@ -1126,17 +1121,17 @@ function PowaAuras:PlayerImportDialogInit(self)
 	PowaComms:AddHandler("EXPORT_REQUEST", function(_, data, from)
 		-- If we're busy, reject. If we're in combat, reject. If we're autoblocking, reject.
 		if(PowaAuraPlayerImportDialog.receiveFrom) then
-			if(PowaMisc.debug) then PowaAuras:ShowText("Comms: Rejected EXPORT_REQUEST - Busy."); end
+			if(PowaMisc.debug) then PowaAuras:DisplayText("Comms: Rejected EXPORT_REQUEST - Busy."); end
 			PowaComms:SendAddonMessage("EXPORT_REJECT", 4, from);
 			return;
 		end
 		if(InCombatLockdown()) then
-			if(PowaMisc.debug) then PowaAuras:ShowText("Comms: Rejected EXPORT_REQUEST - In combat."); end
+			if(PowaMisc.debug) then PowaAuras:DisplayText("Comms: Rejected EXPORT_REQUEST - In combat."); end
 			PowaComms:SendAddonMessage("EXPORT_REJECT", 1, from);
 			return;
 		end
 		if(PowaGlobalMisc.BlockIncomingAuras == true) then
-			if(PowaMisc.debug) then PowaAuras:ShowText("Comms: Rejected EXPORT_REQUEST - BlockIncomingAuras = true."); end
+			if(PowaMisc.debug) then PowaAuras:DisplayText("Comms: Rejected EXPORT_REQUEST - BlockIncomingAuras = true."); end
 			PowaComms:SendAddonMessage("EXPORT_REJECT", 2, from);
 			return;
 		end
@@ -1152,7 +1147,7 @@ function PowaAuras:PlayerImportDialogInit(self)
 	PowaComms:AddHandler("EXPORT_DATA", function(_, data, from)
 		-- Were we receiving from this person?
 		if(PowaAuraPlayerImportDialog.receiveFrom == from) then
-			if(PowaMisc.debug) then PowaAuras:ShowText("Comms: Receiving EXPORT_DATA"); end
+			if(PowaMisc.debug) then PowaAuras:DisplayText("Comms: Receiving EXPORT_DATA"); end
 			-- Status code 4 - we are pro.
 			PowaAuraPlayerImportDialog:SetStatus(4);
 			-- Store the data.
@@ -1306,14 +1301,16 @@ function PowaAuras:MainOptionClose()
 	PowaOptionsFrame:Hide();
 	PlaySound("TalentScreenClose", PowaMisc.SoundChannel);
 
-	PowaAuras:OptionHideAll();
+	self:OptionHideAll();
     
 	self:FindAllChildren();
 	self:CreateEffectLists();	
-	self.DoCheck.All = true;
-	self:NewCheckBuffs();
+	self:CheckAllMarkedAuras();
  	self:MemorizeActions();
-	
+	self:CreateAllAuraTriggers();
+
+	self.DoCheck.All = true;
+
 	self:ReregisterEvents(PowaAuras_Frame);
 
 end
@@ -1321,97 +1318,97 @@ end
 -- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< MAIN OPTIONS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 -- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-function PowaAuras:UpdateTimerOptions()
+function PowaAuras:UpdateTimerOptions(aura)
 
-	local aura = self.Auras[self.CurrentAuraId];
+	if (not aura) then
+		aura = self.Auras[self.CurrentAuraId];
+	end
 	
 	if (not aura.Timer) then
 		aura.Timer = cPowaTimer(aura);
 	end
 	local timer = aura.Timer;
 	
-	if (timer) then
+	if (not timer) then return; end
 		
-		PowaShowTimerButton:SetChecked(timer.enabled);
+	PowaShowTimerButton:SetChecked(timer.enabled);
 
-		PowaTimerAlphaSlider:SetValue(timer.a);
-		PowaTimerSizeSlider:SetValue(timer.h);
-		-- ajuste slider Y
-		PowaTimerCoordSlider:SetMinMaxValues(timer.y-5000,timer.y+5000);
-		PowaTimerCoordSliderLow:SetText(timer.y-100);
-		PowaTimerCoordSliderHigh:SetText(timer.y+100);
-		PowaTimerCoordSlider:SetValue(timer.y);
-		PowaTimerCoordSlider:SetMinMaxValues(timer.y-100,timer.y+100);
-		-- ajuste slider X
-		PowaTimerCoordXSlider:SetMinMaxValues(timer.x-5000,timer.x+5000);
-		PowaTimerCoordXSliderLow:SetText(timer.x-100);
-		PowaTimerCoordXSliderHigh:SetText(timer.x+100);
-		PowaTimerCoordXSlider:SetValue(timer.x);
-		PowaTimerCoordXSlider:SetMinMaxValues(timer.x-100,timer.x+100);
+	PowaTimerAlphaSlider:SetValue(timer.a);
+	PowaTimerSizeSlider:SetValue(timer.h);
+	-- adjust slider Y
+	PowaTimerCoordSlider:SetMinMaxValues(timer.y-5000,timer.y+5000);
+	PowaTimerCoordSliderLow:SetText(timer.y-100);
+	PowaTimerCoordSliderHigh:SetText(timer.y+100);
+	PowaTimerCoordSlider:SetValue(timer.y);
+	PowaTimerCoordSlider:SetMinMaxValues(timer.y-100,timer.y+100);
+	-- adjust slider X
+	PowaTimerCoordXSlider:SetMinMaxValues(timer.x-5000,timer.x+5000);
+	PowaTimerCoordXSliderLow:SetText(timer.x-100);
+	PowaTimerCoordXSliderHigh:SetText(timer.x+100);
+	PowaTimerCoordXSlider:SetValue(timer.x);
+	PowaTimerCoordXSlider:SetMinMaxValues(timer.x-100,timer.x+100);
 
-		PowaBuffTimerCentsButton:SetChecked(timer.cents);
-		PowaBuffTimerLeadingZerosButton:SetChecked(timer.HideLeadingZeros);
-		
-		PowaBuffTimerTransparentButton:SetChecked(timer.Transparent);
-		
-		if (aura:FullTimerAllowed()) then 
-			-- show full timer options
-			PowaBuffTimerUpdatePingButton:SetChecked(timer.UpdatePing);
-			self:EnableCheckBox("PowaBuffTimerUpdatePingButton");
-			PowaBuffTimerActivationTime:Enable();
-		else
-			-- Show cut-down timer options
-			PowaBuffTimerUpdatePingButton:SetChecked(false);
-			self:DisableCheckBox("PowaBuffTimerUpdatePingButton");
-			timer.ShowActivation = true;
-			PowaBuffTimerActivationTime:Disable();
-		end
-		PowaBuffTimerActivationTime:SetChecked(timer.ShowActivation);
-		PowaBuffTimerUseOwnColorButton:SetChecked(timer.UseOwnColor);
-		
-		PowaTimerColorNormalTexture:SetVertexColor(timer.r,timer.g,timer.b);
-
-		UIDropDownMenu_SetSelectedValue(PowaBuffTimerRelative, timer.Relative);		
-		UIDropDownMenu_SetSelectedValue(PowaDropDownTimerTexture, timer.Texture);
-		
-		PowaTimerInvertAuraSlider:SetValue(aura.InvertAuraBelow);
-
+	PowaBuffTimerCentsButton:SetChecked(timer.cents);
+	PowaBuffTimerLeadingZerosButton:SetChecked(timer.HideLeadingZeros);
+	
+	PowaBuffTimerTransparentButton:SetChecked(timer.Transparent);
+	
+	if (aura:FullTimerAllowed()) then 
+		-- show full timer options
+		PowaBuffTimerUpdatePingButton:SetChecked(timer.UpdatePing);
+		self:EnableCheckBox("PowaBuffTimerUpdatePingButton");
+		PowaBuffTimerActivationTime:Enable();
+	else
+		-- Show cut-down timer options
+		PowaBuffTimerUpdatePingButton:SetChecked(false);
+		self:DisableCheckBox("PowaBuffTimerUpdatePingButton");
+		timer.ShowActivation = true;
+		PowaBuffTimerActivationTime:Disable();
 	end
+	PowaBuffTimerActivationTime:SetChecked(timer.ShowActivation);
+	PowaBuffTimerUseOwnColorButton:SetChecked(timer.UseOwnColor);
+	
+	PowaTimerColorNormalTexture:SetVertexColor(timer.r,timer.g,timer.b);
+
+	UIDropDownMenu_SetSelectedValue(PowaBuffTimerRelative, timer.Relative);		
+	UIDropDownMenu_SetSelectedValue(PowaDropDownTimerTexture, timer.Texture);
+	
+	PowaTimerInvertAuraSlider:SetValue(aura.InvertAuraBelow);
+
 end
 
 function PowaAuras:UpdateStacksOptions()
 
 	local stacks = self.Auras[self.CurrentAuraId].Stacks;
-	if (stacks) then
+	if (not stacks) then return; end
 		
-		PowaShowStacksButton:SetChecked(stacks.enabled);
+	PowaShowStacksButton:SetChecked(stacks.enabled);
 
-		PowaStacksAlphaSlider:SetValue(stacks.a);
-		PowaStacksSizeSlider:SetValue(stacks.h);
-		-- ajuste slider Y
-		PowaStacksCoordSlider:SetMinMaxValues(stacks.y-5000,stacks.y+5000);
-		PowaStacksCoordSliderLow:SetText(stacks.y-100);
-		PowaStacksCoordSliderHigh:SetText(stacks.y+100);
-		PowaStacksCoordSlider:SetValue(stacks.y);
-		PowaStacksCoordSlider:SetMinMaxValues(stacks.y-100,stacks.y+100);
-		-- ajuste slider X
-		PowaStacksCoordXSlider:SetMinMaxValues(stacks.x-5000,stacks.x+5000);
-		PowaStacksCoordXSliderLow:SetText(stacks.x-100);
-		PowaStacksCoordXSliderHigh:SetText(stacks.x+100);
-		PowaStacksCoordXSlider:SetValue(stacks.x);
-		PowaStacksCoordXSlider:SetMinMaxValues(stacks.x-100,stacks.x+100);
+	PowaStacksAlphaSlider:SetValue(stacks.a);
+	PowaStacksSizeSlider:SetValue(stacks.h);
+	-- ajuste slider Y
+	PowaStacksCoordSlider:SetMinMaxValues(stacks.y-5000,stacks.y+5000);
+	PowaStacksCoordSliderLow:SetText(stacks.y-100);
+	PowaStacksCoordSliderHigh:SetText(stacks.y+100);
+	PowaStacksCoordSlider:SetValue(stacks.y);
+	PowaStacksCoordSlider:SetMinMaxValues(stacks.y-100,stacks.y+100);
+	-- ajuste slider X
+	PowaStacksCoordXSlider:SetMinMaxValues(stacks.x-5000,stacks.x+5000);
+	PowaStacksCoordXSliderLow:SetText(stacks.x-100);
+	PowaStacksCoordXSliderHigh:SetText(stacks.x+100);
+	PowaStacksCoordXSlider:SetValue(stacks.x);
+	PowaStacksCoordXSlider:SetMinMaxValues(stacks.x-100,stacks.x+100);
 
-		PowaBuffStacksTransparentButton:SetChecked(stacks.Transparent);
-		PowaBuffStacksUpdatePingButton:SetChecked(stacks.UpdatePing);
+	PowaBuffStacksTransparentButton:SetChecked(stacks.Transparent);
+	PowaBuffStacksUpdatePingButton:SetChecked(stacks.UpdatePing);
 
-		PowaBuffStacksUseOwnColorButton:SetChecked(stacks.UseOwnColor);
+	PowaBuffStacksUseOwnColorButton:SetChecked(stacks.UseOwnColor);
 
-		PowaStacksColorNormalTexture:SetVertexColor(stacks.r,stacks.g,stacks.b);
-			
-		UIDropDownMenu_SetSelectedValue(PowaBuffStacksRelative, stacks.Relative);		
-		UIDropDownMenu_SetSelectedValue(PowaDropDownStacksTexture, stacks.Texture);
+	PowaStacksColorNormalTexture:SetVertexColor(stacks.r,stacks.g,stacks.b);
+		
+	UIDropDownMenu_SetSelectedValue(PowaBuffStacksRelative, stacks.Relative);		
+	UIDropDownMenu_SetSelectedValue(PowaDropDownStacksTexture, stacks.Texture);
 
-	end
 end
 
 
@@ -1528,8 +1525,6 @@ function PowaAuras:InitPage(aura)
 		aura = self.Auras[self.CurrentAuraId];
 	end
 	
-	self:UpdateTimerOptions();
-
 	PowaDropDownAnim1Text:SetText(self.Anim[aura.anim1]);
 	PowaDropDownAnim2Text:SetText(self.Anim[aura.anim2]);
 	PowaDropDownAnimBeginText:SetText(self.BeginAnimDisplay[aura.begin]);
@@ -1636,20 +1631,8 @@ function PowaAuras:InitPage(aura)
 	-- Auras visuals
 	PowaBarAuraAlphaSlider:SetValue(aura.alpha);
 	PowaBarAuraSizeSlider:SetValue(aura.size);
-	-- adjust slider Y
-	PowaBarAuraCoordSlider:SetMinMaxValues(aura.y-5000,aura.y+5000);
-	PowaBarAuraCoordSliderLow:SetText(aura.y-200);
-	PowaBarAuraCoordSliderHigh:SetText(aura.y+200);
-	PowaBarAuraCoordSlider:SetValue(aura.y);
-	PowaBarAuraCoordSlider:SetMinMaxValues(aura.y-200,aura.y+200);
-	PowaBarAuraCoordYEdit:SetText(aura.y);
-	-- adjust slider X
-	PowaBarAuraCoordXSlider:SetMinMaxValues(aura.x-5000,aura.x+5000);
-	PowaBarAuraCoordXSliderLow:SetText(aura.x-200);
-	PowaBarAuraCoordXSliderHigh:SetText(aura.x+200);
-	PowaBarAuraCoordXSlider:SetValue(aura.x);
-	PowaBarAuraCoordXSlider:SetMinMaxValues(aura.x-200,aura.x+200);
-	PowaBarAuraCoordXEdit:SetText(aura.x);
+	
+	self:UpdateLocation(aura);
 
 	PowaBarAuraAnimSpeedSlider:SetValue(aura.speed);
 	
@@ -1677,7 +1660,7 @@ function PowaAuras:InitPage(aura)
 	PowaBarBuffStacks:SetText(aura:StacksText());
 	
 	PowaAuras:UpdateStacksOptions(); 
-	PowaAuras:UpdateTimerOptions(); 
+	PowaAuras:UpdateTimerOptions(aura); 
 
 	if (aura.optunitn == true) then
 		self:EnableTextfield("PowaBarUnitn");
@@ -1773,6 +1756,23 @@ function PowaAuras:InitPage(aura)
 	PowaHeader:SetText(self.Text.nomEffectEditor.." ("..aura.id..")");
 end
 
+function PowaAuras:UpdateLocation(aura)
+	-- adjust slider Y
+	PowaBarAuraCoordSlider:SetMinMaxValues(aura.y-5000,aura.y+5000);
+	PowaBarAuraCoordSliderLow:SetText(aura.y-200);
+	PowaBarAuraCoordSliderHigh:SetText(aura.y+200);
+	PowaBarAuraCoordSlider:SetValue(aura.y);
+	PowaBarAuraCoordSlider:SetMinMaxValues(aura.y-200,aura.y+200);
+	PowaBarAuraCoordYEdit:SetText(aura.y);
+	-- adjust slider X
+	PowaBarAuraCoordXSlider:SetMinMaxValues(aura.x-5000,aura.x+5000);
+	PowaBarAuraCoordXSliderLow:SetText(aura.x-200);
+	PowaBarAuraCoordXSliderHigh:SetText(aura.x+200);
+	PowaBarAuraCoordXSlider:SetValue(aura.x);
+	PowaBarAuraCoordXSlider:SetMinMaxValues(aura.x-200,aura.x+200);
+	PowaBarAuraCoordXEdit:SetText(aura.x);
+end
+
 function PowaAuras:SetThresholdSlider(aura)
 	if (not aura.MaxRange) then return; end
 	--PowaAuras:ShowText("======SetThresholdSlider=========");
@@ -1821,7 +1821,7 @@ function PowaAuras:BarAuraTextureSliderChanged()
 	PowaBarAuraTextureEdit:SetText(SliderValue);
 	
 	self.Auras[auraId].texture = SliderValue;
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, false);
 end
 
 function PowaAuras:TextAuraTextureChanged()
@@ -1838,7 +1838,7 @@ function PowaAuras:BarAuraAlphaSliderChanged()
 	PowaBarAuraAlphaSliderText:SetText(self.Text.nomAlpha.." : "..format("%.0f",SliderValue*100).."%");
 
 	self.Auras[self.CurrentAuraId].alpha = SliderValue;
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, false);
 end
 
 function PowaAuras:BarAuraSizeSliderChanged()
@@ -1849,7 +1849,7 @@ function PowaAuras:BarAuraSizeSliderChanged()
 	PowaBarAuraSizeSliderText:SetText(self.Text.nomTaille.." : "..format("%.0f",SliderValue*100).."%");
 
 	self.Auras[auraId].size = SliderValue;
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, false);
 end
 
 function PowaAuras:BarAuraCoordSliderChanged()
@@ -1863,7 +1863,7 @@ function PowaAuras:BarAuraCoordSliderChanged()
 	end
 
 	self.Auras[auraId].y = SliderValue;
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, false);
 end
 
 function PowaAuras:BarAuraCoordXSliderChanged()
@@ -1877,7 +1877,7 @@ function PowaAuras:BarAuraCoordXSliderChanged()
 	end
 
 	self.Auras[auraId].x = SliderValue;
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, false);
 end
 
 function PowaAuras:BarAuraAnimSpeedSliderChanged()
@@ -1888,7 +1888,7 @@ function PowaAuras:BarAuraAnimSpeedSliderChanged()
 	PowaBarAuraAnimSpeedSliderText:SetText(self.Text.nomSpeed.." : "..format("%.0f",SliderValue*100).."%");
 
 	self.Auras[auraId].speed = SliderValue;
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, true);
 end
 
 function PowaAuras:BarAuraAnimDurationSliderChanged(control)
@@ -1899,7 +1899,7 @@ function PowaAuras:BarAuraAnimDurationSliderChanged(control)
 
 	--self:ShowText("Duration set to ", sliderValue);
 	self.Auras[self.CurrentAuraId].duration = sliderValue;
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, true);
 end
 
 function PowaAuras:BarAuraSymSliderChanged()
@@ -1922,7 +1922,7 @@ function PowaAuras:BarAuraSymSliderChanged()
 	end
 	
 	self.Auras[self.CurrentAuraId].symetrie = sliderValue;
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, false);
 end
 
 function PowaAuras:BarAuraDeformSliderChanged()
@@ -1932,7 +1932,7 @@ function PowaAuras:BarAuraDeformSliderChanged()
 	PowaBarAuraDeformSliderText:SetText(self.Text.nomDeform.." : "..format("%.2f", sliderValue));
 
 	self.Auras[self.CurrentAuraId].torsion = sliderValue;
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, false);
 end
 
 function PowaAuras:BarThresholdSliderChanged()
@@ -1973,7 +1973,7 @@ function PowaAuras:TextCoordXChanged()
 		end
 		self.Auras[auraId].x = thisNumber;
 	end
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, false);
 end
 
 function PowaAuras:TextCoordYChanged()
@@ -1997,7 +1997,7 @@ function PowaAuras:TextCoordYChanged()
 		end
 		self.Auras[auraId].y = thisNumber;
 	end
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, false);
 end
 
 function PowaAuras:TextChanged()
@@ -2045,7 +2045,7 @@ end
 function PowaAuras:CustomTextChanged()
 	local auraId = self.CurrentAuraId;
 	self.Auras[auraId].customname = PowaBarCustomTexName:GetText();
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, false);
 end
 
 function PowaAuras:AurasTextCancel()
@@ -2058,7 +2058,7 @@ function PowaAuras:AurasTextChanged()
 	local aura = self.Auras[self.CurrentAuraId];
 	aura.aurastext = PowaBarAurasText:GetText();
 	--self:ShowText("AurasTextChanged: aura text changed to ", aura.aurastext);
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, false);
 end
 
 function PowaAuras:CustomSoundTextChanged(force)
@@ -2090,6 +2090,7 @@ function PowaAuras:CustomSoundTextChanged(force)
 			PowaDropDownSound2Button:Enable();
 		end
 	end	
+	self:RedisplayAura(self.CurrentAuraId, true);
 end
 
 function PowaAuras:CustomSoundEndTextChanged(force)
@@ -2122,6 +2123,7 @@ function PowaAuras:CustomSoundEndTextChanged(force)
 			PowaDropDownSound2EndButton:Enable();
 		end
 	end	
+	self:RedisplayAura(self.CurrentAuraId, true);
 end
 
 --===================
@@ -2139,20 +2141,20 @@ function PowaAuras:InverseChecked()
 end
 
 function PowaAuras:IgnoreMajChecked()
-	local auraId = self.CurrentAuraId;
+	local aura = self.Auras[self.CurrentAuraId];
 	if (PowaIngoreCaseButton:GetChecked()) then
-		self.Auras[auraId].ignoremaj = true;
+		aura.ignoremaj = true;
 	else
-		self.Auras[auraId].ignoremaj = false;
+		aura.ignoremaj = false;
 	end
 end
 
 function PowaAuras:ExactChecked()
-	local auraId = self.CurrentAuraId;
+	local aura = self.Auras[self.CurrentAuraId];
 	if (PowaExactButton:GetChecked()) then
-		self.Auras[auraId].exact = true;
+		aura.exact = true;
 	else
-		self.Auras[auraId].exact = false;
+		aura.exact = false;
 	end
 end
 
@@ -2161,22 +2163,22 @@ function PowaAuras:CheckedButtonOnClick(button, key)
 end
 
 function PowaAuras:RandomColorChecked()
-	local auraId = self.CurrentAuraId;
+	local aura = self.Auras[self.CurrentAuraId];
 	if (PowaRandomColorButton:GetChecked()) then
-		self.Auras[auraId].randomcolor = true;
+		aura.randomcolor = true;
 	else
-		self.Auras[auraId].randomcolor = false;
+		aura.randomcolor = false;
 	end
 end
 
 function PowaAuras:TexModeChecked()
-	local auraId = self.CurrentAuraId;
+	local aura = self.Auras[self.CurrentAuraId];
 	if (PowaTexModeButton:GetChecked()) then
-		self.Auras[auraId].texmode = 1;
+		aura.texmode = 1;
 	else
-		self.Auras[auraId].texmode = 2;
+		aura.texmode = 2;
 	end
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, false);
 end
 
 function PowaAuras:ThresholdInvertChecked(owner)
@@ -2205,8 +2207,9 @@ function PowaAuras:OwntexChecked()
 	else
 		aura.owntex = false;
 	end	
-	PowaAuras:InitPage(aura);
-	self:RedisplayAura(aura.id);
+	self:TestThisEffect(aura.id, false, true)
+	self:InitPage(aura);
+	self:RedisplayAura(aura.id, false);
 end
 
 function PowaAuras:WowTexturesChecked()
@@ -2234,7 +2237,7 @@ function PowaAuras:WowTexturesChecked()
 		PowaBarAuraTextureSliderHigh:SetText(self.MaxTextures);
 	end
 	PowaAuras:BarAuraTextureSliderChanged();
-	self:RedisplayAura(aura.id);
+	self:RedisplayAura(aura.id, false);
 end
 
 function PowaAuras:CustomTexturesChecked()
@@ -2258,7 +2261,7 @@ function PowaAuras:CustomTexturesChecked()
 		PowaBarCustomTexName:Hide();
 	end
 	PowaAuras:BarAuraTextureSliderChanged();
-	self:RedisplayAura(aura.id);
+	self:RedisplayAura(aura.id, false);
 end
 
 function PowaAuras:TextAuraChecked()
@@ -2286,7 +2289,7 @@ function PowaAuras:TextAuraChecked()
 		PowaFontsButton:Hide();
 	end
 	self:BarAuraTextureSliderChanged();
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, false);
 end
 
 --=====================================
@@ -2586,7 +2589,7 @@ function PowaAuras:ChangeAuraType(id, newType)
 	end
 	
 	self:UpdateMainOption();
-	self:RedisplayAura(aura.id);
+	self:RedisplayAura(aura.id, false);
 	self:InitPage(aura);
 end
 
@@ -2598,7 +2601,7 @@ function PowaAuras:ShowSpinAtBeginningChecked(control)
 	else
 		aura.beginSpin = false;
 	end
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, true);
 end
 
 function PowaAuras:OldAnimationChecked(control)
@@ -2608,7 +2611,7 @@ function PowaAuras:OldAnimationChecked(control)
 	else
 		aura.UseOldAnimations = false;
 	end
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, true);
 end
 
 function PowaAuras.DropDownMenu_OnClickAnim1(owner)
@@ -2621,7 +2624,7 @@ function PowaAuras.DropDownMenu_OnClickAnim1(owner)
 	--UIDropDownMenu_SetSelectedValue(PowaDropDownAnim1, optionName);
 
 	PowaAuras.Auras[auraId].anim1 = optionID;
-	PowaAuras:RedisplayAura(auraId);
+	PowaAuras:RedisplayAura(auraId, true);
 end
 
 function PowaAuras.DropDownMenu_OnClickAnim2(owner)
@@ -2633,7 +2636,7 @@ function PowaAuras.DropDownMenu_OnClickAnim2(owner)
 	--UIDropDownMenu_SetSelectedValue(PowaDropDownAnim2, optionName);
 
 	PowaAuras.Auras[auraId].anim2 = optionID -1;
-	PowaAuras:RedisplayAura(auraId);
+	PowaAuras:RedisplayAura(auraId, true);
 end
 
 function PowaAuras.DropDownMenu_OnClickSound(self)
@@ -2733,7 +2736,7 @@ function PowaAuras.DropDownMenu_OnClickBegin(self)
 	--UIDropDownMenu_SetSelectedValue(PowaDropDownAnimBegin, optionName);
 
 	PowaAuras.Auras[PowaAuras.CurrentAuraId].begin = self.value;
-	PowaAuras:RedisplayAura(auraId);
+	PowaAuras:RedisplayAura(auraId, true);
 end
 
 function PowaAuras.DropDownMenu_OnClickEnd(self)
@@ -2745,7 +2748,7 @@ function PowaAuras.DropDownMenu_OnClickEnd(self)
 	--UIDropDownMenu_SetSelectedValue(PowaDropDownAnimEnd, optionName);
 
 	PowaAuras.Auras[auraId].finish = optionID - 1;
-	PowaAuras:RedisplayAura(auraId);
+	PowaAuras:RedisplayAura(auraId, true);
 end
 
 -- OPTIONS DEPLACEMENT
@@ -2787,7 +2790,7 @@ function PowaAuras:SetAuraColor(r, g, b)
 	if (ColorPickerFrame.setTexture) then
 		AuraTexture:SetVertexColor(r,g,b);
 	end
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, false);
 end
 
 function PowaAuras:OpenColorPicker(control, source, setTexture)
@@ -2837,7 +2840,7 @@ function PowaAuras:FontSelectorOkay(owner)
 	else
 		self.Auras[self.CurrentAuraId].aurastextfont = 1;
 	end
-	self:RedisplayAura(self.CurrentAuraId);
+	self:RedisplayAura(self.CurrentAuraId, false);
 	self:FontSelectorClose(owner);
 end
 
@@ -2891,19 +2894,15 @@ function PowaAuras.FontScrollBar_Update(owner)
 end
 
 
-function PowaAuras:EditorShow()
+function PowaAuras:EditorToggle()
 	if (PowaBarConfigFrame:IsVisible()) then
+		--self:ShowText("EditorToggle Close");
 		self:EditorClose();
 		return;
 	end
 	local aura = self.Auras[self.CurrentAuraId];
 	if (aura) then
-		if (not aura.Showing) then 
-			aura.Active = true;
-			aura:CreateFrames();
-			self.SecondaryAuras[aura.id] = nil; -- Force recreate
-			self:DisplayAura(aura.id);
-		end
+		aura:CheckActive(true, true, true);
 		self:InitPage(aura);
 		PowaBarConfigFrame:Show();
 		PlaySound("TalentScreenOpen", PowaMisc.SoundChannel);
@@ -2928,57 +2927,16 @@ end
 -- <<<<<<<<<<<<<<<<<<< ADV. OPTIONS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 -- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-function PowaAuras:UpdateOptionsTimer(auraId)
-
-	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
-	
-	local timer = self.Auras[auraId].Timer;
-	
-    local frame1 = self.TimerFrame[auraId][1];	
-	frame1:SetAlpha(math.min(timer.a,0.99));
-	frame1:SetWidth(20 * timer.h);
-	frame1:SetHeight(20 * timer.h);
-	if (timer:IsRelative()) then
-		frame1:SetPoint(self.RelativeToParent[timer.Relative], self.Frames[auraId], timer.Relative, timer.x, timer.y);
-	else
-		frame1:SetPoint("CENTER", timer.x, timer.y);
-	end
-
-    local frame2 = self.TimerFrame[auraId][2];
-	frame2:SetAlpha(timer.a * 0.75);
-	frame2:SetWidth(14 * timer.h);
-	frame2:SetHeight(14 * timer.h);
-	frame2:SetPoint("LEFT", frame1, "RIGHT", 1, -1.5);
-
-end
-
-
-function PowaAuras:UpdateOptionsStacks(auraId)
-	if (not (self.VariablesLoaded and self.SetupDone)) then return; end  
-	
-	local stacks = self.Auras[auraId].Stacks;
-	
-    local frame = self.StacksFrames[auraId];	
-	frame:SetAlpha(math.min(stacks.a, 0.99));
-	frame:SetWidth(20 * stacks.h);
-	frame:SetHeight(20 * stacks.h);
-	frame:SetPoint("Center", stacks.x, stacks.y);
-	if (stacks:IsRelative()) then
-		--PowaAuras:ShowText(self.Frames[auraId],": stacks.Relative=", stacks.Relative, " RelativeToParent=", self.RelativeToParent[stacks.Relative], " x=", stacks.x, " y=",stacks.y);
-		frame:SetPoint(self.RelativeToParent[stacks.Relative], self.Frames[auraId], stacks.Relative, stacks.x, stacks.y);
-	else
-		frame:SetPoint("CENTER", stacks.x, stacks.y);
-	end
-end
-
 function PowaAuras:ShowTimerChecked(control)
 	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
+	local aura = self.Auras[self.CurrentAuraId];
+	local timer = aura.Timer;
 	if (control:GetChecked()) then
-		self.Auras[self.CurrentAuraId].Timer.enabled = true;
-		self:CreateTimerFrameIfMissing(self.CurrentAuraId);	
+		timer.enabled = true;
+		timer:Redisplay(aura, true);
 	else
-		self.Auras[self.CurrentAuraId].Timer.enabled = false;
-		self.Auras[self.CurrentAuraId].Timer:Dispose();
+		timer.enabled = false;
+		timer:Dispose();
 	end
 end
 
@@ -2990,7 +2948,6 @@ function PowaAuras:TimerAlphaSliderChanged()
 	PowaTimerAlphaSliderText:SetText(self.Text.nomAlpha.." : "..format("%.2f", SliderValue) );
 
 	self.Auras[self.CurrentAuraId].Timer.a = SliderValue;
-	--self:CreateTimerFrameIfMissing(self.CurrentAuraId);
 end
 
 function PowaAuras:TimerSizeSliderChanged()
@@ -3001,7 +2958,6 @@ function PowaAuras:TimerSizeSliderChanged()
 	PowaTimerSizeSliderText:SetText(self.Text.nomTaille.." : "..format("%.2f", SliderValue) );
 
 	self.Auras[self.CurrentAuraId].Timer.h = SliderValue;
-	--self:CreateTimerFrameIfMissing(self.CurrentAuraId);
 end
 
 function PowaAuras:TimerCoordSliderChanged()
@@ -3012,7 +2968,6 @@ function PowaAuras:TimerCoordSliderChanged()
 	PowaTimerCoordSliderText:SetText(self.Text.nomPos.." Y : "..SliderValue);
 
 	self.Auras[self.CurrentAuraId].Timer.y = SliderValue;
-	--self:CreateTimerFrameIfMissing(self.CurrentAuraId);
 end
 
 function PowaAuras:TimerCoordXSliderChanged()
@@ -3023,7 +2978,6 @@ function PowaAuras:TimerCoordXSliderChanged()
 	PowaTimerCoordXSliderText:SetText(self.Text.nomPos.." X : "..SliderValue);
 
 	self.Auras[self.CurrentAuraId].Timer.x = SliderValue;
-	--self:CreateTimerFrameIfMissing(self.CurrentAuraId);
 end
 
 function PowaAuras:PowaTimerInvertAuraSliderChanged(slider)
@@ -3040,7 +2994,6 @@ function PowaAuras:PowaTimerInvertAuraSliderChanged(slider)
 	getglobal(slider:GetName().."Text"):SetText(text.." : "..slider:GetValue().." sec");
 
 	self.Auras[self.CurrentAuraId].InvertAuraBelow = slider:GetValue();
-	--self:CreateTimerFrameIfMissing(self.CurrentAuraId);
 end
 
 function PowaAuras:TimerDurationSliderChanged()
@@ -3050,62 +3003,67 @@ function PowaAuras:TimerDurationSliderChanged()
 	PowaTimerDurationSliderText:SetText(self.Text.nomTimerDuration.." : "..SliderValue.." sec");
 
 	self.Auras[self.CurrentAuraId].timerduration = SliderValue;
-	--self:CreateTimerFrameIfMissing(self.CurrentAuraId);
 end
 
 function PowaAuras.DropDownMenu_OnClickTimerRelative(self)
 	UIDropDownMenu_SetSelectedValue(self.owner, self.value);
 	
 	--PowaAuras:ShowText(PowaAuras.Auras[PowaAuras.CurrentAuraId].id," change timer relative position ", self.value);
-	local timer = PowaAuras.Auras[PowaAuras.CurrentAuraId].Timer;
+	local aura = PowaAuras.Auras[PowaAuras.CurrentAuraId];
+	local timer = aura.Timer;
 	timer.x = 0;
 	timer.y = 0;
 	timer.Relative = self.value;
-	timer:Dispose();
+	timer:Redisplay(aura, true);
 end
 
 function PowaAuras:TimerChecked(control, setting)
 	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
 	local aura = self.Auras[self.CurrentAuraId];
+	local timer = aura.Timer;
 	if (control:GetChecked()) then
-		aura.Timer[setting] = true;
+		timer[setting] = true;
 	else
-		aura.Timer[setting] = false;
+		timer[setting] = false;
 	end
-	aura.Timer:Dispose();
-	aura.Timer:SetShowOnAuraHide(aura);
-	--self:CreateTimerFrameIfMissing(self.CurrentAuraId);
+	if (not timer.enabled) then return; end
+	timer:Redisplay(aura, true);
 end
 
 function PowaAuras:SettingChecked(control, setting)
 	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
+	local aura = self.Auras[self.CurrentAuraId];
 	if (control:GetChecked()) then
-		self.Auras[self.CurrentAuraId][setting] = true;
+		aura[setting] = true;
 	else
-		self.Auras[self.CurrentAuraId][setting] = false;
+		aura[setting] = false;
 	end
 end
 
 function PowaAuras:TimerTransparentChecked(control)
 	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
+	local aura = self.Auras[self.CurrentAuraId];
+	local timer = aura.Timer;
 	if (control:GetChecked()) then
-		self.Auras[self.CurrentAuraId].Timer.Transparent = true;
+		timer.Transparent = true;
 	else
-		self.Auras[self.CurrentAuraId].Timer.Transparent = false;
+		timer.Transparent = false;
 	end
-	self.Auras[self.CurrentAuraId].Timer:Dispose();
-	--self:CreateTimerFrameIfMissing(self.CurrentAuraId);
+	timer:Redisplay(aura, true);
 end
 
 --==== Stacks ====
 
 function PowaAuras:ShowStacksChecked(control)
 	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
+	local aura = self.Auras[self.CurrentAuraId];
+	local stacks = aura.Stacks;
 	if (control:GetChecked()) then
-		self.Auras[self.CurrentAuraId].Stacks.enabled = true;
+		stacks.enabled = true;
+		stacks:Redisplay(aura, true);
 	else
-		self.Auras[self.CurrentAuraId].Stacks.enabled = false;
-		self.Auras[self.CurrentAuraId].Stacks:Dispose();
+		stacks.enabled = false;
+		stacks:Dispose();
 	end
 end
 
@@ -3153,21 +3111,24 @@ function PowaAuras.DropDownMenu_OnClickStacksRelative(self)
 	UIDropDownMenu_SetSelectedValue(self.owner, self.value);
 
 	--PowaAuras:ShowText(PowaAuras.Auras[PowaAuras.CurrentAuraId].id," change stacks relative position ", self.value);
-	local stacks = PowaAuras.Auras[PowaAuras.CurrentAuraId].Stacks;
+	local aura = self.Auras[self.CurrentAuraId];
+	local stacks = aura.Stacks;
 	stacks.x = 0;
 	stacks.y = 0;
 	stacks.Relative = self.value;
-	stacks:Dispose();	
+	stacks:Redisplay(aura, true);
 end
 
 function PowaAuras:StacksChecked(control, setting)
 	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
+	local aura = self.Auras[self.CurrentAuraId];
+	local stacks = aura.Stacks;
 	if (control:GetChecked()) then
-		self.Auras[self.CurrentAuraId].Stacks[setting] = true;
+		stacks[setting] = true;
 	else
-		self.Auras[self.CurrentAuraId].Stacks[setting] = false;
+		stacks[setting] = false;
 	end
-	self.Auras[self.CurrentAuraId].Stacks:Dispose();
+	stacks:Redisplay(aura, true);
 end
 
 function PowaAuras_CommanLine(msg)
@@ -3302,8 +3263,8 @@ local function OptionsOK()
 			if (aura.Timer and aura.Timer.Texture == "Default") then
 				aura.Timer:Hide();
 				PowaAuras.TimerFrame[auraId] = {};
-				PowaAuras:CreateTimerFrame(auraId, 1);
-				PowaAuras:CreateTimerFrame(auraId, 2);
+				aura.Timer:CreateFrame(aura, 1);
+				aura.Timer:CreateFrame(aura, 2);
 			end
 		end
 	end
@@ -3313,7 +3274,8 @@ local function OptionsOK()
 		for auraId, aura in pairs(PowaAuras.Auras) do
 			if (aura.Stacks and aura.Stacks.Texture == "Default") then
 				aura.Stacks:Hide();
-				PowaAuras.StacksFrames[auraId].texture:SetTexture(aura.Stacks:GetTexture());
+				local frame = aura.Stacks:GetFrame();
+				frame.texture:SetTexture(aura.Stacks:GetTexture());
 			end
 		end
 	end
@@ -3423,7 +3385,6 @@ function PowaAuras.DropDownMenu_OnClickTimerTexture(self)
 	if (aura==nil or aura.Timer==nil) then return; end
 	aura.Timer.Texture = self.value;
 	aura.Timer:Dispose();
-	--PowaAuras:CreateTimerFrameIfMissing(PowaAuras.CurrentAuraId);
 end
 
 function PowaAuras.DropDownStacksMenu_Initialize(owner)
@@ -3487,69 +3448,36 @@ function PowaAuras.Ternary_CheckTooltip(button)
 end
 
 
-function PowaAuras:OptionTest()
-	--self:Message("OptionTest for ", self.CurrentAuraId);
+function PowaAuras:ToggleTesting()
+	--self:ShowText("ToggleTesting for ", self.CurrentAuraId);
 	local aura = self.Auras[self.CurrentAuraId];
 	if (not aura or aura.buffname == "" or aura.buffname == " ") then
 		return;
 	end
 
 	if (aura.Showing) then 
-		self:SetAuraHideRequest(aura);
-		aura.Active = false;
+		aura:CheckActive(false, true, true);
 	else
-		aura.Active = true;
-		aura:CreateFrames();
-		self.SecondaryAuras[aura.id] = nil; -- Force recreate
-		self:DisplayAura(aura.id);
+		aura:RecreateFrames();
+		aura:CheckActive(true, true, true);
 	end
 end
 
-function PowaAuras:OptionTestAll()
-
-	PowaAuras:OptionHideAll(true);
-	--self:ShowText("Test All Active Frames now=", now);
+function PowaAuras:TestAllAuras()
+	self:OptionHideAll();
+	--self:ShowText("Test All Active Auras");
 	for id, aura in pairs(self.Auras) do
-		if (not aura.off) then 
-			aura.Active = true;
-			aura:CreateFrames();
-			self.SecondaryAuras[aura.id] = nil; -- Force recreate
-			self:DisplayAura(aura.id);
+		if (not aura.off) then
+			aura:CheckActive(true, true, true);
 		end
 	end
-	
 end
 
-function PowaAuras:OptionHideAll(now) --- Hide all auras
-	--self:ShowText("Hide All Frames now=", now);
+function PowaAuras:OptionHideAll()
+	--self:ShowText("Hide All Auras");
 	for id, aura in pairs(self.Auras) do
-		aura.Active = false;
 		self:ResetDragging(aura, self.Frames[aura.id]);
-		if now then
-			--self:ShowText("Hide aura id=", id);
-			aura:Hide();
-			if (aura.Timer) then aura.Timer:Hide(); end 
-			if (aura.Stacks) then aura.Stacks:Hide(); end
-		else
-			self:SetAuraHideRequest(aura);
-			if (aura.Timer)  then aura.Timer.HideRequest  = true; end
-		end
-	end	
-
-end
-
-function PowaAuras:RedisplayAuras()
-	for id, aura in pairs(self.Auras) do
-		aura.Active = false;
-		if (aura.Showing) then
-			aura:Hide();
-			if (aura.Timer) then aura.Timer:Hide(); end
-			if (aura.Stacks) then aura.Stacks:Hide(); end
-			aura.Active = true;
-			aura:CreateFrames();
-			self.SecondaryAuras[aura.id] = nil; -- Force recreate
-			self:DisplayAura(aura.id);
-		end
+		aura:CheckActive(false, true, true);
 	end	
 end
 
@@ -3567,7 +3495,14 @@ function PowaAuras:ToggleLock()
 	self:RedisplayAuras();
 end
 
-function PowaAuras:RedisplayAura(auraId) ---Re-show aura after options changed
+
+function PowaAuras:RedisplayAuras(recreateTriggers)
+	for id, _ in pairs(self.Auras) do
+		self:RedisplayAura(id, recreateTriggers)
+	end	
+end
+
+function PowaAuras:RedisplayAura(auraId, recreateTriggers) ---Re-show aura after options changed
 
 	if (not (self.VariablesLoaded and self.SetupDone)) then return; end 
 
@@ -3575,17 +3510,20 @@ function PowaAuras:RedisplayAura(auraId) ---Re-show aura after options changed
 	if (not aura) then
 		return;
 	end
-	--self:ShowText("RedisplayAura auraId=", aura.id, " showing=", aura.Showing);
-	local showing = aura.Showing;
-	aura:Hide();
-	aura.BeginAnimation = nil;
-	aura.MainAnimation = nil;
-	aura.EndAnimation = nil;
-	aura:CreateFrames();
-	self.SecondaryAuras[aura.id] = nil; -- Force recreate
-	if (showing) then
-		self:DisplayAura(aura.id);
-	end
+	--self:ShowText("RedisplayAura auraId=", aura.id, " showing=", aura.Showing, " recreateTriggers=", recreateTriggers);
+	--if (recreateTriggers) then
+		--self:ShowText("RedisplayAura ", aura.id," Recreate Triggers");
+	--	aura:CreateDefaultTriggers();
+	--end
+	--if (aura.Showing) then
+		--aura:Dispose();
+		--aura.Active = false;
+		--aura:RecreateFrames();
+		aura:CheckActive(true, true, true);
+	--end
+	if (aura.Timer) then aura.Timer:Redisplay(aura, true); end
+	if (aura.Stacks) then aura.Stacks:Redisplay(aura, true); end
+
 end
 
 function PowaAuras:ResetSlotsToEmpty()

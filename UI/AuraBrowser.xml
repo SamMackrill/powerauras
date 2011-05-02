@@ -1,0 +1,365 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+    ..\..\FrameXML\UI.xsd">
+	<Script file="AuraBrowser.lua" />
+	<!-- Todo: Put this in another file? Doubt it. -->
+	<Button name="PowaAuraButtonTemplate" virtual="true">
+		<!-- Yes, I really am using totem bar textures here. I haven't gone insane yet. -->
+		<NormalTexture file="Interface\Buttons\UI-TotemBar" setAllPoints="true">
+			<!-- Linked texture: -->
+			<!-- <TexCoords left="0.0078125" right="0.2734375" top="0.671875" bottom="0.8046875" /> -->
+			<TexCoords left="0.0078125" right="0.2734375" top="0.80859375" bottom="0.94140625" />
+			<Color r="0.75" g="0.325" b="0.325" />
+		</NormalTexture>
+		<HighlightTexture file="Interface\Buttons\UI-TotemBar" alphaMode="ADD" setAllPoints="true">
+			<TexCoords left="0.0078125" right="0.2734375" top="0.80859375" bottom="0.94140625" />
+		</HighlightTexture>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Icon">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="5" y="-5" />
+						<Anchor point="BOTTOMRIGHT" x="-5" y="5" />
+					</Anchors>
+					<!-- Cuts the border out of icons. -->
+					<TexCoords left="0.07" right="0.93" top="0.07" bottom="0.93" />
+				</Texture>
+			</Layer>
+		</Layers>
+	</Button>
+	
+	<!-- Todo: Move to seperate file (RadioGroup.xml) -->
+	<CheckButton name="PowaRadioButtonTemplate" virtual="true">
+		<Size x="150" y="23" />
+		<NormalTexture file="Interface\Buttons\WHITE8X8" setAllPoints="true">
+			<Color r="1" g="0" b="0" />
+		</NormalTexture>
+		<CheckedTexture file="Interface\Buttons\WHITE8X8" setAllPoints="true">
+			<Color r="0" g="1" b="0" />
+		</CheckedTexture>
+	</CheckButton>
+	
+	<CheckButton name="PowaCreateAuraRadioButtonTemplate" virtual="true">
+		<Size x="400" y="58" />
+		<Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground" edgeFile="Interface\ChatFrame\ChatFrameBackground" tile="true">
+			<EdgeSize>
+				<AbsValue val="1" />
+			</EdgeSize>
+			<TileSize>
+				<AbsValue val="5" />
+			</TileSize>
+			<Color r="0.0" g="0.0" b="0.0" a="1" />
+			<BorderColor r="0.3" g="0.3" b="0.3" a="1" />
+		</Backdrop>
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture parentKey="Icon" file="Interface\PaperDollInfoFrame\Character-Plus" desaturated="true">
+					<Size x="32" y="32" />
+					<Anchors>
+						<Anchor point="LEFT" x="10" y="0" />
+					</Anchors>
+				</Texture>
+				<FontString parentKey="Title" font="GameFontNormal" text="Create Blank Aura" justifyH="LEFT" justifyV="TOP">
+					<Size x="1" y="20" />
+					<Anchors>
+						<Anchor point="TOPLEFT" x="56" y="-4" />
+						<Anchor point="TOPRIGHT" x="-4" y="-4" />
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Desc" font="GameFontHighlightSmall" text="Create Blank Aura" justifyH="LEFT" justifyV="MIDDLE">
+					<Anchors>
+						<Anchor point="LEFT" x="56" y="0" />
+						<Anchor point="RIGHT" x="-4" y="0" />
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</CheckButton>
+	
+	<Frame name="PowaBrowser" toplevel="true" movable="true" parent="UIParent" hidden="false" frameStrata="MEDIUM" enableMouse="true" enableKeyboard="true">
+		<Size>
+          <AbsDimension x="550" y="450" />
+        </Size>
+        <Anchors>
+			<Anchor point="CENTER" relativeTo="UIParent" x="0" y="50" />
+        </Anchors>
+		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+			<BackgroundInsets>
+				<AbsInset left="11" right="12" top="12" bottom="11" />
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="32" />
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="32" />
+			</EdgeSize>
+		</Backdrop>	
+		<Scripts>
+			<OnMouseDown>
+				if(button == "LeftButton" and not self.isMoving) then
+					self:StartMoving();
+					self.isMoving = true;
+				end
+			</OnMouseDown>
+			<OnMouseUp>
+				if(button == "LeftButton" and self.isMoving) then
+					self:StopMovingOrSizing();
+					self.isMoving = false;
+				end
+			</OnMouseUp>
+			<OnHide>
+				if(self.isMoving) then
+					self:StopMovingOrSizing();
+					self.isMoving = false;
+				end
+			</OnHide>
+			<OnLoad>
+				self.Title:SetText(format("Power Auras %s", PowaAuras.Version));
+				PowaAuras.UI:AuraBrowser(self);
+			</OnLoad>
+		</Scripts>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture file="Interface\DialogFrame\UI-DialogBox-Header">
+					<Size>
+						<AbsDimension x="300" y="68" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOP" relativePoint="TOP" x="0" y="13"/>
+					</Anchors>					
+				</Texture>
+				<FontString parentKey="Title" inherits="GameFontNormal" text="Power Auras %s" justifyH="CENTER" justifyV="TOP">
+					<Size>
+						<AbsDimension x="300" y="68" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOP" relativePoint="TOP" x="0" y="-2"/>
+					</Anchors>
+				</FontString>
+				<Texture file="Interface\DialogFrame\UI-DialogBox-Corner">
+					<Size x="32" y="32" />	
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="-4" y="-4" />	
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentCloseButton" inherits="UIPanelCloseButton">
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="0" y="0" />
+				</Anchors>
+			</Button>
+			<Frame name="$parentTabs" parentKey="Tabs" inherits="PowaBorderedFrameTemplate">
+				<Size>
+				  <AbsDimension y="260" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOP" x="0" y="-65" />
+					<Anchor point="LEFT" x="15" y="0" />
+					<Anchor point="RIGHT" x="-15" y="0" />
+					<Anchor point="BOTTOM" x="0" y="15" />
+				</Anchors>
+				<Frames>
+					<Frame parentKey="Auras" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="4" y="-4" />
+							<Anchor point="BOTTOMRIGHT" x="-4" y="5" />
+						</Anchors>
+						<Frames>
+							<Frame name="$parentAurasTree" parentKey="Tree" inherits="PowaTreeViewTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT" x="2" y="-2" />
+									<Anchor point="BOTTOMLEFT" x="2" y="2" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										PowaAuras.UI:TreeView(self);
+									</OnLoad>
+								</Scripts>
+							</Frame>
+							<Frame parentKey="Page" inherits="PowaBorderedFrameTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT" x="177" y="-2" />
+									<Anchor point="BOTTOMRIGHT" x="-2" y="2" />
+								</Anchors>
+								<Layers>
+									<Layer level="ARTWORK">
+										<Texture file="Interface\LevelUp\LevelUpTex">
+											<Size x="419" y="2" />
+											<Anchors>
+												<Anchor point="TOPLEFT" x="0" y="-45" />
+												<Anchor point="TOPRIGHT" x="0" y="-45" />
+											</Anchors>
+											<TexCoords left="0" right="0.818359375" top="0.013671875" bottom="0.017578125" />
+											<Color r="0.3" g="0.3" b="0.3" a="1.0" />
+										</Texture>
+										<Texture file="Interface\LevelUp\LevelUpTex">
+											<Size x="419" y="2" />
+											<Anchors>
+												<Anchor point="TOPLEFT" x="0" y="-242" />
+												<Anchor point="TOPRIGHT" x="0" y="-242" />
+											</Anchors>
+											<TexCoords left="0" right="0.818359375" top="0.013671875" bottom="0.017578125" />
+											<Color r="0.3" g="0.3" b="0.3" a="1.0" />
+										</Texture>
+										<FontString parentKey="SelectedTitle" justifyH="LEFT" justifyV="TOP" font="GameFontNormalLarge">
+											<Size x="225" y="24" />
+											<Anchors>
+												<Anchor point="TOPLEFT" x="15" y="-250" />
+												<Anchor point="TOPRIGHT" x="-15" y="-250" />
+											</Anchors>
+										</FontString>
+									</Layer>
+								</Layers>
+								<Frames>
+									<EditBox parentKey="Title" justifyH="LEFT" justifyV="MIDDLE" font="GameFontNormalLarge" letters="15" autoFocus="false">
+										<Size x="225" y="40" />
+										<Anchors>
+											<Anchor point="TOPLEFT" x="15" y="-4" />
+											<Anchor point="TOPRIGHT" x="-15" y="-4" />
+										</Anchors>	
+										<Scripts>
+											<OnEscapePressed>
+												self:SetText(PowaBrowser:GetPageName());
+												self:ClearFocus();
+											</OnEscapePressed>
+											<OnEditFocusGained>
+												self:HighlightText();
+											</OnEditFocusGained>
+											<OnEditFocusLost>
+												self:HighlightText(0,0);
+											</OnEditFocusLost>
+											<OnEnterPressed>
+												PowaBrowser:SavePageName(self:GetText());
+												self:SetText(PowaBrowser:GetPageName());
+												self:ClearFocus();
+											</OnEnterPressed>
+										</Scripts>
+									</EditBox>
+								</Frames>
+								<Scripts>
+									<OnLoad>
+										-- Init layout frame, lock layout to speed up load.
+										PowaAuras.UI:LayoutFrame(self, 0, 49, 2, true);
+										-- Add columns.
+										self:AddColumn(48, 48);
+										self:AddColumn(48, 48);
+										self:AddColumn(48, 48);
+										self:AddColumn(48, 48);
+										self:AddColumn(48, 48);
+										self:AddColumn(48, 48);
+										-- Unlock layout. This will trigger 1 update, as opposed to about 8 updates while initializing.
+										self:SetLocked(false);
+									</OnLoad>
+								</Scripts>
+							</Frame>
+							<Frame parentKey="Create" inherits="PowaBorderedTabDialogTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT" x="177" y="-2" />
+									<Anchor point="BOTTOMRIGHT" x="-2" y="2" />
+								</Anchors>
+								<Layers>
+									<Layer level="ARTWORK">
+										<FontString parentKey="Title" justifyH="LEFT" justifyV="MIDDLE" font="GameFontNormalLarge">
+											<Size x="225" y="40" />
+											<Anchors>
+												<Anchor point="TOPLEFT" x="15" y="-4" />
+												<Anchor point="TOPRIGHT" x="-15" y="-4" />
+											</Anchors>
+										</FontString>
+									</Layer>
+								</Layers>
+								<Scripts>
+									<OnLoad>
+										-- I'm a dialog. Hi.
+										PowaAuras.UI:TabDialog(self);
+										self.OnAccept = function()
+											if(self.SelectedKey == 1) then
+												-- Create aura.
+												print("|cFF527FCCDEBUG (AuraBrowser): |rCreating Blank Aura");
+												PowaAuras.Helpers:CreateAura();
+												-- Done.
+												PowaBrowser:SetSelectedAura(PowaBrowser:GetSelectedAura(), false);
+											elseif(self.SelectedKey == 2) then
+												-- Import preset.
+												print("|cFF527FCCDEBUG (AuraBrowser): |rPreset Import Dialog NYI");
+											end
+										end
+										self.OnCancel = function()
+											self:GetParent():SelectTab(1);
+										end
+										-- I'm also a radio button host.
+										PowaAuras.UI:RadioGroup(self, "CreateAuraRadioButton", true);
+										for i=1,2 do
+											local item = self:AddItem(i);
+											item:SetPoint("TOPLEFT", 15, -50-((i-1)*63));
+											item:SetPoint("TOPRIGHT", -15, -50-((i-1)*63));
+											if(i == 1) then
+												SetDesaturation(item.Icon, false);
+												item.Title:SetText(PowaAuras.Text["UI_CreateNew"]);
+												item.Desc:SetText(PowaAuras.Text["UI_CreateNewDesc"]);
+											else
+												item.Icon:SetTexture("Interface\\Glues\\CharacterCreate\\UI-CHARACTERCREATE-CLASSES");
+												item.Icon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[select(2, UnitClass("player"))]));
+												SetDesaturation(item.Icon, true);
+												item.Title:SetText(PowaAuras.Text["UI_CreatePreset"]);
+												item.Desc:SetText(PowaAuras.Text["UI_CreatePresetDesc"]);
+											end
+										end
+										-- Update on selection changed.
+										self.OnSelectionChanged = function(self, key)
+											if(key == 2) then
+												self.AcceptButton:SetText(PowaAuras.Text["UI_Next"]);
+											else
+												self.AcceptButton:SetText(PowaAuras.Text["UI_Save"]);
+											end
+										end
+									</OnLoad>
+								</Scripts>
+							</Frame>
+						</Frames>
+						<Scripts>
+							<OnLoad>
+								-- I'm also a tab frame. Hi.
+								PowaAuras.UI:TabFrame(self, 3);
+								self:RegisterTab(self.Page, "");
+								self:RegisterTab(self.Create, "");
+								self.Create.Title:SetText(PowaAuras.Text["UI_CreateAura"]);
+							</OnLoad>
+						</Scripts>
+					</Frame>
+					<Frame parentKey="Config" hidden="true" />
+					<Frame parentKey="Help" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="4" y="-4" />
+							<Anchor point="BOTTOMRIGHT" x="-4" y="5" />
+						</Anchors>
+						<Frames>
+							<Frame name="$parentHelpTree" parentKey="Tree" inherits="PowaTreeViewTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT" x="2" y="-2" />
+									<Anchor point="BOTTOMLEFT" x="2" y="2" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										PowaAuras.UI:TreeView(self);
+									</OnLoad>
+								</Scripts>
+							</Frame>
+						</Frames>
+					</Frame>
+				</Frames>
+				<Scripts>
+					<OnLoad>
+						PowaAuras.UI:TabFrame(self, 4);
+						self:RegisterTab(self.Auras, "Interface\\GossipFrame\\TrainerGossipIcon");
+						self:RegisterTab(self.Config, "Interface\\GossipFrame\\BinderGossipIcon");
+						self:RegisterTab(self.Help, { "Interface\\WorldMap\\UI-WorldMap-QuestIcon", 12, 17, 0.171875, 0.359375, 0.109375, 0.375 });
+					</OnLoad>
+				</Scripts>
+			</Frame>
+		</Frames>
+	</Frame>
+</Ui>

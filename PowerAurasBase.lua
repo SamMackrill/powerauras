@@ -2,6 +2,7 @@ PowaAuras = {
 	Version = GetAddOnMetadata("PowerAuras", "Version");
 	
 	VersionPattern = "(%d+)%.(%d+)";
+	VersionInt = 10000,
 	
 	WoWBuild = tonumber(select(2, GetBuildInfo()), 10);
 	
@@ -18,7 +19,8 @@ PowaAuras = {
 	TextureCount = 238;
 	
 	DebugEvents = false;
-	--DebugAura = 3;
+	DebugTriggers = false;
+	DebugAura = 121;
 	
 	-- Internal counters
 	DebugTimer = 0;
@@ -90,7 +92,6 @@ PowaAuras = {
 	MoveEffect = 0; -- 1 = copie / 2 = move
 	
 	Auras = {};
-	SecondaryAuras = {};
 	Frames = {};
 	SecondaryFrames = {};
 	Textures = {};
@@ -551,6 +552,21 @@ PowaAuras = {
 		"PowaDropDownGTFO",
 		"PowaDropDownPowerType",
 	};
+	
+	TriggerTypes = {
+		Timer        = 1,
+		Stacks       = 2,
+		AuraShow     = 3,
+		AuraHide     = 4,
+		TriggerStart = 5,
+		TriggerEnd   = 6,
+	};
+	
+	TriggerActions = {
+		AuraOpacity  = 1,
+		AuraColor    = 2,
+		AuraScale    = 3,
+	};
 
 	Backdrop = {
 		bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
@@ -558,6 +574,21 @@ PowaAuras = {
 		tile = true
 	};
 };
+
+-- VersionInt setting.
+PowaAuras.VersionInt = tonumber(PowaAuras.Version)*10000;
+
+-- Check for LibStub and LibSharedMedia for fonts.
+if(LibStub) then
+	-- Try LSM (pass true to prevent errors0
+	local LSM = LibStub("LibSharedMedia-3.0", true);
+	if(LSM) then
+		-- Get all fonts.
+		for _, font in pairs(LSM:HashTable(LSM.MediaType.FONT)) do
+			tinsert(PowaAuras.Fonts, font);
+		end
+	end
+end
 
 function PowaAuras:RegisterAuraType(auraType)
 	self.AurasByType[auraType] = {};
@@ -642,8 +673,6 @@ PowaAuras:RegisterAuraType('GTFOHigh');
 PowaAuras:RegisterAuraType('GTFOLow');
 PowaAuras:RegisterAuraType('GTFOFail');
 PowaAuras:RegisterAuraType('GTFOFriendlyFire');
-
-
 
 -- Use these spells to detect GCD, ideally these should be spells classes have from the beginning
 PowaAuras.GCDSpells = {
@@ -901,7 +930,12 @@ PowaAuras.DebuffTypeSpellIds={
 	[29703] = PowaAuras.DebuffCatType.Snare,	-- Dazed
 };
 
-PowaAuras.Text = {};
+-- Debugging assistance, if we access a non-existant locale key it'll display the key.
+PowaAuras.Text = setmetatable({}, { __index = function(_,k)
+	if(not k or k == "") then return; end
+	PowaAuras:ShowText("Missing Localization Key: ", k);
+	return k; end
+});
 
 function PowaAuras:UnitTestDebug(...)
 end

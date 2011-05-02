@@ -1,0 +1,80 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+    ..\..\FrameXML\UI.xsd">
+	<Script file="TabButton.lua" />
+	<Button name="PowaTabButtonTemplate" virtual="true" text="Tab">
+		<Size x="128" y="35" />
+		<NormalFont style="GameFontNormalSmall" />
+		<HighlightFont style="GameFontHighlightSmall"/>
+		<DisabledFont style="GameFontHighlightSmall"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture file="Interface\PaperDollInfoFrame\PaperDollSidebarTabs" parentKey="TabBgL">
+					<Size x="15" y="36" />
+					<TexCoords left="0.01562500" right="0.25" top="0.61328125" bottom="0.75390625" />
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="0" y="0" />
+					</Anchors>
+				</Texture>
+				<Texture file="Interface\PaperDollInfoFrame\PaperDollSidebarTabs" parentKey="TabBgM">
+					<Size x="50" y="36" />
+					<TexCoords left="0.25" right="0.625" top="0.61328125" bottom="0.75390625" />
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="15" y="0" />
+						<Anchor point="BOTTOMRIGHT" x="-11" y="0" />
+					</Anchors>
+				</Texture>
+				<Texture file="Interface\PaperDollInfoFrame\PaperDollSidebarTabs" parentKey="TabBgR">
+					<Size x="11" y="36" />
+					<TexCoords left="0.625" right="0.79687500" top="0.61328125" bottom="0.75390625" />
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" x="0" y="0" />
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="Hider" file="Interface\PaperDollInfoFrame\PaperDollSidebarTabs">
+					<Size x="34" y="19" />
+					<TexCoords left="0.01562500" right="0.54687500" top="0.11328125" bottom="0.18750000" />
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="8" y="0" />
+						<Anchor point="BOTTOMRIGHT" x="-8" y="0" />
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="HIGHLIGHT">
+				<Texture parentKey="HighlightL" file="Interface\PaperDollInfoFrame\PaperDollSidebarTabs">
+					<Size x="4" y="26" />	
+					<TexCoords left="0.01562500" right="0.078125" top="0.19531250" bottom="0.296875" />
+					<Anchors>
+						<Anchor point="TOPLEFT" x="11" y="-8" />
+					</Anchors>
+				</Texture>
+				<Texture parentKey="HighlightM" file="Interface\PaperDollInfoFrame\PaperDollSidebarTabs">
+					<Size x="31" y="26" />	
+					<TexCoords left="0.078125" right="0.4375" top="0.19531250" bottom="0.296875" />
+					<Anchors>
+						<Anchor point="TOPLEFT" x="15" y="-8" />
+						<Anchor point="TOPRIGHT" x="-12" y="-8" />
+					</Anchors>
+				</Texture>
+				<Texture parentKey="HighlightR" file="Interface\PaperDollInfoFrame\PaperDollSidebarTabs">
+					<Size x="4" y="26" />	
+					<TexCoords left="0.4375" right="0.50000000" top="0.19531250" bottom="0.296875" />
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="-8" y="-8" />
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>		
+		<ButtonText parentKey="Text">
+			<Size>
+				<AbsDimension x="0" y="10"/>
+			</Size>
+			<Anchors>
+				<Anchor point="CENTER" x="3" y="-3" />
+			</Anchors>
+		</ButtonText>
+	</Button>
+</Ui>
