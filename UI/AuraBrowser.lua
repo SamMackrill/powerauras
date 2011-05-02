@@ -420,10 +420,10 @@ PowaAuras.UI:Register("CreateAuraRadioButton", {
 		self:__SetChecked(checked);
 		-- Check new state.
 		if(checked) then
-			self.Icon:SetDesaturated(false);
+			SetDesaturation(self.Icon, false);
 			self:SetBackdropBorderColor(1, 0.82, 0, 1);
 		else
-			self.Icon:SetDesaturated(true);		
+			SetDesaturation(self.Icon, true);	
 			self:SetBackdropBorderColor(0.3, 0.3, 0.3, 1);
 		end
 	end,
