@@ -751,25 +751,6 @@
 									</OnLoad>
 								</Scripts>
 							</Frame>
-							
-							<Button name="$parentTriggerAdd" inherits="OptionsButtonTemplate" text="Add">
-								<Anchors>
-									<Anchor point="BOTTOMRIGHT" relativeTo="$parentTriggers" relativePoint="BOTTOMRIGHT">
-										<Offset>
-											<AbsDimension x="-20" y="40"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-								<Scripts>
-									<OnLoad>
-										getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.UI_TriggerAdd);
-									</OnLoad>
-									<OnClick>
-										PowaEditor:AddNewTrigger();
-									</OnClick>
-								</Scripts>
-							</Button>
-							
 						</Frames>
 					</Frame>
 				</Frames>

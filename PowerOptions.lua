@@ -2140,20 +2140,20 @@ function PowaAuras:InverseChecked()
 end
 
 function PowaAuras:IgnoreMajChecked()
-	local auraId = self.CurrentAuraId;
+	local aura = self.Auras[self.CurrentAuraId];
 	if (PowaIngoreCaseButton:GetChecked()) then
-		self.Auras[auraId].ignoremaj = true;
+		aura.ignoremaj = true;
 	else
-		self.Auras[auraId].ignoremaj = false;
+		aura.ignoremaj = false;
 	end
 end
 
 function PowaAuras:ExactChecked()
-	local auraId = self.CurrentAuraId;
+	local aura = self.Auras[self.CurrentAuraId];
 	if (PowaExactButton:GetChecked()) then
-		self.Auras[auraId].exact = true;
+		aura.exact = true;
 	else
-		self.Auras[auraId].exact = false;
+		aura.exact = false;
 	end
 end
 
@@ -2162,20 +2162,20 @@ function PowaAuras:CheckedButtonOnClick(button, key)
 end
 
 function PowaAuras:RandomColorChecked()
-	local auraId = self.CurrentAuraId;
+	local aura = self.Auras[self.CurrentAuraId];
 	if (PowaRandomColorButton:GetChecked()) then
-		self.Auras[auraId].randomcolor = true;
+		aura.randomcolor = true;
 	else
-		self.Auras[auraId].randomcolor = false;
+		aura.randomcolor = false;
 	end
 end
 
 function PowaAuras:TexModeChecked()
-	local auraId = self.CurrentAuraId;
+	local aura = self.Auras[self.CurrentAuraId];
 	if (PowaTexModeButton:GetChecked()) then
-		self.Auras[auraId].texmode = 1;
+		aura.texmode = 1;
 	else
-		self.Auras[auraId].texmode = 2;
+		aura.texmode = 2;
 	end
 	self:RedisplayAura(self.CurrentAuraId, false);
 end
