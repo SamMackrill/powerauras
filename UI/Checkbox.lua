@@ -1,16 +1,17 @@
 -- Create definition.
 PowaAuras.UI:Register("Checkbox", {
+	Hooks = {
+		"SetChecked",
+	},
 	Init = function(self, property, tooltipDesc)
 		-- Update text to the localized variant.
 		local localeKey = self:GetText();
 		self:SetText(PowaAuras.Text[localeKey]);
 		-- Do we have a property?
 		if(type(property) == "string") then
-			-- Store property.
-			self.Property = property;
 			-- Add OnClick handler for value setting.
 			self:SetScript("OnClick", function(self)
-				PowaAuras:SaveSetting(property, (self:GetChecked() and true or false));
+				PowaAuras.Helpers:SaveSetting(property, (self:GetChecked() and true or false));
 			end);
 		elseif(type(property) == "function") then
 			-- Use supplied onclick handler.
@@ -21,18 +22,31 @@ PowaAuras.UI:Register("Checkbox", {
 		-- Update colours...
 		self:UpdateColors();
 	end,
+	SetChecked = function(self, checked)
+		-- Update.
+		self:__SetChecked(checked);
+		self:UpdateColors();
+	end,
 	UpdateColors = function(self)
 		if(self:GetChecked()) then
 			if(self:IsMouseOver()) then
-				self:SetBackdropBorderColor(1, 0.82, 0, 1);
+				self.BorderLeft:SetVertexColor(1, 0.82, 0, 1);
+				self.BorderTop:SetGradientAlpha("HORIZONTAL", 1, 0.82, 0, 1, 1, 0.82, 0, 0);
+				self.BorderBottom:SetGradientAlpha("HORIZONTAL", 1, 0.82, 0, 1, 1, 0.82, 0, 0);
 			else
-				self:SetBackdropBorderColor(1, 0.82, 0, 0.8);
+				self.BorderLeft:SetVertexColor(1, 0.82, 0, 0.8);
+				self.BorderTop:SetGradientAlpha("HORIZONTAL", 1, 0.82, 0, 0.8, 1, 0.82, 0, 0);
+				self.BorderBottom:SetGradientAlpha("HORIZONTAL", 1, 0.82, 0, 0.8, 1, 0.82, 0, 0);
 			end
 		else
 			if(self:IsMouseOver()) then
-				self:SetBackdropBorderColor(0.3, 0.3, 0.3, 1);
+				self.BorderLeft:SetVertexColor(0.3, 0.3, 0.3, 1);
+				self.BorderTop:SetGradientAlpha("HORIZONTAL", 0.3, 0.3, 0.3, 1, 0.3, 0.3, 0.3, 0);
+				self.BorderBottom:SetGradientAlpha("HORIZONTAL", 0.3, 0.3, 0.3, 1, 0.3, 0.3, 0.3, 0);
 			else
-				self:SetBackdropBorderColor(0.3, 0.3, 0.3, 0.8);
+				self.BorderLeft:SetVertexColor(0.3, 0.3, 0.3, 0.8);
+				self.BorderTop:SetGradientAlpha("HORIZONTAL", 0.3, 0.3, 0.3, 0.8, 0.3, 0.3, 0.3, 0);
+				self.BorderBottom:SetGradientAlpha("HORIZONTAL", 0.3, 0.3, 0.3, 0.8, 0.3, 0.3, 0.3, 0);
 			end
 		end
 	end

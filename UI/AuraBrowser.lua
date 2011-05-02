@@ -85,6 +85,8 @@ PowaAuras.UI:Register("AuraBrowser", {
 		self.Tabs.Auras.Page:SetLocked(false);
 		-- Button update.
 		self:UpdateAuraButtons();
+		-- Config update.
+		self:UpdateConfigOptions();
 	end,
 	SavePageName = function(self, name)
 		-- Get the page.
@@ -122,8 +124,8 @@ PowaAuras.UI:Register("AuraBrowser", {
 	UpdateAuraButtons = function(self)
 		print("|cFF527FCCDEBUG (AuraBrowser): |rUpdating aura buttons!");
 		-- Not strictly button related, but it prevents two function calls.
-		PowaBrowser.Tabs.Auras.Page.Title:SetText(self:GetPageName());
-		PowaBrowser.Tabs.Auras.Page.Title:ClearFocus();
+		self.Tabs.Auras.Page.Title:SetText(self:GetPageName());
+		self.Tabs.Auras.Page.Title:ClearFocus();
 		-- Keep track of if we've displayed at least one empty button.
 		local hasDisplayedEmpty = nil;
 		-- Go over buttons.
@@ -178,8 +180,13 @@ PowaAuras.UI:Register("AuraBrowser", {
 			end
 		end
 		-- Bugfix for buttons vanishing.
-		PowaBrowser.Tabs.Auras.Page:UpdateLayout();
-	end
+		self.Tabs.Auras.Page:UpdateLayout();
+	end,
+	UpdateConfigOptions = function(self)
+		-- Update lots of checkboxes! YAY!
+		self.Tabs.Config.Enable:SetChecked(not PowaAuras.Helpers:GetSetting("Disabled"));
+		self.Tabs.Config.Inspections:SetChecked(PowaAuras.Helpers:GetSetting("AllowInspections"));
+	end,
 });
 
 -- And a definition for the button.

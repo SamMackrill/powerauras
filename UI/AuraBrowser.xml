@@ -335,7 +335,72 @@
 							</OnLoad>
 						</Scripts>
 					</Frame>
-					<Frame parentKey="Config" hidden="true" />
+					<Frame parentKey="Config" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="4" y="-4" />
+							<Anchor point="BOTTOMRIGHT" x="-4" y="5" />
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<FontString parentKey="TitleConfig" justifyH="LEFT" justifyV="MIDDLE" font="PowaFontNormalLarge">
+									<Size x="225" y="40" />
+									<Anchors>
+										<Anchor point="TOPLEFT" x="11" y="0" />
+										<Anchor point="TOPRIGHT" x="-11" y="0" />
+									</Anchors>
+								</FontString>
+								<FontString parentKey="TitlePerformance" justifyH="LEFT" justifyV="MIDDLE" font="PowaFontNormalLarge">
+									<Size x="225" y="40" />
+									<Anchors>
+										<Anchor point="TOPLEFT" x="11" y="-100" />
+										<Anchor point="TOPRIGHT" x="-11" y="-100" />
+									</Anchors>
+								</FontString>
+								<FontString parentKey="TitleCustom" justifyH="LEFT" justifyV="MIDDLE" font="PowaFontNormalLarge">
+									<Size x="225" y="40" />
+									<Anchors>
+										<Anchor point="TOPLEFT" x="11" y="-200" />
+										<Anchor point="TOPRIGHT" x="-11" y="-200" />
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+						<Frames>
+							<CheckButton parentKey="Enable" text="UI_Config_Enable" inherits="PowaNormalCheckboxTemplate">
+								<Size x="150" y="28" />
+								<Anchors>
+									<Anchor point="TOPLEFT" x="16" y="-40" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										self:SetChecked(PowaAuras.Helpers:GetSetting("Disabled"));
+										PowaAuras.UI:Checkbox(self, function(self)
+											PowaAuras.Helpers:SaveSetting("Disabled", not self:GetChecked());
+										end);
+									</OnLoad>
+								</Scripts>
+							</CheckButton>
+							<CheckButton parentKey="Inspections" text="UI_Config_Inspections" inherits="PowaNormalCheckboxTemplate">
+								<Size x="150" y="28" />
+								<Anchors>
+									<Anchor point="TOP" x="16" y="-40" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										self:SetChecked(PowaAuras.Helpers:GetSetting("AllowInspections"));
+										PowaAuras.UI:Checkbox(self, "AllowInspections");
+									</OnLoad>
+								</Scripts>
+							</CheckButton>
+						</Frames>
+						<Scripts>
+							<OnLoad>
+								self.TitleConfig:SetText(PowaAuras.Text["UI_ConfigTitle"]);
+								self.TitlePerformance:SetText(PowaAuras.Text["UI_ConfigTitlePerf"]);
+								self.TitleCustom:SetText(PowaAuras.Text["UI_ConfigTitleCust"]);
+							</OnLoad>
+						</Scripts>
+					</Frame>
 					<Frame parentKey="Help" hidden="true">
 						<Anchors>
 							<Anchor point="TOPLEFT" x="4" y="-4" />
