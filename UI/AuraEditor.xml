@@ -1,0 +1,819 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+    ..\..\FrameXML\UI.xsd">
+	<Script file="AuraEditor.lua" />
+	<Frame name="PowaEditor" toplevel="true" movable="true" parent="PowaBrowser" hidden="true" frameStrata="MEDIUM" enableMouse="true" enableKeyboard="true">
+		<Size>
+          <AbsDimension x="550" y="650" />
+        </Size>
+        <Anchors>
+			<Anchor point="CENTER" relativeTo="UIParent" x="0" y="50" />
+        </Anchors>
+		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+			<BackgroundInsets>
+				<AbsInset left="11" right="12" top="12" bottom="11" />
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="32" />
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="32" />
+			</EdgeSize>
+		</Backdrop>
+		<Scripts>
+			<OnMouseDown>
+				if(button == "LeftButton" and not self.isMoving) then
+					self:StartMoving();
+					self.isMoving = true;
+				end
+			</OnMouseDown>
+			<OnMouseUp>
+				if(button == "LeftButton" and self.isMoving) then
+					self:StopMovingOrSizing();
+					self.isMoving = false;
+				end
+			</OnMouseUp>
+			<OnHide>
+				if(self.isMoving) then
+					self:StopMovingOrSizing();
+					self.isMoving = false;
+				end
+			</OnHide>
+			<OnLoad>
+				PowaAuras.UI:AuraEditor(self);
+			</OnLoad>
+		</Scripts>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture file="Interface\DialogFrame\UI-DialogBox-Header">
+					<Size>
+						<AbsDimension x="300" y="68" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOP" relativePoint="TOP" x="0" y="13"/>
+					</Anchors>					
+				</Texture>
+				<FontString name="$parentTitle" inherits="GameFontNormal" text="Aura Editor" justifyH="CENTER" justifyV="TOP">
+					<Size>
+						<AbsDimension x="300" y="68" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOP" relativePoint="TOP" x="0" y="-2"/>
+					</Anchors>
+				</FontString>
+				<Texture file="Interface\DialogFrame\UI-DialogBox-Corner">
+					<Size x="32" y="32" />	
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="-4" y="-4" />	
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentCloseButton" inherits="UIPanelCloseButton">
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="0" y="0" />
+				</Anchors>
+			</Button>
+			<Frame name="$parentDisplay" inherits="PowaBorderedFrameTemplate">
+				<Size>
+				  <AbsDimension y="260" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOP" x="0" y="-60" />
+					<Anchor point="LEFT" x="15" y="0" />
+					<Anchor point="RIGHT" x="-15" y="0" />
+				</Anchors>
+				<Frames>
+					<Frame name="$parentAura" parentKey="Aura" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="0" y="0" />
+							<Anchor point="BOTTOMRIGHT" x="0" y="0" />
+						</Anchors>
+						<Frames>
+							<Frame name="$parentSidebar" parentKey="Sidebar">
+								<Layers>
+									<Layer level="ARTWORK">
+										<Texture>
+											<Anchors>
+												<Anchor point="TOPLEFT" x="4" y="-4" />
+												<Anchor point="BOTTOMRIGHT" x="-8" y="4" />
+											</Anchors>
+											<Color r="0" g="0" b="0" a="0.535" />
+										</Texture>
+										<Texture file="Interface\COMMON\ShadowOverlay-Left">
+											<Size>
+												<AbsDimension x="16" />
+											</Size>
+											<Anchors>
+												<Anchor point="TOPRIGHT" x="8" y="-4" />
+												<Anchor point="BOTTOMRIGHT" x="8" y="4" />
+											</Anchors>
+											<Color r="0" g="0" b="0" a="0.75" />
+										</Texture>
+										<FontString parentKey="Src" inherits="GameFontHighlight" justifyH="CENTER" justifyV="MIDDLE">
+											<Size>
+												<AbsDimension x="128" />
+											</Size>
+											<Anchors>
+												<Anchor point="TOP" relativePoint="TOP" x="0" y="-110"/>
+											</Anchors>
+										</FontString>
+									</Layer>
+								</Layers>
+								<Frames>
+									<Button name="$parentIcon" parentKey="Icon">
+										<Size>
+											<AbsDimension x="96" y="96" />
+										</Size>
+										<Anchors>
+											<Anchor point="TOP" x="0" y="-10" />
+										</Anchors>
+										<Layers>
+											<Layer level="OVERLAY">
+												<Texture file="Interface\AddOns\PowerAuras\Auras\Aura1" name="$parentTexture" parentKey="Texture">
+													<Size>
+														<AbsDimension x="96" y="96" />
+													</Size>
+													<Anchors>
+														<Anchor point="TOPLEFT" x="0" y="0" />
+														<Anchor point="BOTTOMRIGHT" x="0" y="0" />
+													</Anchors>
+												</Texture>
+												<FontString parentKey="Src" inherits="GameFontHighlight" justifyH="CENTER" justifyV="MIDDLE">
+													<Size>
+														<AbsDimension x="128" />
+													</Size>
+													<Anchors>
+														<Anchor point="TOP" x="0" y="-110"/>
+													</Anchors>
+												</FontString>
+											</Layer>
+										</Layers>
+										<Scripts>
+											<OnLoad>
+												self.Src:SetText(PowaAuras.Text["UI_Aura_TexClick"]);
+											</OnLoad>
+											<OnClick>
+												PowaEditorDisplayAuraMain:SelectTab(2);
+											</OnClick>
+										</Scripts>
+									</Button>
+									<CheckButton name="$parentGlow" parentKey="Glow" text="UI_Aura_TexGlow" inherits="PowaCheckboxTemplate">
+										<Size>
+											<AbsDimension x="64" y="24" />
+										</Size>
+										<Anchors>
+											<Anchor point="BOTTOM" x="0" y="35" />
+										</Anchors>
+										<Scripts>
+											<OnLoad>
+												PowaAuras.UI:Checkbox(self, "Glow");
+											</OnLoad>
+										</Scripts>
+									</CheckButton>
+									<Button name="$parentColor" parentKey="Color" inherits="PowaColorWidgetTemplate">
+										<Size>
+											<AbsDimension x="64" y="24" />
+										</Size>
+										<Anchors>
+											<Anchor point="BOTTOM" x="0" y="9" />
+										</Anchors>
+										<Scripts>
+											<OnShow>
+												self.Text:SetText("Color");
+											</OnShow>
+										</Scripts>
+									</Button>
+								</Frames>
+							</Frame>
+							<Frame name="$parentMain" parentKey="Main">
+								<Anchors>
+									<Anchor point="TOPLEFT" />
+									<Anchor point="BOTTOMRIGHT" />
+								</Anchors>
+								<Frames>
+									<ScrollFrame name="$parentConfig" inherits="UIPanelScrollFrameTemplate" parentKey="Config">
+										<Size>
+											<AbsDimension x="350" />
+										</Size>
+										<Anchors>
+											<Anchor point="TOPLEFT" x="0" y="-2" />
+											<Anchor point="BOTTOMRIGHT" x="-24" y="2" />
+										</Anchors>
+										<ScrollChild>
+											<Frame parentKey="Child">
+												<Size>
+													<!-- Layout frames now have an IsScrollChild property which will autoadjust the height. -->
+													<AbsDimension x="328" y="0" />
+												</Size>
+												<Anchors>
+													<Anchor point="TOPLEFT" />
+													<Anchor point="BOTTOMRIGHT" />
+												</Anchors>
+												<Frames>
+													<Frame parentKey="Separator1" inherits="PowaFrameSeparatorTemplate">
+														<Frames>
+															<Slider name="$parentOpacity" minValue="1" maxValue="100" defaultValue="75" valueStep="1" parentKey="Opacity" inherits="PowaSliderTemplate">
+																<Scripts>
+																	<OnLoad>
+																		PowaAuras.UI:Slider(self, "UI_Aura_TexOpacity", "%");
+																	</OnLoad>
+																</Scripts>
+															</Slider>
+															<Slider name="$parentScale" minValue="1" maxValue="500" defaultValue="75" valueStep="1" parentKey="Scale" inherits="PowaSliderTemplate">
+																<Scripts>
+																	<OnLoad>
+																		PowaAuras.UI:Slider(self, "UI_Aura_TexScale", "%");
+																	</OnLoad>
+																</Scripts>
+															</Slider>
+															<Slider name="$parentRotate" minValue="0" maxValue="360" defaultValue="0" valueStep="1" parentKey="Rotate" inherits="PowaSliderTemplate">
+																<Scripts>
+																	<OnLoad>
+																		PowaAuras.UI:Slider(self, "UI_Aura_TexRotate");
+																	</OnLoad>
+																</Scripts>
+															</Slider>
+															<Slider name="$parentFlip" minValue="1" maxValue="4" defaultValue="1" valueStep="1" parentKey="Flip" inherits="PowaSliderTemplate">
+																<Scripts>
+																	<OnLoad>
+																		-- Add mutators to slider widgets BEFORE initializing them.
+																		self.OnValueGet = function(_, value)
+																			if(value == 1) then return "";
+																			elseif(value == 2) then return "X";
+																			elseif(value == 3) then return "Y";
+																			elseif(value == 4) then return "XY";
+																			else return value; end
+																		end
+																		self.OnValueSet = function(_, value)
+																			if(tonumber(value, 10)) then return tonumber(value, 10); end
+																			
+																			if(value == "") then return 1;
+																			elseif(value == "X") then return 2;
+																			elseif(value == "Y") then return 3;
+																			elseif(value == "XY") then return 4;
+																			else return 1; end
+																		end
+																		PowaAuras.UI:Slider(self, "UI_Aura_TexFlip", "", "None", "XY");
+																	</OnLoad>
+																</Scripts>
+															</Slider>
+														</Frames>
+														<Scripts>
+															<OnLoad>
+																PowaAuras.UI:FrameSeparator(self, "UI_Aura_Separator1", "DisplayAuraStyle");
+																-- Add children.
+																self:AddChild(self.Opacity);
+																self:AddChild(self.Scale);
+																self:AddChild(self.Rotate);
+																self:AddChild(self.Flip);
+															</OnLoad>
+														</Scripts>
+													</Frame>
+													<Frame parentKey="Separator2" inherits="PowaFrameSeparatorTemplate">
+														<Frames>
+															<EditBox name="$parentX" parentKey="X" inherits="PowaEditBoxTemplate">
+																<Scripts>
+																	<OnLoad>
+																		PowaAuras.UI:EditBox(self, "X", "UI_Aura_TexX");
+																		self:SetText(0);
+																	</OnLoad>
+																</Scripts>
+															</EditBox>
+															<EditBox name="$parentY" parentKey="Y" inherits="PowaEditBoxTemplate">
+																<Scripts>
+																	<OnLoad>
+																		PowaAuras.UI:EditBox(self, "Y", "UI_Aura_TexY");
+																		self:SetText(0);
+																	</OnLoad>
+																</Scripts>
+															</EditBox>
+														</Frames>
+														<Scripts>
+															<OnLoad>
+																PowaAuras.UI:FrameSeparator(self, "UI_Aura_Separator2", "DisplayAuraPosition");
+																-- Add children.
+																self:AddChild(self.X);
+																self:AddChild(self.Y);
+															</OnLoad>
+														</Scripts>
+													</Frame>
+													<Frame parentKey="Separator3" inherits="PowaFrameSeparatorTemplate">
+														<Frames>
+															<Slider name="$parentDeform" minValue="0.1" maxValue="2.0" defaultValue="1.0" valueStep="0.05" parentKey="Deform" inherits="PowaSliderTemplate">
+																<Scripts>
+																	<OnLoad>
+																		-- Add mutators to slider widgets BEFORE initializing them.
+																		self.OnValueGet = function(_, value)
+																			return format("%.2f", value);
+																		end
+																		-- Set 0.1 and 2.0 as the min/max labels in string form to prevent the huge precision mess.
+																		PowaAuras.UI:Slider(self, "UI_Aura_TexDeform", "", "0.1", "2.0");
+																	</OnLoad>
+																</Scripts>
+															</Slider>
+															<Slider name="$parentStrata" minValue="-65536" maxValue="65536" defaultValue="0" valueStep="1" parentKey="Strata" inherits="PowaSliderTemplate">
+																<Scripts>
+																	<OnLoad>
+																		PowaAuras.UI:Slider(self, "UI_Aura_TexStrata");
+																	</OnLoad>
+																</Scripts>
+															</Slider>
+														</Frames>
+														<Scripts>
+															<OnLoad>
+																PowaAuras.UI:FrameSeparator(self, "UI_Aura_Separator3", "DisplayAuraAdvanced");
+																-- Add children.
+																self:AddChild(self.Deform);
+																self:AddChild(self.Strata);
+																-- I'm advanced!
+																tinsert(PowaAuras.UI.AuraEditor.AdvancedElements, self);
+															</OnLoad>
+														</Scripts>
+													</Frame>
+												</Frames>
+												<Scripts>
+													<OnLoad>
+														-- Layout needed.
+														PowaAuras.UI:LayoutFrame(self, 0, 0, 1, true, true);
+														self:AddColumn(0.5);
+														self:AddColumn(0.5);
+														
+														self:SetItem(self.Separator1, 2, { 2, -2, 0, 0 }, { 0, 0, 0, 4 });
+														self:SetItem(self.Separator1.Opacity, 1, { 2, 4, 0, 0 }, { 0, 0, 16, 20 });
+														self:SetItem(self.Separator1.Scale, 1, { 4, -2, 0, 0 }, { 0, 0, 16, 20 });
+														self:SetItem(self.Separator1.Rotate, 1, { 2, 4, 0, 0 }, { 0, 0, 16, 20 });
+														self:SetItem(self.Separator1.Flip, 1, { 4, -2, 0, 0 }, { 0, 0, 16, 20 });
+														
+														self:SetItem(self.Separator2, 2, { 2, -2, 0, 0 }, { 0, 0, 6, 4 });
+														self:SetItem(self.Separator2.X, 1, { 2, 4, 0, 0 }, { 0, 0, 4, 4 });
+														self:SetItem(self.Separator2.Y, 1, { 4, -2, 0, 0 }, { 0, 0, 4, 4 });
+														
+														self:SetItem(self.Separator3, 2, { 2, -2, 0, 0 }, { 0, 0, 6, 4 });
+														self:SetItem(self.Separator3.Deform, 1, { 2, 4, 0, 0 }, { 0, 0, 16, 20 });
+														self:SetItem(self.Separator3.Strata, 1, { 4, -2, 0, 0 }, { 0, 0, 16, 20 });
+														
+														-- Unlock layout.
+														self:SetLocked(false);
+													</OnLoad>
+												</Scripts>
+											</Frame>
+										</ScrollChild>
+									</ScrollFrame>
+									<Frame name="$parentSelector" parentKey="Selector" inherits="PowaTabDialogTemplate">
+										<Anchors>
+											<Anchor point="TOPLEFT" />
+											<Anchor point="BOTTOMRIGHT" />
+										</Anchors>
+										<Frames>
+											<Frame name="$parentDefault" inherits="PowaBrowserFrameTemplate" parentKey="Default">
+												<Anchors>
+													<Anchor point="TOPLEFT" x="5" y="-5" />
+													<Anchor point="BOTTOMRIGHT" x="-5" y="30" />
+												</Anchors>
+												<Layers>
+													<Layer level="OVERLAY">
+														<Texture parentKey="Texture">
+															<Anchors>
+																<Anchor point="CENTER" relativePoint="CENTER" x="0" y="0" />
+															</Anchors>
+														</Texture>
+														<FontString parentKey="Error" hidden="true" nonSpaceWrap="true" inherits="GameFontHighlight" justifyH="CENTER" justifyV="MIDDLE">
+															<Size>
+																<AbsDimension x="256" />
+															</Size>
+															<Anchors>
+																<Anchor point="CENTER" relativePoint="CENTER" x="0" y="0"/>
+															</Anchors>
+														</FontString>
+													</Layer>
+												</Layers>
+												<Scripts>
+													<OnLoad>
+														PowaAuras.UI:BrowserFrame(self, 1, 9999, function()
+															-- Automatic sizing trick. Set it to auto initially, then read the size and cap if needed!
+															self.Texture:SetSize(0, 0);
+															self.Texture:SetTexture("Interface\\AddOns\\PowerAuras\\Auras\\Aura" .. self.Page .. ".tga")
+															-- SetTexture is SUPPOSED to return nil if it fails. It doesn't.
+															-- GetTexture will return nil though.
+															if(not self.Texture:GetTexture()) then
+																-- No texture = no texture.
+																self.Error:SetText(format(PowaAuras.Text["UI_Aura_TexErr"], "Interface\\AddOns\\PowerAuras\\Auras\\Aura" .. self.Page .. ".tga"));
+																self.Error:Show();																
+															else
+																self.Error:Hide();
+																-- Automatic sizing does not work for BLP files, so just use a static 128 if no size is reported.
+																local x, y = self.Texture:GetSize();
+																if(x == 0 or y == 0) then
+																	self.Texture:SetSize(128, 128);
+																else
+																	local newX, newY = (256 >= x and x or 256), 0;
+																	newY = (y*(newX/x));
+																	if(newY > 128) then
+																		self.Texture:SetSize((x*(128/y)), 128);
+																	else
+																		self.Texture:SetSize(newX, newY);																		
+																	end
+																end
+															end
+														end);
+													</OnLoad>
+												</Scripts>
+											</Frame>
+											<Frame name="$parentWoW" inherits="PowaBrowserFrameTemplate" parentKey="WoW">
+												<Anchors>
+													<Anchor point="TOPLEFT" x="5" y="-5" />
+													<Anchor point="BOTTOMRIGHT" x="-5" y="30" />
+												</Anchors>
+												<Layers>
+													<Layer level="OVERLAY">
+														<Texture parentKey="Texture">
+															<Anchors>
+																<Anchor point="CENTER" relativePoint="CENTER" x="0" y="0" />
+															</Anchors>
+														</Texture>
+													</Layer>
+												</Layers>
+												<Scripts>
+													<OnLoad>
+														PowaAuras.UI:BrowserFrame(self, 1, #(PowaAuras.WowTextures), function(self, page)
+															-- Automatic sizing trick. Set it to auto initially, then read the size and cap if needed!
+															self.Texture:SetSize(0, 0);
+															self.Texture:SetTexture(PowaAuras.WowTextures[page]);
+															-- Automatic sizing does not work for BLP files, so just use a static 128 if no size is reported.
+															local x, y = self.Texture:GetSize();
+															if(x == 0 or y == 0) then
+																self.Texture:SetSize(128, 128);
+															else
+																local newX, newY = (256 >= x and x or 256), 0;
+																newY = (y*(newX/x));
+																if(newY > 128) then
+																	self.Texture:SetSize((x*(128/y)), 128);
+																else
+																	self.Texture:SetSize(newX, newY);																		
+																end
+															end
+														end);
+													</OnLoad>
+												</Scripts>
+											</Frame>
+											<Frame name="$parentCustom" inherits="PowaBrowserFrameBaseTemplate" parentKey="Custom">
+												<Anchors>
+													<Anchor point="TOPLEFT" x="5" y="-5" />
+													<Anchor point="BOTTOMRIGHT" x="-5" y="30" />
+												</Anchors>
+												<Layers>
+													<Layer level="OVERLAY">
+														<Texture parentKey="Texture">
+															<Anchors>
+																<Anchor point="CENTER" relativePoint="CENTER" x="0" y="0" />
+															</Anchors>
+														</Texture>
+														<FontString parentKey="Error" hidden="true" nonSpaceWrap="true" inherits="GameFontHighlight" justifyH="CENTER" justifyV="MIDDLE">
+															<Size>
+																<AbsDimension x="256" />
+															</Size>
+															<Anchors>
+																<Anchor point="CENTER" relativePoint="CENTER" x="0" y="0"/>
+															</Anchors>
+														</FontString>
+													</Layer>
+												</Layers>
+												<Frames>
+													<EditBox name="$parentTexName" parentKey="TexName" inherits="PowaEditBoxTemplate">
+														<Anchors>
+															<Anchor point="BOTTOMLEFT" x="9" y="9" />
+															<Anchor point="BOTTOMRIGHT" x="-9" y="9" />
+														</Anchors>
+														<Scripts>
+															<OnLoad>
+																PowaAuras.UI:EditBox(self, nil, "UI_BrowserTex");
+																self:SetText("");
+															</OnLoad>
+															<OnEnterPressed>
+																local text, page = self:GetText(), self:GetParent().Page;
+																if(text ~= "") then
+																	-- Store it.
+																	if(not PowaGlobalMisc["CustomTextures"][page]) then
+																		tinsert(PowaGlobalMisc["CustomTextures"], page, text);
+																	else
+																		PowaGlobalMisc["CustomTextures"][page] = text;
+																	end
+																	-- Update page count.
+																	self:GetParent():SetMaxPage(#(PowaGlobalMisc["CustomTextures"])+1);
+																elseif(text == "") then
+																	-- Blank means remove.
+																	tremove(PowaGlobalMisc["CustomTextures"], page);
+																	self:GetParent():SetMaxPage(#(PowaGlobalMisc["CustomTextures"])+1);																			
+																end
+																self:ClearFocus();
+															</OnEnterPressed>
+														</Scripts>
+													</EditBox>
+												</Frames>
+												<Scripts>
+													<OnLoad>
+														-- Initialize the frame.
+														PowaAuras.UI:BrowserFrame(self, 1, #(PowaGlobalMisc["CustomTextures"])+1, function(self, page)
+															-- Texture on this page?
+															if(PowaGlobalMisc["CustomTextures"][page]) then
+																local texpath, texture = PowaGlobalMisc["PathToAuras"], PowaGlobalMisc["CustomTextures"][page];
+																-- Yes, wow.
+																self.Error:Hide();
+																self.TexName:SetText(texture);
+																-- Set the texture up.
+																self.Texture:SetSize(0, 0);
+																self.Texture:SetTexture(texpath .. texture)
+																if(not self.Texture:GetTexture()) then
+																	-- No texture = no texture.
+																	self.Error:SetText(format(PowaAuras.Text["UI_Aura_TexErr"], texpath .. texture));
+																	self.Error:Show();		
+																	self.Texture:Hide();														
+																else
+																	self.Error:Hide();
+																	-- Automatic sizing does not work for BLP files, so just use a static 128 if no size is reported.
+																	local x, y = self.Texture:GetSize();
+																	if(x == 0 or y == 0) then
+																		self.Texture:SetSize(128, 128);
+																	else
+																		local newX, newY = (256 >= x and x or 256), 0;
+																		newY = (y*(newX/x));
+																		if(newY > 128) then
+																			self.Texture:SetSize((x*(128/y)), 128);
+																		else
+																			self.Texture:SetSize(newX, newY);																		
+																		end
+																	end
+																	self.Texture:Show();
+																end
+															else
+																-- Nope.
+																self.Texture:Hide();
+																self.Error:SetText(format(PowaAuras.Text["UI_Aura_TexErrCust"], PowaGlobalMisc["PathToAuras"]));
+																self.Error:Show();
+																self.TexName:SetText("");
+															end
+														end);
+													</OnLoad>
+													<OnShow>
+														-- Temporary workaround. Will remove later.
+														self:SetMaxPage(#(PowaGlobalMisc["CustomTextures"])+1);
+													</OnShow>
+												</Scripts>
+											</Frame>
+											<Frame name="$parentText" parentKey="Text">
+												<Anchors>
+													<Anchor point="TOPLEFT" />
+													<Anchor point="BOTTOMRIGHT" />
+												</Anchors>
+											</Frame>
+											<Frame name="$parentIcon" parentKey="Icon">
+												<Anchors>
+													<Anchor point="TOPLEFT" />
+													<Anchor point="BOTTOMRIGHT" />
+												</Anchors>
+											</Frame>
+										</Frames>
+										<Scripts>
+											<OnShow>
+												PowaEditorDisplay.Aura.Sidebar.Src:Hide();
+												PowaEditorDisplay.Aura.Sidebar.Icon:Hide();
+											</OnShow>
+											<OnHide>
+												PowaEditorDisplay.Aura.Sidebar.Src:Show();
+												PowaEditorDisplay.Aura.Sidebar.Icon:Show();
+											</OnHide>
+											<OnLoad>
+												-- Uses the tab sidebar template.
+												PowaAuras.UI:TabFrame(self, 2);
+												self:RegisterTab(self.Default, "UI_Aura_SrcNorm");
+												self:RegisterTab(self.WoW, "UI_Aura_SrcWoW");
+												self:RegisterTab(self.Custom, "UI_Aura_SrcCust");
+												self:RegisterTab(self.Text, "UI_Aura_SrcText");
+												self:RegisterTab(self.Icon, "UI_Aura_SrcIcon");
+												-- Dialog accept/close handlers.
+												self.AcceptButton:SetScript("OnClick", function()
+													PowaEditorDisplayAuraMain:SelectTab(1);
+												end);
+												self.CancelButton:SetScript("OnClick", function()
+													PowaEditorDisplayAuraMain:SelectTab(1);
+												end);
+											</OnLoad>
+										</Scripts>
+									</Frame>
+								</Frames>
+								<Scripts>
+									<OnLoad>
+										-- This is actually a tab enabled frame, but we hide all the tabs.
+										PowaAuras.UI:TabFrame(self, 3);
+										self:RegisterTab(self.Config);
+										self:RegisterTab(self.Selector);
+									</OnLoad>
+								</Scripts>
+							</Frame>
+						</Frames>
+						<Scripts>
+							<OnLoad>
+								PowaAuras.UI:LayoutFrame(self, 0, 0, 1, true);
+								self:AddColumn(0.3, 1);
+								self:AddColumn(0.7, 1);
+								self:SetItem(self.Sidebar);
+								self:SetItem(self.Main, 1, { 4, 4, 4, 4 });
+								-- Unlock layout.
+								self:SetLocked(false);
+							</OnLoad>
+						</Scripts>
+					</Frame>
+					<Frame name="$parentTimer" parentKey="Timer" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="4" y="-4" />
+							<Anchor point="BOTTOMRIGHT" x="-4" y="5" />
+						</Anchors>
+						<Frames>
+							<Frame name="$parentTree" parentKey="Tree" inherits="PowaTreeViewTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT" x="2" y="-2" />
+									<Anchor point="BOTTOMLEFT" x="2" y="2" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										PowaAuras.UI:TreeView(self);
+										self:AddItem(1, PowaAuras.Text["UI_SrcText"]);
+										self:AddItem(2, PowaAuras.Text["UI_SrcGfx"]);
+										self:SetSelectedKey(1);
+									</OnLoad>
+								</Scripts>
+							</Frame>
+							<Frame parentKey="Page" inherits="PowaBorderedFrameTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT" x="177" y="-2" />
+									<Anchor point="BOTTOMRIGHT" x="-2" y="2" />
+								</Anchors>
+								<Layers>
+									<Layer level="ARTWORK">
+										<!-- Maybe do a preview here? -->
+									</Layer>
+								</Layers>
+								<Frames>
+								</Frames>
+								<Scripts>
+									<OnLoad>
+										-- Init layout frame, lock layout to speed up load.
+										--[[
+										PowaAuras.UI:LayoutFrame(self);
+										-- Add columns.
+										self:AddColumn(0.5);
+										self:AddColumn(0.5);
+										for i=1,300 do
+											local item = CreateFrame("Frame", nil, self);
+											item.Texture = item:CreateTexture(nil);
+											item.Texture:SetPoint("TOPLEFT");
+											item.Texture:SetPoint("BOTTOMRIGHT");
+											if(mod(i, 2) == 0) then
+												item.Texture:SetTexture(1-(i*0.003), 0, 0);
+											elseif(mod(i, 3) == 0) then
+												item.Texture:SetTexture(0, 1-(i*0.003), 0);
+											else
+												item.Texture:SetTexture(0, 0, 1-(i*0.003));
+											end
+											item:SetHeight(3);
+											self:AddItem(item);
+										end
+										-- Unlock layout. This will trigger 1 update, as opposed to about 8 updates while initializing.
+										self:SetLocked(false);
+										--]]
+									</OnLoad>
+								</Scripts>
+							</Frame>
+						</Frames>
+					</Frame>
+					<Frame name="$parentStacks" parentKey="Stacks" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="4" y="-4" />
+							<Anchor point="BOTTOMRIGHT" x="-4" y="5" />
+						</Anchors>
+						<Frames>
+							<Frame name="$parentTree" parentKey="Tree" inherits="PowaTreeViewTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT" x="2" y="-2" />
+									<Anchor point="BOTTOMLEFT" x="2" y="2" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										PowaAuras.UI:TreeView(self);
+										self:AddItem(1, PowaAuras.Text["UI_SrcText"]);
+										self:AddItem(2, PowaAuras.Text["UI_SrcGfx"]);
+										self:SetSelectedKey(1);
+									</OnLoad>
+								</Scripts>
+							</Frame>
+						</Frames>
+					</Frame>
+				</Frames>
+				<Scripts>
+					<OnLoad>
+						PowaAuras.UI:TabFrame(self, 1);
+						self:RegisterTab(self.Aura, "UI_Aura");
+						self:RegisterTab(self.Timer, "UI_Timer");
+						self:RegisterTab(self.Stacks, "UI_Stacks");
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			<Frame name="$parentActivation" parentKey="Activation" inherits="PowaBorderedFrameTemplate">
+				<Size>
+				  <AbsDimension y="258" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parentDisplay" x="0" y="-30" />
+					<Anchor point="LEFT" x="15" y="0" />
+					<Anchor point="RIGHT" x="-15" y="0" />
+				</Anchors>
+				<Frames>
+					<Frame name="$parentRules" parentKey="Rules" hidden="true" />
+					<Frame name="$parentAnim" parentKey="Anim" hidden="true" />
+					<Frame name="$parentSound" parentKey="Sound" hidden="true" />
+					<Frame name="$parentTriggers" parentKey="Triggers" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="4" y="-4" />
+							<Anchor point="BOTTOMRIGHT" x="-4" y="5" />
+						</Anchors>
+						<Frames>
+							<Frame name="$parentTree" parentKey="Tree" inherits="PowaTreeViewTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT" x="2" y="-2" />
+									<Anchor point="BOTTOMLEFT" x="2" y="22" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										PowaAuras.UI:TreeView(self);
+									</OnLoad>
+								</Scripts>
+							</Frame>
+							
+							<Button name="$parentTriggerAdd" inherits="OptionsButtonTemplate" text="Add">
+								<Anchors>
+									<Anchor point="BOTTOMRIGHT" relativeTo="$parentTriggers" relativePoint="BOTTOMRIGHT">
+										<Offset>
+											<AbsDimension x="-20" y="40"/>
+										</Offset>
+									</Anchor>
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.UI_TriggerAdd);
+									</OnLoad>
+									<OnClick>
+										PowaEditor:AddNewTrigger();
+									</OnClick>
+								</Scripts>
+							</Button>
+							
+						</Frames>
+					</Frame>
+				</Frames>
+				<Scripts>
+					<OnLoad>
+						PowaAuras.UI:TabFrame(self, 1);
+						self:RegisterTab(self.Rules, "UI_Rules");
+						self:RegisterTab(self.Anim, "UI_Anim");
+						self:RegisterTab(self.Sound, "UI_Sound");
+						self:RegisterTab(self.Triggers, "UI_Triggers");
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			<CheckButton name="$parentAdvanced" parentKey="Advanced" text="UI_Advanced" inherits="PowaCheckboxTemplate">
+				<Size>
+					<AbsDimension x="92" y="24" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" x="-17" y="15" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						-- Use our own oncheck handler for advanced element showing/hiding.
+						PowaAuras.UI:Checkbox(self, function(self)
+							-- Amichecked? Am I?
+							self:GetParent():ToggleAdvanced((self:GetChecked() and true or false));
+						end);
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parentDebug" parentKey="Debug" text="UI_Debug" inherits="PowaCheckboxTemplate">
+				<Size>
+					<AbsDimension x="74" y="24" />
+				</Size>
+				<Anchors>
+					<Anchor point="RIGHT" relativePoint="LEFT" relativeTo="$parentAdvanced" x="-3" y="0" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						PowaAuras.UI:Checkbox(self, "Debug");
+						tinsert(PowaAuras.UI.AuraEditor.AdvancedElements, self);
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+		</Frames>
+	</Frame>
+</Ui>
