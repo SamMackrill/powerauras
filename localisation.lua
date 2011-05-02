@@ -787,6 +787,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	UI_CreateAuraNew       = "Blank Aura",
 	UI_CreateAuraPreset    = "Preset Aura",
 	
+	UI_SelAura_None        = "No Aura Selected",
 	UI_SelAura_Title       = "Aura %d",
 	UI_SelAura_TooltipExt  = "\n|cFFFFD100Left-Click: |rSelect Aura\n|cFFFFD100Right-Click: |rEdit Aura\n|cFFFFD100Ctrl-Click: |rDebug Aura",
 	UI_SelAura_Edit        = "Edit",

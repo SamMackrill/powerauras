@@ -5,7 +5,7 @@
 	<Script file="TabDialog.lua" />
 	<Frame name="PowaTabDialogTemplate" virtual="true">
 		<Frames>
-			<Button name="$parentAcceptButton" parentKey="AcceptButton" inherits="UIPanelButtonTemplate2" text="Save">
+			<Button parentKey="AcceptButton" name="$parentAcceptButton" inherits="UIPanelButtonTemplate2" text="Save">
 				<Size>
 					<AbsDimension x="118" y="22" />
 				</Size>
@@ -13,12 +13,33 @@
 					<Anchor point="BOTTOMRIGHT" x="-5" y="5" />
 				</Anchors>
 			</Button>
-			<Button name="$parentCancelButton" parentKey="CancelButton" inherits="UIPanelButtonTemplate2" text="Cancel">
+			<Button parentKey="CancelButton" name="$parentCancelButton" inherits="UIPanelButtonTemplate2" text="Cancel">
 				<Size>
 					<AbsDimension x="118" y="22" />
 				</Size>
 				<Anchors>
-					<Anchor point="RIGHT" relativeTo="$parentAcceptButton" relativePoint="LEFT" x="-10" y="0" />
+					<Anchor point="BOTTOMRIGHT" x="-128" y="5" />
+				</Anchors>
+			</Button>
+		</Frames>
+	</Frame>
+	
+	<Frame name="PowaBorderedTabDialogTemplate" inherits="PowaBorderedFrameTemplate" virtual="true">
+		<Frames>
+			<Button parentKey="AcceptButton" name="$parentAcceptButton" inherits="UIPanelButtonTemplate2" text="Save">
+				<Size>
+					<AbsDimension x="118" y="22" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" x="-5" y="5" />
+				</Anchors>
+			</Button>
+			<Button parentKey="CancelButton" name="$parentCancelButton" inherits="UIPanelButtonTemplate2" text="Cancel">
+				<Size>
+					<AbsDimension x="118" y="22" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" x="-128" y="5" />
 				</Anchors>
 			</Button>
 		</Frames>
