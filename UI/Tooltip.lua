@@ -46,5 +46,5 @@ PowaAuras.UI:Register("Tooltip", {
 		else
 			frame:SetScript(script, callback);
 		end
-	end
+	end,
 });
