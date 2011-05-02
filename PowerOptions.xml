@@ -427,7 +427,7 @@
 						PowaEditButtonText:SetText(PowaAuras.Text.nomEdit);
 					</OnLoad>
 					<OnClick>
-						PowaAuras:EditorShow();
+						PowaAuras:EditorToggle();
 						PlaySound("igCharacterInfoTab", PowaMisc.SoundChannel);
 					</OnClick>
 				</Scripts>
@@ -447,7 +447,7 @@
 						PowaMainTestButtonText:SetText(PowaAuras.Text.nomTest);
 					</OnLoad>
 					<OnClick>
-						PowaAuras:OptionTest();
+						PowaAuras:ToggleTesting();
 						PowaAuras:UpdateMainOption();
 						PlaySound("igCharacterInfoTab", PowaMisc.SoundChannel);
 					</OnClick>
@@ -468,7 +468,7 @@
 						PowaMainTestAllButtonText:SetText(PowaAuras.Text.nomTestAll);
 					</OnLoad>
 					<OnClick>
-						PowaAuras:OptionTestAll();
+						PowaAuras:TestAllAuras();
 						PowaAuras:UpdateMainOption();
 						PlaySound("igCharacterInfoTab", PowaMisc.SoundChannel);
 					</OnClick>

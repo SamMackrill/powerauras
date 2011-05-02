@@ -40,6 +40,16 @@ function PowaAuras:VARIABLES_LOADED(...)
 	end
 	
 	_, self.playerclass = UnitClass("player");
+	
+	-- Load class auras.
+	local class = UnitClass("player");
+	if(not PowaClassListe) then PowaClassListe = {}; end
+	if(not PowaClassListe[class]) then
+		PowaClassListe[class] = {};
+		for i=1,5 do
+			PowaClassListe[class][i] = PowaAuras.Text.ListeClass .. i;
+		end
+	end
 
 	self:LoadAuras();
 
@@ -59,6 +69,11 @@ function PowaAuras:VARIABLES_LOADED(...)
 
 	if (not PowaMisc.Disabled) then
 		self:RegisterEvents(PowaAuras_Frame);
+	end
+	
+	-- UI stuff. Race condition prevention (can it ever actually HAPPEN? I don't want to know..)
+	if(PowaBrowser.OnVariablesLoaded) then
+		PowaBrowser:OnVariablesLoaded();
 	end
 
 	self.VariablesLoaded = true;
@@ -109,6 +124,8 @@ function PowaAuras:Setup()
 	self:MemorizeActions();
 	
 	self.DoCheck.All = true;
+	--self:ShowText("DoCheck.All: Setup");
+
 		
 	self.SetupDone = true;
 end
@@ -166,6 +183,7 @@ end
 function PowaAuras:PLAYER_UPDATE_RESTING(...)
 	if (self.ModTest == false) then
 		self.DoCheck.All = true;
+		--self:ShowText("DoCheck.All: PLAYER_UPDATE_RESTING");
 	end
 end
 
@@ -311,6 +329,7 @@ function PowaAuras:UNIT_SPELLCAST_SUCCEEDED(...)
 		if (self.TalentChangeSpells[spell]) then
 			self:ResetTalentScan(unit);
 			self.DoCheck.All = true;
+			--self:ShowText("DoCheck.All: Talents changed");
 		end
 		if (self.DebugEvents) then
 			self:DisplayText("UNIT_SPELLCAST_SUCCEEDED ",unit, " ", spell);
@@ -462,6 +481,7 @@ end
 function PowaAuras:PLAYER_DEAD(...)
 	if (self.ModTest == false) then
 		self.DoCheck.All = true;
+		--self:ShowText("DoCheck.All: PLAYER_DEAD");
 	end
 	self.WeAreMounted = false;
 	self.WeAreInVehicle = false;
@@ -473,6 +493,7 @@ function PowaAuras:PLAYER_ALIVE(...)
 		self.WeAreAlive = true;
 		if (self.ModTest == false) then
 			self.DoCheck.All = true;
+			--self:ShowText("DoCheck.All: PLAYER_ALIVE");
 		end
 	end
 end
@@ -482,6 +503,7 @@ function PowaAuras:PLAYER_UNGHOST(...)
 		self.WeAreAlive = true;
 		if (self.ModTest == false) then
 			self.DoCheck.All = true;
+			--self:ShowText("DoCheck.All: PLAYER_UNGHOST");
 		end
 	end
 end
@@ -529,6 +551,7 @@ function PowaAuras:PLAYER_REGEN_DISABLED(...)
 	self.WeAreInCombat = true;
 	if (self.ModTest == false) then
 		self.DoCheck.All = true;
+		--self:ShowText(GetTime()," DoCheck.All: PLAYER_REGEN_DISABLED");
 	end	   
 end
 	   
@@ -536,6 +559,7 @@ function PowaAuras:PLAYER_REGEN_ENABLED(...)
 	self.WeAreInCombat = false;
 	if (self.ModTest == false) then
 		self.DoCheck.All = true;
+		--self:ShowText(GetTime()," DoCheck.All: PLAYER_REGEN_ENABLED");
 	end
 end   
 
@@ -549,6 +573,7 @@ function PowaAuras:ZONE_CHANGED_NEW_AREA()
 			self:DisplayText("ZONE_CHANGED_NEW_AREA ", self.InInstance, " - ", self.InstanceType);
 		end
 		self.DoCheck.All = true;
+		--self:ShowText("DoCheck.All: ZONE_CHANGED_NEW_AREA");
 	end
 end
 
@@ -592,6 +617,7 @@ function PowaAuras:VehicleCheck(unit, entered)
 	if unit ~= "player" then return; end
 	if (self.ModTest == false) then
 		self.DoCheck.All = true;
+		--self:ShowText("DoCheck.All: VehicleCheck");
 	end	
 	self.WeAreInVehicle = entered;
 end
@@ -630,6 +656,7 @@ function PowaAuras:FlagsChanged(unit)
 			--self:ShowText("UNIT_FACTION Player PvP = ",flag);
 			if (self.ModTest == false) then
 				self.DoCheck.All = true;
+				--self:ShowText("DoCheck.All: FlagsChanged");
 			end
 		end
 		return;
@@ -783,8 +810,9 @@ function PowaAuras:ACTIONBAR_UPDATE_USABLE(...)
 	self.DoCheck.CheckIt = true;
 end
 	
-function PowaAuras:SPELL_UPDATE_COOLDOWN(...)
+function PowaAuras:SPELL_UPDATE_USABLE(...)
 	if (self.ModTest) then return; end
+	--self:DisplayText("SPELL_UPDATE_USABLE ", unit);
 	self.DoCheck.SpellCooldowns = true;
 	self.DoCheck.CheckIt = true;
 end
