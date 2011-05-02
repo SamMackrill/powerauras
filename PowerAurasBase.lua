@@ -20,7 +20,7 @@ PowaAuras = {
 	
 	DebugEvents = false;
 	DebugTriggers = false;
-	DebugAura = 121;
+	--DebugAura = 121;
 	
 	-- Internal counters
 	DebugTimer = 0;
@@ -247,7 +247,7 @@ PowaAuras = {
 		GTFO = false,
 		UnitMatch = false,
 
-		-- true if any type should be checked
+		-- true if any aura types waiting to be checked
 		CheckIt = false,
 	};
 
@@ -331,6 +331,8 @@ PowaAuras = {
 	
 	-- index -> aura name
 	AurasByTypeList = {};
+	
+	OneShotAuras = {};
 	
 	DebuffCatType =
 	{
@@ -590,9 +592,10 @@ if(LibStub) then
 	end
 end
 
-function PowaAuras:RegisterAuraType(auraType)
+function PowaAuras:RegisterAuraType(auraType, oneShot)
 	self.AurasByType[auraType] = {};
 	table.insert(self.AurasByTypeList, auraType);
+	if (oneShot) then self.OneShotAuras[auraType] = true; end
 end
 
 PowaAuras:RegisterAuraType('Buffs');
@@ -669,10 +672,10 @@ PowaAuras:RegisterAuraType('Tracking');
 
 PowaAuras:RegisterAuraType('UnitMatch');
 		
-PowaAuras:RegisterAuraType('GTFOHigh');
-PowaAuras:RegisterAuraType('GTFOLow');
-PowaAuras:RegisterAuraType('GTFOFail');
-PowaAuras:RegisterAuraType('GTFOFriendlyFire');
+PowaAuras:RegisterAuraType('GTFOHigh', true);
+PowaAuras:RegisterAuraType('GTFOLow', true);
+PowaAuras:RegisterAuraType('GTFOFail', true);
+PowaAuras:RegisterAuraType('GTFOFriendlyFire', true);
 
 -- Use these spells to detect GCD, ideally these should be spells classes have from the beginning
 PowaAuras.GCDSpells = {
