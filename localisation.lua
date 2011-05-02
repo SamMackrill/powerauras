@@ -792,6 +792,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	UI_CreateNewDesc       = "Create a new aura with the default settings.",
 	UI_CreatePreset        = "Preset Aura",
 	UI_CreatePresetDesc    = "Import an existing preset aura available to your class.",
+	UI_CreateImport        = "Import Aura",
+	UI_CreateImportDesc    = "Import an aura or aura set from an export code.",
 	
 	UI_SelAura_None        = "No Aura Selected",
 	UI_SelAura_Title       = "Aura %d",

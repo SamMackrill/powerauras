@@ -60,17 +60,17 @@
 						<Anchor point="LEFT" x="10" y="0" />
 					</Anchors>
 				</Texture>
-				<FontString parentKey="Title" font="GameFontNormal" text="Create Blank Aura" justifyH="LEFT" justifyV="TOP">
+				<FontString name="$parentTitle" parentKey="Title" font="GameFontNormal" text="Create Blank Aura" justifyH="LEFT" justifyV="TOP">
 					<Size x="1" y="20" />
 					<Anchors>
 						<Anchor point="TOPLEFT" x="56" y="-4" />
 						<Anchor point="TOPRIGHT" x="-4" y="-4" />
 					</Anchors>
 				</FontString>
-				<FontString parentKey="Desc" font="GameFontHighlightSmall" text="Create Blank Aura" justifyH="LEFT" justifyV="MIDDLE">
+				<FontString parentKey="Desc" font="GameFontHighlight" text="Create Blank Aura" justifyH="LEFT" justifyV="TOP">
 					<Anchors>
-						<Anchor point="LEFT" x="56" y="0" />
-						<Anchor point="RIGHT" x="-4" y="0" />
+						<Anchor point="TOPLEFT" x="56" y="-20" />
+						<Anchor point="BOTTOMRIGHT" x="-8" y="4" />
 					</Anchors>
 				</FontString>
 			</Layer>
@@ -285,6 +285,9 @@
 											elseif(self.SelectedKey == 2) then
 												-- Import preset.
 												print("|cFF527FCCDEBUG (AuraBrowser): |rPreset Import Dialog NYI");
+											elseif(self.SelectedKey == 3) then
+												-- Import from code.
+												print("|cFF527FCCDEBUG (AuraBrowser): |rPreset Import Code NYI");
 											end
 										end
 										self.OnCancel = function()
@@ -292,20 +295,22 @@
 										end
 										-- I'm also a radio button host.
 										PowaAuras.UI:RadioGroup(self, "CreateAuraRadioButton", true);
-										for i=1,2 do
+										for i=1,3 do
 											local item = self:AddItem(i);
 											item:SetPoint("TOPLEFT", 15, -50-((i-1)*63));
 											item:SetPoint("TOPRIGHT", -15, -50-((i-1)*63));
 											if(i == 1) then
-												SetDesaturation(item.Icon, false);
 												item.Title:SetText(PowaAuras.Text["UI_CreateNew"]);
 												item.Desc:SetText(PowaAuras.Text["UI_CreateNewDesc"]);
-											else
+											elseif(i == 2) then
 												item.Icon:SetTexture("Interface\\Glues\\CharacterCreate\\UI-CHARACTERCREATE-CLASSES");
 												item.Icon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[select(2, UnitClass("player"))]));
-												SetDesaturation(item.Icon, true);
 												item.Title:SetText(PowaAuras.Text["UI_CreatePreset"]);
 												item.Desc:SetText(PowaAuras.Text["UI_CreatePresetDesc"]);
+											elseif(i == 3) then
+												item.Icon:SetTexture("Interface\\Buttons\\UI-MicroStream-Green");
+												item.Title:SetText(PowaAuras.Text["UI_CreateImport"]);
+												item.Desc:SetText(PowaAuras.Text["UI_CreateImportDesc"]);
 											end
 										end
 										-- Update on selection changed.
