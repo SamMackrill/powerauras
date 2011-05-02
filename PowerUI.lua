@@ -105,7 +105,3 @@ function PowaAuras:SaveSetting(property, value, auraId)
 	-- self:RedisplayAura(auraId);
 	print("Saved: ", property, value, auraId);
 end
-
--- Todo: Replace widget ctor code with following:
---[[
-]]--

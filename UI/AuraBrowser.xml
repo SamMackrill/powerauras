@@ -279,11 +279,9 @@
 											if(self.SelectedKey == 1) then
 												-- Create aura.
 												print("|cFF527FCCDEBUG (AuraBrowser): |rCreating Blank Aura");
-												-- Todo: Move this function.
-												PowaAuras:OptionNewEffect();
+												PowaAuras.Helpers:CreateAura();
 												-- Done.
-												PowaBrowser:UpdateAuraButtons();
-												self:GetParent():SelectTab(1);
+												PowaBrowser:SetSelectedAura(PowaBrowser:GetSelectedAura(), false);
 											elseif(self.SelectedKey == 2) then
 												-- Import preset.
 												print("|cFF527FCCDEBUG (AuraBrowser): |rPreset Import Dialog NYI");
