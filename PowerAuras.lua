@@ -148,6 +148,21 @@ function PowaAuras:LoadAuras()
 		end
 	end
 	
+	local class = select(2, UnitClass("player"));
+	if(not PowaClassSet[class]) then
+		PowaClassSet[class] = {};
+	end
+	for k, v in pairs(PowaClassSet[class]) do
+		if (k>360 and not self.Auras[k]) then
+			--self:UnitTestDebug("is_a=",v.is_a);
+			if (v.is_a == nil or not v:is_a(cPowaAura)) then
+				--self:ShowText("load aura ", k, " bufftype=",v.bufftype);
+				self.Auras[k] = self:AuraFactory(v.bufftype, k, v);
+				--self:UnitTestDebug("Out=",self.Auras[k].buffname);
+			end
+		end	
+	end
+	
 	if (self.DebugAura and self.Auras[self.DebugAura]) then
 		self.Auras[self.DebugAura].Debug = true;
 	end
@@ -169,6 +184,9 @@ function PowaAuras:LoadAuras()
 	PowaSet = self.Auras;
 	for i = 121, 360 do
 		PowaGlobalSet[i] = self.Auras[i];
+	end
+	for i=361,480 do
+		PowaClassSet[class][i] = self.Auras[i];
 	end
 	PowaTimer = {};
 	

@@ -179,8 +179,6 @@ PowaAuras.UI:Register("AuraBrowser", {
 		end
 		-- Bugfix for buttons vanishing.
 		PowaBrowser.Tabs.Auras.Page:UpdateLayout();
-		-- No longer need you, mister linkedAuras.
-		if(linkedAuras) then wipe(linkedAuras); end
 	end
 });
 

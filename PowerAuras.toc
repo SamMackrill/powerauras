@@ -29,6 +29,7 @@ PowerAurasDecoratorClasses.lua
 PowerAurasAuraClasses.lua
 PowerAurasAnimations.lua
 PowerAuras.lua
+PowerHelpers.lua
 PowerAurasEvents.lua
 PowerComms.lua
 PowerOptions.lua
