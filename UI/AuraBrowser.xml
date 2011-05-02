@@ -299,13 +299,13 @@
 											item:SetPoint("TOPLEFT", 15, -50-((i-1)*63));
 											item:SetPoint("TOPRIGHT", -15, -50-((i-1)*63));
 											if(i == 1) then
-												item.Icon:SetDesaturated(false);
+												SetDesaturation(item.Icon, false);
 												item.Title:SetText(PowaAuras.Text["UI_CreateNew"]);
 												item.Desc:SetText(PowaAuras.Text["UI_CreateNewDesc"]);
 											else
 												item.Icon:SetTexture("Interface\\Glues\\CharacterCreate\\UI-CHARACTERCREATE-CLASSES");
 												item.Icon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[select(2, UnitClass("player"))]));
-												item.Icon:SetDesaturated(true);
+												SetDesaturation(item.Icon, true);
 												item.Title:SetText(PowaAuras.Text["UI_CreatePreset"]);
 												item.Desc:SetText(PowaAuras.Text["UI_CreatePresetDesc"]);
 											end
