@@ -20,7 +20,7 @@ PowaAuras = {
 	
 	DebugEvents = false;
 	DebugTriggers = false;
-	--DebugAura = 3;
+	DebugAura = 121;
 	
 	-- Internal counters
 	DebugTimer = 0;
