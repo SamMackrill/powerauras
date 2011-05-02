@@ -6,7 +6,9 @@ PowaAuras.Helpers = {
 		Global = 0x2,
 		Char = 0x4, -- As in PowaMisc.
 	},
-	RegisterSetting = function(self, key, name, location)
+	-- The key can be different from the name to prevent conflicts. The plan is aura settings will have Aura prefixed to
+	-- the key which would otherwise be the setting name, so for "Enabled" it'd be "AuraEnabled".
+	RegisterSetting = function(self, key, name, location, onUpdate)
 		-- Can't duplicate a key.
 		if(self.SettingsByKey[key]) then return false; end
 		-- Otherwise we're probably fine!
@@ -14,24 +16,32 @@ PowaAuras.Helpers = {
 		self.SettingsByKey[key] = {
 			Name = name,
 			Location = location,
+			OnUpdate = onUpdate,
 		};
 		return true;
 	end,
 	SaveSetting = function(self, key, value)
 		-- Make sure setting exists.
 		if(not self.SettingsByKey[key]) then return false; end
+		local ret = false;
 		if(self.SettingsByKey[key].Location == self.SettingLocations.Aura and PowaBrowser.SelectedAura) then
 			-- Save value to aura.
-			return true;
+			ret = true;
 		elseif(self.SettingsByKey[key].Location == self.SettingLocations.Global) then
 			-- Save to global options table.
-			return true;
+			PowaGlobalMisc[self.SettingsByKey[key].Name] = value;
+			ret = true;
 		elseif(self.SettingsByKey[key].Location == self.SettingLocations.Char) then
 			-- Save to per-char options table.
-			return true;
+			PowaMisc[self.SettingsByKey[key].Name] = value;
+			ret = true;
 		end
-		-- If we're here we failed.
-		return false;
+		-- Call OnUpdate func. Pass new value.
+		if(ret and self.SettingsByKey[key].OnUpdate) then
+			self.SettingsByKey[key].OnUpdate(value);
+		end
+		-- Done.
+		return ret;
 	end,
 	GetNextFreeSlot = function(self, page)
 		-- Default to currently selected page if needed.
@@ -65,4 +75,11 @@ PowaAuras.Helpers = {
 		PowaAuras:DisplayAura(i);
 	end,
 };
+
 -- Register settings down below here.
+for k, _ in pairs(PowaGlobalMisc) do
+	PowaAuras.Helpers:RegisterSetting(k, k, PowaAuras.Helpers.SettingLocations.Global);
+end
+for k, _ in pairs(PowaMisc) do
+	PowaAuras.Helpers:RegisterSetting(k, k, PowaAuras.Helpers.SettingLocations.Char);
+end
