@@ -6,36 +6,34 @@
 -- ^\s*[^-\s][^-\s].*:ShowText\(.*$
 
 -- Exposed for Saving
-PowaMisc = 
-	{
-		Disabled = false,
-		debug = false,
-		OnUpdateLimit = 0,
-		AnimationLimit = 0,
-		Version = GetAddOnMetadata("PowerAuras", "Version"),
-		DefaultTimerTexture = "Original",
-		DefaultStacksTexture = "Original",
-		TimerRoundUp = true,
-		AllowInspections = false,
-		UseGTFO = nil,
-		UserSetMaxTextures = PowaAuras.TextureCount, -- DEPRECATED: No longer needed.
-		OverrideMaxTextures = false,                 -- DEPRECATED: No longer needed.
-		Locked = true,
-		SoundChannel = "Master",
-	};
+PowaMisc = {
+	Disabled = false,
+	debug = false,
+	OnUpdateLimit = 0,
+	AnimationLimit = 0,
+	Version = GetAddOnMetadata("PowerAuras", "Version"),
+	DefaultTimerTexture = "Original",
+	DefaultStacksTexture = "Original",
+	TimerRoundUp = true,
+	AllowInspections = false,
+	UseGTFO = nil,
+	UserSetMaxTextures = PowaAuras.TextureCount, -- DEPRECATED: No longer needed.
+	OverrideMaxTextures = false,                 -- DEPRECATED: No longer needed.
+	Locked = true,
+	SoundChannel = "Master",
+};
 
-	PowaGlobalMisc = 
-	{
-		PathToSounds = "Interface\\AddOns\\PowerAuras\\Sounds\\",
-		PathToAuras = "Interface\\Addons\\PowerAuras\\Custom\\",
-		BlockIncomingAuras = false,
-		FixExports = false,
-		CustomTextures = {},
-		EditorCategoryState = {},
-		CustomDebuffTypeIds = {},
-		LastVersion = 10000,
-		FirstRun = true,
-	};
+PowaGlobalMisc = {
+	PathToSounds = "Interface\\AddOns\\PowerAuras\\Sounds\\",
+	PathToAuras = "Interface\\Addons\\PowerAuras\\Custom\\",
+	BlockIncomingAuras = false,
+	FixExports = false,
+	CustomTextures = {},
+	EditorCategoryState = {},
+	CustomDebuffTypeIds = {},
+	LastVersion = 10000,
+	FirstRun = true,
+};
 
 PowaAuras.PowaMiscDefault = PowaAuras:CopyTable(PowaMisc);
 PowaAuras.PowaGlobalMiscDefault = PowaAuras:CopyTable(PowaGlobalMisc);
