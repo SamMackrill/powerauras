@@ -295,8 +295,10 @@ function cPowaAura:UpdateTriggerTree(triggersTree)
 			triggersTree:AddItem(triggerIndex.."_"..actionIndex, action.Name, triggerIndex);
 			actionIndex = actionIndex + 1;
 		end
+		triggersTree:AddItem(triggerIndex.."_NEWACTION", "New Action ...", triggerIndex);
 		triggerIndex = triggerIndex + 1;
 	end
+	triggersTree:AddItem("NEWTRIGGER", "New Trigger ...");
 end
 
 function cPowaAura:CreateDefaultTriggers()
@@ -3541,11 +3543,21 @@ end
 
 function cPowaGTFO:CheckIfShouldShow(giveReason, ignoreGCD)
 	PowaAuras:Debug("GTFO alert");
-	if (GTFO) then
-	    if (GTFO.ShowAlert) then
-	        return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonGTFOAlerts);
-	    end
+	if (self.Debug) then
+		PowaAuras:Message("GTFO CheckIfShouldShow Type=", self.GTFO);
 	end
+	if (GTFO and GTFO.ShowAlert) then
+		if (self.Debug) then
+			PowaAuras:Message("GTFO CooldownOver=", self.CooldownOver);
+		end
+		if (self.Debug) then
+			PowaAuras:Message("GTFO Show");
+		end
+		PowaAuras.Pending[self.id] =  GetTime() + (self.duration or 1); -- Set time to turn off
+		if (not giveReason) then return true; end
+		return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonGTFOAlerts);
+	end
+	if (not giveReason) then return false; end
 	return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonGTFOAlerts);
 end
 
