@@ -189,8 +189,7 @@ end
 
 function PowaAuras:PARTY_MEMBERS_CHANGED(...)	  
 	if (self.ModTest == false) then
-		self:MarkAuras({"PartyBuffs", "GroupOrSelfBuffs", "PartyHealth", "PartyMana"});
-		self.DoCheck.UnitMatch = true;
+		self:MarkAuras({"PartyBuffs", "GroupOrSelfBuffs", "PartyHealth", "PartyMana", "UnitMatch"});
 	end
 	local partyCount = GetNumPartyMembers();
 	self.WeAreInParty = (partyCount > 0);
@@ -200,8 +199,7 @@ end
 		
 function PowaAuras:RAID_ROSTER_UPDATE(...)
 	if (self.ModTest == false) then
-		self:MarkAuras({"RaidBuffs", "GroupOrSelfBuffs", "RaidHealth", "RaidMana"});
-		self.DoCheck.UnitMatch = true;
+		self:MarkAuras({"RaidBuffs", "GroupOrSelfBuffs", "RaidHealth", "RaidMana", "UnitMatch"});
 	end
 	local raidCount = GetNumRaidMembers();
 	self.WeAreInRaid = (raidCount > 0);
@@ -394,8 +392,7 @@ end
 	
 function PowaAuras:PLAYER_FOCUS_CHANGED(...)	  
 	if (self.ModTest == false) then
-		self:MarkAuras({"FocusBuffs", "FocusHealth", "FocusMana", "FocusPower", "FocusSpells", "StealableFocusSpells", "PurgeableFocusSpells"});
-		self.DoCheck.UnitMatch = true;
+		self:MarkAuras({"FocusBuffs", "FocusHealth", "FocusMana", "FocusPower", "FocusSpells", "StealableFocusSpells", "PurgeableFocusSpells", "UnitMatch"});
 	end
 end
 
@@ -475,8 +472,7 @@ end
 function PowaAuras:PLAYER_TARGET_CHANGED(...)
 	if (self.ModTest == false) then
 		self.ResetTargetTimers = true;
-		self:MarkAuras({"TargetBuffs", "TargetHealth", "TargetMana", "TargetPower", "Actions", "StealableTargetSpells", "PurgeableTargetSpells", "Combo"});
-		self.DoCheck.UnitMatch = true;
+		self:MarkAuras({"TargetBuffs", "TargetHealth", "TargetMana", "TargetPower", "Actions", "StealableTargetSpells", "PurgeableTargetSpells", "Combo", "UnitMatch"});
 	end
 end
 
@@ -543,8 +539,7 @@ function PowaAuras:UNIT_PET(...)
 	local unit = ...;
 	if (unit ~= "player") then return; end
 	if (self.ModTest == false) then
-		self:MarkAuras("Pet");
-		self.DoCheck.UnitMatch = true;
+		self:MarkAuras({"Pet", "UnitMatch"});
 	end
 end
 
@@ -822,14 +817,12 @@ end
 -- Enables the boss1-boss3 units.
 function PowaAuras:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
 	if (self.ModTest == false) then
-		self.DoCheck.UnitMatch = true;
-		self.DoCheck.CheckIt = true;
+		self:MarkAuras("UnitMatch");
 	end
 end
 
 function PowaAuras:UNIT_NAME_UPDATE()
 	if (self.ModTest == false) then
-		self.DoCheck.UnitMatch = true;
-		self.DoCheck.CheckIt = true;
+		self:MarkAuras("UnitMatch");
 	end
 end
