@@ -252,12 +252,12 @@ PowaAuras.UI:Register("TreeViewItem", {
 		if(selected) then
 			self:SetNormalTexture("Interface\\FriendsFrame\\UI-FriendsFrame-HighlightBar-Blue");
 			self:GetNormalTexture():SetBlendMode("ADD");
-			self:SetNormalFontObject(GameFontHighlightSmall);
+			self:SetNormalFontObject(PowaFontHighlightSmall);
 			self:SetHighlightTexture(nil);
 		else
 			self:SetHighlightTexture("Interface\\FriendsFrame\\UI-FriendsFrame-HighlightBar-Blue");
 			self:GetHighlightTexture():SetBlendMode("ADD");
-			self:SetNormalFontObject(GameFontNormalSmall);
+			self:SetNormalFontObject(PowaFontNormalSmall);
 			self:SetNormalTexture(nil);		
 		end
 	end,

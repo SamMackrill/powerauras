@@ -4,9 +4,9 @@
     ..\..\FrameXML\UI.xsd">
 	<Script file="Checkbox.lua" />
 	<CheckButton name="PowaCheckboxTemplate" virtual="true">
-		<NormalFont style="GameFontNormalSmall" />
-		<DisabledFont style="GameFontDisableSmall" />
-		<HighlightFont style="GameFontHighlightSmall" />
+		<NormalFont style="PowaFontNormalSmall" />
+		<DisabledFont style="PowaFontDisableSmall" />
+		<HighlightFont style="PowaFontHighlightSmall" />
 		<NormalTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled" blend="DISABLE">
 			<Size>
 				<AbsDimension x="20" y="20" />
@@ -33,7 +33,7 @@
 			<Color r="0.0" g="0.0" b="0.0" a="0.5" />
 			<BorderColor r="0.3" g="0.3" b="0.3" a="0.8" />
 		</Backdrop>
-		<ButtonText name="$parentText" parentKey="Text" font="GameFontNormalSmall" justifyH="LEFT" justifyV="MIDDLE">
+		<ButtonText name="$parentText" parentKey="Text" font="PowaFontNormalSmall" justifyH="LEFT" justifyV="MIDDLE">
 			<Size>
 				<AbsDimension y="24"/>
 			</Size>

@@ -54,7 +54,7 @@
 						<Anchor point="TOP" relativePoint="TOP" x="0" y="13"/>
 					</Anchors>					
 				</Texture>
-				<FontString name="$parentTitle" inherits="GameFontNormal" text="Aura Editor" justifyH="CENTER" justifyV="TOP">
+				<FontString name="$parentTitle" inherits="PowaFontNormal" text="Aura Editor" justifyH="CENTER" justifyV="TOP">
 					<Size>
 						<AbsDimension x="300" y="68" />
 					</Size>
@@ -112,7 +112,7 @@
 											</Anchors>
 											<Color r="0" g="0" b="0" a="0.75" />
 										</Texture>
-										<FontString parentKey="Src" inherits="GameFontHighlight" justifyH="CENTER" justifyV="MIDDLE">
+										<FontString parentKey="Src" inherits="PowaFontHighlight" justifyH="CENTER" justifyV="MIDDLE">
 											<Size>
 												<AbsDimension x="128" />
 											</Size>
@@ -141,7 +141,7 @@
 														<Anchor point="BOTTOMRIGHT" x="0" y="0" />
 													</Anchors>
 												</Texture>
-												<FontString parentKey="Src" inherits="GameFontHighlight" justifyH="CENTER" justifyV="MIDDLE">
+												<FontString parentKey="Src" inherits="PowaFontHighlight" justifyH="CENTER" justifyV="MIDDLE">
 													<Size>
 														<AbsDimension x="128" />
 													</Size>
@@ -380,7 +380,7 @@
 																<Anchor point="CENTER" relativePoint="CENTER" x="0" y="0" />
 															</Anchors>
 														</Texture>
-														<FontString parentKey="Error" hidden="true" nonSpaceWrap="true" inherits="GameFontHighlight" justifyH="CENTER" justifyV="MIDDLE">
+														<FontString parentKey="Error" hidden="true" nonSpaceWrap="true" inherits="PowaFontHighlight" justifyH="CENTER" justifyV="MIDDLE">
 															<Size>
 																<AbsDimension x="256" />
 															</Size>
@@ -471,7 +471,7 @@
 																<Anchor point="CENTER" relativePoint="CENTER" x="0" y="0" />
 															</Anchors>
 														</Texture>
-														<FontString parentKey="Error" hidden="true" nonSpaceWrap="true" inherits="GameFontHighlight" justifyH="CENTER" justifyV="MIDDLE">
+														<FontString parentKey="Error" hidden="true" nonSpaceWrap="true" inherits="PowaFontHighlight" justifyH="CENTER" justifyV="MIDDLE">
 															<Size>
 																<AbsDimension x="256" />
 															</Size>

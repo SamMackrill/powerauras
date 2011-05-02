@@ -7,9 +7,9 @@
 		<Size>
 			<AbsDimension x="156" y="24"/>
 		</Size>
-		<NormalFont style="GameFontNormalSmall" />
-		<HighlightFont style="GameFontHighlightSmall" />
-		<DisabledFont style="GameFontHighlightSmall" />
+		<NormalFont style="PowaFontNormalSmall" />
+		<HighlightFont style="PowaFontHighlightSmall" />
+		<DisabledFont style="PowaFontHighlightSmall" />
 		<ButtonText parentKey="Text">
 			<Size>
 				<AbsDimension x="0" y="10"/>
