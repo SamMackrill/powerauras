@@ -193,6 +193,7 @@ PowaAuras.UI:Register("TreeView", {
 
 -- And a definition for the item.
 PowaAuras.UI:Register("TreeViewItem", {
+	Items = {}, -- Stores a list of reusable items.
 	Construct = function(self, ui, item, ...)
 		-- Got any items or not?
 		local item = nil;
@@ -222,7 +223,6 @@ PowaAuras.UI:Register("TreeViewItem", {
 		self:SetScript("OnClick", self.OnClick);
 		self:Show();
 	end,
-	Items = {}, -- Stores a list of reusable items.
 	GetExpanded = function(self)
 		return self.Expanded;
 	end,
