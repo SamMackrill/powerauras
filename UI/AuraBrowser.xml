@@ -29,6 +29,7 @@
 		</Layers>
 	</Button>
 	
+	<!-- Todo: Move to seperate file (RadioGroup.xml) -->
 	<CheckButton name="PowaRadioButtonTemplate" virtual="true">
 		<Size x="150" y="23" />
 		<NormalTexture file="Interface\Buttons\WHITE8X8" setAllPoints="true">
@@ -37,6 +38,43 @@
 		<CheckedTexture file="Interface\Buttons\WHITE8X8" setAllPoints="true">
 			<Color r="0" g="1" b="0" />
 		</CheckedTexture>
+	</CheckButton>
+	
+	<CheckButton name="PowaCreateAuraRadioButtonTemplate" virtual="true">
+		<Size x="400" y="58" />
+		<Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground" edgeFile="Interface\ChatFrame\ChatFrameBackground" tile="true">
+			<EdgeSize>
+				<AbsValue val="1" />
+			</EdgeSize>
+			<TileSize>
+				<AbsValue val="5" />
+			</TileSize>
+			<Color r="0.0" g="0.0" b="0.0" a="1" />
+			<BorderColor r="0.3" g="0.3" b="0.3" a="1" />
+		</Backdrop>
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture parentKey="Icon" file="Interface\PaperDollInfoFrame\Character-Plus" desaturated="true">
+					<Size x="32" y="32" />
+					<Anchors>
+						<Anchor point="LEFT" x="10" y="0" />
+					</Anchors>
+				</Texture>
+				<FontString parentKey="Title" font="GameFontNormal" text="Create Blank Aura" justifyH="LEFT" justifyV="TOP">
+					<Size x="1" y="20" />
+					<Anchors>
+						<Anchor point="TOPLEFT" x="56" y="-4" />
+						<Anchor point="TOPRIGHT" x="-4" y="-4" />
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Desc" font="GameFontHighlightSmall" text="Create Blank Aura" justifyH="LEFT" justifyV="MIDDLE">
+					<Anchors>
+						<Anchor point="LEFT" x="56" y="0" />
+						<Anchor point="RIGHT" x="-4" y="0" />
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
 	</CheckButton>
 	
 	<Frame name="PowaBrowser" toplevel="true" movable="true" parent="UIParent" hidden="false" frameStrata="MEDIUM" enableMouse="true" enableKeyboard="true">
@@ -237,14 +275,49 @@
 									<OnLoad>
 										-- I'm a dialog. Hi.
 										PowaAuras.UI:TabDialog(self);
-										self.OnAccept = print;
+										self.OnAccept = function()
+											if(self.SelectedKey == 1) then
+												-- Create aura.
+												print("|cFF527FCCDEBUG (AuraBrowser): |rCreating Blank Aura");
+												-- Todo: Move this function.
+												PowaAuras:OptionNewEffect();
+												-- Done.
+												PowaBrowser:UpdateAuraButtons();
+												self:GetParent():SelectTab(1);
+											elseif(self.SelectedKey == 2) then
+												-- Import preset.
+												print("|cFF527FCCDEBUG (AuraBrowser): |rPreset Import Dialog NYI");
+											end
+										end
 										self.OnCancel = function()
-											self:GetParent():SelectTab(1)
-										end;
+											self:GetParent():SelectTab(1);
+										end
 										-- I'm also a radio button host.
-										PowaAuras.UI:RadioGroup(self);
-										self:AddItem(1):SetPoint("TOPLEFT", 15, -50);
-										self:AddItem(2):SetPoint("TOPLEFT", 15, -80);
+										PowaAuras.UI:RadioGroup(self, "CreateAuraRadioButton", true);
+										for i=1,2 do
+											local item = self:AddItem(i);
+											item:SetPoint("TOPLEFT", 15, -50-((i-1)*63));
+											item:SetPoint("TOPRIGHT", -15, -50-((i-1)*63));
+											if(i == 1) then
+												item.Icon:SetDesaturated(false);
+												item.Title:SetText(PowaAuras.Text["UI_CreateNew"]);
+												item.Desc:SetText(PowaAuras.Text["UI_CreateNewDesc"]);
+											else
+												item.Icon:SetTexture("Interface\\Glues\\CharacterCreate\\UI-CHARACTERCREATE-CLASSES");
+												item.Icon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[select(2, UnitClass("player"))]));
+												item.Icon:SetDesaturated(true);
+												item.Title:SetText(PowaAuras.Text["UI_CreatePreset"]);
+												item.Desc:SetText(PowaAuras.Text["UI_CreatePresetDesc"]);
+											end
+										end
+										-- Update on selection changed.
+										self.OnSelectionChanged = function(self, key)
+											if(key == 2) then
+												self.AcceptButton:SetText(PowaAuras.Text["UI_Next"]);
+											else
+												self.AcceptButton:SetText(PowaAuras.Text["UI_Save"]);
+											end
+										end
 									</OnLoad>
 								</Scripts>
 							</Frame>
@@ -253,8 +326,8 @@
 							<OnLoad>
 								-- I'm also a tab frame. Hi.
 								PowaAuras.UI:TabFrame(self, 3);
-								self:RegisterTab(self.Page, "bbb");
-								self:RegisterTab(self.Create, "aaa");
+								self:RegisterTab(self.Page, "");
+								self:RegisterTab(self.Create, "");
 								self.Create.Title:SetText(PowaAuras.Text["UI_CreateAura"]);
 							</OnLoad>
 						</Scripts>

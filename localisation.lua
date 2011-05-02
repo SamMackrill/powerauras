@@ -776,6 +776,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	-- New UI strings.
 	UI_Cancel              = "Cancel",
 	UI_Save                = "Save",
+	UI_Back                = "Back",
+	UI_Next                = "Next",
 	UI_ID                  = "ID",
 	
 	UI_CharAuras           = "Character Auras",
@@ -784,8 +786,10 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	
 	UI_CreateAura          = "Create New Aura",
 	UI_CreateAura_Tooltip  = "Creates a new aura on this page.\n\n|cFFFFD100Left-Click: |rOpen Creation Dialog",
-	UI_CreateAuraNew       = "Blank Aura",
-	UI_CreateAuraPreset    = "Preset Aura",
+	UI_CreateNew           = "Blank Aura",
+	UI_CreateNewDesc       = "Create a new aura with the default settings.",
+	UI_CreatePreset        = "Preset Aura",
+	UI_CreatePresetDesc    = "Import an existing preset aura available to your class.",
 	
 	UI_SelAura_None        = "No Aura Selected",
 	UI_SelAura_Title       = "Aura %d",

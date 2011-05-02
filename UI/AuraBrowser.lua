@@ -312,29 +312,28 @@ PowaAuras.UI:Register("RadioGroup", {
 		-- Update.
 		self:UpdateItems();
 	end,
-	OnSelectionChanged = function(self)
-		print("Selected key: ", self.SelectedKey);
+	OnSelectionChanged = function(self, key)
 	end,
 	SelectItem = function(self, key)
 		-- Make sure it already exists. Allow nil though.
-		if(key and not self.Items[key]) then return; end
-		-- Forcing a selection?
-		if(self.AlwaysSelect and not key) then
-			-- Umm, isn't there a cleaner way of getting the first key of a hash?
-			for k, v in pairs(self.Items) do
-				if(v) then
-					key = k;
-					break;
-				end
-			end
-		end
+		if(key and not self.Items[key] or key == self.SelectedKey) then return; end
 		-- Select it.
 		self.SelectedKey = key;
 		-- Update.
-		self:OnSelectionChanged();
+		self:OnSelectionChanged(key);
 		self:UpdateItems();
 	end,
 	UpdateItems = function(self)
+		-- Forcing a selection?
+		if(self.AlwaysSelect and not self.SelectedKey) then
+			-- Umm, isn't there a cleaner way of getting the first key of a hash?
+			for k, v in pairs(self.Items) do
+				if(v) then
+					self:SelectItem(k);
+					return;
+				end
+			end
+		end
 		-- Simply change the checked state.
 		for _, item in ipairs(self.Items) do
 			if(item) then
@@ -388,5 +387,44 @@ PowaAuras.UI:Register("RadioButton", {
 		tinsert(self.Items, self);
 		print("|cFF527FCCDEBUG (RadioButton): |rRecycling item! Total available: " .. #(self.Items));
 		self:Hide();
+	end,
+});
+
+PowaAuras.UI:Register("CreateAuraRadioButton", {
+	Base = "RadioButton",
+	Items = {}, -- Shared pool of reusable buttons.
+	Construct = function(self, ui, item, ...)
+		-- Got any items or not?
+		local item = nil;
+		if(self.Items[1]) then
+			-- Yay!
+			item = self.Items[1];
+			tremove(self.Items, 1);
+			print("|cFF527FCCDEBUG (CreateAuraRadioButton): |rRecycled item! Total available: " .. #(self.Items));
+			-- Skip to init.
+			item:Init(...);
+			return item;
+		else
+			-- Get making.
+			item = CreateFrame("CheckButton", nil, nil, "PowaCreateAuraRadioButtonTemplate");
+			print("|cFF527FCCDEBUG (CreateAuraRadioButton): |rCreating item!");
+			-- Reuse existing constructor.
+			return ui.Construct(self, _, item, ...);
+		end
+	end,
+	Hooks = {
+		"SetChecked",
+	},
+	SetChecked = function(self, checked)
+		-- Update state.
+		self:__SetChecked(checked);
+		-- Check new state.
+		if(checked) then
+			self.Icon:SetDesaturated(false);
+			self:SetBackdropBorderColor(1, 0.82, 0, 1);
+		else
+			self.Icon:SetDesaturated(true);		
+			self:SetBackdropBorderColor(0.3, 0.3, 0.3, 1);
+		end
 	end,
 });
