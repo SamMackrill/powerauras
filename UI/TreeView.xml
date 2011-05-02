@@ -27,7 +27,7 @@
 						</Anchors>
 						<Layers>
 							<Layer level="OVERLAY">
-								<FontString parentKey="Title" inherits="GameFontNormal" justifyH="CENTER" justifyV="MIDDLE">
+								<FontString parentKey="Title" inherits="PowaFontNormal" justifyH="CENTER" justifyV="MIDDLE">
 									<Size x="140" y="24" />
 									<Anchors>
 										<Anchor point="TOPLEFT" x="0" y="0" />
@@ -46,9 +46,9 @@
 		<Size>
 			<AbsDimension x="172" y="24" />
 		</Size>
-		<NormalFont style="GameFontNormalSmall" />
-		<HighlightFont style="GameFontHighlightSmall" />
-		<DisabledFont style="GameFontNormalSmall" />
+		<NormalFont style="PowaFontNormalSmall" />
+		<HighlightFont style="PowaFontHighlightSmall" />
+		<DisabledFont style="PowaFontNormalSmall" />
 		<ButtonText parentKey="Text" justifyH="LEFT">
 			<Size>
 				<AbsDimension x="0" y="24"/>

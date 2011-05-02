@@ -33,6 +33,7 @@ PowaGlobalMisc = {
 	CustomDebuffTypeIds = {},
 	LastVersion = 10000,
 	FirstRun = true,
+	UIFontSize = 0,
 };
 
 PowaAuras.PowaMiscDefault = PowaAuras:CopyTable(PowaMisc);

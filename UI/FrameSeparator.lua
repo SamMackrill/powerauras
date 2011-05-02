@@ -48,11 +48,11 @@ PowaAuras.UI:Register("FrameSeparator", {
 		-- Change things depending on state.
 		if(state == true) then
 			self.Expand:SetTexCoord(0.5, 1, 0, 0.5);
-			self.Text:SetFontObject(GameFontNormal);
+			self.Text:SetFontObject(PowaFontNormal);
 			self:UpdateColors();
 		else
 			self.Expand:SetTexCoord(0, 0.5, 0, 0.5);
-			self.Text:SetFontObject(GameFontDisable);
+			self.Text:SetFontObject(PowaFontDisable);
 			self:UpdateColors();
 		end
 		-- Show/Hide children.

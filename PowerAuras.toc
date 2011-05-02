@@ -42,6 +42,7 @@ PowerSlots.xml
 PowerUI.lua
 
 # Generic elements.
+UI\Fonts.xml
 UI\BorderedFrame.xml
 UI\Checkbox.xml
 UI\ColorWidget.xml
