@@ -291,6 +291,7 @@
 											end
 										end
 										self.OnCancel = function()
+											PowaBrowser:SetSelectedAura(nil, false);
 											self:GetParent():SelectTab(1);
 										end
 										-- I'm also a radio button host.
@@ -302,15 +303,19 @@
 											if(i == 1) then
 												item.Title:SetText(PowaAuras.Text["UI_CreateNew"]);
 												item.Desc:SetText(PowaAuras.Text["UI_CreateNewDesc"]);
+												SetDesaturation(item.Icon, false);
 											elseif(i == 2) then
 												item.Icon:SetTexture("Interface\\Glues\\CharacterCreate\\UI-CHARACTERCREATE-CLASSES");
 												item.Icon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[select(2, UnitClass("player"))]));
 												item.Title:SetText(PowaAuras.Text["UI_CreatePreset"]);
 												item.Desc:SetText(PowaAuras.Text["UI_CreatePresetDesc"]);
+												SetDesaturation(item.Icon, true);
 											elseif(i == 3) then
 												item.Icon:SetTexture("Interface\\Buttons\\UI-MicroStream-Green");
+												item.Icon:SetTexCoord(0.15, 0.85, 0.15, 0.85);
 												item.Title:SetText(PowaAuras.Text["UI_CreateImport"]);
 												item.Desc:SetText(PowaAuras.Text["UI_CreateImportDesc"]);
+												SetDesaturation(item.Icon, true);
 											end
 										end
 										-- Update on selection changed.

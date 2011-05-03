@@ -357,6 +357,7 @@ PowaAuras.UI:Register("RadioGroup", {
 });
 
 PowaAuras.UI:Register("RadioButton", {
+	Template = "PowaRadioButtonTemplate",
 	Items = {}, -- Shared pool of reusable buttons.
 	Scripts = {
 		"OnClick",
@@ -374,7 +375,8 @@ PowaAuras.UI:Register("RadioButton", {
 			return item;
 		else
 			-- Get making.
-			item = CreateFrame("CheckButton", nil, nil, "PowaRadioButtonTemplate");
+			print(self.Items, self.Template);
+			item = CreateFrame("CheckButton", nil, nil, self.Template);
 			print("|cFF527FCCDEBUG (RadioButton): |rCreating item!");
 			-- Reuse existing constructor.
 			return ui.Construct(self, _, item, ...);
@@ -385,6 +387,7 @@ PowaAuras.UI:Register("RadioButton", {
 		self:SetParent(parent);
 		self.Key = key;
 		self.Selected = false;
+		self:SetChecked(false);
 		self:Show();
 	end,
 	OnClick = function(self)
@@ -401,32 +404,19 @@ PowaAuras.UI:Register("RadioButton", {
 
 PowaAuras.UI:Register("CreateAuraRadioButton", {
 	Base = "RadioButton",
-	Items = {}, -- Shared pool of reusable buttons.
-	Construct = function(self, ui, item, ...)
-		-- Got any items or not?
-		local item = nil;
-		if(self.Items[1]) then
-			-- Yay!
-			item = self.Items[1];
-			tremove(self.Items, 1);
-			print("|cFF527FCCDEBUG (CreateAuraRadioButton): |rRecycled item! Total available: " .. #(self.Items));
-			-- Skip to init.
-			item:Init(...);
-			return item;
-		else
-			-- Get making.
-			item = CreateFrame("CheckButton", nil, nil, "PowaCreateAuraRadioButtonTemplate");
-			print("|cFF527FCCDEBUG (CreateAuraRadioButton): |rCreating item!");
-			-- Reuse existing constructor.
-			return ui.Construct(self, _, item, ...);
-		end
-	end,
+	Template = "PowaCreateAuraRadioButtonTemplate",
+	Items = {},
 	Hooks = {
 		"SetChecked",
 	},
+	Construct = function(self, ...)
+		-- Call base constructor.
+		return self.Base.Construct(self, ...);
+	end,
 	SetChecked = function(self, checked)
 		-- Update state.
 		self:__SetChecked(checked);
+		self.Selected = checked;
 		-- Check new state.
 		if(checked) then
 			SetDesaturation(self.Icon, false);
