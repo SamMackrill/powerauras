@@ -89,14 +89,6 @@ PowaAuras.UI:Register("LayoutFrame", {
 		self.OffsetY = -y;
 		self:UpdateLayout();
 	end,
-	SetItem = function(self, ...)
-		-- Deprecated.
-		self:AddItem(...);
-	end,
-	UnsetItem = function(self, ...)
-		-- Deprecated.
-		self:RemoveItem(...);
-	end,
 	UpdateLayout = function(self)
 		-- Check lock.
 		if(self.IsLocked) then return; end
