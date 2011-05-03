@@ -8,13 +8,13 @@
 			<AbsDimension x="172" y="0" />
 		</Size>
 		<Frames>
-			<ScrollFrame name="$parentScroll" parentKey="Scroll" inherits="UIPanelScrollFrameTemplate">
+			<ScrollFrame parentKey="Scroll" inherits="PowaScrollFrameTemplate">
 				<Size>
 					<AbsDimension x="172" y="0" />
 				</Size>
 				<Anchors>
 					<Anchor point="TOPLEFT" x="4" y="-4" />
-					<Anchor point="BOTTOMRIGHT" x="-26" y="7" />
+					<Anchor point="BOTTOMRIGHT" x="-4" y="7" />
 				</Anchors>
 				<ScrollChild>
 					<Frame parentKey="Child">
@@ -38,6 +38,11 @@
 						</Layers>
 					</Frame>
 				</ScrollChild>
+				<Scripts>
+					<OnLoad>
+						PowaAuras.UI:ScrollFrame(self);
+					</OnLoad>
+				</Scripts>
 			</ScrollFrame>
 		</Frames>
 	</Frame>
