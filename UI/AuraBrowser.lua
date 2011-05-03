@@ -85,8 +85,6 @@ PowaAuras.UI:Register("AuraBrowser", {
 		self.Tabs.Auras.Page:SetLocked(false);
 		-- Button update.
 		self:UpdateAuraButtons();
-		-- Config update.
-		self:UpdateConfigOptions();
 	end,
 	SavePageName = function(self, name)
 		-- Get the page.
@@ -181,11 +179,6 @@ PowaAuras.UI:Register("AuraBrowser", {
 		end
 		-- Bugfix for buttons vanishing.
 		self.Tabs.Auras.Page:UpdateLayout();
-	end,
-	UpdateConfigOptions = function(self)
-		-- Update lots of checkboxes! YAY!
-		self.Tabs.Config.Enable:SetChecked(not PowaAuras.Helpers:GetSetting("Disabled"));
-		self.Tabs.Config.Inspections:SetChecked(PowaAuras.Helpers:GetSetting("AllowInspections"));
 	end,
 });
 

@@ -17,6 +17,10 @@ PowaAuras.UI:Register("Checkbox", {
 			-- Use supplied onclick handler.
 			self:SetScript("OnClick", property);
 		end
+		-- Also register a callback on the same property for whenever it's changed.
+		PowaAuras.Helpers:RegisterSettingCallback(property, function(value)
+			self:SetChecked(value);
+		end);
 		-- Add tooltip.
 		PowaAuras.UI:Tooltip(self, localeKey, tooltipDesc or localeKey .. "Desc");
 		-- Update colours...

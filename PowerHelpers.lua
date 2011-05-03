@@ -1,6 +1,7 @@
 ﻿-- Common helper functions.
 PowaAuras.Helpers = {
 	SettingsByKey = {},
+	SettingCallbacksByKey = {},
 	SettingLocations = {
 		Aura = 0x1,
 		Global = 0x2,
@@ -8,7 +9,7 @@ PowaAuras.Helpers = {
 	},
 	-- The key can be different from the name to prevent conflicts. The plan is aura settings will have Aura prefixed to
 	-- the key which would otherwise be the setting name, so for "Enabled" it'd be "AuraEnabled".
-	RegisterSetting = function(self, key, name, location, onUpdate)
+	RegisterSetting = function(self, key, name, location)
 		-- Can't duplicate a key.
 		if(self.SettingsByKey[key]) then return false; end
 		-- Otherwise we're probably fine!
@@ -16,9 +17,17 @@ PowaAuras.Helpers = {
 		self.SettingsByKey[key] = {
 			Name = name,
 			Location = location,
-			OnUpdate = onUpdate,
 		};
 		return true;
+	end,
+	RegisterSettingCallback = function(self, key, func)
+		-- Setting needs to exist.
+		if(not self.SettingsByKey[key]) then return false; end
+		-- Register closure.
+		if(not self.SettingCallbacksByKey[key]) then
+			self.SettingCallbacksByKey[key] = {};
+		end
+		tinsert(self.SettingCallbacksByKey[key], func);
 	end,
 	GetSetting = function(self, key)
 		-- Make sure setting exists.
@@ -51,11 +60,17 @@ PowaAuras.Helpers = {
 			ret = true;
 		end
 		-- Call OnUpdate func. Pass new value.
-		if(ret and self.SettingsByKey[key].OnUpdate) then
-			self.SettingsByKey[key].OnUpdate(value);
-		end
+		self:UpdateSetting(key, value);
 		-- Done.
 		return ret;
+	end,
+	UpdateSetting = function(self, key, value)
+		-- Make sure setting exists.
+		if(not self.SettingsByKey[key] or not self.SettingCallbacksByKey[key]) then return false; end
+		-- Run update funcs.
+		for _, func in ipairs(self.SettingCallbacksByKey[key]) do
+			func(value);
+		end
 	end,
 	GetNextFreeSlot = function(self, page)
 		-- Default to currently selected page if needed.

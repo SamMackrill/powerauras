@@ -352,15 +352,15 @@
 								<FontString parentKey="TitlePerformance" justifyH="LEFT" justifyV="MIDDLE" font="PowaFontNormalLarge">
 									<Size x="225" y="40" />
 									<Anchors>
-										<Anchor point="TOPLEFT" x="11" y="-100" />
-										<Anchor point="TOPRIGHT" x="-11" y="-100" />
+										<Anchor point="TOPLEFT" x="11" y="-150" />
+										<Anchor point="TOPRIGHT" x="-11" y="-150" />
 									</Anchors>
 								</FontString>
 								<FontString parentKey="TitleCustom" justifyH="LEFT" justifyV="MIDDLE" font="PowaFontNormalLarge">
 									<Size x="225" y="40" />
 									<Anchors>
-										<Anchor point="TOPLEFT" x="11" y="-200" />
-										<Anchor point="TOPRIGHT" x="-11" y="-200" />
+										<Anchor point="TOPLEFT" x="11" y="-250" />
+										<Anchor point="TOPRIGHT" x="-11" y="-250" />
 									</Anchors>
 								</FontString>
 							</Layer>
@@ -380,15 +380,51 @@
 									</OnLoad>
 								</Scripts>
 							</CheckButton>
-							<CheckButton parentKey="Inspections" text="UI_Config_Inspections" inherits="PowaNormalCheckboxTemplate">
+							<CheckButton parentKey="Inspect" text="UI_Config_Inspect" inherits="PowaNormalCheckboxTemplate">
 								<Size x="150" y="28" />
 								<Anchors>
-									<Anchor point="TOP" x="16" y="-40" />
+									<Anchor point="TOPLEFT" relativePoint="TOP" x="16" y="-40" />
 								</Anchors>
 								<Scripts>
 									<OnLoad>
 										self:SetChecked(PowaAuras.Helpers:GetSetting("AllowInspections"));
 										PowaAuras.UI:Checkbox(self, "AllowInspections");
+									</OnLoad>
+								</Scripts>
+							</CheckButton>
+							<CheckButton parentKey="RoundTimer" text="UI_Config_RoundTimer" inherits="PowaNormalCheckboxTemplate">
+								<Size x="150" y="28" />
+								<Anchors>
+									<Anchor point="TOPLEFT" x="16" y="-72" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										self:SetChecked(PowaAuras.Helpers:GetSetting("TimerRoundUp"));
+										PowaAuras.UI:Checkbox(self, "TimerRoundUp");
+									</OnLoad>
+								</Scripts>
+							</CheckButton>
+							<CheckButton parentKey="BlockComms" text="UI_Config_BlockComms" inherits="PowaNormalCheckboxTemplate">
+								<Size x="150" y="28" />
+								<Anchors>
+									<Anchor point="TOPLEFT" relativePoint="TOP" x="16" y="-72" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										self:SetChecked(PowaAuras.Helpers:GetSetting("BlockIncomingAuras"));
+										PowaAuras.UI:Checkbox(self, "BlockIncomingAuras");
+									</OnLoad>
+								</Scripts>
+							</CheckButton>
+							<CheckButton parentKey="FixExports" text="UI_Config_FixExports" inherits="PowaNormalCheckboxTemplate">
+								<Size x="150" y="28" />
+								<Anchors>
+									<Anchor point="TOPLEFT" x="16" y="-104" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										self:SetChecked(PowaAuras.Helpers:GetSetting("FixExports"));
+										PowaAuras.UI:Checkbox(self, "FixExports");
 									</OnLoad>
 								</Scripts>
 							</CheckButton>
