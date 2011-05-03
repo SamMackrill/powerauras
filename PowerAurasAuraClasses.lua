@@ -318,7 +318,7 @@ function cPowaAura:CreateDefaultTriggers()
 	local trigger=self:CreateTrigger(cPowaAuraShowTrigger, {Name="PA_AuraShow", Debug=false});
 	--trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Show Aura"});
 	if (self.begin>0) then
-		table.insert(AnimationChain, {Name="PA_ShowAnim", Frame=frame, HideFrame=frame2, Animation=self.begin, Speed=self.speed, Alpha=self.alpha, BeginSpin=self.beginSpin, StateValue=1, StateName="AnimationState"});
+		table.insert(AnimationChain, {Name="PA_ShowAnim", Frame=frame, HideFrame=frame2, Animation=self.begin, Speed=self.speed, Alpha=self.alpha, BeginSpin=self.beginSpin});
 	end
 
 	if (self.anim1>1 or self.anim2>0) then
@@ -478,9 +478,9 @@ end
 function cPowaAura:CheckTriggers(triggerType, value, qualifier, invertOnly)
 	local triggersByType = self.TriggersByType[triggerType];
 	if (not triggersByType or #triggersByType==0) then return; end
-	--if (PowaAuras.DebugTriggers) then
-	--	PowaAuras:DisplayText("Checking all ",triggerType, " auras");
-	--end
+	if (PowaAuras.DebugTriggers) then
+		PowaAuras:DisplayText("Checking all ",triggerType, " auras");
+	end
 	local i = 1;
 	while i<=#triggersByType do
 		local trigger = triggersByType[i];
@@ -581,7 +581,7 @@ end
 
 function cPowaAura:SetHideRequest(source, now, testing)
 	if (self.Debug) then
-		PowaAuras:Message(GetTime()," SetHideRequest ", self.HideRequest, " showing=", self.Showing, " from=", source, " now=", now);
+		PowaAuras:Message(GetTime()," AURA SetHideRequest HideRequest=", self.HideRequest, " showing=", self.Showing);
 		PowaAuras:Message(GetTime()," from=", source, " now=", now, " testing=", testing);
 	end
 
@@ -657,10 +657,10 @@ function cPowaAura:UpdateAura(testing)
 			self:SetHideRequest("UpdateAura off and showing", true, testing);
 		end
 		if (self.Timer and self.Timer.Showing) then
-			self.Timer:Hide();
+			self.Timer:SetHideRequest(self, "UpdateAura off and showing", true, testing);
 		end
 		if (self.Stacks and self.Stacks.Showing) then
-			self.Stacks:Hide();
+			self.Stacks:SetHideRequest(self, "UpdateAura off and showing", true, testing);
 		end
 		if (not PowaAuras.UsedInMultis[self.id]) then
 			return false;
@@ -3558,9 +3558,13 @@ function cPowaGTFO:CheckIfShouldShow(giveReason, ignoreGCD)
 	if (self.Debug) then
 		PowaAuras:Message("GTFO CheckIfShouldShow Type=", self.GTFO);
 	end
-	if (GTFO and GTFO.ShowAlert) then
+	if (GTFO) then
 		if (self.Debug) then
 			PowaAuras:Message("GTFO CooldownOver=", self.CooldownOver);
+		end
+		if (self.CooldownOver) then
+			if (not giveReason) then return false; end
+			return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonGTFOAlerts);
 		end
 		if (self.Debug) then
 			PowaAuras:Message("GTFO Show");
