@@ -421,15 +421,16 @@ end
 	
 function PowaAuras:PLAYER_FOCUS_CHANGED(...)	  
 	if (self.ModTest == false) then
-		self.DoCheck.FocusBuffs = true;
-		self.DoCheck.FocusHealth = true;
-		self.DoCheck.FocusMana = true;
-		self.DoCheck.FocusPower = true;
-		self.DoCheck.FocusSpells = true;
-		self.DoCheck.StealableFocusSpells = true;
-		self.DoCheck.PurgeableFocusSpells = true;
-		self.DoCheck.UnitMatch = true;
-		self.DoCheck.CheckIt = true;
+		self:MarkAuras("FocusBuffs", "FocusHealth", "FocusMana", "FocusPower", "FocusSpells", "StealableFocusSpells", "PurgeableFocusSpells", "UnitMatch");
+		-- -- self.DoCheck.FocusBuffs = true;
+		-- -- self.DoCheck.FocusHealth = true;
+		-- -- self.DoCheck.FocusMana = true;
+		-- -- self.DoCheck.FocusPower = true;
+		-- -- self.DoCheck.FocusSpells = true;
+		-- -- self.DoCheck.StealableFocusSpells = true;
+		-- -- self.DoCheck.PurgeableFocusSpells = true;
+		-- -- self.DoCheck.UnitMatch = true;
+		-- -- self.DoCheck.CheckIt = true;
 	end
 end
 

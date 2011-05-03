@@ -357,8 +357,8 @@
 								<FontString parentKey="TitlePerformance" justifyH="LEFT" justifyV="MIDDLE" font="PowaFontNormalLarge">
 									<Size x="225" y="40" />
 									<Anchors>
-										<Anchor point="TOPLEFT" x="11" y="-150" />
-										<Anchor point="TOPRIGHT" x="-11" y="-150" />
+										<Anchor point="TOPLEFT" x="11" y="-135" />
+										<Anchor point="TOPRIGHT" x="-11" y="-135" />
 									</Anchors>
 								</FontString>
 								<FontString parentKey="TitleCustom" justifyH="LEFT" justifyV="MIDDLE" font="PowaFontNormalLarge">

@@ -539,6 +539,20 @@ end
 
 
 --=== Run time ===--
+
+do
+	local arg = nil;
+	function PowaAuras:MarkAuras(...)
+		-- Get first argument.
+		arg = select(1, ...);
+		-- Mark aura type.
+		self.DoCheck[arg] = true;
+		self.DoCheck.CheckIt = true;
+		-- Recurse.
+		self:MarkAuras(select(2, ...));
+	end
+end
+
 function PowaAuras:OnUpdate(elapsed)
 	--self:UnitTestInfo("OnUpdate", elapsed);
 	if (self.NextDebugCheck>0 and self.DebugTimer > self.NextDebugCheck) then
