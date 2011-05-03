@@ -1,4 +1,3 @@
-if(1==1) then return; end
 -- Create definition.
 PowaAuras.UI:Register("Tooltip", {
 	Construct = function(self, _, frame, title, text, children)

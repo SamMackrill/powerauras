@@ -5,9 +5,9 @@
 	<Script file="TabButton.lua" />
 	<Button name="PowaTabButtonTemplate" virtual="true" text="Tab">
 		<Size x="128" y="35" />
-		<NormalFont style="PowaFontNormalSmall" />
-		<HighlightFont style="PowaFontHighlightSmall"/>
-		<DisabledFont style="PowaFontHighlightSmall"/>
+		<NormalFont style="PowaFontNormal" />
+		<HighlightFont style="PowaFontHighlight"/>
+		<DisabledFont style="PowaFontHighlight"/>
 		<Layers>
 			<Layer level="BACKGROUND">
 				<Texture file="Interface\PaperDollInfoFrame\PaperDollSidebarTabs" parentKey="TabBgL">
