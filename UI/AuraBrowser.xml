@@ -379,9 +379,7 @@
 								<Scripts>
 									<OnLoad>
 										self:SetChecked(PowaAuras.Helpers:GetSetting("Disabled"));
-										PowaAuras.UI:Checkbox(self, function(self)
-											PowaAuras.Helpers:SaveSetting("Disabled", not self:GetChecked());
-										end);
+										PowaAuras.UI:Checkbox(self, "Disabled", true);
 									</OnLoad>
 								</Scripts>
 							</CheckButton>

@@ -3,7 +3,7 @@ PowaAuras.UI:Register("Checkbox", {
 	Hooks = {
 		"SetChecked",
 	},
-	Init = function(self, property, tooltipDesc)
+	Init = function(self, property, invert, tooltipDesc)
 		-- Update text to the localized variant.
 		local localeKey = self:GetText();
 		self:SetText(PowaAuras.Text[localeKey]);
@@ -11,7 +11,11 @@ PowaAuras.UI:Register("Checkbox", {
 		if(type(property) == "string") then
 			-- Add OnClick handler for value setting.
 			self:SetScript("OnClick", function(self)
-				PowaAuras.Helpers:SaveSetting(property, (self:GetChecked() and true or false));
+				if(invert) then
+					PowaAuras.Helpers:SaveSetting(property, not self:GetChecked());
+				else
+					PowaAuras.Helpers:SaveSetting(property, (self:GetChecked() and true or false));
+				end
 			end);
 		elseif(type(property) == "function") then
 			-- Use supplied onclick handler.
@@ -19,7 +23,11 @@ PowaAuras.UI:Register("Checkbox", {
 		end
 		-- Also register a callback on the same property for whenever it's changed.
 		PowaAuras.Helpers:RegisterSettingCallback(property, function(value)
-			self:SetChecked(value);
+			if(invert) then
+				self:SetChecked(not value);
+			else
+				self:SetChecked(value);
+			end
 		end);
 		-- Add tooltip.
 		PowaAuras.UI:Tooltip(self, localeKey, tooltipDesc or localeKey .. "Desc");

@@ -22,6 +22,13 @@ function PowaAuras:VARIABLES_LOADED(...)
 	else
 		self.MaxTextures = PowaAuras.TextureCount;
 	end
+	-- I know this looks silly, but we need to do it so updates are processed properly.
+	for k, v in pairs(PowaMisc) do
+		self.Helpers:UpdateSetting(k, v);
+	end
+	for k, v in pairs(PowaGlobalMisc) do
+		self.Helpers:UpdateSetting(k, v);	
+	end
 	
 	local _, _, major, minor = string.find(self.Version, self.VersionPattern);
 	self.VersionParts = {Major=tonumber(major), Minor=tonumber(minor), Build=0, Revision=""};
