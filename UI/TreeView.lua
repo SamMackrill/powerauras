@@ -10,16 +10,14 @@ PowaAuras.UI:Register("TreeView", {
 		-- Initial update! (Fixed the scrollbar).
 		self:UpdateItems();
 	end,
-	AddItem = function(self, key, text, parent, position, disable)
+	AddItem = function(self, key, text, parent, disable)
 		-- DO NOT LET KEYS CONFLICT FOR THE LOVE OF GOD PLEASE DO NOT.
 		if(self.ItemsByKey[key]) then return; end
 		-- Got a parent? If so, find it.
 		if(parent) then parent = self:FindItemByKey(parent); end
 		if(not parent) then parent = self.ItemsByOrder; end
-		-- Where are we inserting you?
-		if(not position) then position = #(parent)+1; end
 		-- Let's do it.
-		tinsert(parent, position, { Key = key });
+		tinsert(parent, { Key = key });
 		self.ItemsByKey[key] = PowaAuras.UI:TreeViewItem(nil, self, parent["Key"], key, text);
 		-- Disable if needed.
 		if(disable) then self:DisableItem(key); else self:EnableItem(key); end

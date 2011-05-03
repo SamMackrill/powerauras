@@ -334,146 +334,213 @@
 							<Anchor point="TOPLEFT" x="4" y="-4" />
 							<Anchor point="BOTTOMRIGHT" x="-4" y="5" />
 						</Anchors>
-						<Layers>
-							<Layer level="ARTWORK">
-								<FontString parentKey="TitleConfig" justifyH="LEFT" justifyV="MIDDLE" font="PowaFontNormalLarge">
-									<Size x="225" y="40" />
-									<Anchors>
-										<Anchor point="TOPLEFT" x="11" y="0" />
-										<Anchor point="TOPRIGHT" x="-11" y="0" />
-									</Anchors>
-								</FontString>
-								<FontString parentKey="TitlePerformance" justifyH="LEFT" justifyV="MIDDLE" font="PowaFontNormalLarge">
-									<Size x="225" y="40" />
-									<Anchors>
-										<Anchor point="TOPLEFT" x="11" y="-135" />
-										<Anchor point="TOPRIGHT" x="-11" y="-135" />
-									</Anchors>
-								</FontString>
-								<FontString parentKey="TitleCustom" justifyH="LEFT" justifyV="MIDDLE" font="PowaFontNormalLarge">
-									<Size x="225" y="40" />
-									<Anchors>
-										<Anchor point="TOPLEFT" x="11" y="-225" />
-										<Anchor point="TOPRIGHT" x="-11" y="225" />
-									</Anchors>
-								</FontString>
-							</Layer>
-						</Layers>
 						<Frames>
-							<CheckButton parentKey="Enable" text="UI_Config_Enable" inherits="PowaNormalCheckboxTemplate">
-								<Size x="150" y="28" />
+							<Frame name="$parentConfigTree" parentKey="Tree" inherits="PowaTreeViewTemplate">
 								<Anchors>
-									<Anchor point="TOPLEFT" x="16" y="-40" />
+									<Anchor point="TOPLEFT" x="2" y="-2" />
+									<Anchor point="BOTTOMLEFT" x="2" y="2" />
 								</Anchors>
 								<Scripts>
 									<OnLoad>
-										self:SetChecked(PowaAuras.Helpers:GetSetting("Disabled"));
-										PowaAuras.UI:Checkbox(self, "Disabled", true);
+										PowaAuras.UI:TreeView(self);
+										self:AddItem(1, PowaAuras.Text["UI_ConfigTitle"]);
+										self:AddItem(2, PowaAuras.Text["UI_ConfigTitlePerf"], 1);
+										self:AddItem(3, PowaAuras.Text["UI_ConfigTitleCust"], 1);
+										self:SetSelectedKey(1);
+										-- Change tabs via tree.
+										self.OnSelectionChanged = function(self, key)
+											self:GetParent().Page:SelectTab(key);
+										end
 									</OnLoad>
 								</Scripts>
-							</CheckButton>
-							<CheckButton parentKey="Inspect" text="UI_Config_Inspect" inherits="PowaNormalCheckboxTemplate">
-								<Size x="150" y="28" />
+							</Frame>
+							<Frame parentKey="Page" inherits="PowaBorderedFrameTemplate">
 								<Anchors>
-									<Anchor point="TOPLEFT" relativePoint="TOP" x="16" y="-40" />
+									<Anchor point="TOPLEFT" x="177" y="-2" />
+									<Anchor point="BOTTOMRIGHT" x="-2" y="2" />
 								</Anchors>
+								<Frames>
+									<Frame parentKey="Config">
+										<Anchors>
+											<Anchor point="TOPLEFT" x="0" y="0" />
+											<Anchor point="BOTTOMRIGHT" x="0" y="0" />
+										</Anchors>
+										<Layers>
+											<Layer level="ARTWORK">
+												<FontString parentKey="Title" justifyH="LEFT" justifyV="MIDDLE" font="PowaFontNormalLarge">
+													<Size x="225" y="40" />
+													<Anchors>
+														<Anchor point="TOPLEFT" x="15" y="-4" />
+														<Anchor point="TOPRIGHT" x="-15" y="-4" />
+													</Anchors>
+												</FontString>
+											</Layer>
+										</Layers>
+										<Frames>
+											<CheckButton parentKey="Enable" text="UI_Config_Enable" inherits="PowaNormalCheckboxTemplate">
+												<Size x="150" y="28" />
+												<Anchors>
+													<Anchor point="TOPLEFT" x="16" y="-40" />
+													<Anchor point="TOPRIGHT" x="-16" y="-40" />
+												</Anchors>
+												<Scripts>
+													<OnLoad>
+														PowaAuras.UI:Checkbox(self, "Disabled", true);
+													</OnLoad>
+												</Scripts>
+											</CheckButton>
+											<CheckButton parentKey="Inspect" text="UI_Config_Inspect" inherits="PowaNormalCheckboxTemplate">
+												<Size x="150" y="28" />
+												<Anchors>
+													<Anchor point="TOPLEFT" x="16" y="-72" />
+													<Anchor point="TOPRIGHT" x="-16" y="-72" />
+												</Anchors>
+												<Scripts>
+													<OnLoad>
+														PowaAuras.UI:Checkbox(self, "AllowInspections");
+													</OnLoad>
+												</Scripts>
+											</CheckButton>
+											<CheckButton parentKey="RoundTimer" text="UI_Config_RoundTimer" inherits="PowaNormalCheckboxTemplate">
+												<Size x="150" y="28" />
+												<Anchors>
+													<Anchor point="TOPLEFT" x="16" y="-104" />
+													<Anchor point="TOPRIGHT" x="-16" y="-104" />
+												</Anchors>
+												<Scripts>
+													<OnLoad>
+														PowaAuras.UI:Checkbox(self, "TimerRoundUp");
+													</OnLoad>
+												</Scripts>
+											</CheckButton>
+											<CheckButton parentKey="BlockComms" text="UI_Config_BlockComms" inherits="PowaNormalCheckboxTemplate">
+												<Size x="150" y="28" />
+												<Anchors>
+													<Anchor point="TOPLEFT" x="16" y="-136" />
+													<Anchor point="TOPRIGHT" x="-16" y="-136" />
+												</Anchors>
+												<Scripts>
+													<OnLoad>
+														PowaAuras.UI:Checkbox(self, "BlockIncomingAuras");
+													</OnLoad>
+												</Scripts>
+											</CheckButton>
+											<CheckButton parentKey="FixExports" text="UI_Config_FixExports" inherits="PowaNormalCheckboxTemplate">
+												<Size x="150" y="28" />
+												<Anchors>
+													<Anchor point="TOPLEFT" x="16" y="-168" />
+													<Anchor point="TOPRIGHT" x="-16" y="-168" />
+												</Anchors>
+												<Scripts>
+													<OnLoad>
+														PowaAuras.UI:Checkbox(self, "FixExports");
+													</OnLoad>
+												</Scripts>
+											</CheckButton>
+										</Frames>
+									</Frame>
+									<Frame parentKey="Perf">
+										<Anchors>
+											<Anchor point="TOPLEFT" x="0" y="0" />
+											<Anchor point="BOTTOMRIGHT" x="0" y="0" />
+										</Anchors>
+										<Layers>
+											<Layer level="ARTWORK">
+												<FontString parentKey="Title" justifyH="LEFT" justifyV="MIDDLE" font="PowaFontNormalLarge">
+													<Size x="225" y="40" />
+													<Anchors>
+														<Anchor point="TOPLEFT" x="15" y="-4" />
+														<Anchor point="TOPRIGHT" x="-15" y="-4" />
+													</Anchors>
+												</FontString>
+											</Layer>
+										</Layers>
+										<Frames>
+											<Slider minValue="1" maxValue="100" defaultValue="100" valueStep="1" parentKey="UpdateSpeed" inherits="PowaSliderTemplate">
+												<Size x="300" y="15" />
+												<Anchors>
+													<!-- Slider is designed in a weird way due to backdrop limitations, hence the huge Y offset -->
+													<Anchor point="TOPLEFT" x="16" y="-55" />
+													<Anchor point="TOPRIGHT" x="-16" y="-55" />
+												</Anchors>
+												<Scripts>
+													<OnLoad>
+														PowaAuras.UI:Slider(self, "UI_Config_UpdateSpeed", "%");
+													</OnLoad>
+												</Scripts>
+											</Slider>
+											<Slider minValue="1" maxValue="100" defaultValue="100" valueStep="1" parentKey="TimerSpeed" inherits="PowaSliderTemplate">
+												<Size x="300" y="15" />
+												<Anchors>
+													<!-- Slider is designed in a weird way due to backdrop limitations, hence the huge Y offset -->
+													<Anchor point="TOPLEFT" x="16" y="-110" />
+													<Anchor point="TOPRIGHT" x="-16" y="-110" />
+												</Anchors>
+												<Scripts>
+													<OnLoad>
+														PowaAuras.UI:Slider(self, "UI_Config_TimerSpeed", "%");
+													</OnLoad>
+												</Scripts>
+											</Slider>
+										</Frames>
+									</Frame>
+									<Frame parentKey="Cust">
+										<Anchors>
+											<Anchor point="TOPLEFT" x="0" y="0" />
+											<Anchor point="BOTTOMRIGHT" x="0" y="0" />
+										</Anchors>
+										<Layers>
+											<Layer level="ARTWORK">
+												<FontString parentKey="Title" justifyH="LEFT" justifyV="MIDDLE" font="PowaFontNormalLarge">
+													<Size x="225" y="40" />
+													<Anchors>
+														<Anchor point="TOPLEFT" x="15" y="-4" />
+														<Anchor point="TOPRIGHT" x="-15" y="-4" />
+													</Anchors>
+												</FontString>
+											</Layer>
+										</Layers>
+										<Frames>
+											<EditBox parentKey="PathTex" inherits="PowaLabelledEditBoxTemplate">
+												<Size x="410" y="24" />
+												<Anchors>
+													<Anchor point="TOPLEFT" x="16" y="-60" />
+													<Anchor point="TOPRIGHT" x="-16" y="-60" />
+												</Anchors>
+												<Scripts>
+													<OnLoad>
+														PowaAuras.UI:EditBox2(self, "UI_Config_PathTex", "PathToAuras");
+													</OnLoad>
+												</Scripts>
+											</EditBox>
+											<EditBox parentKey="PathSfx" inherits="PowaLabelledEditBoxTemplate">
+												<Size x="410" y="24" />
+												<Anchors>
+													<Anchor point="TOPLEFT" x="16" y="-110" />
+													<Anchor point="TOPRIGHT" x="-16" y="-110" />
+												</Anchors>
+												<Scripts>
+													<OnLoad>
+														PowaAuras.UI:EditBox2(self, "UI_Config_PathSfx", "PathToSounds");
+													</OnLoad>
+												</Scripts>
+											</EditBox>
+										</Frames>
+									</Frame>
+								</Frames>
 								<Scripts>
 									<OnLoad>
-										self:SetChecked(PowaAuras.Helpers:GetSetting("AllowInspections"));
-										PowaAuras.UI:Checkbox(self, "AllowInspections");
+										PowaAuras.UI:TabFrame(self, 3);
+										self:RegisterTab(self.Config, "");
+										self:RegisterTab(self.Perf, "");
+										self:RegisterTab(self.Cust, "");
+										self.Config.Title:SetText(PowaAuras.Text["UI_ConfigTitle"]);
+										self.Perf.Title:SetText(PowaAuras.Text["UI_ConfigTitlePerf"]);
+										self.Cust.Title:SetText(PowaAuras.Text["UI_ConfigTitleCust"]);
 									</OnLoad>
 								</Scripts>
-							</CheckButton>
-							<CheckButton parentKey="RoundTimer" text="UI_Config_RoundTimer" inherits="PowaNormalCheckboxTemplate">
-								<Size x="150" y="28" />
-								<Anchors>
-									<Anchor point="TOPLEFT" x="16" y="-72" />
-								</Anchors>
-								<Scripts>
-									<OnLoad>
-										self:SetChecked(PowaAuras.Helpers:GetSetting("TimerRoundUp"));
-										PowaAuras.UI:Checkbox(self, "TimerRoundUp");
-									</OnLoad>
-								</Scripts>
-							</CheckButton>
-							<CheckButton parentKey="BlockComms" text="UI_Config_BlockComms" inherits="PowaNormalCheckboxTemplate">
-								<Size x="150" y="28" />
-								<Anchors>
-									<Anchor point="TOPLEFT" relativePoint="TOP" x="16" y="-72" />
-								</Anchors>
-								<Scripts>
-									<OnLoad>
-										self:SetChecked(PowaAuras.Helpers:GetSetting("BlockIncomingAuras"));
-										PowaAuras.UI:Checkbox(self, "BlockIncomingAuras");
-									</OnLoad>
-								</Scripts>
-							</CheckButton>
-							<CheckButton parentKey="FixExports" text="UI_Config_FixExports" inherits="PowaNormalCheckboxTemplate">
-								<Size x="150" y="28" />
-								<Anchors>
-									<Anchor point="TOPLEFT" x="16" y="-104" />
-								</Anchors>
-								<Scripts>
-									<OnLoad>
-										self:SetChecked(PowaAuras.Helpers:GetSetting("FixExports"));
-										PowaAuras.UI:Checkbox(self, "FixExports");
-									</OnLoad>
-								</Scripts>
-							</CheckButton>
-							<Slider minValue="1" maxValue="100" defaultValue="100" valueStep="1" parentKey="UpdateSpeed" inherits="PowaSliderTemplate">
-								<Size x="150" y="15" />
-								<Anchors>
-									<!-- Slider is designed in a weird way due to backdrop limitations, hence the huge Y offset -->
-									<Anchor point="TOPLEFT" x="16" y="-190" />
-								</Anchors>
-								<Scripts>
-									<OnLoad>
-										PowaAuras.UI:Slider(self, "UI_Config_UpdateSpeed", "%");
-									</OnLoad>
-								</Scripts>
-							</Slider>
-							<Slider minValue="1" maxValue="100" defaultValue="100" valueStep="1" parentKey="TimerSpeed" inherits="PowaSliderTemplate">
-								<Size x="150" y="15" />
-								<Anchors>
-									<!-- Slider is designed in a weird way due to backdrop limitations, hence the huge Y offset -->
-									<Anchor point="TOPLEFT" relativePoint="TOP" x="16" y="-190" />
-								</Anchors>
-								<Scripts>
-									<OnLoad>
-										PowaAuras.UI:Slider(self, "UI_Config_TimerSpeed", "%");
-									</OnLoad>
-								</Scripts>
-							</Slider>
-							<EditBox parentKey="PathTex" inherits="PowaLabelledEditBoxTemplate">
-								<Size x="150" y="24" />
-								<Anchors>
-									<Anchor point="TOPLEFT" x="16" y="-265" />
-								</Anchors>
-								<Scripts>
-									<OnLoad>
-										PowaAuras.UI:EditBox2(self, "", "UI_Config_PathTex");
-									</OnLoad>
-								</Scripts>
-							</EditBox>
-							<EditBox parentKey="PathSfx" inherits="PowaLabelledEditBoxTemplate">
-								<Size x="150" y="24" />
-								<Anchors>
-									<Anchor point="TOPLEFT" relativePoint="TOP" x="16" y="-265" />
-								</Anchors>
-								<Scripts>
-									<OnLoad>
-										PowaAuras.UI:EditBox2(self, "", "UI_Config_PathSfx");
-									</OnLoad>
-								</Scripts>
-							</EditBox>
+							</Frame>
 						</Frames>
-						<Scripts>
-							<OnLoad>
-								self.TitleConfig:SetText(PowaAuras.Text["UI_ConfigTitle"]);
-								self.TitlePerformance:SetText(PowaAuras.Text["UI_ConfigTitlePerf"]);
-								self.TitleCustom:SetText(PowaAuras.Text["UI_ConfigTitleCust"]);
-							</OnLoad>
-						</Scripts>
 					</Frame>
 					<Frame parentKey="Help" hidden="true">
 						<Anchors>
