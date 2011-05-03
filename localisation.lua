@@ -787,7 +787,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	UI_GlobAuras               = "Global Auras",
 	
 	UI_CreateAura              = "Create New Aura",
-	UI_CreateAura_Tooltip      = "Creates a new aura on this page.\n\n|cFFFFD100Left-Click: |rOpen Creation Dialog",
+	UI_CreateAura_Tooltip      = "Creates or imports a new aura on this page.\n\n|cFFFFD100Left-Click: |rOpen Creation Dialog",
 	UI_CreateNew               = "Blank Aura",
 	UI_CreateNewDesc           = "Create a new aura with the default settings.",
 	UI_CreatePreset            = "Preset Aura",
