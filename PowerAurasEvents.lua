@@ -196,12 +196,7 @@ end
 
 function PowaAuras:PARTY_MEMBERS_CHANGED(...)	  
 	if (self.ModTest == false) then
-		self.DoCheck.PartyBuffs = true;
-		self.DoCheck.GroupOrSelfBuffs = true;
-		self.DoCheck.PartyHealth = true;
-		self.DoCheck.PartyMana = true;
-		self.DoCheck.UnitMatch = true;
-		self.DoCheck.CheckIt = true;
+		self:MarkAuras("PartyBuffs", "GroupOrSelfBuffs", "PartyHealth", "PartyMana", "UnitMatch");
 	end
 	local partyCount = GetNumPartyMembers();
 	self.WeAreInParty = (partyCount > 0);
@@ -211,12 +206,7 @@ end
 		
 function PowaAuras:RAID_ROSTER_UPDATE(...)
 	if (self.ModTest == false) then
-		self.DoCheck.RaidBuffs = true;
-		self.DoCheck.GroupOrSelfBuffs = true;
-		self.DoCheck.RaidHealth = true;
-		self.DoCheck.RaidMana = true;
-		self.DoCheck.UnitMatch = true;
-		self.DoCheck.CheckIt = true;
+		self:MarkAuras("RaidBuffs", "GroupOrSelfBuffs", "RaidHealth", "RaidMana", "UnitMatch");
 	end
 	local raidCount = GetNumRaidMembers();
 	self.WeAreInRaid = (raidCount > 0);
@@ -422,15 +412,6 @@ end
 function PowaAuras:PLAYER_FOCUS_CHANGED(...)	  
 	if (self.ModTest == false) then
 		self:MarkAuras("FocusBuffs", "FocusHealth", "FocusMana", "FocusPower", "FocusSpells", "StealableFocusSpells", "PurgeableFocusSpells", "UnitMatch");
-		-- -- self.DoCheck.FocusBuffs = true;
-		-- -- self.DoCheck.FocusHealth = true;
-		-- -- self.DoCheck.FocusMana = true;
-		-- -- self.DoCheck.FocusPower = true;
-		-- -- self.DoCheck.FocusSpells = true;
-		-- -- self.DoCheck.StealableFocusSpells = true;
-		-- -- self.DoCheck.PurgeableFocusSpells = true;
-		-- -- self.DoCheck.UnitMatch = true;
-		-- -- self.DoCheck.CheckIt = true;
 	end
 end
 
@@ -518,17 +499,8 @@ end
  
 function PowaAuras:PLAYER_TARGET_CHANGED(...)
 	if (self.ModTest == false) then
-		self.DoCheck.TargetBuffs = true;
-		self.DoCheck.TargetHealth = true;
-		self.DoCheck.TargetMana = true;
-		self.DoCheck.TargetPower = true;
-		self.ResetTargetTimers = true;
-		self.DoCheck.Actions = true;
-		self.DoCheck.StealableTargetSpells = true;
-		self.DoCheck.PurgeableTargetSpells = true;
-		self.DoCheck.Combo = true;
-		self.DoCheck.UnitMatch = true;
-		self.DoCheck.CheckIt = true;
+		self:MarkAuras("TargetBuffs", "TargetHealth", "TargetMana", "TargetPower", "Actions", "StealableTargetSpells", 
+			"PurgeableTargetSpells", "Combo", "UnitMatch");
 	end
 end
 
