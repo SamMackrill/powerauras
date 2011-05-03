@@ -17,6 +17,7 @@ PowaAuras.UI:Register("TabIconButton", {
 		self:SetParent(parent);
 		self:SetScript("OnClick", function()
 			self:GetParent():SelectTab(self.Id);
+			PlaySound("igCharacterInfoTab");
 		end);
 	end,
 	SetGlow = function(self, glow)
@@ -31,11 +32,13 @@ PowaAuras.UI:Register("TabIconButton", {
 		if(selected == true) then
 			self.Highlight:Hide();
 			self.TabBg:SetTexCoord(0.01562500, 0.79687500, 0.78906250, 0.953125);
+			self:Disable();
 		else
 			if(not self.Glowing) then
 				self.Highlight:Show();
 			end
 			self.TabBg:SetTexCoord(0.01562500, 0.79687500, 0.61328125, 0.7734375);
+			self:Enable();
 		end
 		self.Selected = selected;
 	end

@@ -538,6 +538,9 @@
 										self.Perf.Title:SetText(PowaAuras.Text["UI_ConfigTitlePerf"]);
 										self.Cust.Title:SetText(PowaAuras.Text["UI_ConfigTitleCust"]);
 									</OnLoad>
+									<OnShow>
+										PlaySoundFile("Sound\\Creature\\PrinceKaelthasSunstrider\\BROKENKAELAGGRO.wav")
+									</OnShow>
 								</Scripts>
 							</Frame>
 						</Frames>
