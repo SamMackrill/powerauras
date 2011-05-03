@@ -431,6 +431,30 @@
 									</OnLoad>
 								</Scripts>
 							</CheckButton>
+							<Slider minValue="1" maxValue="100" defaultValue="100" valueStep="1" parentKey="UpdateSpeed" inherits="PowaSliderTemplate">
+								<Size x="150" y="15" />
+								<Anchors>
+									<!-- Slider is designed in a weird way due to backdrop limitations, hence the huge Y offset -->
+									<Anchor point="TOPLEFT" x="16" y="-185" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										PowaAuras.UI:Slider(self, "UI_Config_UpdateSpeed", "%");
+									</OnLoad>
+								</Scripts>
+							</Slider>
+							<Slider minValue="1" maxValue="100" defaultValue="100" valueStep="1" parentKey="TimerSpeed" inherits="PowaSliderTemplate">
+								<Size x="150" y="15" />
+								<Anchors>
+									<!-- Slider is designed in a weird way due to backdrop limitations, hence the huge Y offset -->
+									<Anchor point="TOPLEFT" relativePoint="TOP" x="16" y="-185" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										PowaAuras.UI:Slider(self, "UI_Config_TimerSpeed", "%");
+									</OnLoad>
+								</Scripts>
+							</Slider>
 						</Frames>
 						<Scripts>
 							<OnLoad>

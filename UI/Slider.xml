@@ -23,7 +23,7 @@
 		</Backdrop>
 		<Layers>
 			<Layer level="ARTWORK">
-				<FontString name="$parentText" parentKey="Text" text="Text" inherits="PowaFontNormalSmall">
+				<FontString name="$parentText" parentKey="Text" text="Text" inherits="PowaFontNormal">
 					<Size>
 						<AbsDimension y="14" />
 					</Size>

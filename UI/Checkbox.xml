@@ -97,7 +97,18 @@
 		<NormalFont style="PowaFontNormal" />
 		<DisabledFont style="PowaFontDisable" />
 		<HighlightFont style="PowaFontHighlight" />
+		<!--
+		Not sure if I liked the old texture. Or the new.
 		<NormalTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled" blend="DISABLE">
+			<Size>
+				<AbsDimension x="24" y="24" />
+			</Size>
+			<Anchors>
+				<Anchor point="LEFT" relativePoint="LEFT" x="2" y="-1" />
+			</Anchors>
+		</NormalTexture>
+		-->
+		<NormalTexture file="Interface\Buttons\UI-CheckBox-Up" blend="DISABLE">
 			<Size>
 				<AbsDimension x="24" y="24" />
 			</Size>
@@ -160,7 +171,7 @@
 				</Texture>
 			</Layer>
 		</Layers>
-		<ButtonText name="$parentText" parentKey="Text" font="PowaFontNormalSmall" justifyH="LEFT" justifyV="MIDDLE">
+		<ButtonText name="$parentText" parentKey="Text" justifyH="LEFT" justifyV="MIDDLE">
 			<Size>
 				<AbsDimension y="28" />
 			</Size>

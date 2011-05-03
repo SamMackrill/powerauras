@@ -194,6 +194,10 @@ PowaAuras.UI:Register("TreeView", {
 -- And a definition for the item.
 PowaAuras.UI:Register("TreeViewItem", {
 	Items = {}, -- Stores a list of reusable items.
+	Hooks = {
+		"Disable",
+		"Enable",
+	},
 	Construct = function(self, ui, item, ...)
 		-- Got any items or not?
 		local item = nil;
@@ -223,6 +227,14 @@ PowaAuras.UI:Register("TreeViewItem", {
 		self:SetScript("OnClick", self.OnClick);
 		self:Show();
 	end,
+	Disable = function(self)
+		self:__Disable();
+		self:UpdateFonts();
+	end,
+	Enable = function(self)
+		self:__Enable();
+		self:UpdateFonts();
+	end,
 	GetExpanded = function(self)
 		return self.Expanded;
 	end,
@@ -247,17 +259,19 @@ PowaAuras.UI:Register("TreeViewItem", {
 	end,
 	SetParentKey = function(self, key)
 		self.ParentKey = key;
+		-- Update fonts based on parent key.
+		self:UpdateFonts();
 	end,
 	SetSelected = function(self, selected)
 		if(selected) then
 			self:SetNormalTexture("Interface\\FriendsFrame\\UI-FriendsFrame-HighlightBar-Blue");
 			self:GetNormalTexture():SetBlendMode("ADD");
-			self:SetNormalFontObject(PowaFontHighlightSmall);
+			self:SetNormalFontObject((self.ParentKey and PowaFontHighlightSmall or PowaFontHighlight));
 			self:SetHighlightTexture(nil);
 		else
 			self:SetHighlightTexture("Interface\\FriendsFrame\\UI-FriendsFrame-HighlightBar-Blue");
 			self:GetHighlightTexture():SetBlendMode("ADD");
-			self:SetNormalFontObject(PowaFontNormalSmall);
+			self:SetNormalFontObject((self.ParentKey and PowaFontNormalSmall or PowaFontNormal));
 			self:SetNormalTexture(nil);		
 		end
 	end,
@@ -278,5 +292,14 @@ PowaAuras.UI:Register("TreeViewItem", {
 			self.Expand:SetPushedTexture("Interface\\Buttons\\UI-PlusButton-Down");
 			self.Expand:SetDisabledTexture("Interface\\Buttons\\UI-PlusButton-Disabled");		
 		end
+	end,
+	UpdateFonts = function(self)
+		if(self.ParentKey) then
+			self:SetHighlightFontObject(PowaFontHighlightSmall);
+			self:SetDisabledFontObject(PowaFontNormalSmall);
+		else
+			self:SetHighlightFontObject(PowaFontHighlight);
+			self:SetDisabledFontObject(PowaFontNormal);
+		end	
 	end,
 });
