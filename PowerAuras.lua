@@ -545,6 +545,7 @@ do
 	function PowaAuras:MarkAuras(...)
 		-- Get first argument.
 		arg = select(1, ...);
+		if(not arg) then return; end
 		-- Mark aura type.
 		self.DoCheck[arg] = true;
 		self.DoCheck.CheckIt = true;
