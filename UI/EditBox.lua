@@ -78,6 +78,8 @@ PowaAuras.UI:Register("EditBox2", {
 		PowaAuras.UI:Settings(self, setting);
 		-- Set title.
 		self:SetTitle(title);
+		-- Tooltip mixin.
+		PowaAuras.UI:Tooltip(self, title, (title .. "Desc"));
 	end,
 	GetTitle = function(self)
 		return self.Title:GetText();
@@ -88,6 +90,8 @@ PowaAuras.UI:Register("EditBox2", {
 	end,
 	OnEditFocusLost = function(self)
 		self:HighlightText(0, 0);
+		-- Call clearfocus so focus is REALLY cleared.
+		self:ClearFocus();
 		self:UpdateColours();
 	end,
 	OnEnterPressed = function(self)
@@ -104,5 +108,18 @@ PowaAuras.UI:Register("EditBox2", {
 		self.Title:SetText(PowaAuras.Text[title]);
 	end,
 	UpdateColours = function(self)
+		if(self:HasFocus()) then
+			if(self:IsMouseOver()) then
+				self:SetBackdropBorderColor(1, 0.82, 0, 1);
+			else
+				self:SetBackdropBorderColor(1, 0.82, 0, 0.8);
+			end
+		else
+			if(self:IsMouseOver()) then
+				self:SetBackdropBorderColor(0.3, 0.3, 0.3, 1);
+			else
+				self:SetBackdropBorderColor(0.3, 0.3, 0.3, 0.8);
+			end
+		end		
 	end,
 });

@@ -55,17 +55,17 @@ PowaAuras.UI:Register("AuraBrowser", {
 		local playerPageCount, globalPageCount, classPageCount = #(PowaPlayerListe), #(PowaGlobalListe), 
 			#(PowaClassListe[class]);
 		-- Character auras.
-		self.Tabs.Auras.Tree:AddItem("CHAR", PowaAuras.Text["UI_CharAuras"], nil, nil, true);
+		self.Tabs.Auras.Tree:AddItem("CHAR", PowaAuras.Text["UI_CharAuras"], nil, true);
 		for i=1,playerPageCount do
 			self.Tabs.Auras.Tree:AddItem(i, PowaPlayerListe[i], "CHAR");
 		end
 		-- Global auras.
-		self.Tabs.Auras.Tree:AddItem("GLOBAL", PowaAuras.Text["UI_GlobAuras"], nil, nil, true);
+		self.Tabs.Auras.Tree:AddItem("GLOBAL", PowaAuras.Text["UI_GlobAuras"], nil, true);
 		for i=1,globalPageCount do
 			self.Tabs.Auras.Tree:AddItem(i+playerPageCount, PowaGlobalListe[i], "GLOBAL");
 		end
 		-- Class auras.
-		self.Tabs.Auras.Tree:AddItem("CLASS", PowaAuras.Text["UI_ClassAuras"], nil, nil, true);
+		self.Tabs.Auras.Tree:AddItem("CLASS", PowaAuras.Text["UI_ClassAuras"], nil, true);
 		for i=1,classPageCount do
 			self.Tabs.Auras.Tree:AddItem(i+playerPageCount+globalPageCount, PowaClassListe[class][i], "CLASS");
 		end

@@ -341,19 +341,19 @@
 														self:AddColumn(0.5);
 														self:AddColumn(0.5);
 														
-														self:SetItem(self.Separator1, 2, { 2, -2, 0, 0 }, { 0, 0, 0, 4 });
-														self:SetItem(self.Separator1.Opacity, 1, { 2, 4, 0, 0 }, { 0, 0, 16, 20 });
-														self:SetItem(self.Separator1.Scale, 1, { 4, -2, 0, 0 }, { 0, 0, 16, 20 });
-														self:SetItem(self.Separator1.Rotate, 1, { 2, 4, 0, 0 }, { 0, 0, 16, 20 });
-														self:SetItem(self.Separator1.Flip, 1, { 4, -2, 0, 0 }, { 0, 0, 16, 20 });
+														self:AddItem(self.Separator1, 2, { 2, -2, 0, 0 }, { 0, 0, 0, 4 });
+														self:AddItem(self.Separator1.Opacity, 1, { 2, 4, 0, 0 }, { 0, 0, 16, 20 });
+														self:AddItem(self.Separator1.Scale, 1, { 4, -2, 0, 0 }, { 0, 0, 16, 20 });
+														self:AddItem(self.Separator1.Rotate, 1, { 2, 4, 0, 0 }, { 0, 0, 16, 20 });
+														self:AddItem(self.Separator1.Flip, 1, { 4, -2, 0, 0 }, { 0, 0, 16, 20 });
 														
-														self:SetItem(self.Separator2, 2, { 2, -2, 0, 0 }, { 0, 0, 6, 4 });
-														self:SetItem(self.Separator2.X, 1, { 2, 4, 0, 0 }, { 0, 0, 4, 4 });
-														self:SetItem(self.Separator2.Y, 1, { 4, -2, 0, 0 }, { 0, 0, 4, 4 });
+														self:AddItem(self.Separator2, 2, { 2, -2, 0, 0 }, { 0, 0, 6, 4 });
+														self:AddItem(self.Separator2.X, 1, { 2, 4, 0, 0 }, { 0, 0, 4, 4 });
+														self:AddItem(self.Separator2.Y, 1, { 4, -2, 0, 0 }, { 0, 0, 4, 4 });
 														
-														self:SetItem(self.Separator3, 2, { 2, -2, 0, 0 }, { 0, 0, 6, 4 });
-														self:SetItem(self.Separator3.Deform, 1, { 2, 4, 0, 0 }, { 0, 0, 16, 20 });
-														self:SetItem(self.Separator3.Strata, 1, { 4, -2, 0, 0 }, { 0, 0, 16, 20 });
+														self:AddItem(self.Separator3, 2, { 2, -2, 0, 0 }, { 0, 0, 6, 4 });
+														self:AddItem(self.Separator3.Deform, 1, { 2, 4, 0, 0 }, { 0, 0, 16, 20 });
+														self:AddItem(self.Separator3.Strata, 1, { 4, -2, 0, 0 }, { 0, 0, 16, 20 });
 														
 														-- Unlock layout.
 														self:SetLocked(false);
@@ -619,8 +619,8 @@
 								PowaAuras.UI:LayoutFrame(self, 0, 0, 1, true);
 								self:AddColumn(0.3, 1);
 								self:AddColumn(0.7, 1);
-								self:SetItem(self.Sidebar);
-								self:SetItem(self.Main, 1, { 4, 4, 4, 4 });
+								self:AddItem(self.Sidebar);
+								self:AddItem(self.Main, 1, { 4, 4, 4, 4 });
 								-- Unlock layout.
 								self:SetLocked(false);
 							</OnLoad>
