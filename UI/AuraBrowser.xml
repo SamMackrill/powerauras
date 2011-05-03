@@ -29,17 +29,6 @@
 		</Layers>
 	</Button>
 	
-	<!-- Todo: Move to seperate file (RadioGroup.xml) -->
-	<CheckButton name="PowaRadioButtonTemplate" virtual="true">
-		<Size x="150" y="23" />
-		<NormalTexture file="Interface\Buttons\WHITE8X8" setAllPoints="true">
-			<Color r="1" g="0" b="0" />
-		</NormalTexture>
-		<CheckedTexture file="Interface\Buttons\WHITE8X8" setAllPoints="true">
-			<Color r="0" g="1" b="0" />
-		</CheckedTexture>
-	</CheckButton>
-	
 	<CheckButton name="PowaCreateAuraRadioButtonTemplate" virtual="true">
 		<Size x="400" y="58" />
 		<Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground" edgeFile="Interface\ChatFrame\ChatFrameBackground" tile="true">
@@ -364,8 +353,8 @@
 								<FontString parentKey="TitleCustom" justifyH="LEFT" justifyV="MIDDLE" font="PowaFontNormalLarge">
 									<Size x="225" y="40" />
 									<Anchors>
-										<Anchor point="TOPLEFT" x="11" y="-250" />
-										<Anchor point="TOPRIGHT" x="-11" y="-250" />
+										<Anchor point="TOPLEFT" x="11" y="-225" />
+										<Anchor point="TOPRIGHT" x="-11" y="225" />
 									</Anchors>
 								</FontString>
 							</Layer>
@@ -435,7 +424,7 @@
 								<Size x="150" y="15" />
 								<Anchors>
 									<!-- Slider is designed in a weird way due to backdrop limitations, hence the huge Y offset -->
-									<Anchor point="TOPLEFT" x="16" y="-185" />
+									<Anchor point="TOPLEFT" x="16" y="-190" />
 								</Anchors>
 								<Scripts>
 									<OnLoad>
@@ -447,7 +436,7 @@
 								<Size x="150" y="15" />
 								<Anchors>
 									<!-- Slider is designed in a weird way due to backdrop limitations, hence the huge Y offset -->
-									<Anchor point="TOPLEFT" relativePoint="TOP" x="16" y="-185" />
+									<Anchor point="TOPLEFT" relativePoint="TOP" x="16" y="-190" />
 								</Anchors>
 								<Scripts>
 									<OnLoad>
@@ -455,6 +444,28 @@
 									</OnLoad>
 								</Scripts>
 							</Slider>
+							<EditBox parentKey="PathTex" inherits="PowaLabelledEditBoxTemplate">
+								<Size x="150" y="24" />
+								<Anchors>
+									<Anchor point="TOPLEFT" x="16" y="-265" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										PowaAuras.UI:EditBox2(self, "", "UI_Config_PathTex");
+									</OnLoad>
+								</Scripts>
+							</EditBox>
+							<EditBox parentKey="PathSfx" inherits="PowaLabelledEditBoxTemplate">
+								<Size x="150" y="24" />
+								<Anchors>
+									<Anchor point="TOPLEFT" relativePoint="TOP" x="16" y="-265" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										PowaAuras.UI:EditBox2(self, "", "UI_Config_PathSfx");
+									</OnLoad>
+								</Scripts>
+							</EditBox>
 						</Frames>
 						<Scripts>
 							<OnLoad>
