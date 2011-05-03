@@ -85,8 +85,6 @@ PowaAuras.UI:Register("AuraBrowser", {
 		self.Tabs.Auras.Page:SetLocked(false);
 		-- Button update.
 		self:UpdateAuraButtons();
-		-- Config update.
-		self:UpdateConfigOptions();
 	end,
 	SavePageName = function(self, name)
 		-- Get the page.
@@ -181,15 +179,6 @@ PowaAuras.UI:Register("AuraBrowser", {
 		end
 		-- Bugfix for buttons vanishing.
 		self.Tabs.Auras.Page:UpdateLayout();
-	end,
-	UpdateConfigOptions = function(self)
-		-- Update lots of checkboxes! YAY!
-		-- Keep this function in, otherwise the checkboxes won't be accurate on initial load.
-		self.Tabs.Config.Enable:SetChecked(not PowaAuras.Helpers:GetSetting("Disabled"));
-		self.Tabs.Config.Inspect:SetChecked(PowaAuras.Helpers:GetSetting("AllowInspections"));
-		self.Tabs.Config.RoundTimer:SetChecked(PowaAuras.Helpers:GetSetting("TimerRoundUp"));
-		self.Tabs.Config.BlockComms:SetChecked(PowaAuras.Helpers:GetSetting("BlockIncomingAuras"));
-		self.Tabs.Config.FixExports:SetChecked(PowaAuras.Helpers:GetSetting("FixExports"));
 	end,
 });
 
@@ -375,7 +364,6 @@ PowaAuras.UI:Register("RadioButton", {
 			return item;
 		else
 			-- Get making.
-			print(self.Items, self.Template);
 			item = CreateFrame("CheckButton", nil, nil, self.Template);
 			print("|cFF527FCCDEBUG (RadioButton): |rCreating item!");
 			-- Reuse existing constructor.
