@@ -1,0 +1,106 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+    ..\..\FrameXML\UI.xsd">
+	<Script file="Slider.lua" />
+	<Slider name="PowaSliderTemplate" virtual="true" minValue="1" maxValue="100" defaultValue="50" valueStep="1" orientation="HORIZONTAL" enableMouse="true">
+		<Size>
+			<AbsDimension x="150" y="15" />
+		</Size>
+		<HitRectInsets>
+			<AbsInset left="0" right="0" top="-14" bottom="-15" />
+		</HitRectInsets>
+		<Backdrop bgFile="Interface\Buttons\UI-SliderBar-Background" edgeFile="Interface\Buttons\UI-SliderBar-Border" tile="true">
+			<EdgeSize>
+				<AbsValue val="8" />
+			</EdgeSize>
+			<TileSize>
+				<AbsValue val="8" />
+			</TileSize>
+			<BackgroundInsets>
+				<AbsInset left="3" right="3" top="6" bottom="6" />
+			</BackgroundInsets>
+		</Backdrop>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentText" parentKey="Text" text="Text" inherits="PowaFontNormal">
+					<Size>
+						<AbsDimension y="14" />
+					</Size>
+					<Anchors>
+						<Anchor point="BOTTOM" relativePoint="TOP" />
+					</Anchors>
+				</FontString>
+				<FontString name="$parentLow" parentKey="Low" text="Low" inherits="PowaFontHighlightSmall">
+					<Size>
+						<AbsDimension y="14" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" x="0" y="-1" />
+					</Anchors>
+				</FontString>
+				<FontString name="$parentHigh" parentKey="High" text="High" inherits="PowaFontHighlightSmall">
+					<Size>
+						<AbsDimension y="14" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" x="0" y="-1" />
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<EditBox name="$parentValue" parentKey="Value" justifyH="CENTER" inherits="PowaEditBoxTemplate">
+				<Size>
+					<AbsDimension x="70" y="14" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOP" relativePoint="BOTTOM" x="0" y="-1" />
+				</Anchors>
+				<Scripts>
+					<OnEscapePressed>
+						self:SetText(self:GetParent():GetValue());
+						self:ClearFocus();
+					</OnEscapePressed>
+					<OnEnterPressed>
+						-- Get the value.
+						local value = nil;
+						if(self:GetParent().OnValueSet) then
+							value = self:GetText();
+						elseif(tonumber(self:GetText(), 10)) then
+							value = tonumber(self:GetText(), 10);
+						end
+						-- If it exists, set it. Otherwise, default to the current one.
+						if(value) then
+							self:GetParent():SetValue(value);
+						end
+						-- Now reset the box.
+						self:SetText(self:GetParent():GetValue());
+						-- Done.
+						self:ClearFocus();						
+					</OnEnterPressed>
+					<OnLoad>
+						-- Setting justifyH in the XML doesn't work.
+						self:SetJustifyH("CENTER");
+						-- Initialize me!
+						PowaAuras.UI:EditBox(self);
+					</OnLoad>
+				</Scripts>
+			</EditBox>
+		</Frames>
+		<Scripts>
+			<OnValueChanged>
+				self.Value:SetText(self:GetValue());
+				if(self.OnValueChanged) then
+					-- Don't run the value through the OnValueGet mutator.
+					self:OnValueChanged(value);
+				end
+			</OnValueChanged>
+		</Scripts>
+		<ThumbTexture name="$parentThumb" file="Interface\Buttons\UI-SliderBar-Button-Horizontal">
+			<Size>
+				<AbsDimension x="32" y="32" />
+			</Size>
+		</ThumbTexture>
+	</Slider>
+</Ui>

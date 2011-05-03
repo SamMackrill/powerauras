@@ -1,0 +1,13 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+    ..\..\FrameXML\UI.xsd">
+	<!-- Allows for resizing. -->
+	<Font name="PowaFontNormal" inherits="GameFontNormal" virtual="true" />
+	<Font name="PowaFontNormalLarge" inherits="GameFontNormalLarge" virtual="true" />
+	<Font name="PowaFontNormalSmall" inherits="GameFontNormalSmall" virtual="true" />
+	<Font name="PowaFontHighlight" inherits="GameFontHighlight" virtual="true" />
+	<Font name="PowaFontHighlightSmall" inherits="GameFontHighlightSmall" virtual="true" />
+	<Font name="PowaFontDisable" inherits="GameFontDisable" virtual="true" />
+	<Font name="PowaFontDisableSmall" inherits="GameFontDisableSmall" virtual="true" />
+</Ui>
