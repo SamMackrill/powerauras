@@ -23,7 +23,8 @@
 						<HighlightTexture inherits="UIPanelScrollBarButton" file="Interface\Buttons\UI-ScrollBar-ScrollUpButton-Highlight" alphaMode="ADD" />
 						<Scripts>
 							<OnClick>
-								self:GetParent():SetValue(self:GetParent():GetValue()-(self:GetParent():GetHeight()/2));							
+								self:GetParent():SetValue(self:GetParent():GetValue()-(self:GetParent():GetHeight()/2));
+								PlaySound("UChatScrollButton");							
 							</OnClick>
 						</Scripts>
 					</Button>
@@ -38,7 +39,8 @@
 						<HighlightTexture inherits="UIPanelScrollBarButton" file="Interface\Buttons\UI-ScrollBar-ScrollDownButton-Highlight" alphaMode="ADD" />
 						<Scripts>
 							<OnClick>
-								self:GetParent():SetValue(self:GetParent():GetValue()+(self:GetParent():GetHeight()/2));							
+								self:GetParent():SetValue(self:GetParent():GetValue()+(self:GetParent():GetHeight()/2));	
+								PlaySound("UChatScrollButton");						
 							</OnClick>
 						</Scripts>
 					</Button>

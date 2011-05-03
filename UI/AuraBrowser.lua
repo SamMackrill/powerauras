@@ -2,6 +2,11 @@
 -- inside that big one. Besides, I like this system, do you? It's more memory efficient...I think. 
 -- Does defining the same closure repeatedly cost more memory, rather than referencing a single defined closure?
 PowaAuras.UI:Register("AuraBrowser", {
+	EnhancedScripts = true,
+	Scripts = {
+		OnShow = true,
+		OnHide = true,
+	},
 	Init = function(self)
 		-- Variables.
 		self.SelectedAura = nil;
@@ -30,11 +35,17 @@ PowaAuras.UI:Register("AuraBrowser", {
 	IsAuraSelected = function(self, id)
 		return (self.SelectedAura == id);
 	end,
+	OnHide = function(self)
+		PlaySound("igMainMenuClose");
+	end,
 	OnSelectionChanged = function(self, key)
 		-- Save page.
 		PowaBrowser.SelectedPage = key;
 		-- Deselect any and all auras. This will trigger a button update.
 		PowaBrowser:SetSelectedAura(nil);
+	end,
+	OnShow = function(self)
+		PlaySound("igCharacterInfoTab");
 	end,
 	OnVariablesLoaded = function()
 		-- Easymode.
@@ -231,6 +242,8 @@ PowaAuras.UI:Register("AuraButton", {
 			PowaEditor:Show();
 			print("|cFF527FCCDEBUG (AuraBrowser): |rOpen aura editor: " .. self.AuraID);
 		end
+		-- Play a sound too!
+		PlaySound("UChatScrollButton");
 	end,
 	SetCreateAura = function(self, create)
 		self.CreateAura = create;

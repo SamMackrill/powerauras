@@ -109,6 +109,7 @@ PowaAuras.UI:Register("RadioButton", {
 	OnClick = function(self)
 		-- Select this key.
 		self:GetParent():SelectItem(self.Key);
+		PlaySound("UChatScrollButton");
 	end,
 	Recycle = function(self)
 		-- Place in recycle table!
