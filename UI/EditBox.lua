@@ -48,8 +48,8 @@ PowaAuras.UI:Register("EditBox2", {
 		OnEnterPressed = true,
 		OnEnter = "UpdateColours",
 		OnLeave = "UpdateColours",
-		OnEditFocusGained = "UpdateColours",
-		OnEditFocusLost = "UpdateColours",
+		OnEditFocusGained = true,
+		OnEditFocusLost = true,
 	},
 	Template = "PowaLabelledEditBoxTemplate",
 	Construct = function(class, ui, frame, ...)
@@ -73,12 +73,22 @@ PowaAuras.UI:Register("EditBox2", {
 		end
 	end,
 	Init = function(self, title, setting)
-		-- Setting integration NYI.
+		-- Settings mixin.
+		self.OnSettingChanged = self.SetText;
+		PowaAuras.UI:Settings(self, setting);
 		-- Set title.
 		self:SetTitle(title);
 	end,
 	GetTitle = function(self)
 		return self.Title:GetText();
+	end,
+	OnEditFocusGained = function(self)
+		self:HighlightText();
+		self:UpdateColours();
+	end,
+	OnEditFocusLost = function(self)
+		self:HighlightText(0, 0);
+		self:UpdateColours();
 	end,
 	OnEnterPressed = function(self)
 		-- Save setting.
