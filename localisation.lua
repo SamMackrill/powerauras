@@ -810,6 +810,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	UI_Config_UpdateSpeedDesc  = "Controls the speed of updates, lower this if you are experiencing performance issues.",
 	UI_Config_TimerSpeed       = "Timer Update Speed",
 	UI_Config_TimerSpeedDesc   = "Controls the speed of timer updates, lower this if you are experiencing performance issues.",
+	UI_Config_PathTex          = "Custom Textures",
+	UI_Config_PathSfx          = "Custom Sounds",
 	UI_ConfigTitlePerf         = "Performance",
 	UI_ConfigTitleCust         = "Textures and Sounds",
 	

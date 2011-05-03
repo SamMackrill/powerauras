@@ -1,4 +1,5 @@
 -- Create definition.
+-- To be replaced.
 PowaAuras.UI:Register("EditBox", {
 	Init = function(self, property, title, tooltipDesc)
 		-- Property handling not yet implemented.
@@ -37,4 +38,61 @@ PowaAuras.UI:Register("EditBox", {
 			end
 		end		
 	end
+});
+
+PowaAuras.UI:Register("EditBox2", {
+	Items = {},
+	EnhancedScripts = true,
+	Scripts = {
+		OnEscapePressed = true,
+		OnEnterPressed = true,
+		OnEnter = "UpdateColours",
+		OnLeave = "UpdateColours",
+		OnEditFocusGained = "UpdateColours",
+		OnEditFocusLost = "UpdateColours",
+	},
+	Template = "PowaLabelledEditBoxTemplate",
+	Construct = function(class, ui, frame, ...)
+		-- Call normal ctor if frame was passed.
+		if(frame) then
+			return ui.Construct(class, _, frame, ...);
+		end
+		-- Recycling constructor of win.
+		local item = class.Items[1];
+		if(not item) then
+			-- New frame needed.
+			local parent = select(1, ...);
+			item = CreateFrame("EditBox", nil, parent, class.Template);
+			-- Pass it through the original ctor.
+			return ui.Construct(class, _, item, select(2, ...));
+		else
+			-- Reinitialize it, done.
+			tremove(class.Items, 1);
+			item:Init(...);
+			return item;
+		end
+	end,
+	Init = function(self, title, setting)
+		-- Setting integration NYI.
+		-- Set title.
+		self:SetTitle(title);
+	end,
+	GetTitle = function(self)
+		return self.Title:GetText();
+	end,
+	OnEnterPressed = function(self)
+		-- Save setting.
+		self:SaveSetting(self:GetText());
+		self:ClearFocus();
+	end,
+	OnEscapePressed = function(self)
+		-- Restore defaults.
+		self:SetText(self:GetSetting());
+		self:ClearFocus();
+	end,
+	SetTitle = function(self, title)
+		self.Title:SetText(PowaAuras.Text[title]);
+	end,
+	UpdateColours = function(self)
+	end,
 });

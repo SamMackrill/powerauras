@@ -24,9 +24,18 @@ PowaAuras.UI = {
 			widget.Base = self.Base;
 		end
 		-- Script handlers.
-		if(self.Scripts and widget.SetScript) then
-			for _,v in ipairs(self.Scripts) do
-				widget:SetScript(v, widget[v]);
+		if(not self.EnhancedScripts) then
+			if(self.Scripts and widget.SetScript) then
+				for _,v in ipairs(self.Scripts) do
+					widget:SetScript(v, widget[v]);
+				end
+			end
+		else
+			if(self.Scripts and widget.SetScript) then
+				for script, func in pairs(self.Scripts) do
+					print(script, func);
+					widget:SetScript(script, (type(func) == "boolean" and widget[script] or widget[func]));
+				end
 			end
 		end
 		-- Run widget ctor.

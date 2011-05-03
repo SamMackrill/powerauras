@@ -1,7 +1,7 @@
 ﻿-- Common helper functions.
 PowaAuras.Helpers = {
 	SettingsByKey = {},
-	SettingCallbacksByKey = {},
+	SettingCallbacks = {},
 	SettingLocations = {
 		Aura = 0x1,
 		Global = 0x2,
@@ -20,14 +20,12 @@ PowaAuras.Helpers = {
 		};
 		return true;
 	end,
-	RegisterSettingCallback = function(self, key, func)
-		-- Setting needs to exist.
-		if(not self.SettingsByKey[key]) then return false; end
-		-- Register closure.
-		if(not self.SettingCallbacksByKey[key]) then
-			self.SettingCallbacksByKey[key] = {};
-		end
-		tinsert(self.SettingCallbacksByKey[key], func);
+	RegisterSettingCallback = function(self, func)
+		-- Safety.
+		if(tContains(self, func)) then return false; end
+		-- Go go go?
+		tinsert(self.SettingCallbacks, func);
+		return true;
 	end,
 	GetSetting = function(self, key)
 		-- Make sure setting exists.
@@ -66,10 +64,10 @@ PowaAuras.Helpers = {
 	end,
 	UpdateSetting = function(self, key, value)
 		-- Make sure setting exists.
-		if(not self.SettingsByKey[key] or not self.SettingCallbacksByKey[key]) then return false; end
+		if(not self.SettingsByKey[key]) then return false; end
 		-- Run update funcs.
-		for _, func in ipairs(self.SettingCallbacksByKey[key]) do
-			func(value);
+		for _, func in ipairs(self.SettingCallbacks) do
+			func(key, value);
 		end
 	end,
 	GetNextFreeSlot = function(self, page)

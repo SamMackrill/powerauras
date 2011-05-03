@@ -54,5 +54,61 @@
 				self:HighlightText(0,0);
 			</OnEditFocusLost>
 		</Scripts>
+	</EditBox>	
+	
+	<EditBox name="PowaLabelledEditBoxTemplate" virtual="true" autofocus="false" font="PowaFontHighlight" enableMouse="true">
+		<Size>
+			<AbsDimension x="70" y="24" />
+		</Size>
+		<Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground" edgeFile="Interface\ChatFrame\ChatFrameBackground" tile="true">
+			<EdgeSize>
+				<AbsValue val="1" />
+			</EdgeSize>
+			<TileSize>
+				<AbsValue val="5" />
+			</TileSize>
+			<Color r="0.0" g="0.0" b="0.0" a="0.5" />
+			<BorderColor r="0.3" g="0.3" b="0.3" a="0.8" />
+		</Backdrop>
+		<HitRectInsets>
+			<AbsInset left="0" right="0" top="-24" bottom="0" />
+		</HitRectInsets>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString inherits="PowaFontNormal" parentKey="Title" justifyH="LEFT" justifyV="BOTTOM">
+					<Size>
+						<AbsDimension x="150" y="24" />
+					</Size>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="3" y="0" />
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<TextInsets>
+			<AbsInset left="4" right="4" top="0" bottom="0" />
+		</TextInsets>
+		<Scripts>
+			<OnEscapePressed>
+				self:ClearFocus();
+			</OnEscapePressed>
+			<OnEnterPressed>
+				self:ClearFocus();
+			</OnEnterPressed>
+			<OnEnter>
+				self:UpdateColors();
+			</OnEnter>
+			<OnLeave>
+				self:UpdateColors();
+			</OnLeave>
+			<OnEditFocusGained>
+				self:UpdateColors(true);
+				self:HighlightText();
+			</OnEditFocusGained>
+			<OnEditFocusLost>
+				self:UpdateColors(false);
+				self:HighlightText(0,0);
+			</OnEditFocusLost>
+		</Scripts>
 	</EditBox>
 </Ui>
