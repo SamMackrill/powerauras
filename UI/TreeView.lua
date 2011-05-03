@@ -175,16 +175,6 @@ PowaAuras.UI:Register("TreeView", {
 		else
 			-- Update scrollchild height.
 			self.Scroll.Child:SetHeight((self:HasTitle() and 24 or 0)+(offset*24));
-			-- Hide scrollbar if not needed.
-			if(self.Scroll.Child:GetHeight() < self.Scroll:GetHeight()) then
-				self.Scroll.ScrollBar:Hide();
-				self.Scroll:SetPoint("BOTTOMRIGHT", -4, 4);
-				self.Scroll.Child:SetWidth(165);
-			else
-				self.Scroll.ScrollBar:Show();
-				self.Scroll:SetPoint("BOTTOMRIGHT", -26, 4);
-				self.Scroll.Child:SetWidth(147);
-			end
 		end
 	end,
 });
@@ -245,6 +235,7 @@ PowaAuras.UI:Register("TreeViewItem", {
 	OnClick = function(self)
 		-- I know it looks ugly, the parent is the scrollchild so we need to work our way up...
 		self:GetParent():GetParent():GetParent():SetSelectedKey(self.Key);
+		PlaySound("UChatScrollButton");
 	end,
 	Recycle = function(self)
 		-- Place in recycle table!

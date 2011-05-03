@@ -8,6 +8,7 @@ PowaAuras.UI:Register("TabSidebarButton", {
 		tab:SetParent(parent);
 		tab:SetScript("OnClick", function()
 			tab:GetParent():SelectTab(tab.Id);
+			PlaySound("igCharacterInfoTab");
 		end);
 	end,
 	SetSelected = function(self, selected)

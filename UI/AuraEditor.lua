@@ -1,6 +1,11 @@
 -- More definitions, yes please.
 PowaAuras.UI:Register("AuraEditor", {
 	AdvancedElements = {}, -- It'll reference, but that's no problem. There's only 1 aura editor.
+	EnhancedScripts = true,
+	Scripts = {
+		OnHide = true,
+		OnShow = true,
+	},
 	Hooks = {
 		"Show",
 	},
@@ -19,6 +24,12 @@ PowaAuras.UI:Register("AuraEditor", {
 		else
 			self:__Show();
 		end
+	end,
+	OnHide = function(self)
+		PlaySound("igMainMenuClose");
+	end,
+	OnShow = function(self)
+		PlaySound("igCharacterInfoTab");
 	end,
 	RegisterAdvanced = function(self, element)
 		tinsert(self.AdvancedElements, element);

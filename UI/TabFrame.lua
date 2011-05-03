@@ -55,7 +55,6 @@ PowaAuras.UI:Register("TabFrame", {
 	end,
 	SelectTab = function(self, tab)
 		if(not self.Tabs[tab]) then PowaAuras:ShowText("Cannot select tab, tab does not exist."); return; end
-		if(self.Tab ~= tab) then PlaySound("igCharacterInfoTab"); end
 		self.Tab = tab;
 		self:UpdateTabs();
 	end,

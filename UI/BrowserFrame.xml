@@ -26,6 +26,7 @@
 				</HighlightTexture>
 				<Scripts>
 					<OnClick>
+						PlaySound("UChatScrollButton");
 						self:GetParent():PrevPage();
 					</OnClick>
 				</Scripts>
@@ -51,6 +52,7 @@
 				</HighlightTexture>
 				<Scripts>
 					<OnClick>
+						PlaySound("UChatScrollButton");
 						self:GetParent():NextPage();
 					</OnClick>
 				</Scripts>

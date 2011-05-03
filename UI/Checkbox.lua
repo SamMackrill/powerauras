@@ -22,6 +22,7 @@ PowaAuras.UI:Register("Checkbox", {
 	end,
 	OnClick = function(self)
 		self:SaveSetting(self:GetChecked());
+		PlaySound("UChatScrollButton");
 	end,
 	OnSettingChanged = function(self, value)
 		--  Update based on invert state.

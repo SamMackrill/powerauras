@@ -5,10 +5,10 @@
 	<Script file="ScrollFrame.lua" />
 	<ScrollFrame name="PowaScrollFrameTemplate" virtual="true" enableMouse="true">
 		<Frames>
-			<Slider parentKey="ScrollBar" minValue="0" maxValue="0" valueStep="24" defaultValue="0">
+			<Slider parentKey="ScrollBar" minValue="0" maxValue="0" valueStep="1" defaultValue="0">
 				<Size x="18" y="1" />
 				<Anchors>
-					<Anchor point="TOPRIGHT" x="0" y="-16" />
+					<Anchor point="TOPRIGHT" x="1" y="-16" />
 					<Anchor point="BOTTOMRIGHT" x="0" y="16" /> 
 				</Anchors>
 				<Frames>
@@ -21,6 +21,12 @@
 						<PushedTexture inherits="UIPanelScrollBarButton" file="Interface\Buttons\UI-ScrollBar-ScrollUpButton-Down" />
 						<DisabledTexture inherits="UIPanelScrollBarButton" file="Interface\Buttons\UI-ScrollBar-ScrollUpButton-Disabled" />
 						<HighlightTexture inherits="UIPanelScrollBarButton" file="Interface\Buttons\UI-ScrollBar-ScrollUpButton-Highlight" alphaMode="ADD" />
+						<Scripts>
+							<OnClick>
+								self:GetParent():SetValue(self:GetParent():GetValue()-(self:GetParent():GetHeight()/2));
+								PlaySound("UChatScrollButton");							
+							</OnClick>
+						</Scripts>
 					</Button>
 					<Button parentKey="ScrollDown" inherits="UIPanelScrollDownButtonTemplate">
 						<Size x="18" y="16" />
@@ -31,6 +37,12 @@
 						<PushedTexture inherits="UIPanelScrollBarButton" file="Interface\Buttons\UI-ScrollBar-ScrollDownButton-Down" />
 						<DisabledTexture inherits="UIPanelScrollBarButton" file="Interface\Buttons\UI-ScrollBar-ScrollDownButton-Disabled" />
 						<HighlightTexture inherits="UIPanelScrollBarButton" file="Interface\Buttons\UI-ScrollBar-ScrollDownButton-Highlight" alphaMode="ADD" />
+						<Scripts>
+							<OnClick>
+								self:GetParent():SetValue(self:GetParent():GetValue()+(self:GetParent():GetHeight()/2));	
+								PlaySound("UChatScrollButton");						
+							</OnClick>
+						</Scripts>
 					</Button>
 				</Frames>
 				<ThumbTexture parentKey="Thumb" file="Interface\Buttons\UI-ScrollBar-Knob">
@@ -43,35 +55,13 @@
 					</OnValueChanged>
 					<OnMouseWheel>
 						if(delta > 0) then
-							self:SetValue(self:GetValue()-self:GetValueStep());
+							self:SetValue(self:GetValue()-(self:GetHeight()/2));
 						else
-							self:SetValue(self:GetValue()+self:GetValueStep());
+							self:SetValue(self:GetValue()+(self:GetHeight()/2));
 						end
 					</OnMouseWheel>
 				</Scripts>
 			</Slider>
 		</Frames>
-		<Scripts>
-			<OnVerticalScroll>
-				self.ScrollBar:SetValue(offset);
-			</OnVerticalScroll>
-			<OnScrollRangeChanged>
-				self.ScrollBar:SetMinMaxValues(0, yrange);
-				if(yrange > self:GetHeight()) then
-					self.ScrollBar:Show();
-					self:GetScrollChild():SetWidth(self:GetWidth()-18);
-				else
-					self.ScrollBar:Hide();
-					self:GetScrollChild():SetWidth(self:GetWidth());
-				end
-			</OnScrollRangeChanged>
-			<OnMouseWheel>
-				if(delta > 0) then
-					self.ScrollBar:SetValue(self.ScrollBar:GetValue()-self.ScrollBar:GetValueStep());
-				else
-					self.ScrollBar:SetValue(self.ScrollBar:GetValue()+self.ScrollBar:GetValueStep());
-				end
-			</OnMouseWheel>
-		</Scripts>
 	</ScrollFrame>
 </Ui>
