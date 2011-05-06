@@ -9,7 +9,7 @@
 		<NormalFont style="PowaFontNormalSmall" />
 		<DisabledFont style="PowaFontDisableSmall" />
 		<HighlightFont style="PowaFontHighlightSmall" />
-		<NormalTexture file="Interface\Buttons\WHITE8X8" blend="DISABLE">
+		<NormalTexture file="Interface\Buttons\WHITE8X8" alphaMode="DISABLE">
 			<Size>
 				<AbsDimension x="16" y="16" />
 			</Size>

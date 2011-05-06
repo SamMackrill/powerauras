@@ -23,25 +23,4 @@
 			</Button>
 		</Frames>
 	</Frame>
-	
-	<Frame name="PowaBorderedTabDialogTemplate" inherits="PowaBorderedFrameTemplate" virtual="true">
-		<Frames>
-			<Button parentKey="AcceptButton" name="$parentAcceptButton" inherits="UIPanelButtonTemplate2" text="Save">
-				<Size>
-					<AbsDimension x="118" y="22" />
-				</Size>
-				<Anchors>
-					<Anchor point="BOTTOMRIGHT" x="-5" y="5" />
-				</Anchors>
-			</Button>
-			<Button parentKey="CancelButton" name="$parentCancelButton" inherits="UIPanelButtonTemplate2" text="Cancel">
-				<Size>
-					<AbsDimension x="118" y="22" />
-				</Size>
-				<Anchors>
-					<Anchor point="BOTTOMRIGHT" x="-128" y="5" />
-				</Anchors>
-			</Button>
-		</Frames>
-	</Frame>
 </Ui>

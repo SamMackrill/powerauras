@@ -244,7 +244,7 @@
 									</OnLoad>
 								</Scripts>
 							</Frame>
-							<Frame parentKey="Create" inherits="PowaBorderedTabDialogTemplate">
+							<Frame parentKey="Create" inherits="PowaBorderedFrameTemplate, PowaTabDialogTemplate">
 								<Anchors>
 									<Anchor point="TOPLEFT" x="177" y="-2" />
 									<Anchor point="BOTTOMRIGHT" x="-2" y="2" />
@@ -525,6 +525,26 @@
 													</OnLoad>
 												</Scripts>
 											</EditBox>
+											<Button parentKey="DefaultTimer" inherits="PowaDropdownTemplate">
+												<Anchors>
+													<Anchor point="TOPLEFT" x="16" y="-140" />
+												</Anchors>
+												<Scripts>
+													<OnLoad>
+														PowaAuras.UI:Dropdown(self);
+													</OnLoad>
+												</Scripts>
+											</Button>
+											<Button parentKey="DefaultTimer" inherits="PowaLabelledDropdownTemplate">
+												<Anchors>
+													<Anchor point="TOPLEFT" x="16" y="-200" />
+												</Anchors>
+												<Scripts>
+													<OnLoad>
+														PowaAuras.UI:Dropdown(self);
+													</OnLoad>
+												</Scripts>
+											</Button>
 										</Frames>
 									</Frame>
 								</Frames>
