@@ -3,7 +3,7 @@ PowaAuras = {
 	
 	VersionPattern = "(%d+)%.(%d+)";
 	
-	WoWBuild = tonumber(select(2, GetBuildInfo()), 10);
+	WoWBuild = tonumber(select(4, GetBuildInfo()), 10);
 	
 	IconSource = "Interface\\Icons\\";
 	

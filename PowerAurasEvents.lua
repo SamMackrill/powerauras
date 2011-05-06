@@ -671,7 +671,7 @@ function PowaAuras:COMBAT_LOG_EVENT_UNFILTERED(...)
 		sourceGUID, sourceName, sourceFlags, sourceFlags2, 
 		destGUID, destName, destFlags, destFlags2, 
 		spellId, spellName, _, spellType;
-	if(self.WoWBuild >= 14002) then
+	if(self.WoWBuild >= 40200) then
 		timestamp, event, casterHidden, 
 		sourceGUID, sourceName, sourceFlags, sourceFlags2,
 		destGUID, destName, destFlags, destFlags2, 
