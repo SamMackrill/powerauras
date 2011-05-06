@@ -33,7 +33,6 @@ PowaAuras.UI = {
 		else
 			if(self.Scripts and widget.SetScript) then
 				for script, func in pairs(self.Scripts) do
-					print(script, func);
 					widget:SetScript(script, (type(func) == "boolean" and widget[script] or widget[func]));
 				end
 			end

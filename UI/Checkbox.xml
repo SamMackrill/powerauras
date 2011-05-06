@@ -8,7 +8,7 @@
 		<NormalFont style="PowaFontNormalSmall" />
 		<DisabledFont style="PowaFontDisableSmall" />
 		<HighlightFont style="PowaFontHighlightSmall" />
-		<NormalTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled" blend="DISABLE">
+		<NormalTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled" alphaMode="DISABLE">
 			<Size>
 				<AbsDimension x="20" y="20" />
 			</Size>
@@ -16,7 +16,7 @@
 				<Anchor point="LEFT" relativePoint="LEFT" x="2" y="-1" />
 			</Anchors>
 		</NormalTexture>
-		<CheckedTexture file="Interface\Buttons\UI-CheckBox-Check" blend="DISABLE">
+		<CheckedTexture file="Interface\Buttons\UI-CheckBox-Check" alphaMode="DISABLE">
 			<Size>
 				<AbsDimension x="20" y="20" />
 			</Size>
@@ -99,7 +99,7 @@
 		<HighlightFont style="PowaFontHighlight" />
 		<!--
 		Not sure if I liked the old texture. Or the new.
-		<NormalTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled" blend="DISABLE">
+		<NormalTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled" alphaMode="DISABLE">
 			<Size>
 				<AbsDimension x="24" y="24" />
 			</Size>
@@ -108,7 +108,7 @@
 			</Anchors>
 		</NormalTexture>
 		-->
-		<NormalTexture file="Interface\Buttons\UI-CheckBox-Up" blend="DISABLE">
+		<NormalTexture file="Interface\Buttons\UI-CheckBox-Up" alphaMode="DISABLE">
 			<Size>
 				<AbsDimension x="24" y="24" />
 			</Size>
@@ -116,7 +116,7 @@
 				<Anchor point="LEFT" relativePoint="LEFT" x="2" y="-1" />
 			</Anchors>
 		</NormalTexture>
-		<CheckedTexture file="Interface\Buttons\UI-CheckBox-Check" blend="DISABLE">
+		<CheckedTexture file="Interface\Buttons\UI-CheckBox-Check" alphaMode="DISABLE">
 			<Size>
 				<AbsDimension x="24" y="24" />
 			</Size>
