@@ -4,19 +4,36 @@ PowaAuras.UI:Register("Dropdown", {
 		OnClick = true,
 		OnHide = true,
 	},
-	Init = function(self)
+	Init = function(self, setting, defaultKey)
 		-- If we own a menu, we reference the frame via this.
 		self.Menu = nil;
 		-- Store our items in this.
 		self.Items = {};
-		-- Default key for this dropdown.
-		self.DefaultKey = nil;
+		-- Default/Selected keys for this dropdown.
+		self.DefaultKey = defaultKey or nil;
+		self.SelectedKey = nil;
+		-- Got a setting?
+		if(setting) then
+			-- Settings mixin please.
+			self.OnSettingChanged = function(self, key)
+				self:SetSelectedKey(key);
+			end
+			PowaAuras.UI:Register("Settings", self, setting);
+		end
 	end,
-	AddItem = function(self, key, text)
+	AddItem = function(self, key, text, isDefault)
 		-- Make sure key doesn't already exist.
 		if(self.Items[key]) then return; end
 		-- Add.
 		self.Items[key] = text;
+		-- Default?
+		if(isDefault) then
+			self.DefaultKey = key;
+		end
+		-- Force update if we own the dropdown.
+		if(self.Menu) then
+			self.Menu:Toggle(true);
+		end
 		-- Done.
 		return true;
 	end,
@@ -25,23 +42,35 @@ PowaAuras.UI:Register("Dropdown", {
 		if(not self.Items[key]) then return; end
 		-- Remove.
 		self.Items[key] = nil;
+		-- Was this the default key?
+		if(key == self.DefaultKey) then
+			self.DefaultKey = nil
+		end
+		-- Was this key selected?
+		if(key == self.SelectedKey) then
+			self.SelectedKey = (self.Items[self.DefaultKey] and self.DefaultKey or nil);
+		end
+		-- Force update if we own the dropdown.
+		if(self.Menu) then
+			self.Menu:Toggle(true);
+		end
 		-- Done.
 		return true;
 	end,
 	ClearItems = function(self, key)
+		for key, _ in pairs(self.Items) do
+			-- Remove.
+			self:RemoveItem(key);
+		end
 	end,
 	OnClick = function(self)
 		-- Request the dropdown menu.
-		PowaAuras.UI:DropdownList(self, self.OnDropdownMenuShow, self.OnDropdownMenuHide, self.OnDropdownMenuSelected, self.DefaultKey):Toggle();
+		PowaAuras.UI:DropdownList(self, self.OnDropdownMenuShow, self.OnDropdownMenuHide, self.OnDropdownMenuSelected, self.SelectedKey):Toggle();
 	end,
 	OnDropdownMenuShow = function(self, dropdown)
 		-- Update state.
 		self.Menu = dropdown;
 		print("|cFF527FCCDEBUG (Dropdown): |r", self, "owns menu", dropdown);
-		wipe(self.Items);
-		for i=1,random(1,24) do
-			self.Items[i] = i;
-		end
 		-- Return our item list.
 		return self.Items;
 	end,
@@ -51,14 +80,29 @@ PowaAuras.UI:Register("Dropdown", {
 		print("|cFF527FCCDEBUG (Dropdown): |r", self, "no longer owns menu", dropdown);
 	end,
 	OnDropdownMenuSelected = function(self, dropdown, key)
-		-- Update default key (testing only)
+		-- Update selected key.
 		print("|cFF527FCCDEBUG (Dropdown): |r", self, "key change on menu", dropdown, "(key =", key, ")");		
-		self.DefaultKey = key;
+		self.SelectedKey = key;
+		-- Fire callback.
+		self:OnDropdownItemSelected(key);
+	end,
+	OnDropdownItemSelected = function(self, key)
+		-- Override this as you please.
 	end,
 	OnHide = function(self)
 		-- Hide the menu if we own it.
 		if(self.Menu) then
 			self.Menu:Toggle(false);
+		end
+	end,
+	SetSelectedKey = function(self, key)
+		-- Update selected key.
+		self.SelectedKey = key;
+		-- Fire callback.
+		self:OnDropdownItemSelected(key);
+		-- Force update if we own the dropdown.
+		if(self.Menu) then
+			self.Menu:Toggle(true);
 		end
 	end,
 });

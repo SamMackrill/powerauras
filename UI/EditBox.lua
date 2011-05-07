@@ -3,7 +3,7 @@
 PowaAuras.UI:Register("EditBox", {
 	Init = function(self, property, title, tooltipDesc)
 		-- Property handling not yet implemented.
-		
+		print("|cFFCC5252Power Auras Classic: |rInitialized deprecated Editbox:", self);
 		-- Show a title?
 		if(title) then
 			-- Set title, change editbox text inset so that it doesn't collide.
