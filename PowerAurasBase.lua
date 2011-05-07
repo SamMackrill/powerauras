@@ -936,7 +936,7 @@ PowaAuras.DebuffTypeSpellIds={
 -- Debugging assistance, if we access a non-existant locale key it'll display the key.
 PowaAuras.Text = setmetatable({}, { __index = function(_,k)
 	if(not k or k == "") then return; end
-	PowaAuras:ShowText("Missing Localization Key: ", k);
+	PowaAuras:ShowText("|cFFCC5252Power Auras Classic: |rMissing Localization Key: \"", k, "\", Stack Trace: ", debugstack(2));
 	return k; end
 });
 
@@ -1081,7 +1081,7 @@ function PowaAuras:MergeTables(desTable, sourceTable)
 			if (type(v)~="table") then
 				desTable[i] = v;
 			else
-				if (not desTable[i] or type(desTable[i])~="table") then
+				if (not rawget(desTable, i) or type(desTable[i])~="table") then
 					desTable[i] = {};
 				end
 				self:MergeTables(desTable[i], v);

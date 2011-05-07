@@ -14,6 +14,9 @@ PowaAuras.UI:Register("Settings", {
 	GetSetting = function(self)
 		return PowaAuras.Helpers:GetSetting(self.SettingKey);
 	end,
+	OnSettingChanged = function(self, value)
+		-- Override as you please.
+	end,
 	SaveSetting = function(self, value)
 		return PowaAuras.Helpers:SaveSetting(self.SettingKey, value);
 	end,
