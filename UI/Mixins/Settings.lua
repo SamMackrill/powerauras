@@ -23,6 +23,8 @@ PowaAuras.UI:Register("Settings", {
 	UpdateSetting = function(self, setting)
 		-- Store setting.
 		self.SettingKey = setting;
+		-- Need a setting brah!
+		if(not setting) then return; end
 		-- Only register the callback once.
 		if(not self.HasRegisteredSettingsCallback) then
 			-- Go go go.
