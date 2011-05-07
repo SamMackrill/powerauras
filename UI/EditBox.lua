@@ -90,6 +90,7 @@ PowaAuras.UI:Register("EditBox2", {
 	OnEditFocusLost = function(self)
 		self:HighlightText(0, 0);
 		-- Call clearfocus so focus is REALLY cleared.
+		self:SetText(self:GetSetting());
 		self:ClearFocus();
 		self:UpdateColours();
 	end,

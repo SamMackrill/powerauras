@@ -12,9 +12,21 @@ PowaAuras.UI:Register("Dropdown", {
 		-- Default key for this dropdown.
 		self.DefaultKey = nil;
 	end,
-	AddItem = function(self, key)
+	AddItem = function(self, key, text)
+		-- Make sure key doesn't already exist.
+		if(self.Items[key]) then return; end
+		-- Add.
+		self.Items[key] = text;
+		-- Done.
+		return true;
 	end,
 	RemoveItem = function(self, key)
+		-- Key needs to exist.
+		if(not self.Items[key]) then return; end
+		-- Remove.
+		self.Items[key] = nil;
+		-- Done.
+		return true;
 	end,
 	ClearItems = function(self, key)
 	end,
