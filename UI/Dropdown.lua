@@ -1,6 +1,5 @@
 -- Define basic dropdown control widget.
 PowaAuras.UI:Register("Dropdown", {
-	EnhancedScripts = true,
 	Scripts = {
 		OnClick = true,
 		OnHide = true,
@@ -183,7 +182,6 @@ PowaAuras.UI:Register("DropdownList", {
 -- Dropdown items are recycled.
 PowaAuras.UI:Register("DropdownItem", {
 	Items = {}, -- Recyclable items.
-	EnhancedScripts = true,
 	Scripts = {
 		OnClick = true,
 	},

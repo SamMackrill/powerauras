@@ -1,7 +1,7 @@
 -- Register. This is really simple :p
 PowaAuras.UI:Register("TabDialog", {
 	Scripts = {
-		"OnHide",
+		OnHide = true,
 	},
 	Init = function(self, acceptKey, cancelKey)
 		self.AcceptButton:SetScript("OnClick", function()

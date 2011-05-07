@@ -3,7 +3,6 @@ PowaAuras.UI:Register("Checkbox", {
 	Hooks = {
 		"SetChecked",
 	},
-	EnhancedScripts = true,
 	Scripts = {
 		OnClick = true,
 	},

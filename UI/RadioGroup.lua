@@ -77,7 +77,7 @@ PowaAuras.UI:Register("RadioButton", {
 	Template = "PowaRadioButtonTemplate",
 	Items = {}, -- Shared pool of reusable buttons.
 	Scripts = {
-		"OnClick",
+		OnClick = true,
 	},
 	Construct = function(self, ui, item, ...)
 		-- Got any items or not?
