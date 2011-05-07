@@ -12,19 +12,21 @@ PowaAuras.UI:Register("Settings", {
 		return;
 	end,
 	GetSetting = function(self)
+		if(not self.SettingKey) then return; end
 		return PowaAuras.Helpers:GetSetting(self.SettingKey);
 	end,
 	OnSettingChanged = function(self, value)
 		-- Override as you please.
 	end,
 	SaveSetting = function(self, value)
+		if(not self.SettingKey) then return; end
 		return PowaAuras.Helpers:SaveSetting(self.SettingKey, value);
 	end,
 	UpdateSetting = function(self, setting)
 		-- Store setting.
 		self.SettingKey = setting;
 		-- Need a setting brah!
-		if(not setting) then return; end
+		if(not self.SettingKey) then return; end
 		-- Only register the callback once.
 		if(not self.HasRegisteredSettingsCallback) then
 			-- Go go go.
