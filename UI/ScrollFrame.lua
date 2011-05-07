@@ -1,6 +1,5 @@
 -- Create definition.
 PowaAuras.UI:Register("ScrollFrame", {
-	EnhancedScripts = true,
 	Scripts = {
 		OnShow = "ScrollUpdate",
 		OnVerticalScroll = true,

@@ -2,7 +2,6 @@
 -- inside that big one. Besides, I like this system, do you? It's more memory efficient...I think. 
 -- Does defining the same closure repeatedly cost more memory, rather than referencing a single defined closure?
 PowaAuras.UI:Register("AuraBrowser", {
-	EnhancedScripts = true,
 	Scripts = {
 		OnShow = true,
 		OnHide = true,
@@ -196,7 +195,7 @@ PowaAuras.UI:Register("AuraBrowser", {
 -- And a definition for the button.
 PowaAuras.UI:Register("AuraButton", {
 	Scripts = {
-		"OnClick",
+		OnClick = true,
 	},
 	Init = function(self, icon)
 		-- Set things up.

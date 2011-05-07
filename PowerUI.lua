@@ -24,17 +24,9 @@ PowaAuras.UI = {
 			widget.Base = self.Base;
 		end
 		-- Script handlers.
-		if(not self.EnhancedScripts) then
-			if(self.Scripts and widget.SetScript) then
-				for _,v in ipairs(self.Scripts) do
-					widget:SetScript(v, widget[v]);
-				end
-			end
-		else
-			if(self.Scripts and widget.SetScript) then
-				for script, func in pairs(self.Scripts) do
-					widget:SetScript(script, (type(func) == "boolean" and widget[script] or widget[func]));
-				end
+		if(self.Scripts and widget.SetScript) then
+			for script, func in pairs(self.Scripts) do
+				widget:SetScript(script, (type(func) == "boolean" and widget[script] or widget[func]));
 			end
 		end
 		-- Run widget ctor.
@@ -64,9 +56,9 @@ PowaAuras.UI = {
 					data.Scripts = {};
 				end
 				-- Copy.
-				for _,v in ipairs(data.Base.Scripts) do
-					if(not tContains(data.Scripts, v)) then
-						tinsert(data.Scripts, v);
+				for script, func in ipairs(data.Base.Scripts) do
+					if(not data.Scripts[script]) then
+						data.Scripts[script] = func;
 					end
 				end
 			end
@@ -104,12 +96,13 @@ PowaAuras.UI = {
 
 -- General functions.
 -- Todo: Rewrite this one a bit.
-function PowaAuras:SaveSetting(property, value, auraId)
-	local self = PowaAuras;
-	auraId = auraId or self.CurrentAuraId;
-	if(not auraId or not self.Auras[auraId]) then print("No aura ID!"); return; end
-	-- We don't save settings yet, this is just for debugging purposes.
-	-- self.Auras[auraId][property] = value;
-	-- self:RedisplayAura(auraId);
-	print("Saved: ", property, value, auraId);
+function PowaAuras:SaveSetting(...)
+	print("|cFF527FCCDEBUG (PowerUI): |rDeprecated function call: PowaAuras:SaveSetting(", ..., ")");
+	-- -- local self = PowaAuras;
+	-- -- auraId = auraId or self.CurrentAuraId;
+	-- -- if(not auraId or not self.Auras[auraId]) then print("No aura ID!"); return; end
+	-- -- -- We don't save settings yet, this is just for debugging purposes.
+	-- -- -- self.Auras[auraId][property] = value;
+	-- -- -- self:RedisplayAura(auraId);
+	-- -- print("Saved: ", property, value, auraId);
 end

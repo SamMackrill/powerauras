@@ -42,7 +42,6 @@ PowaAuras.UI:Register("EditBox", {
 
 PowaAuras.UI:Register("EditBox2", {
 	Items = {},
-	EnhancedScripts = true,
 	Scripts = {
 		OnEscapePressed = true,
 		OnEnterPressed = true,
