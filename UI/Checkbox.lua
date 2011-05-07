@@ -1,12 +1,9 @@
 -- Create definition.
-PowaAuras.UI:Register("Checkbox", {
-	Hooks = {
-		"SetChecked",
-	},
+PowaAuras.UI:Register("CheckboxBase", {
 	Scripts = {
 		OnClick = true,
 	},
-	Init = function(self, property, invert, tooltipDesc)
+	Init = function(self, property, invert)
 		-- Update text to the localized variant.
 		local localeKey = self:GetText();
 		self:SetText(PowaAuras.Text[localeKey]);
@@ -15,9 +12,7 @@ PowaAuras.UI:Register("Checkbox", {
 		-- Register Settings mixin.
 		PowaAuras.UI:Settings(self, property);
 		-- Add tooltip.
-		PowaAuras.UI:Tooltip(self, localeKey, tooltipDesc or localeKey .. "Desc");
-		-- Update colours...
-		self:UpdateColors();
+		PowaAuras.UI:Tooltip(self, localeKey, (localeKey .. "Desc"));
 	end,
 	OnClick = function(self)
 		self:SaveSetting(self:GetChecked());
@@ -37,6 +32,19 @@ PowaAuras.UI:Register("Checkbox", {
 		else
 			PowaAuras.Helpers:SaveSetting(self.SettingKey, (self:GetChecked() and true or false));
 		end
+	end,
+});
+
+PowaAuras.UI:Register("Checkbox", {
+	Base = "CheckboxBase",
+	Hooks = {
+		"SetChecked",
+	},
+	Init = function(self, property, invert)
+		-- Call parent func.
+		self.Base.Init(self, property, invert);
+		-- Update colours...
+		self:UpdateColors();
 	end,
 	SetChecked = function(self, checked)
 		-- Update.

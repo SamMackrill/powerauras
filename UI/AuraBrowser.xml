@@ -203,12 +203,15 @@
 									</Layer>
 								</Layers>
 								<Frames>
-									<EditBox parentKey="Title" justifyH="LEFT" justifyV="MIDDLE" font="PowaFontNormalLarge" letters="15" autoFocus="false">
-										<Size x="225" y="40" />
+									<EditBox parentKey="Title" inherits="PowaLabelledEditBoxTemplate" justifyH="LEFT" justifyV="MIDDLE" font="PowaFontNormalLarge" letters="15" autoFocus="false">
+										<Size x="225" y="28" />
 										<Anchors>
-											<Anchor point="TOPLEFT" x="15" y="-4" />
-											<Anchor point="TOPRIGHT" x="-15" y="-4" />
-										</Anchors>	
+											<Anchor point="TOPLEFT" x="15" y="-10" />
+											<Anchor point="TOPRIGHT" x="-36" y="-10" />
+										</Anchors>
+										<HitRectInsets>
+											<AbsInset left="0" right="0" top="0" bottom="0" />
+										</HitRectInsets>
 										<Scripts>
 											<OnEscapePressed>
 												self:SetText(PowaBrowser:GetPageName());
@@ -227,6 +230,39 @@
 											</OnEnterPressed>
 										</Scripts>
 									</EditBox>
+									<CheckButton parentKey="Lock" text="UI_Aura_TexUnlock">
+										<Size x="17" y="21" />
+										<Anchors>
+											<Anchor point="TOPRIGHT" x="-13" y="-14" />
+										</Anchors>
+										<!-- Normal = Locked -->
+										<NormalTexture file="Interface\GuildFrame\GuildFrame">
+											<TexCoords left="0.51660156" right="0.53320313" top="0.92578125" bottom="0.96679688"/>
+										</NormalTexture>
+										<CheckedTexture file="Interface\GuildFrame\GuildFrame">
+											<TexCoords left="0.51660156" right="0.53320313" top="0.92578125" bottom="0.96679688"/>
+										</CheckedTexture>
+										<Scripts>
+											<OnLoad>
+												-- Use basic checkbox without fancy colouring.
+												PowaAuras.UI:CheckboxBase(self, "Locked", true);
+												-- Hook OnSettingChanged.
+												hooksecurefunc(self, "OnSettingChanged", function(self, value)
+													if(value) then
+														self.TooltipTitle = PowaAuras.Text["UI_Aura_TexUnlock"];
+														self.TooltipText = PowaAuras.Text["UI_Aura_TexUnlockDesc"];
+														self:TooltipRefresh();
+													else
+														self.TooltipTitle = PowaAuras.Text["UI_Aura_TexLock"];
+														self.TooltipText = PowaAuras.Text["UI_Aura_TexLockDesc"];
+														self:TooltipRefresh();
+													end
+												end);
+												-- Desaturate.
+												SetDesaturation(self:GetCheckedTexture(), true);
+											</OnLoad>
+										</Scripts>
+									</CheckButton>
 								</Frames>
 								<Scripts>
 									<OnLoad>
