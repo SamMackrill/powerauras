@@ -5,8 +5,8 @@
 -- Use this regex to find debug spam before a release!
 -- ^\s*[^-\s][^-\s].*:ShowText\(.*$
 
--- Exposed for Saving
-PowaMisc = {
+-- Set default settings up.
+PowaAuras.PowaMiscDefault = {
 	Disabled = false,
 	debug = false,
 	OnUpdateLimit = 0,
@@ -23,7 +23,7 @@ PowaMisc = {
 	SoundChannel = "Master",
 };
 
-PowaGlobalMisc = {
+PowaAuras.PowaGlobalMiscDefault = {
 	PathToSounds = "Interface\\AddOns\\PowerAuras\\Sounds\\",
 	PathToAuras = "Interface\\Addons\\PowerAuras\\Custom\\",
 	BlockIncomingAuras = false,
@@ -36,8 +36,10 @@ PowaGlobalMisc = {
 	UIFontSize = 0,
 };
 
-PowaAuras.PowaMiscDefault = PowaAuras:CopyTable(PowaMisc);
-PowaAuras.PowaGlobalMiscDefault = PowaAuras:CopyTable(PowaGlobalMisc);
+-- Store the actual settings tables without the default suffix.
+-- Doesn't matter if it's a reference. These are replaced later on with the actual SV's.
+PowaMisc = PowaAuras.PowaMiscDefault;
+PowaGlobalMisc = PowaAuras.PowaGlobalMiscDefault;
 
 PowaSet = {};
 PowaTimer = {};
