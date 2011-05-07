@@ -56,7 +56,7 @@ PowaAuras.UI = {
 					data.Scripts = {};
 				end
 				-- Copy.
-				for script, func in ipairs(data.Base.Scripts) do
+				for script, func in pairs(data.Base.Scripts) do
 					if(not data.Scripts[script]) then
 						data.Scripts[script] = func;
 					end
