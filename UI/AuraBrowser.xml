@@ -525,23 +525,41 @@
 													</OnLoad>
 												</Scripts>
 											</EditBox>
-											<Button parentKey="DefaultTimer" inherits="PowaDropdownTemplate">
+											<Button parentKey="DefaultTimer" text="UI_Config_TimerTex" inherits="PowaLabelledDropdownTemplate">
 												<Anchors>
-													<Anchor point="TOPLEFT" x="16" y="-140" />
+													<Anchor point="TOPLEFT" x="16" y="-160" />
 												</Anchors>
 												<Scripts>
 													<OnLoad>
+														-- I'm a dropdown. Hello.
 														PowaAuras.UI:Dropdown(self);
+														-- Add textures.
+														for _, item in ipairs(PowaAuras.TimerTextures) do
+															self:AddItem(item, item);
+														end
+														-- Select "Original" by default.
+														self:SetSelectedKey("Original");
+														-- Update the setting.
+														self:UpdateSetting("DefaultTimerTexture");
 													</OnLoad>
 												</Scripts>
 											</Button>
-											<Button parentKey="DefaultTimer" inherits="PowaLabelledDropdownTemplate">
+											<Button parentKey="DefaultStacks" text="UI_Config_StackTex" inherits="PowaLabelledDropdownTemplate">
 												<Anchors>
-													<Anchor point="TOPLEFT" x="16" y="-200" />
+													<Anchor point="TOPLEFT" x="16" y="-210" />
 												</Anchors>
 												<Scripts>
 													<OnLoad>
+														-- I'm a dropdown. Hello.
 														PowaAuras.UI:Dropdown(self);
+														-- Add textures.
+														for _, item in pairs(PowaAuras.TimerTextures) do
+															self:AddItem(item, item);
+														end
+														-- Select "Original" by default.
+														self:SetSelectedKey("Original");
+														-- Update the setting.
+														self:UpdateSetting("DefaultStacksTexture");
 													</OnLoad>
 												</Scripts>
 											</Button>

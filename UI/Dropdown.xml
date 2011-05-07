@@ -20,7 +20,7 @@
 		</Backdrop>
 		<Layers>
 			<Layer level="OVERLAY">
-				<FontString font="PowaFontHighlight" parentKey="Text" text="This is some filler text" justifyH="LEFT" justifyV="MIDDLE">
+				<FontString font="PowaFontHighlight" parentKey="Text" justifyH="LEFT" justifyV="MIDDLE">
 					<Size x="159" y="22" />
 					<Anchors>
 						<Anchor point="TOPLEFT" x="8" y="-2" />
@@ -63,7 +63,7 @@
 		<Size x="175" y="26" />
 		<Layers>
 			<Layer level="OVERLAY">
-				<FontString font="PowaFontNormal" parentKey="Label" text="This is some filler text" justifyH="LEFT" justifyV="MIDDLE">
+				<FontString font="PowaFontNormal" parentKey="Title" justifyH="LEFT" justifyV="MIDDLE">
 					<Size x="159" y="20" />
 					<Anchors>
 						<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="3" y="0" />
