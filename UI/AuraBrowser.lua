@@ -36,6 +36,7 @@ PowaAuras.UI:Register("AuraBrowser", {
 	end,
 	OnHide = function(self)
 		PlaySound("igMainMenuClose");
+		PowaAuras.ModTest = false;
 	end,
 	OnSelectionChanged = function(self, key)
 		-- Save page.
@@ -45,6 +46,7 @@ PowaAuras.UI:Register("AuraBrowser", {
 	end,
 	OnShow = function(self)
 		PlaySound("igCharacterInfoTab");
+		PowaAuras.ModTest = true;
 	end,
 	OnVariablesLoaded = function()
 		-- Easymode.
@@ -200,6 +202,12 @@ PowaAuras.UI:Register("AuraButton", {
 		if(button == "LeftButton") then
 			-- Select aura.
 			PowaBrowser:SetSelectedAura(self.AuraID, (self.State == self.Flags["CREATE"]));
+			-- Play a sound too!
+			PlaySound("UChatScrollButton");
+			-- I don't appreciate your tone, CREATE flag. I suggest you leave immediately.
+			if(self.State == self.Flags["CREATE"]) then
+				return;
+			end
 			-- Check modifier keys.
 			if(IsAltKeyDown()) then
 				-- Show/Hide aura.
@@ -213,8 +221,6 @@ PowaAuras.UI:Register("AuraButton", {
 				print("|cFF527FCCDEBUG (AuraButton): |rDisable/Enable aura: " .. self.AuraID);
 				PowaAuras.Helpers:ToggleAuraEnabled(self.AuraID);
 			end
-			-- Play a sound too!
-			PlaySound("UChatScrollButton");
 		elseif(button == "RightButton" and self.State == self.Flags["NORMAL"]) then
 			-- Shortcut for edit.
 			PowaBrowser:SetSelectedAura(self.AuraID, false);
