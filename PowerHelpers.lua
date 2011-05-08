@@ -101,23 +101,24 @@ PowaAuras.Helpers = {
 		aura:CheckActive(true, true, true);
 		PowaAuras:DisplayAura(i);
 	end,
-	ToggleAuraDisplay = function(self, id, force)
+	ToggleAuraDisplay = function(self, id, state)
 		-- Aura required!
 		if(not PowaAuras.Auras[id]) then return; end
-		if(not PowaAuras.Auras[id].Showing or force == true) then
-			-- Display aura.
-			PowaAuras:DisplayAura(id);
-		else
-			-- Hide aura.
-			PowaAuras.Auras[id]:SetHideRequest();
+		if(state == nil) then
+			state = not PowaAuras.Auras[id].Active;
 		end
+		PowaAuras.Auras[id]:CheckActive(state, true, true);
 		-- Trigger update.
 		PowaBrowser:UpdateAuraButtons();
 	end,
-	ToggleAuraEnabled = function(self, id, force)
+	ToggleAuraEnabled = function(self, id, state)
 		-- Aura required!
 		if(not PowaAuras.Auras[id]) then return; end
-		PowaAuras.Auras[id].off = (force == true and force or not PowaAuras.Auras[id].off);
+		if(state == nil) then
+			state = not PowaAuras.Auras[id].off;
+		end
+		PowaAuras.Auras[id].off = state;
+		self:ToggleAuraDisplay(id, false);
 		-- Trigger update.
 		PowaBrowser:UpdateAuraButtons();
 	end,
