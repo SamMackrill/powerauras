@@ -101,15 +101,41 @@ PowaAuras.Helpers = {
 		aura:CheckActive(true, true, true);
 		PowaAuras:DisplayAura(i);
 	end,
-	ToggleAuraDisplay = function(self, id, state)
-		-- Aura required!
-		if(not PowaAuras.Auras[id]) then return; end
-		if(state == nil) then
-			state = not PowaAuras.Auras[id].Active;
+	ToggleAllAuras = function(self, activeOnly, forceDisplay, state)
+		-- Need to be done.
+		if(not (PowaAuras.VariablesLoaded and PowaAuras.SetupDone)) then return; end 
+		-- Go over all auras.
+		for id, aura in pairs(PowaAuras.Auras) do
+			-- Active check.
+			if(not activeOnly or aura.Active == true) then
+				-- Force display is used to make sure DisplayAura is called.
+				if(forceDisplay) then
+					self:ToggleAuraDisplay(id, false, true);
+					self:ToggleAuraDisplay(id, true, true);
+				else
+					self:ToggleAuraDisplay(id, state or nil, true);
+				end
+			end
 		end
-		PowaAuras.Auras[id]:CheckActive(state, true, true);
-		-- Trigger update.
+		-- Update.
 		PowaBrowser:UpdateAuraButtons();
+	end,
+	ToggleAuraDisplay = function(self, id, state, noUpdate)
+		-- Need to be done.
+		if(not (PowaAuras.VariablesLoaded and PowaAuras.SetupDone)) then return; end 
+		-- Aura required!
+		local aura = PowaAuras.Auras[id];
+		if(not aura) then return; end
+		if(state == nil) then
+			state = not aura.Active;
+		end
+		aura:CheckActive(state, true, true);
+		if(aura.Timer) then aura.Timer:Redisplay(aura, true); end
+		if(aura.Stacks) then aura.Stacks:Redisplay(aura, true); end
+		-- Trigger update.
+		if(not noUpdate) then
+			PowaBrowser:UpdateAuraButtons();
+		end
 	end,
 	ToggleAuraEnabled = function(self, id, state)
 		-- Aura required!
@@ -119,12 +145,10 @@ PowaAuras.Helpers = {
 		end
 		PowaAuras.Auras[id].off = state;
 		self:ToggleAuraDisplay(id, false);
-		-- Trigger update.
-		PowaBrowser:UpdateAuraButtons();
 	end,
 };
 
--- Register settings down below here.
+-- Register settings and any handlers below here.
 for k, _ in pairs(PowaGlobalMisc) do
 	PowaAuras.Helpers:RegisterSetting(k, k, PowaAuras.Helpers.SettingLocations.Global);
 end
