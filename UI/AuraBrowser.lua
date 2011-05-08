@@ -85,8 +85,7 @@ PowaAuras.UI:Register("AuraBrowser", {
 		self.Tabs.Auras.Page:SetLocked(true);
 		for i=1,24 do
 			-- Make button.
-			local button = CreateFrame("CheckButton", nil, self.Tabs.Auras.Page, "PowaAuraButtonTemplate");
-			PowaAuras.UI:AuraButton(button);		
+			local button = PowaAuras.UI:AuraButton(self.Tabs.Auras.Page);
 			-- Save.
 			self.Tabs.Auras.Page:AddItem(button);
 			self.Tabs.Auras.Page["Aura" .. i] = button;
@@ -179,6 +178,10 @@ PowaAuras.UI:Register("AuraButton", {
 	Hooks = {
 		"SetChecked",
 	},
+	Construct = function(class, ui, parent, ...)
+		-- Make button, run through normal constructor.
+		return ui.Construct(class, ui, CreateFrame("CheckButton", nil, parent, "PowaAuraButtonTemplate"), ...);
+	end,
 	Init = function(self)
 		-- Set things up.
 		self.AuraID = id;
@@ -198,21 +201,23 @@ PowaAuras.UI:Register("AuraButton", {
 		return self.State;
 	end,
 	OnClick = function(self, button)
+		-- Always deselect ourself.
+		self:SetChecked(false);
+		-- Play a sound!
+		PlaySound("UChatScrollButton");
 		-- Left or right?
 		if(button == "LeftButton") then
-			-- Select aura.
-			PowaBrowser:SetSelectedAura(self.AuraID, (self.State == self.Flags["CREATE"]));
-			-- Play a sound too!
-			PlaySound("UChatScrollButton");
 			-- I don't appreciate your tone, CREATE flag. I suggest you leave immediately.
 			if(self.State == self.Flags["CREATE"]) then
+				PowaBrowser:SetSelectedAura(self.AuraID, true);
 				return;
 			end
 			-- Check modifier keys.
 			if(IsAltKeyDown()) then
 				-- Show/Hide aura.
 				print("|cFF527FCCDEBUG (AuraButton): |rShow/Hide aura: " .. self.AuraID);
-				PowaAuras.Helpers:ToggleAuraDisplay(self.AuraID);
+				PowaAuras.Helpers:ToggleAuraDisplay(self.AuraID, 
+					((PowaEditor:IsShown() and PowaEditor.AuraID and PowaEditor.AuraID == self.AuraID) or nil));
 			elseif(IsControlKeyDown()) then
 				-- Debug the aura state.
 				print("|cFF527FCCDEBUG (AuraButton): |rDebug aura: " .. self.AuraID);
@@ -220,17 +225,15 @@ PowaAuras.UI:Register("AuraButton", {
 				-- Disable/Enable aura.
 				print("|cFF527FCCDEBUG (AuraButton): |rDisable/Enable aura: " .. self.AuraID);
 				PowaAuras.Helpers:ToggleAuraEnabled(self.AuraID);
+			else
+				-- Select it.
+				PowaBrowser:SetSelectedAura(self.AuraID, false);
 			end
 		elseif(button == "RightButton" and self.State == self.Flags["NORMAL"]) then
 			-- Shortcut for edit.
 			PowaBrowser:SetSelectedAura(self.AuraID, false);
 			PowaEditor:Show();
 			print("|cFF527FCCDEBUG (AuraBrowser): |rOpen aura editor: " .. self.AuraID);
-			-- Play a sound too!
-			PlaySound("UChatScrollButton");
-		else
-			-- Don't select me, button will be checked if it has the create flag when right clicked otherwise.
-			self:SetChecked(false);
 		end
 	end,
 	OnEnter = function(self)
@@ -312,7 +315,7 @@ PowaAuras.UI:Register("AuraButton", {
 				SetDesaturation(self.Icon, true);
 				self:SetAlpha(0.5);
 				self.OffText:Show();
-			elseif(aura.Showing) then
+			elseif(aura.Active) then
 				SetDesaturation(self.Icon, false);
 				self:SetAlpha(1);
 				self.OffText:Hide();

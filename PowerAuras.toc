@@ -35,6 +35,7 @@ PowerComms.lua
 PowerOptions.lua
 PowerAuras.xml
 PowerOptions.xml
+# We can remove this now, but all the old editor code still relies on it.
 PowerBlizzOptions.xml
 PowerSlots.xml
 
