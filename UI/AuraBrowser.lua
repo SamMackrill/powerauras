@@ -171,6 +171,8 @@ PowaAuras.UI:Register("AuraButton", {
 	},
 	Scripts = {
 		OnClick = true,
+		OnEnter = true,
+		OnLeave = true,
 	},
 	Hooks = {
 		"SetChecked",
@@ -202,12 +204,14 @@ PowaAuras.UI:Register("AuraButton", {
 			if(IsAltKeyDown()) then
 				-- Show/Hide aura.
 				print("|cFF527FCCDEBUG (AuraButton): |rShow/Hide aura: " .. self.AuraID);
+				PowaAuras.Helpers:ToggleAuraDisplay(self.AuraID);
 			elseif(IsControlKeyDown()) then
 				-- Debug the aura state.
 				print("|cFF527FCCDEBUG (AuraButton): |rDebug aura: " .. self.AuraID);
 			elseif(IsShiftKeyDown()) then
 				-- Disable/Enable aura.
-				print("|cFF527FCCDEBUG (AuraButton): |rDisable/Enable aura: " .. self.AuraID);				
+				print("|cFF527FCCDEBUG (AuraButton): |rDisable/Enable aura: " .. self.AuraID);
+				PowaAuras.Helpers:ToggleAuraEnabled(self.AuraID);
 			end
 			-- Play a sound too!
 			PlaySound("UChatScrollButton");
@@ -222,6 +226,14 @@ PowaAuras.UI:Register("AuraButton", {
 			-- Don't select me, button will be checked if it has the create flag when right clicked otherwise.
 			self:SetChecked(false);
 		end
+	end,
+	OnEnter = function(self)
+		-- Update.
+		self:Update();
+	end,
+	OnLeave = function(self)
+		-- Update.
+		self:Update();
 	end,
 	SetAuraID = function(self, id)
 		self.AuraID = id;
@@ -261,16 +273,16 @@ PowaAuras.UI:Register("AuraButton", {
 	Update = function(self, state)
 		-- Get aura.
 		local aura = self:GetAura();
+		-- Use current state if needed.
+		if(not state) then
+			state = self:GetState();
+		end
 		-- If there's no aura, quit and complain. But ignore if we've been given the create flag.
 		if(not aura and state ~= self.Flags["CREATE"]) then
 			state = self.Flags["NOAURA"];
 		end
-		-- State update if needed.
-		if(state) then
-			self:SetState(state);
-		else
-			state = self:GetState();
-		end
+		-- State update.
+		self:SetState(state);
 		-- Handle noaura states first.
 		if(state == self.Flags["NOAURA"]) then
 			self.Icon:SetTexture("");
