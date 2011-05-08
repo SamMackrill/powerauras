@@ -54,6 +54,7 @@ UI\TabFrame.lua
 
 # Generic elements.
 UI\BorderedFrame.xml
+UI\Button.xml
 UI\Checkbox.xml
 UI\ColorWidget.xml
 UI\EditBox.xml

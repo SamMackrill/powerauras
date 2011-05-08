@@ -83,7 +83,7 @@ PowaAuras.UI:Register("AuraBrowser", {
 		self.Tabs.Auras.Page:SetLocked(true);
 		for i=1,24 do
 			-- Make button.
-			local button = CreateFrame("Button", nil, self.Tabs.Auras.Page, "PowaAuraButtonTemplate");
+			local button = CreateFrame("CheckButton", nil, self.Tabs.Auras.Page, "PowaAuraButtonTemplate");
 			PowaAuras.UI:AuraButton(button);		
 			-- Save.
 			self.Tabs.Auras.Page:AddItem(button);
@@ -138,53 +138,23 @@ PowaAuras.UI:Register("AuraBrowser", {
 		local hasDisplayedEmpty = nil;
 		-- Go over buttons.
 		for i=1,24 do
-			local button, buttonAura = self.Tabs.Auras.Page["Aura" .. i], nil;
+			local button, id = self.Tabs.Auras.Page["Aura" .. i], ((self.SelectedPage-1)*24)+i;
 			-- Fix button and aura.
-			button:SetAuraID(((self.SelectedPage-1)*24)+i);
-			buttonAura = button:GetAura();
-			-- ...Was there an aura?
-			if(buttonAura) then
-				-- Select/deselect.
-				if(self.SelectedAura ~= button:GetAuraID()) then
-					button:SetSelected(false);
-				else
-					button:SetSelected(true);
-				end
-				-- Don't make it create an aura, please!!
-				button:SetCreateAura(false);
-				-- Icons.
-				if(not buttonAura.icon or buttonAura.icon == "") then
-					button.Icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");
-				else
-					button.Icon:SetTexture(buttonAura.icon);
-				end
-				-- Restore texcoords.
-				button.Icon:SetTexCoord(0.07, 0.93, 0.07, 0.93);
-				-- Show button.
-				button:Show();
+			button:SetAuraID(id);
+			-- Is there an aura?
+			if(button:GetAura()) then
+				-- Update like normal.
+				button:SetChecked((self.SelectedAura == id));
+				button:Update(button.Flags["NORMAL"]);
+			elseif(hasDisplayedEmpty) then
+				-- Hide the button.
+				button:SetChecked(false);
+				button:Update(button.Flags["NOAURA"]);
 			else
-				-- Hide?
-				if(hasDisplayedEmpty) then
-					button.Icon:SetTexture("");
-					button:SetSelected(false);
-					button:SetCreateAura(false);
-					button:Hide();
-				else
-					-- Prevent further buttons being displayed.
-					hasDisplayedEmpty = true;
-					-- Flag this one as an aura creator.
-					button:SetCreateAura(true);
-					-- Icon fixes (use different texcoords as it slips to the right a bit here).
-					button.Icon:SetTexture("Interface\\GuildBankFrame\\UI-GuildBankFrame-NewTab");
-					button.Icon:SetTexCoord(0.11, 0.93, 0.07, 0.93);
-					-- Allow it to be selected.
-					if(self.SelectedAura ~= button:GetAuraID()) then
-						button:SetSelected(false);
-					else
-						button:SetSelected(true);
-					end
-					button:Show();
-				end
+				-- It'll be a create aura button.
+				button:SetChecked((self.SelectedAura == id));
+				button:Update(button.Flags["CREATE"]);
+				hasDisplayedEmpty = true;
 			end
 		end
 		-- Bugfix for buttons vanishing.
@@ -194,13 +164,21 @@ PowaAuras.UI:Register("AuraBrowser", {
 
 -- And a definition for the button.
 PowaAuras.UI:Register("AuraButton", {
+	Flags = {
+		NORMAL = 0x1,
+		NOAURA = 0x2,
+		CREATE = 0x4,
+	},
 	Scripts = {
 		OnClick = true,
 	},
-	Init = function(self, icon)
+	Hooks = {
+		"SetChecked",
+	},
+	Init = function(self)
 		-- Set things up.
 		self.AuraID = id;
-		self:SetIcon(icon or "");
+		self.State = self.Flags["NOAURA"];
 		-- Register clicks.
 		self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
 		-- I demand a tooltip.
@@ -212,56 +190,65 @@ PowaAuras.UI:Register("AuraButton", {
 	GetAuraID = function(self)
 		return self.AuraID;
 	end,
-	GetCreateAura = function(self)
-		return self.CreateAura;
-	end,
-	SetAuraID = function(self, id)
-		self.AuraID = id;
-	end,
-	SetIcon = function(self, icon)
-		self.Icon:SetTexture(icon);
+	GetState = function(self)
+		return self.State;
 	end,
 	OnClick = function(self, button)
 		-- Left or right?
 		if(button == "LeftButton") then
-			-- Select aura, or create.
-			if(self.CreateAura) then
-				print("|cFF527FCCDEBUG (AuraBrowser): |rCreate aura: " .. self.AuraID);
-				PowaBrowser:SetSelectedAura(self.AuraID, self.CreateAura);
-			else
-				PowaBrowser:SetSelectedAura(self.AuraID, self.CreateAura);
+			-- Select aura.
+			PowaBrowser:SetSelectedAura(self.AuraID, (self.State == self.Flags["CREATE"]));
+			-- Check modifier keys.
+			if(IsAltKeyDown()) then
+				-- Show/Hide aura.
+				print("|cFF527FCCDEBUG (AuraButton): |rShow/Hide aura: " .. self.AuraID);
+			elseif(IsControlKeyDown()) then
+				-- Debug the aura state.
+				print("|cFF527FCCDEBUG (AuraButton): |rDebug aura: " .. self.AuraID);
+			elseif(IsShiftKeyDown()) then
+				-- Disable/Enable aura.
+				print("|cFF527FCCDEBUG (AuraButton): |rDisable/Enable aura: " .. self.AuraID);				
 			end
-			-- Is the ctrl key down?
-			if(IsControlKeyDown()) then
-				-- Debug the aura too.
-			end
-		elseif(button == "RightButton" and not self.CreateAura) then
+			-- Play a sound too!
+			PlaySound("UChatScrollButton");
+		elseif(button == "RightButton" and self.State == self.Flags["NORMAL"]) then
 			-- Shortcut for edit.
-			PowaBrowser:SetSelectedAura(self.AuraID, self.CreateAura);
+			PowaBrowser:SetSelectedAura(self.AuraID, false);
 			PowaEditor:Show();
 			print("|cFF527FCCDEBUG (AuraBrowser): |rOpen aura editor: " .. self.AuraID);
+			-- Play a sound too!
+			PlaySound("UChatScrollButton");
+		else
+			-- Don't select me, button will be checked if it has the create flag when right clicked otherwise.
+			self:SetChecked(false);
 		end
-		-- Play a sound too!
-		PlaySound("UChatScrollButton");
 	end,
-	SetCreateAura = function(self, create)
-		self.CreateAura = create;
+	SetAuraID = function(self, id)
+		self.AuraID = id;
 	end,
-	SetSelected = function(self, selected)
-		self.Selected = selected;
+	SetChecked = function(self, checked)
+		-- Call original func.
+		self:__SetChecked(checked);
+		-- Update state.
 		self:Update();
 	end,
+	SetState = function(self, state)
+		self.State = state;
+	end,
 	TooltipRefresh = function(self)
+		-- Need an aura to continue.
+		local aura = self:GetAura();
+		if(not aura and self.State ~= self.Flags["CREATE"]) then return; end
 		-- Hide tip.
 		GameTooltip:Hide();
 		-- Reparent.
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0);
 		-- Set back up.
-		if(not self.CreateAura) then
-			GameTooltip:SetText(PowaAuras.Text.AuraType[PowaAuras.Auras[self.AuraID].bufftype]);
+		if(self.State == self.Flags["NORMAL"]) then
+			GameTooltip:SetText(PowaAuras.Text.AuraType[aura.bufftype]);
 			GameTooltip:AddLine(format("|cFFFFD100%s: |r%d", PowaAuras.Text.UI_ID, self.AuraID), 1, 1, 1, true);
-			if(PowaAuras.Auras[self.AuraID] and PowaAuras.Auras[self.AuraID].buffname) then
-				GameTooltip:AddLine(tostring(PowaAuras.Auras[self.AuraID].buffname), 1, 1, 1, true);
+			if(aura.buffname) then
+				GameTooltip:AddLine(tostring(aura.buffname), 1, 1, 1, true);
 			end
 			GameTooltip:AddLine(PowaAuras.Text["UI_SelAura_TooltipExt"], 1, 1, 1, true);
 		else
@@ -271,16 +258,54 @@ PowaAuras.UI:Register("AuraButton", {
 		-- Show tip.
 		GameTooltip:Show();
 	end,
-	Update = function(self)
-		local texture = self:GetNormalTexture();
-		-- Update texture state based on this priority.
-		if(self.Selected) then
-			texture:SetTexCoord(0.0078125, 0.2734375, 0.80859375, 0.94140625);
-			texture:SetVertexColor(1, 1, 1);
-		else
-			texture:SetTexCoord(0.0078125, 0.2734375, 0.80859375, 0.94140625);
-			texture:SetVertexColor(0.75, 0.325, 0.325);
+	Update = function(self, state)
+		-- Get aura.
+		local aura = self:GetAura();
+		-- If there's no aura, quit and complain. But ignore if we've been given the create flag.
+		if(not aura and state ~= self.Flags["CREATE"]) then
+			state = self.Flags["NOAURA"];
 		end
+		-- State update if needed.
+		if(state) then
+			self:SetState(state);
+		else
+			state = self:GetState();
+		end
+		-- Handle noaura states first.
+		if(state == self.Flags["NOAURA"]) then
+			self.Icon:SetTexture("");
+			self:Hide();
+			return;
+		elseif(state == self.Flags["CREATE"]) then
+			self.Icon:SetTexture("Interface\\GuildBankFrame\\UI-GuildBankFrame-NewTab");
+			self.Icon:SetTexCoord(0.11, 0.93, 0.07, 0.93);
+			self.OffText:Hide();
+		elseif(state == self.Flags["NORMAL"]) then		
+			-- Icons.
+			if(not aura.icon or aura.icon == "") then
+				self.Icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");
+			else
+				self.Icon:SetTexture(aura.icon);
+			end
+			-- Restore texcoords.
+			self.Icon:SetTexCoord(0.07, 0.93, 0.07, 0.93);
+			-- Is the aura off, showing or not on and not showing?
+			if(aura.off) then
+				SetDesaturation(self.Icon, true);
+				self:SetAlpha(0.5);
+				self.OffText:Show();
+			elseif(aura.Showing) then
+				SetDesaturation(self.Icon, false);
+				self:SetAlpha(1);
+				self.OffText:Hide();
+			else
+				SetDesaturation(self.Icon, false);
+				self:SetAlpha(0.5);
+				self.OffText:Hide();
+			end
+		end
+		-- Show button.
+		self:Show();
 	end,
 });
 
