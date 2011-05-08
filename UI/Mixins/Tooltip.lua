@@ -21,12 +21,8 @@ PowaAuras.UI:Register("Tooltip", {
 				self:ApplyScript(frame[child], "OnLeave", function() frame:TooltipLeave(); end);
 			end
 		end
-		-- We're done.
-		return;
 	end,
 	TooltipRefresh = function(self)
-		-- Make sure the mouse is over me.
-		if(not self:IsMouseOver()) then return; end
 		-- Hide tip.
 		GameTooltip:Hide();
 		-- Reparent.

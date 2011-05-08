@@ -262,12 +262,15 @@
 													if(value) then
 														self.TooltipTitle = PowaAuras.Text["UI_Aura_TexUnlock"];
 														self.TooltipText = PowaAuras.Text["UI_Aura_TexUnlockDesc"];
-														self:TooltipRefresh();
 													else
 														self.TooltipTitle = PowaAuras.Text["UI_Aura_TexLock"];
 														self.TooltipText = PowaAuras.Text["UI_Aura_TexLockDesc"];
+													end
+													if(self:IsMouseOver()) then
 														self:TooltipRefresh();
 													end
+													-- Update auras.
+													PowaAuras.Helpers:ToggleAllAuras(true, true);
 												end);
 												-- Desaturate. Use this instead of the xml attr because it works on toasters.
 												SetDesaturation(self:GetCheckedTexture(), true);
