@@ -95,7 +95,7 @@ PowaAuras.UI:Register("AuraBrowser", {
 		-- Unlock (we just prevented 24 loops!)
 		self.Tabs.Auras.Page:SetLocked(false);
 		-- Button update.
-		self:UpdateAuraButtons();
+		self:TriageIcones();
 	end,
 	SavePageName = function(self, name)
 		-- Get the page.
@@ -120,7 +120,7 @@ PowaAuras.UI:Register("AuraBrowser", {
 			PowaEditor:Show();
 		end
 		-- Update buttons.
-		self:UpdateAuraButtons();
+		self:TriageIcones();
 		-- Update our stuffs!
 		if(isCreate) then
 			self.Tabs.Auras:SelectTab(2);
@@ -130,7 +130,7 @@ PowaAuras.UI:Register("AuraBrowser", {
 				(not id and PowaAuras.Text["UI_SelAura_None"] or format(PowaAuras.Text["UI_SelAura_Title"], id)));
 		end
 	end,
-	UpdateAuraButtons = function(self)
+	TriageIcones = function(self)
 		print("|cFF527FCCDEBUG (AuraBrowser): |rUpdating aura buttons!");
 		-- Not strictly button related, but it prevents two function calls.
 		self.Tabs.Auras.Page.Title:SetText(self:GetPageName());

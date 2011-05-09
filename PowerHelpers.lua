@@ -118,7 +118,7 @@ PowaAuras.Helpers = {
 			end
 		end
 		-- Update.
-		PowaBrowser:UpdateAuraButtons();
+		PowaBrowser:TriageIcones();
 	end,
 	ToggleAuraDisplay = function(self, id, state, noUpdate)
 		-- Need to be done.
@@ -134,7 +134,7 @@ PowaAuras.Helpers = {
 		if(aura.Stacks) then aura.Stacks:Redisplay(aura, true); end
 		-- Trigger update.
 		if(not noUpdate) then
-			PowaBrowser:UpdateAuraButtons();
+			PowaBrowser:TriageIcones();
 		end
 	end,
 	ToggleAuraEnabled = function(self, id, state)
