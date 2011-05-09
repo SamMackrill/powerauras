@@ -128,9 +128,6 @@ PowaAuras.UI:Register("DropdownBase", {
 -- Define basic dropdown control widget.
 PowaAuras.UI:Register("Dropdown", {
 	Base = "DropdownBase",
-	Scripts = {
-		OnHide = true,
-	},
 	Init = function(self, setting, closeOnSelect)
 		-- Call parent init func.
 		self.Base.Init(self, closeOnSelect);
@@ -177,6 +174,15 @@ PowaAuras.UI:Register("Dropdown", {
 -- Not to be confused with DropdownList, this makes the list behave as a menu and disables selecting of elements.
 PowaAuras.UI:Register("DropdownMenu", {
 	Base = "DropdownBase",
+	Init = function(self, closeOnSelect)
+		-- Call parent init func.
+		self.Base.Init(self, closeOnSelect);
+		-- Set the title and tooltip if we can.
+		if(self:GetText()) then
+			-- Tooltip.
+			PowaAuras.UI:Tooltip(self, self:GetText(), (self:GetText() .. "Desc"));
+		end
+	end,
 	SetSelectedKey = function(self, key)
 		print("|cFF527FCCDEBUG (Dropdown): |r", self, "key change on menu", dropdown, "(key =", key, ")");	
 		-- Selected key is always nil.

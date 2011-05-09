@@ -241,7 +241,7 @@
 											</OnEnterPressed>
 										</Scripts>
 									</EditBox>
-									<CheckButton parentKey="PageOptions">
+									<CheckButton parentKey="PageOptions" text="UI_PageTools">
 										<Size x="32" y="32" />
 										<Anchors>
 											<Anchor point="TOPRIGHT" x="-13" y="-8" />

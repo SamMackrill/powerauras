@@ -822,6 +822,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	UI_ConfigTitlePerf         = "Performance",
 	UI_ConfigTitleCust         = "Textures and Sounds",
 	
+	UI_PageTools               = "Page Tools",
+	UI_PageToolsDesc           = "Allows you to perform tasks like testing all auras, exporting the current page and unlocking or locking auras.",	
 	UI_ShowAll                 = "Show All Auras",
 	UI_HideAll                 = "Hide All Auras",
 	UI_LockAll                 = "Lock Auras",
