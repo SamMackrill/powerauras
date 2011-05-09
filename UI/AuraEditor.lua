@@ -1,0 +1,68 @@
+-- More definitions, yes please.
+PowaAuras.UI:Register("AuraEditor", {
+	AdvancedElements = {}, -- It'll reference, but that's no problem. There's only 1 aura editor.
+	Scripts = {
+		OnHide = true,
+		OnShow = true,
+	},
+	Hooks = {
+		"Show",
+	},
+	Init = function(self)
+		-- Hide advanced elements.
+		self.Advanced:SetChecked(false);
+		self:ToggleAdvanced(false);
+		
+		-- Close on escape key.
+		tinsert(UISpecialFrames, self:GetName());
+	end,
+	Show = function(self)
+		-- Make sure this stuff is correct...
+		if(not self:UpdateElements(PowaBrowser:GetSelectedAura())) then
+			self:Hide();
+		else
+			self:__Show();
+		end
+	end,
+	OnHide = function(self)
+		PlaySound("igMainMenuClose");
+	end,
+	OnShow = function(self)
+		PlaySound("igCharacterInfoTab");
+	end,
+	RegisterAdvanced = function(self, element)
+		tinsert(self.AdvancedElements, element);
+	end,
+	ToggleAdvanced = function(self, state)
+		for _,v in ipairs(self.AdvancedElements) do
+			if(state) then
+				v:Show();
+			else
+				v:Hide();
+			end
+			if(v:GetParent().UpdateLayout) then v:GetParent():UpdateLayout(); end
+		end
+	end,
+	UpdateElements = function(self, auraID)
+		-- Get the aura.
+		local aura = PowaAuras.Auras[auraID];
+		if(not aura) then
+			self.AuraID = nil;
+			return;
+		end
+		-- Update ID.
+		self.AuraID = auraID;
+		-- Update controls.
+		aura:UpdateTriggerTree(PowaEditorActivation.Triggers.Tree);		
+		-- Toggle advanced elements.
+		self:ToggleAdvanced(self.Advanced:GetChecked());
+		-- Update some values.
+		-- Force aura showing.
+		PowaAuras.Helpers:ToggleAuraDisplay(auraID, true);
+		-- Done.
+		return true;
+	end,
+	AddNewTrigger = function(self)
+		PowaAuras:ShowText("Add New Trigger auraId=", PowaBrowser:GetSelectedAura());
+	end,
+});
