@@ -3158,6 +3158,8 @@ cPowaPowerType.ShowOptions={
 };
 
 function cPowaPowerType:Init()
+	-- Set the ranges properly.
+	self._base.Init(self);
 	-- Fix for happiness auras.
 	if(self.PowerType == 4) then
 		self.PowerType = -1;
