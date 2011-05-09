@@ -218,7 +218,7 @@
 										<Size x="225" y="28" />
 										<Anchors>
 											<Anchor point="TOPLEFT" x="15" y="-10" />
-											<Anchor point="TOPRIGHT" x="-36" y="-10" />
+											<Anchor point="TOPRIGHT" x="-50" y="-10" />
 										</Anchors>
 										<HitRectInsets>
 											<AbsInset left="0" right="0" top="0" bottom="0" />
@@ -241,81 +241,86 @@
 											</OnEnterPressed>
 										</Scripts>
 									</EditBox>
-									<CheckButton parentKey="Lock" text="UI_Aura_TexUnlock">
-										<Size x="17" y="21" />
+									<CheckButton parentKey="PageOptions">
+										<Size x="32" y="32" />
 										<Anchors>
-											<Anchor point="TOPRIGHT" x="-13" y="-14" />
+											<Anchor point="TOPRIGHT" x="-13" y="-8" />
 										</Anchors>
-										<!-- Normal = Locked -->
-										<NormalTexture file="Interface\GuildFrame\GuildFrame">
-											<TexCoords left="0.51660156" right="0.53320313" top="0.92578125" bottom="0.96679688"/>
+										<NormalTexture file="Interface\WorldMap\Gear_64Grey" alpha="0.5">
+											<Size x="32" y="32" />
+											<Anchors>
+												<Anchor point="TOPLEFT" x="0" y="0" />
+											</Anchors>
 										</NormalTexture>
-										<CheckedTexture file="Interface\GuildFrame\GuildFrame">
-											<TexCoords left="0.51660156" right="0.53320313" top="0.92578125" bottom="0.96679688"/>
+										<CheckedTexture file="Interface\WorldMap\Gear_64" alpha="1">
+											<Size x="32" y="32" />
+											<Anchors>
+												<Anchor point="TOPLEFT" x="0" y="0" />
+											</Anchors>
+											<TexCoords left="0" right="0.5" top="0" bottom="0.5" />
 										</CheckedTexture>
 										<Scripts>
 											<OnLoad>
-												-- Use basic checkbox without fancy colouring.
-												PowaAuras.UI:CheckboxBase(self, "Locked", true);
-												-- Hook OnSettingChanged.
-												hooksecurefunc(self, "OnSettingChanged", function(self, value)
-													if(value) then
-														self.TooltipTitle = PowaAuras.Text["UI_Aura_TexUnlock"];
-														self.TooltipText = PowaAuras.Text["UI_Aura_TexUnlockDesc"];
-													else
-														self.TooltipTitle = PowaAuras.Text["UI_Aura_TexLock"];
-														self.TooltipText = PowaAuras.Text["UI_Aura_TexLockDesc"];
-													end
-													if(self:IsMouseOver()) then
-														self:TooltipRefresh();
-													end
-													-- Update auras.
-													PowaAuras.Helpers:ToggleAllAuras(true, true);
+												-- Use basic dropdown for this.
+												PowaAuras.UI:DropdownMenu(self, false);
+												-- Override dropdown positioning function.
+												self.OnDropdownMenuPosition = function(self, dropdown, count)
+													-- Update the sizing/positioning of the dropdown.
+													dropdown:SetWidth(168);
+													dropdown:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, 0);
+													dropdown:SetHeight(math.min(168, 8+(count*20)));
+													dropdown.Child:SetSize(168, (count*20)-1);
+												end
+												-- Hook show/hide funcs.
+												hooksecurefunc(self, "OnDropdownMenuShow", function(self, dropdown)
+													self:SetChecked(true);
 												end);
-												-- Desaturate. Use this instead of the xml attr because it works on toasters.
-												SetDesaturation(self:GetCheckedTexture(), true);
+												hooksecurefunc(self, "OnDropdownMenuHide", function(self, dropdown)
+													self:SetChecked(false);
+												end);
+												-- Add tools.
+												self:AddItem(1, PowaAuras.Text["UI_UnlockAll"]);
+												self:AddItem(2, PowaAuras.Text["UI_ShowAll"]);
+												self:AddItem(3, PowaAuras.Text["UI_HideAll"]);
+												self:AddItem(4, PowaAuras.Text["UI_ExportPage"]);
+												-- And the item selection callback.
+												self.OnDropdownItemSelected = function(self, key)
+													if(key == 1) then
+														-- Lock/Unlock.
+														PowaAuras.Helpers:SaveSetting("Locked", not PowaAuras.Helpers:GetSetting("Locked"));
+													elseif(key == 2) then
+														-- Show.
+														PowaAuras.Helpers:ToggleAllAuras(false, true);
+													elseif(key == 3) then
+														-- Hide.
+														PowaAuras.Helpers:ToggleAllAuras(false, false, false);
+													elseif(key == 4) then
+														-- Export.
+														print("Page Export Dialog NYI");
+													end
+												end
+												-- Add a callback for the lock setting.
+												PowaAuras.Helpers:RegisterSettingCallback(function(key, value)
+													if(key ~= "Locked") then return; end
+													self:UpdateItem(1, (value == true and PowaAuras.Text["UI_UnlockAll"] or PowaAuras.Text["UI_LockAll"]));
+												end);
 											</OnLoad>
+											<OnEnter>
+												self:GetNormalTexture():SetAlpha(1);
+											</OnEnter>
+											<OnLeave>
+												self:GetNormalTexture():SetAlpha(0.5);										
+											</OnLeave>
+											<OnMouseDown>
+												self:GetNormalTexture():SetPoint("TOPLEFT", 1, -1);
+												self:GetCheckedTexture():SetPoint("TOPLEFT", 1, -1);
+											</OnMouseDown>
+											<OnMouseUp>
+												self:GetNormalTexture():SetPoint("TOPLEFT", 0, 0);
+												self:GetCheckedTexture():SetPoint("TOPLEFT", 0, 0);
+											</OnMouseUp>
 										</Scripts>
 									</CheckButton>
-									<Button parentKey="Test3" text="Copy" inherits="PowaButtonTemplate">
-										<Size>
-											<AbsDimension x="105" y="22" />
-										</Size>
-										<Anchors>
-											<Anchor point="BOTTOMRIGHT" x="-215" y="5" />
-										</Anchors>
-										<Scripts>
-											<OnLoad>
-												PowaAuras.UI:Button(self);
-											</OnLoad>
-										</Scripts>
-									</Button>
-									<Button parentKey="Test2" text="Test" inherits="PowaButtonTemplate">
-										<Size>
-											<AbsDimension x="105" y="22" />
-										</Size>
-										<Anchors>
-											<Anchor point="BOTTOMRIGHT" x="-110" y="5" />
-										</Anchors>
-										<Scripts>
-											<OnLoad>
-												PowaAuras.UI:Button(self);
-											</OnLoad>
-										</Scripts>
-									</Button>
-									<Button parentKey="Test" text="Test" inherits="PowaButtonTemplate">
-										<Size>
-											<AbsDimension x="105" y="22" />
-										</Size>
-										<Anchors>
-											<Anchor point="BOTTOMRIGHT" x="-5" y="5" />
-										</Anchors>
-										<Scripts>
-											<OnLoad>
-												PowaAuras.UI:Button(self);
-											</OnLoad>
-										</Scripts>
-									</Button>
 								</Frames>
 								<Scripts>
 									<OnLoad>

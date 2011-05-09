@@ -1,35 +1,17 @@
--- Define basic dropdown control widget.
-PowaAuras.UI:Register("Dropdown", {
+-- Dropdown widget base.
+PowaAuras.UI:Register("DropdownBase", {
 	Scripts = {
 		OnClick = true,
 		OnHide = true,
 	},
-	Init = function(self, setting, closeOnSelect)
+	Init = function(self, closeOnSelect)
 		-- If we own a menu, we reference the frame via this.
 		self.Menu = nil;
 		-- Store our items in this.
 		self.Items = {};
-		self.CloseOnSelect = (closeOnSelect == nil and false or closeOnSelect);
+		self.CloseOnSelect = (closeOnSelect == nil and true or closeOnSelect);
 		-- Selected key for this dropdown.
 		self.SelectedKey = nil;
-		-- Set the title and tooltip if we can.
-		if(self:GetText()) then
-			-- Title (optional fontstring element)
-			if(self.Title) then
-				self.Title:SetText(PowaAuras.Text[self:GetText()]);
-			end
-			-- Tooltip.
-			PowaAuras.UI:Tooltip(self, self:GetText(), (self:GetText() .. "Desc"));
-		end
-		-- Make sure our text is blank...
-		self.Text:SetText(PowaAuras.Text["UI_DropdownNone"]);
-		-- Settings mixin please.
-		self.OnSettingChanged = function(self, key)
-			-- Don't call this if the key is the same.
-			if(self.SelectedKey == key) then return; end
-			self:SetSelectedKey(key);
-		end
-		PowaAuras.UI:Settings(self, setting);
 	end,
 	AddItem = function(self, key, text)
 		-- Make sure key is unique.
@@ -41,8 +23,7 @@ PowaAuras.UI:Register("Dropdown", {
 		-- Fully update the menu if we add/remove any items.
 		if(self.Menu) then
 			self.Menu:Toggle(false);
-			PowaAuras.UI:DropdownList(self, self.OnDropdownMenuShow, self.OnDropdownMenuHide, 
-				self.OnDropdownMenuSelected, self.SelectedKey):Toggle();
+			PowaAuras.UI:DropdownList(self, self.SelectedKey):Toggle(true);
 		end
 		-- Done.
 		return true;
@@ -60,8 +41,7 @@ PowaAuras.UI:Register("Dropdown", {
 				-- Fully update the menu if we add/remove any items.
 				if(self.Menu) then
 					self.Menu:Toggle(false);
-					PowaAuras.UI:DropdownList(self, self.OnDropdownMenuShow, self.OnDropdownMenuHide, 
-						self.OnDropdownMenuSelected, self.SelectedKey):Toggle();
+					PowaAuras.UI:DropdownList(self, self.SelectedKey):Toggle(true);
 				end
 				-- Done.
 				return true;
@@ -74,10 +54,26 @@ PowaAuras.UI:Register("Dropdown", {
 			self:RemoveItem(data.Key);
 		end
 	end,
+	UpdateItem = function(self, key, text)
+		-- Update.
+		for i, data in pairs(self.Items) do
+			if(data.Key == key) then
+				-- Update.
+				self.Items[i].Value = text;
+				-- Fully update the menu if we changed anything.
+				if(self.Menu) then
+					self.Menu:Toggle(false);
+					PowaAuras.UI:DropdownList(self, self.SelectedKey):Toggle(true);
+				end
+				-- Done.
+				return true;
+			end
+		end	
+	end,
 	OnClick = function(self)
 		-- Request the dropdown menu.
-		PowaAuras.UI:DropdownList(self, self.OnDropdownMenuShow, self.OnDropdownMenuHide, self.OnDropdownMenuSelected, 
-			self.SelectedKey):Toggle();
+		PowaAuras.UI:DropdownList(self, self.SelectedKey):Toggle();
+		PlaySound("UChatScrollButton");
 	end,
 	OnDropdownMenuShow = function(self, dropdown)
 		-- Update state.
@@ -85,6 +81,13 @@ PowaAuras.UI:Register("Dropdown", {
 		print("|cFF527FCCDEBUG (Dropdown): |r", self, "owns menu", dropdown);
 		-- Return our item list.
 		return self.Items;
+	end,
+	OnDropdownMenuPosition = function(self, dropdown, count)
+		-- Update the sizing/positioning of the dropdown.
+		dropdown:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, 0);
+		dropdown:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, 0);
+		dropdown:SetHeight(math.min(168, 8+(count*20)));
+		dropdown.Child:SetSize(168, (count*20)-1);
 	end,
 	OnDropdownMenuHide = function(self, dropdown)
 		-- Update state.
@@ -112,6 +115,47 @@ PowaAuras.UI:Register("Dropdown", {
 		print("|cFF527FCCDEBUG (Dropdown): |r", self, "key change on menu", dropdown, "(key =", key, ")");	
 		-- Update selected key.
 		self.SelectedKey = key;
+		-- Fire callback.
+		self:OnDropdownItemSelected(key);
+		-- Force update if we own the dropdown.
+		if(self.Menu) then
+			self.Menu.SelectedKey = key; -- A bit hackish, but it prevents a loop.
+			self.Menu:UpdateItems();
+		end
+	end,
+});
+
+-- Define basic dropdown control widget.
+PowaAuras.UI:Register("Dropdown", {
+	Base = "DropdownBase",
+	Scripts = {
+		OnHide = true,
+	},
+	Init = function(self, setting, closeOnSelect)
+		-- Call parent init func.
+		self.Base.Init(self, closeOnSelect);
+		-- Set the title and tooltip if we can.
+		if(self:GetText()) then
+			-- Title (optional fontstring element)
+			if(self.Title) then
+				self.Title:SetText(PowaAuras.Text[self:GetText()]);
+			end
+			-- Tooltip.
+			PowaAuras.UI:Tooltip(self, self:GetText(), (self:GetText() .. "Desc"));
+		end
+		-- Make sure our text is blank...
+		self.Text:SetText(PowaAuras.Text["UI_DropdownNone"]);
+		-- Settings mixin please.
+		self.OnSettingChanged = function(self, key)
+			-- Don't call this if the key is the same.
+			if(self.SelectedKey == key) then return; end
+			self:SetSelectedKey(key);
+		end
+		PowaAuras.UI:Settings(self, setting);
+	end,
+	SetSelectedKey = function(self, key)
+		-- Call parent func.
+		self.Base.SetSelectedKey(self, key);
 		-- Find key, change text.
 		local hasChanged = false;
 		for _, data in ipairs(self.Items) do
@@ -127,11 +171,21 @@ PowaAuras.UI:Register("Dropdown", {
 		end
 		-- Save the setting.
 		self:SaveSetting(key);
-		-- Fire callback.
+	end,
+});
+
+-- Not to be confused with DropdownList, this makes the list behave as a menu and disables selecting of elements.
+PowaAuras.UI:Register("DropdownMenu", {
+	Base = "DropdownBase",
+	SetSelectedKey = function(self, key)
+		print("|cFF527FCCDEBUG (Dropdown): |r", self, "key change on menu", dropdown, "(key =", key, ")");	
+		-- Selected key is always nil.
+		self.SelectedKey = nil;
+		-- Fire callback, pass the key so we know what was clicked.
 		self:OnDropdownItemSelected(key);
 		-- Force update if we own the dropdown.
 		if(self.Menu) then
-			self.Menu.SelectedKey = key; -- A bit hackish, but it prevents a loop.
+			self.Menu.SelectedKey = nil; -- A bit hackish, but it prevents a loop.
 			self.Menu:UpdateItems();
 		end
 	end,
@@ -143,6 +197,7 @@ PowaAuras.UI:Register("DropdownList", {
 	Owner = nil,
 	HideCallback = nil,
 	ShowCallback = nil,
+	PositionCallback = nil,
 	UpdateCallback = nil,
 	SelectedKey = nil,
 	Items = {}, -- Active DropdownItem list.
@@ -179,7 +234,7 @@ PowaAuras.UI:Register("DropdownList", {
 		-- Return ourself.
 		return class.Menu;
 	end,
-	Init = function(self, owner, showCallback, hideCallback, updateCallback, defaultKey)
+	Init = function(self, owner, defaultKey, showCallback, hideCallback, positionCallback, updateCallback)
 		-- Reset toggle status if the owner has changed.
 		if(self.Owner ~= owner and self.Owner) then
 			self.OnToggleShow = true;
@@ -189,9 +244,10 @@ PowaAuras.UI:Register("DropdownList", {
 		self.SelectedKey = defaultKey or nil;
 		-- Update owner.
 		self.Owner = owner;
-		self.HideCallback = hideCallback;
-		self.ShowCallback = showCallback;
-		self.UpdateCallback = updateCallback;
+		self.HideCallback = hideCallback or owner["OnDropdownMenuHide"];
+		self.ShowCallback = showCallback or owner["OnDropdownMenuShow"];
+		self.PositionCallback = positionCallback or owner["OnDropdownMenuPosition"];
+		self.UpdateCallback = updateCallback or owner["OnDropdownMenuSelected"];
 		-- Return list.
 		return self;
 	end,
@@ -235,13 +291,10 @@ PowaAuras.UI:Register("DropdownList", {
 			-- Increment counter.
 			count = count+1;
 		end
-		print("|cFF527FCCDEBUG (DropdownList): |rShowing", count, "items.");
-		-- Size/position.
+		-- Position dropdown.
 		self:SetParent(self.Owner);
-		self:SetPoint("TOPLEFT", self.Owner, "BOTTOMLEFT", 0, 0);
-		self:SetPoint("TOPRIGHT", self.Owner, "BOTTOMRIGHT", 0, 0);
-		self:SetHeight(math.min(168, 8+(count*20)));
-		self.Child:SetSize(168, (count*20)-1);
+		self.PositionCallback(self.Owner, self, count);
+		print("|cFF527FCCDEBUG (DropdownList): |rShowing", count, "items.");
 		-- Show.
 		self:__Show();
 	end,
@@ -306,6 +359,7 @@ PowaAuras.UI:Register("DropdownItem", {
 	OnClick = function(self)
 		-- Update selection status.
 		self.Menu:SetSelectedKey(self.Key);
+		PlaySound("UChatScrollButton");
 	end,
 	Recycle = function(self)
 		-- Clear points/parent, done.

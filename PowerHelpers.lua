@@ -22,7 +22,7 @@ PowaAuras.Helpers = {
 	end,
 	RegisterSettingCallback = function(self, func)
 		-- Safety.
-		if(tContains(self, func)) then return false; end
+		if(tContains(self.SettingCallbacks, func)) then return false; end
 		-- Go go go?
 		tinsert(self.SettingCallbacks, func);
 		return true;
@@ -113,7 +113,7 @@ PowaAuras.Helpers = {
 					self:ToggleAuraDisplay(id, false, true);
 					self:ToggleAuraDisplay(id, true, true);
 				else
-					self:ToggleAuraDisplay(id, state or nil, true);
+					self:ToggleAuraDisplay(id, state, true);
 				end
 			end
 		end
@@ -155,3 +155,10 @@ end
 for k, _ in pairs(PowaMisc) do
 	PowaAuras.Helpers:RegisterSetting(k, k, PowaAuras.Helpers.SettingLocations.Char);
 end
+
+-- Add a general update function for when these settings change.
+PowaAuras.Helpers:RegisterSettingCallback(function(key, value)
+	if(PowaAuras.ModTest and PowaGlobalMisc[key] ~= nil or PowaMisc[key] ~= nil) then
+		PowaAuras.Helpers:ToggleAllAuras(true, true);
+	end
+end);
