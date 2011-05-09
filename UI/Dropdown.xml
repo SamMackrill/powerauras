@@ -92,7 +92,7 @@
 			<Size x="159" y="20" />
 			<Anchors>
 				<Anchor point="TOPLEFT" x="21" y="0" />
-				<Anchor point="BOTTOMRIGHT" x="-3" y="0" />
+				<Anchor point="BOTTOMRIGHT" x="-21" y="0" />
 			</Anchors>
 		</ButtonText>
 	</CheckButton>
