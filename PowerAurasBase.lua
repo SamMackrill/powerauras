@@ -467,6 +467,14 @@ PowaAuras = {
 		[53] = "SPELLS\\Eyes",
 		[54] = "SPELLS\\Zap1b",
 	};
+	
+	AuraTextures = {
+	
+	};
+	
+	AuraTexturesByGroup = {
+	
+	};
 
 	Fonts = {
 		--- wow fonts
@@ -676,6 +684,19 @@ PowaAuras:RegisterAuraType('GTFOHigh', true);
 PowaAuras:RegisterAuraType('GTFOLow', true);
 PowaAuras:RegisterAuraType('GTFOFail', true);
 PowaAuras:RegisterAuraType('GTFOFriendlyFire', true);
+
+function PowaAuras:RegisterAuraTextureGroup(group)
+	-- Cannot conflict, my pretties!
+	if(self.AuraTexturesByGroup[group]) then return false; end
+	self.AuraTexturesByGroup[group] = {};
+	return true;
+end
+
+function PowaAuras:RegisterAuraTexture(path, group)
+	if(not self.AuraTexturesByGroup[group]) then return false; end
+	tinsert(self.AuraTexturesByGroup[group], path);
+	return true;
+end
 
 -- Use these spells to detect GCD, ideally these should be spells classes have from the beginning
 PowaAuras.GCDSpells = {
