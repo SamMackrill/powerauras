@@ -1273,6 +1273,7 @@ function cPowaAura:ShouldShow(giveReason, reverse, ignoreGCD)
 	local result, reason = self:CheckIfShouldShow(giveReason, ignoreGCD);
 	if (self.Debug) then
 		PowaAuras:DisplayText("ShouldShow result=",result, " inv=", self.inverse, " rev=", reverse);
+		PowaAuras:DisplayText("           reason=",reason);
 	end
 	if (result==-1) then
 		return result, reason;
@@ -1972,16 +1973,17 @@ function cPowaBuffBase:CheckSingleUnit(group, unit, giveReason)
 	end
 	local present, reason = self:CheckAllAuraSlots(unit, giveReason);
 	if (present) then
-		if (self.groupany == true) then
+		if (self.groupany==true) then
 			--PowaAuras:UnitTestDebug("CheckGroup("..group..") Present!");
 			self.CurrentUnit = unit;
 			if (self.Debug) then
-				PowaAuras:DisplayText("CurrentUnit=", self.CurrentUnit);
+				PowaAuras:DisplayText("CheckSingleUnit ", unit, " Present!");
 			end
 			if (not giveReason) then return true; end
 			return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonOneInGroupHasBuff, unit, self.OptionText.typeText, self.buffname);
 		end
 	elseif (self.groupany==false) then
+		--PowaAuras:ShowText("CheckSingleUnit ", unit," Missing!");
 		if (not giveReason) then return false; end
 		return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonNotAllInGroupHaveBuff, group, self.OptionText.typeText, self.buffname);
 	end
@@ -1999,7 +2001,7 @@ function cPowaBuffBase:CheckGroup(group, count, giveReason)
 		return show, reason;
 	end
 	self.CurrentSlot = nil;
-	if (not PowaAuras:TableEmpty(PowaAuras.ChangedUnits.Buffs)) then
+	if (not PowaAuras:TableEmpty(PowaAuras.ChangedUnits.Buffs) and self.groupany==true) then
 		--PowaAuras.BuffUnitSetCount = PowaAuras.BuffUnitSetCount + 1;
 		for unit in pairs(PowaAuras.ChangedUnits.Buffs) do
 			if (self.Debug) then
@@ -2024,10 +2026,11 @@ function cPowaBuffBase:CheckGroup(group, count, giveReason)
 		end
 	end
 	if (self.groupany==false) then
-		--PowaAuras:UnitTestDebug("CheckGroup("..group..") All Present!");
+		--PowaAuras:ShowText("CheckGroup("..group..") All Present!");
 		if (not giveReason) then return true; end
 		return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonAllInGroupHaveBuff, group, self.OptionText.typeText, self.buffname);
 	end
+	--PowaAuras:ShowText("CheckGroup("..group..") No one has!");
 	if (not giveReason) then return false; end
 	return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonNoOneInGroupHasBuff, group, self.OptionText.typeText, self.buffname);
 end
