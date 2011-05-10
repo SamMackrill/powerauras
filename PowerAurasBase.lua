@@ -468,12 +468,86 @@ PowaAuras = {
 		[54] = "SPELLS\\Zap1b",
 	};
 	
-	AuraTextures = {
-	
-	};
-	
 	AuraTexturesByGroup = {
-	
+		Default = {}, -- Reserved.
+		WoW = {
+			[1] = "Spells\\AuraRune_B",
+			[2] = "Spells\\AuraRune256b",
+			[3] = "Spells\\Circle",
+			[4] = "Spells\\GENERICGLOW2B",
+			[5] = "Spells\\GenericGlow2b1",
+			[6] = "Spells\\ShockRingCrescent256",
+			[7] = "SPELLS\\AuraRune1",
+			[8] = "SPELLS\\AuraRune5Green",
+			[9] = "SPELLS\\AuraRune7",
+			[10] = "SPELLS\\AuraRune8",
+			[11] = "SPELLS\\AuraRune9",
+			[12] = "SPELLS\\AuraRune11",
+			[13] = "SPELLS\\AuraRune_A",
+			[14] = "SPELLS\\AuraRune_C",
+			[15] = "SPELLS\\AuraRune_D",
+			[16] = "SPELLS\\Holy_Rune1",
+			[17] = "SPELLS\\Rune1d_GLOWless",
+			[18] = "SPELLS\\Rune4blue",
+			[19] = "SPELLS\\RuneBC1",
+			[20] = "SPELLS\\RuneBC2",
+			[21] = "SPELLS\\RUNEFROST",
+			[22] = "Spells\\Holy_Rune_128",
+			[23] = "Spells\\Nature_Rune_128",
+			[24] = "SPELLS\\Death_Rune",
+			[25] = "SPELLS\\DemonRune6",
+			[26] = "SPELLS\\DemonRune7",
+			[27] = "Spells\\DemonRune5backup",
+			[28] = "Particles\\Intellect128_outline",
+			[29] = "Spells\\Intellect_128",
+			[30] = "SPELLS\\GHOST1",
+			[31] = "Spells\\Aspect_Beast",
+			[32] = "Spells\\Aspect_Hawk",
+			[33] = "Spells\\Aspect_Wolf",
+			[34] = "Spells\\Aspect_Snake",
+			[35] = "Spells\\Aspect_Cheetah",
+			[36] = "Spells\\Aspect_Monkey",
+			[37] = "Spells\\Blobs",
+			[38] = "Spells\\Blobs2",
+			[39] = "Spells\\GradientCrescent2",
+			[40] = "Spells\\InnerFire_Rune_128",
+			[41] = "Spells\\RapidFire_Rune_128",
+			[42] = "Spells\\Protect_128",
+			[43] = "Spells\\Reticle_128",
+			[44] = "Spells\\Star2A",
+			[45] = "Spells\\Star4",
+			[46] = "Spells\\Strength_128",
+			[47] = "Particles\\STUNWHIRL",
+			[48] = "SPELLS\\BloodSplash1",
+			[49] = "SPELLS\\DarkSummon",
+			[50] = "SPELLS\\EndlessRage",
+			[51] = "SPELLS\\Rampage",
+			[52] = "SPELLS\\Eye",
+			[53] = "SPELLS\\Eyes",
+			[54] = "SPELLS\\Zap1b",			
+		},
+		Custom = {}, -- Reserved.
+		Text = {
+			[1] = STANDARD_TEXT_FONT, --- "Fonts\\FRIZQT__.TTF"
+			[2] = "Fonts\\ARIALN.TTF",
+			[3] = "Fonts\\skurri.ttf",
+			[4] = "Fonts\\MORPHEUS.ttf",
+			[5] = "Interface\\Addons\\PowerAuras\\Fonts\\All_Star_Resort.ttf",
+			[6] = "Interface\\Addons\\PowerAuras\\Fonts\\Army.ttf",
+			[7] = "Interface\\Addons\\PowerAuras\\Fonts\\Army_Condensed.ttf",
+			[8] = "Interface\\Addons\\PowerAuras\\Fonts\\Army_Expanded.ttf",
+			[9] = "Interface\\Addons\\PowerAuras\\Fonts\\Blazed.ttf",
+			[10] = "Interface\\Addons\\PowerAuras\\Fonts\\Blox2.ttf",
+			[11] = "Interface\\Addons\\PowerAuras\\Fonts\\CloisterBlack.ttf",
+			[12] = "Interface\\Addons\\PowerAuras\\Fonts\\Moonstar.ttf",
+			[13] = "Interface\\Addons\\PowerAuras\\Fonts\\Neon.ttf",
+			[14] = "Interface\\Addons\\PowerAuras\\Fonts\\Pulse_virgin.ttf",
+			[15] = "Interface\\Addons\\PowerAuras\\Fonts\\Punk_s_not_dead.ttf",
+			[16] = "Interface\\Addons\\PowerAuras\\Fonts\\whoa!.ttf",
+			[17] = "Interface\\Addons\\PowerAuras\\Fonts\\Hexagon.ttf",
+			[18] = "Interface\\Addons\\PowerAuras\\Fonts\\Starcraft_Normal.ttf",
+		},
+		Icon = {}, -- Reserved, don't add anything.
 	};
 
 	Fonts = {
