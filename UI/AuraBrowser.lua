@@ -300,6 +300,7 @@ PowaAuras.UI:Register("AuraButton", {
 		elseif(state == self.Flags["CREATE"]) then
 			self.Icon:SetTexture("Interface\\GuildBankFrame\\UI-GuildBankFrame-NewTab");
 			self.Icon:SetTexCoord(0.11, 0.93, 0.07, 0.93);
+			self:SetAlpha(1);
 			self.OffText:Hide();
 		elseif(state == self.Flags["NORMAL"]) then		
 			-- Icons.
@@ -337,10 +338,6 @@ PowaAuras.UI:Register("CreateAuraRadioButton", {
 	Hooks = {
 		"SetChecked",
 	},
-	Construct = function(self, ...)
-		-- Call base constructor.
-		return self.Base.Construct(self, ...);
-	end,
 	SetChecked = function(self, checked)
 		-- Update state.
 		self:__SetChecked(checked);
