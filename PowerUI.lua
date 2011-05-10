@@ -26,6 +26,12 @@ PowaAuras.UI = {
 		-- Script handlers.
 		if(self.Scripts and widget.SetScript) then
 			for script, func in pairs(self.Scripts) do
+				-- Does this frame support the script?
+				if(not widget.CallScript and not widget:HasScript(script)) then
+					-- Use the scripts mixin.
+					PowaAuras.UI:Scripts(widget);
+				end
+				-- Register script.
 				widget:SetScript(script, (type(func) == "boolean" and widget[script] or widget[func]));
 			end
 		end

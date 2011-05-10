@@ -49,6 +49,7 @@ PowaAuras.UI:Register("EditBox2", {
 		OnLeave = "UpdateColours",
 		OnEditFocusGained = true,
 		OnEditFocusLost = true,
+		OnSettingChanged = "SetText",
 	},
 	Template = "PowaLabelledEditBoxTemplate",
 	Construct = function(class, ui, frame, ...)
@@ -73,7 +74,6 @@ PowaAuras.UI:Register("EditBox2", {
 	end,
 	Init = function(self, title, setting)
 		-- Settings mixin.
-		self.OnSettingChanged = self.SetText;
 		PowaAuras.UI:Settings(self, setting);
 		-- Set title.
 		self:SetTitle(title);
