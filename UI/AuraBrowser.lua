@@ -37,6 +37,8 @@ PowaAuras.UI:Register("AuraBrowser", {
 	OnHide = function(self)
 		PlaySound("igMainMenuClose");
 		PowaAuras.ModTest = false;
+		PowaAuras.Helpers:ToggleAllAuras(false, false, false);
+		PowaAuras.DoCheck.All = true;
 	end,
 	OnSelectionChanged = function(self, key)
 		-- Save page.
@@ -126,8 +128,17 @@ PowaAuras.UI:Register("AuraBrowser", {
 			self.Tabs.Auras:SelectTab(2);
 		else
 			self.Tabs.Auras:SelectTab(1);
-			self.Tabs.Auras.Page.SelectedTitle:SetText(
-				(not id and PowaAuras.Text["UI_SelAura_None"] or format(PowaAuras.Text["UI_SelAura_Title"], id)));
+			if(not id) then
+				self.Tabs.Auras.Page.SelectedTitle:SetText(PowaAuras.Text["UI_SelAura_None"]);
+				self.Tabs.Auras.Page.AuraDelete:Hide();
+				self.Tabs.Auras.Page.AuraEdit:Hide();
+				self.Tabs.Auras.Page.AuraMove:Hide();
+			else
+				self.Tabs.Auras.Page.SelectedTitle:SetText(format(PowaAuras.Text["UI_SelAura_Title"], id));
+				self.Tabs.Auras.Page.AuraDelete:Show();
+				self.Tabs.Auras.Page.AuraEdit:Show();
+				self.Tabs.Auras.Page.AuraMove:Show();
+			end
 		end
 	end,
 	TriageIcones = function(self)

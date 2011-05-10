@@ -204,8 +204,8 @@
 											<TexCoords left="0" right="0.818359375" top="0.013671875" bottom="0.017578125" />
 											<Color r="0.3" g="0.3" b="0.3" a="1.0" />
 										</Texture>
-										<FontString parentKey="SelectedTitle" justifyH="LEFT" justifyV="TOP" font="PowaFontNormalLarge">
-											<Size x="225" y="24" />
+										<FontString parentKey="SelectedTitle" justifyH="LEFT" justifyV="MIDDLE" font="PowaFontNormalLarge">
+											<Size x="225" y="16" />
 											<Anchors>
 												<Anchor point="TOPLEFT" x="15" y="-250" />
 												<Anchor point="TOPRIGHT" x="-15" y="-250" />
@@ -320,6 +320,121 @@
 											</OnMouseUp>
 										</Scripts>
 									</CheckButton>
+									<Button parentKey="AuraMove">
+										<Size x="24" y="24" />
+										<Anchors>
+											<Anchor point="TOPRIGHT" x="-61" y="-246" />
+										</Anchors>
+										<NormalTexture file="Interface\HelpFrame\CS_HelpTextures" alpha="0.5">
+											<Size x="32" y="32" />
+											<Anchors>
+												<Anchor point="TOPLEFT" x="-4" y="4" />
+											</Anchors>
+											<TexCoords left="0.70703125" right="0.77343750" top="0.58593750" bottom="0.85937500" />
+										</NormalTexture>
+										<HighlightTexture file="Interface\HelpFrame\CS_HelpTextures">
+											<Size x="32" y="32" />
+											<Anchors>
+												<Anchor point="TOPLEFT" x="-4" y="4" />
+											</Anchors>
+											<TexCoords left="0.80664063" right="0.87304688" top="0.58593750" bottom="0.85937500" />
+										</HighlightTexture>
+										<PushedTexture file="Interface\HelpFrame\CS_HelpTextures">
+											<Size x="32" y="32" />
+											<Anchors>
+												<Anchor point="TOPLEFT" x="-4" y="4" />
+											</Anchors>
+											<TexCoords left="0.88867188" right="0.95507813" top="0.00781250" bottom="0.28125000" />
+										</PushedTexture>
+										<Scripts>
+											<OnLoad>
+												-- I demand a tooltip.
+												PowaAuras.UI:Tooltip(self, "UI_SelAura_Move", "UI_SelAura_MoveDesc");
+											</OnLoad>
+											<OnClick>
+												PlaySound("UChatScrollButton");
+											</OnClick>
+											<OnEnter>
+												self:GetNormalTexture():SetAlpha(1);
+											</OnEnter>
+											<OnLeave>
+												self:GetNormalTexture():SetAlpha(0.5);
+											</OnLeave>
+										</Scripts>
+									</Button>
+									<Button parentKey="AuraEdit">
+										<Size x="24" y="24" />
+										<Anchors>
+											<Anchor point="TOPRIGHT" x="-37" y="-246" />
+										</Anchors>
+										<NormalTexture file="Interface\WorldMap\Gear_64Grey" alpha="0.5">
+											<Size x="24" y="24" />
+											<Anchors>
+												<Anchor point="TOPLEFT" x="0" y="0" />
+											</Anchors>
+											<TexCoords left="0.075" right="0.925" top="0.075" bottom="0.925" />
+										</NormalTexture>
+										<HighlightTexture file="Interface\WorldMap\Gear_64Grey" alpha="1" alphaMode="DISABLE">
+											<Size x="24" y="24" />
+											<Anchors>
+												<Anchor point="TOPLEFT" x="0" y="0" />
+											</Anchors>
+											<TexCoords left="0.075" right="0.925" top="0.075" bottom="0.925" />
+										</HighlightTexture>
+										<Scripts>
+											<OnLoad>
+												-- I demand a tooltip.
+												PowaAuras.UI:Tooltip(self, "UI_SelAura_Edit", "UI_SelAura_EditDesc");
+											</OnLoad>
+											<OnClick>
+												PlaySound("UChatScrollButton");
+												PowaEditor:Show();
+											</OnClick>
+											<OnMouseDown>
+												self:GetNormalTexture():SetPoint("TOPLEFT", 1, -1);
+												self:GetHighlightTexture():SetPoint("TOPLEFT", 1, -1);
+											</OnMouseDown>
+											<OnMouseUp>
+												self:GetNormalTexture():SetPoint("TOPLEFT", 0, 0);
+												self:GetHighlightTexture():SetPoint("TOPLEFT", 0, 0);
+											</OnMouseUp>
+										</Scripts>
+									</Button>
+									<Button parentKey="AuraDelete">
+										<Size x="24" y="24" />
+										<Anchors>
+											<Anchor point="TOPRIGHT" x="-13" y="-246" />
+										</Anchors>
+										<NormalTexture file="Interface\Buttons\UI-GroupLoot-Pass-Up" alpha="0.5">
+											<Size x="24" y="24" />
+											<Anchors>
+												<Anchor point="TOPLEFT" x="0" y="0" />
+											</Anchors>
+										</NormalTexture>
+										<HighlightTexture file="Interface\Buttons\UI-GroupLoot-Pass-Up" alpha="1" alphaMode="DISABLE">
+											<Size x="24" y="24" />
+											<Anchors>
+												<Anchor point="TOPLEFT" x="0" y="0" />
+											</Anchors>
+										</HighlightTexture>
+										<Scripts>
+											<OnLoad>
+												-- I demand a tooltip.
+												PowaAuras.UI:Tooltip(self, "UI_SelAura_Delete", "UI_SelAura_DeleteDesc");
+											</OnLoad>
+											<OnClick>
+												PlaySound("UChatScrollButton");
+											</OnClick>
+											<OnMouseDown>
+												self:GetNormalTexture():SetPoint("TOPLEFT", 1, -1);
+												self:GetHighlightTexture():SetPoint("TOPLEFT", 1, -1);
+											</OnMouseDown>
+											<OnMouseUp>
+												self:GetNormalTexture():SetPoint("TOPLEFT", 0, 0);
+												self:GetHighlightTexture():SetPoint("TOPLEFT", 0, 0);
+											</OnMouseUp>
+										</Scripts>
+									</Button>
 								</Frames>
 								<Scripts>
 									<OnLoad>

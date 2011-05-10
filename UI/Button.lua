@@ -1,7 +1,6 @@
 -- Define generic button.
 PowaAuras.UI:Register("Button", {
 	Scripts = {
-		OnClick = true,
 		OnDisable = "UpdateColors",
 		OnEnable = "UpdateColors",
 		OnEnter = "UpdateColors",
@@ -13,9 +12,6 @@ PowaAuras.UI:Register("Button", {
 	Init = function(self)
 		-- Update colours immediately.
 		self:UpdateColors();
-	end,
-	OnClick = function(self)
-		-- Override this.
 	end,
 	OnMouseDown = function(self)
 		-- Button state doesn't update in time.

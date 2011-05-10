@@ -1,6 +1,6 @@
 -- Each widget has its own init function, and a shared pool of closures available to all widgets.
 -- You can initialize a widget by calling PowaAuras.UI:[widget]().
--- Each definition should be placed it its own lua file.
+-- Each definition should be placed in its own lua file.
 PowaAuras.UI = {
 	-- Generic constructor for all elements.
 	Construct = function(self, _, widget, ...)
