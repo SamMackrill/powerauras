@@ -8,12 +8,6 @@ PowaAuras.UI:Register("DropdownBase", {
 		OnDropdownMenuShow = true,
 		OnHide = true,
 	},
-	Construct = function(class, ui, frame, ...)
-		-- Use scripts mixin. We do this so you can override or hook the dropdown show/hide funcs.
-		ui:Scripts(frame);
-		-- Normal constructor.
-		return ui.Construct(class, ui, frame, ...);
-	end,
 	Init = function(self, closeOnSelect)
 		-- If we own a menu, we reference the frame via this.
 		self.Menu = nil;
@@ -136,6 +130,9 @@ PowaAuras.UI:Register("DropdownBase", {
 -- Define basic dropdown control widget.
 PowaAuras.UI:Register("Dropdown", {
 	Base = "DropdownBase",
+	Scripts = {
+		OnSettingChanged = true,
+	},
 	Init = function(self, setting, closeOnSelect)
 		-- Call parent init func.
 		self.Base.Init(self, closeOnSelect);
@@ -151,12 +148,12 @@ PowaAuras.UI:Register("Dropdown", {
 		-- Make sure our text is blank...
 		self.Text:SetText(PowaAuras.Text["UI_DropdownNone"]);
 		-- Settings mixin please.
-		self.OnSettingChanged = function(self, key)
-			-- Don't call this if the key is the same.
-			if(self.SelectedKey == key) then return; end
-			self:SetSelectedKey(key);
-		end
 		PowaAuras.UI:Settings(self, setting);
+	end,
+	OnSettingChanged = function(self, key)
+		-- Don't call this if the key is the same.
+		if(self.SelectedKey == key) then return; end
+		self:SetSelectedKey(key);
 	end,
 	SetSelectedKey = function(self, key)
 		-- Call parent func.

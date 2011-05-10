@@ -2,6 +2,7 @@
 PowaAuras.UI:Register("CheckboxBase", {
 	Scripts = {
 		OnClick = true,
+		OnSettingChanged = true,
 	},
 	Init = function(self, property, invert)
 		-- Update text to the localized variant.
