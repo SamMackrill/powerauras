@@ -2,8 +2,18 @@
 PowaAuras.UI:Register("DropdownBase", {
 	Scripts = {
 		OnClick = true,
+		OnDropdownMenuHide = true,
+		OnDropdownMenuPosition = true,
+		OnDropdownMenuItemSelected = true,
+		OnDropdownMenuShow = true,
 		OnHide = true,
 	},
+	Construct = function(class, ui, frame, ...)
+		-- Use scripts mixin. We do this so you can override or hook the dropdown show/hide funcs.
+		ui:Scripts(frame);
+		-- Normal constructor.
+		return ui.Construct(class, ui, frame, ...);
+	end,
 	Init = function(self, closeOnSelect)
 		-- If we own a menu, we reference the frame via this.
 		self.Menu = nil;
@@ -70,17 +80,18 @@ PowaAuras.UI:Register("DropdownBase", {
 			end
 		end	
 	end,
+	GetItems = function(self)
+		return self.Items;
+	end,
 	OnClick = function(self)
 		-- Request the dropdown menu.
 		PowaAuras.UI:DropdownList(self, self.SelectedKey):Toggle();
 		PlaySound("UChatScrollButton");
 	end,
-	OnDropdownMenuShow = function(self, dropdown)
+	OnDropdownMenuHide = function(self, dropdown)
 		-- Update state.
-		self.Menu = dropdown;
-		print("|cFF527FCCDEBUG (Dropdown): |r", self, "owns menu", dropdown);
-		-- Return our item list.
-		return self.Items;
+		self.Menu = nil;
+		print("|cFF527FCCDEBUG (Dropdown): |r", self, "no longer owns menu", dropdown);
 	end,
 	OnDropdownMenuPosition = function(self, dropdown, count)
 		-- Update the sizing/positioning of the dropdown.
@@ -89,12 +100,7 @@ PowaAuras.UI:Register("DropdownBase", {
 		dropdown:SetHeight(math.min(168, 8+(count*20)));
 		dropdown.Child:SetSize(168, (count*20)-1);
 	end,
-	OnDropdownMenuHide = function(self, dropdown)
-		-- Update state.
-		self.Menu = nil;
-		print("|cFF527FCCDEBUG (Dropdown): |r", self, "no longer owns menu", dropdown);
-	end,
-	OnDropdownMenuSelected = function(self, dropdown, key)
+	OnDropdownMenuItemSelected = function(self, dropdown, key)
 		-- Update selected key.	
 		self:SetSelectedKey(key);
 		-- Close?
@@ -102,8 +108,10 @@ PowaAuras.UI:Register("DropdownBase", {
 			self.Menu:Toggle(false);
 		end			
 	end,
-	OnDropdownItemSelected = function(self, key)
-		-- Override this as you please.
+	OnDropdownMenuShow = function(self, dropdown)
+		-- Update state.
+		self.Menu = dropdown;
+		print("|cFF527FCCDEBUG (Dropdown): |r", self, "owns menu", dropdown);
 	end,
 	OnHide = function(self)
 		-- Hide the menu if we own it.
@@ -116,7 +124,7 @@ PowaAuras.UI:Register("DropdownBase", {
 		-- Update selected key.
 		self.SelectedKey = key;
 		-- Fire callback.
-		self:OnDropdownItemSelected(key);
+		self:CallScript("OnDropdownItemSelected", key);
 		-- Force update if we own the dropdown.
 		if(self.Menu) then
 			self.Menu.SelectedKey = key; -- A bit hackish, but it prevents a loop.
@@ -188,7 +196,7 @@ PowaAuras.UI:Register("DropdownMenu", {
 		-- Selected key is always nil.
 		self.SelectedKey = nil;
 		-- Fire callback, pass the key so we know what was clicked.
-		self:OnDropdownItemSelected(key);
+		self:CallScript("OnDropdownItemSelected", key);
 		-- Force update if we own the dropdown.
 		if(self.Menu) then
 			self.Menu.SelectedKey = nil; -- A bit hackish, but it prevents a loop.
@@ -201,10 +209,6 @@ PowaAuras.UI:Register("DropdownMenu", {
 PowaAuras.UI:Register("DropdownList", {
 	Menu = nil, -- A single menu list is made and shared among all dropdowns.
 	Owner = nil,
-	HideCallback = nil,
-	ShowCallback = nil,
-	PositionCallback = nil,
-	UpdateCallback = nil,
 	SelectedKey = nil,
 	Items = {}, -- Active DropdownItem list.
 	OnToggleShow = true,
@@ -240,7 +244,7 @@ PowaAuras.UI:Register("DropdownList", {
 		-- Return ourself.
 		return class.Menu;
 	end,
-	Init = function(self, owner, defaultKey, showCallback, hideCallback, positionCallback, updateCallback)
+	Init = function(self, owner, defaultKey)
 		-- Reset toggle status if the owner has changed.
 		if(self.Owner ~= owner and self.Owner) then
 			self.OnToggleShow = true;
@@ -250,18 +254,12 @@ PowaAuras.UI:Register("DropdownList", {
 		self.SelectedKey = defaultKey or nil;
 		-- Update owner.
 		self.Owner = owner;
-		self.HideCallback = hideCallback or owner["OnDropdownMenuHide"];
-		self.ShowCallback = showCallback or owner["OnDropdownMenuShow"];
-		self.PositionCallback = positionCallback or owner["OnDropdownMenuPosition"];
-		self.UpdateCallback = updateCallback or owner["OnDropdownMenuSelected"];
 		-- Return list.
 		return self;
 	end,
 	Hide = function(self)
 		-- Call Hide callback.
-		if(self.HideCallback) then
-			self.HideCallback(self.Owner, self);
-		end
+		self.Owner:CallScript("OnDropdownMenuHide", self);
 		-- Clear parent, points and so on.
 		self:ClearAllPoints();
 		self:SetParent(UIParent);
@@ -278,12 +276,14 @@ PowaAuras.UI:Register("DropdownList", {
 		self.SelectedKey = key;
 		self:UpdateItems();
 		-- Fire update callback.
-		self.UpdateCallback(self.Owner, self, key);
+		self.Owner:CallScript("OnDropdownMenuItemSelected", self, key);
 	end,
 	Show = function(self)
-		-- Call show callback first, loop over return values.
+		-- Call Show callback.
+		self.Owner:CallScript("OnDropdownMenuShow", self);
+		-- Get the items the dropdown has.
 		local count = 0;
-		for _, data in pairs(self.ShowCallback(self.Owner, self)) do
+		for _, data in pairs(self.Owner:GetItems()) do
 			-- Get item.
 			local item = PowaAuras.UI:DropdownItem(self.Child, self, (count*20), data.Key, data.Value);
 			-- Select if needed.
@@ -299,7 +299,7 @@ PowaAuras.UI:Register("DropdownList", {
 		end
 		-- Position dropdown.
 		self:SetParent(self.Owner);
-		self.PositionCallback(self.Owner, self, count);
+		self.Owner:CallScript("OnDropdownMenuPosition", self, count);
 		print("|cFF527FCCDEBUG (DropdownList): |rShowing", count, "items.");
 		-- Show.
 		self:__Show();

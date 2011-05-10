@@ -3,6 +3,7 @@ PowaAuras.UpdateFunctions = {
 	[1] = {
 		Version = 50000,
 		Function = function(aura, auraID)
+			if(1 == 1) then return; end
 			print(auraID, "-->");
 			-- Store the version.
 			-- aura.Version = 50000;
