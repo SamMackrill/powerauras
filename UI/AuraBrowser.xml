@@ -252,12 +252,11 @@
 												<Anchor point="TOPLEFT" x="0" y="0" />
 											</Anchors>
 										</NormalTexture>
-										<CheckedTexture file="Interface\WorldMap\Gear_64" alpha="1">
+										<CheckedTexture file="Interface\WorldMap\Gear_64Grey" alpha="1">
 											<Size x="32" y="32" />
 											<Anchors>
 												<Anchor point="TOPLEFT" x="0" y="0" />
 											</Anchors>
-											<TexCoords left="0" right="0.5" top="0" bottom="0.5" />
 										</CheckedTexture>
 										<Scripts>
 											<OnLoad>
