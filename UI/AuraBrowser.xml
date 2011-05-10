@@ -263,18 +263,18 @@
 												-- Use basic dropdown for this.
 												PowaAuras.UI:DropdownMenu(self, false);
 												-- Override dropdown positioning function.
-												self.OnDropdownMenuPosition = function(self, dropdown, count)
+												self:SetScript("OnDropdownMenuPosition", function(self, dropdown, count)
 													-- Update the sizing/positioning of the dropdown.
 													dropdown:SetWidth(168);
 													dropdown:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, 0);
 													dropdown:SetHeight(math.min(168, 8+(count*20)));
 													dropdown.Child:SetSize(168, (count*20)-1);
-												end
+												end);
 												-- Hook show/hide funcs.
-												hooksecurefunc(self, "OnDropdownMenuShow", function(self, dropdown)
+												self:HookScript("OnDropdownMenuShow", function(self, dropdown)
 													self:SetChecked(true);
 												end);
-												hooksecurefunc(self, "OnDropdownMenuHide", function(self, dropdown)
+												self:HookScript("OnDropdownMenuHide", function(self, dropdown)
 													self:SetChecked(false);
 												end);
 												-- Add tools.
@@ -283,7 +283,7 @@
 												self:AddItem(3, PowaAuras.Text["UI_HideAll"]);
 												self:AddItem(4, PowaAuras.Text["UI_ExportPage"]);
 												-- And the item selection callback.
-												self.OnDropdownItemSelected = function(self, key)
+												self:SetScript("OnDropdownItemSelected", function(self, key)
 													if(key == 1) then
 														-- Lock/Unlock.
 														PowaAuras.Helpers:SaveSetting("Locked", not PowaAuras.Helpers:GetSetting("Locked"));
@@ -297,7 +297,7 @@
 														-- Export.
 														print("Page Export Dialog NYI");
 													end
-												end
+												end);
 												-- Add a callback for the lock setting.
 												PowaAuras.Helpers:RegisterSettingCallback(function(key, value)
 													if(key ~= "Locked") then return; end

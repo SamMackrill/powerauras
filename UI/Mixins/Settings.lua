@@ -8,8 +8,6 @@ PowaAuras.UI:Register("Settings", {
 		frame.OnSettingChanged = frame.OnSettingChanged or class.OnSettingChanged;
 		-- Register setting.
 		frame:UpdateSetting(setting);
-		-- We're done.
-		return;
 	end,
 	GetSetting = function(self)
 		if(not self.SettingKey) then return; end

@@ -78,7 +78,7 @@ PowaAuras.UI = {
 			-- Copy non-important things from parent too.
 			for k, v in pairs(data.Base) do
 				-- Ignore these elements, they're reserved.
-				if(not data[k] and k ~= "Base" and k ~= "Construct" and k ~= "Hooks" and k ~= "Scripts") then
+				if(not data[k] and k ~= "Base" and k ~= "Hooks" and k ~= "Scripts") then
 					data[k] = v;
 				end
 			end
