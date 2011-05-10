@@ -6,14 +6,17 @@ local strsplit = strsplit;
 cPowaAura = PowaClass(function(aura, id, base)
 	--PowaAuras:ShowText("cPowaAura constructor id=", id, " base=", base);
 
-	for k, v in pairs (cPowaAura.ExportSettings) do
+	for k, v in pairs(cPowaAura.ExportSettings) do
 		if (base and base[k] ~= nil) then
 			aura[k] = base[k];
 		else
 			aura[k] = v;
 		end
 		-- PowaAuras:ShowText(k," =", aura[k]);
-	end	
+	end
+	
+	-- Update my aura!
+	PowaAuras:UpdateAura(aura, id);
 	
 	if (base) then
 		if (base.ShowOptions == nil) then
@@ -190,15 +193,16 @@ cPowaAura.ExportSettings = {
 	-- Anything not in here may have been removed, renamed or just hasn't been added yet.
 -- --]]
 -- cPowaAura.ExportSettings = {
-	-- Enabled = false,    -- On/Off.
+	-- Disabled = false,    -- On/Off.
+	-- Version = PowaAuras.VersionInt,
 	
 	-- Type = 1,
 	-- Data = "???",
 	
 	-- Glow = 1,
 	-- Source = 1,         -- Represents the aura texture group.
-	-- Num = 1,            -- Texture or font number. Represents the index?
-	-- Path = "",          -- Texture or font path. Replaces icon path too.
+	-- SourceKey = 1,      -- Texture or font number. Represents the index. Not used by Custom or Icon auras.
+	-- SourcePath = "",    -- Texture or font path. Replaces icon path too.
 	-- Text = "",          -- Text being displayed.
 	-- Strata = "LOW",     -- Was strata ever implemented? Could do it now.
 	-- Rotate = 0,         -- Rotation.
@@ -245,16 +249,19 @@ cPowaAura.ExportSettings = {
 	
 	-- Units = {
 		-- Focus = false,
-		-- FocusFlags = 0x0,
+		-- FocusFlags = 0x3,
+		-- FocusFlagsInverse = 0x0,
 		-- Target = false,
-		-- TargetFlags = 0x0,
+		-- TargetFlags = 0x3,
+		-- TargetFlagsInverse = 0x0,
 		-- Raid = false,
 		-- GroupOrSelf = 0, -- Tristate replacing groupAny, 0 = off, false = yes and check any, true = yes and check all.
 		-- Party = false,
 		-- Arena = false, -- Scans arena1 through arena5.
 		-- Pet = false, -- Stops people commenting about lack of pet support.
 		-- CustomUnit = "",
-		-- CustomUnitFlags = 0x0,
+		-- CustomUnitFlags = 0x3,
+		-- CustomUnitFlagsInverse = 0x0,
 	-- },
 	-- --[[
 		-- This table shouldn't be in the exports obviously, it's temporarily here.
@@ -264,7 +271,7 @@ cPowaAura.ExportSettings = {
 		-- REACTION_FRIENDLY = 0x2,
 		-- CLASSIFICATION_NORMAL = 0x4,
 		-- CLASSIFICATION_ELITE = 0x8,
-		-- CLASSIFICATION_RARE = 0x10, -- Can combine the classification flags if you want.
+		-- CLASSIFICATION_RARE = 0x10,
 		-- CLASSIFICATION_BOSS = 0x20,
 		-- CLASS_DEATHKNIGHT = 0x40,
 		-- CLASS_DRUID = 0x80,
@@ -276,6 +283,7 @@ cPowaAura.ExportSettings = {
 		-- CLASS_SHAMAN = 0x2000,
 		-- CLASS_WARLOCK = 0x4000,
 		-- CLASS_WARRIOR = 0x8000,
+		-- IS_PLAYER = 0x10000,
 	-- },
 	
 	-- Instance = {
@@ -303,9 +311,6 @@ cPowaAura.ExportSettings = {
 		-- TREE_SECOND = 0x2, -- Second tree, eg. Protection.
 		-- TREE_THIRD = 0x4, -- Choose all 3 if you don't care what tree your first/second spec is.
 	-- },
-	
-	-- -- gcd = false,     -- A find all turns up 0 uses of this one.
-	-- -- UseOldAnimations = false, -- Go away old animations :(
 -- };
 
 function cPowaAura:Init()
