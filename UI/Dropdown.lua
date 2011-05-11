@@ -1,5 +1,7 @@
+-- UI upvalue.
+local UI = PowaAuras.UI;
 -- Dropdown widget base.
-PowaAuras.UI:Register("DropdownBase", {
+UI:Register("DropdownBase", {
 	Scripts = {
 		OnClick = true,
 		OnDropdownMenuHide = true,
@@ -27,7 +29,7 @@ PowaAuras.UI:Register("DropdownBase", {
 		-- Fully update the menu if we add/remove any items.
 		if(self.Menu) then
 			self.Menu:Toggle(false);
-			PowaAuras.UI:DropdownList(self, self.SelectedKey):Toggle(true);
+			UI:DropdownList(self, self.SelectedKey):Toggle(true);
 		end
 		-- Done.
 		return true;
@@ -45,7 +47,7 @@ PowaAuras.UI:Register("DropdownBase", {
 				-- Fully update the menu if we add/remove any items.
 				if(self.Menu) then
 					self.Menu:Toggle(false);
-					PowaAuras.UI:DropdownList(self, self.SelectedKey):Toggle(true);
+					UI:DropdownList(self, self.SelectedKey):Toggle(true);
 				end
 				-- Done.
 				return true;
@@ -67,7 +69,7 @@ PowaAuras.UI:Register("DropdownBase", {
 				-- Fully update the menu if we changed anything.
 				if(self.Menu) then
 					self.Menu:Toggle(false);
-					PowaAuras.UI:DropdownList(self, self.SelectedKey):Toggle(true);
+					UI:DropdownList(self, self.SelectedKey):Toggle(true);
 				end
 				-- Done.
 				return true;
@@ -79,7 +81,7 @@ PowaAuras.UI:Register("DropdownBase", {
 	end,
 	OnClick = function(self)
 		-- Request the dropdown menu.
-		PowaAuras.UI:DropdownList(self, self.SelectedKey):Toggle();
+		UI:DropdownList(self, self.SelectedKey):Toggle();
 		PlaySound("UChatScrollButton");
 	end,
 	OnDropdownMenuHide = function(self, dropdown)
@@ -128,14 +130,14 @@ PowaAuras.UI:Register("DropdownBase", {
 });
 
 -- Define basic dropdown control widget.
-PowaAuras.UI:Register("Dropdown", {
+UI:Register("Dropdown", {
 	Base = "DropdownBase",
 	Scripts = {
 		OnSettingChanged = true,
 	},
 	Init = function(self, setting, closeOnSelect)
 		-- Call parent init func.
-		self.Base.Init(self, closeOnSelect);
+		UI.DropdownBase.Init(self, closeOnSelect);
 		-- Set the title and tooltip if we can.
 		if(self:GetText()) then
 			-- Title (optional fontstring element)
@@ -143,12 +145,12 @@ PowaAuras.UI:Register("Dropdown", {
 				self.Title:SetText(PowaAuras.Text[self:GetText()]);
 			end
 			-- Tooltip.
-			PowaAuras.UI:Tooltip(self, self:GetText(), (self:GetText() .. "Desc"));
+			UI:Tooltip(self, self:GetText(), (self:GetText() .. "Desc"));
 		end
 		-- Make sure our text is blank...
 		self.Text:SetText(PowaAuras.Text["UI_DropdownNone"]);
 		-- Settings mixin please.
-		PowaAuras.UI:Settings(self, setting);
+		UI:Settings(self, setting);
 	end,
 	OnSettingChanged = function(self, key)
 		-- Don't call this if the key is the same.
@@ -157,7 +159,7 @@ PowaAuras.UI:Register("Dropdown", {
 	end,
 	SetSelectedKey = function(self, key)
 		-- Call parent func.
-		self.Base.SetSelectedKey(self, key);
+		UI.DropdownBase.SetSelectedKey(self, key);
 		-- Find key, change text.
 		local hasChanged = false;
 		for _, data in ipairs(self.Items) do
@@ -177,15 +179,15 @@ PowaAuras.UI:Register("Dropdown", {
 });
 
 -- Not to be confused with DropdownList, this makes the list behave as a menu and disables selecting of elements.
-PowaAuras.UI:Register("DropdownMenu", {
+UI:Register("DropdownMenu", {
 	Base = "DropdownBase",
 	Init = function(self, closeOnSelect)
 		-- Call parent init func.
-		self.Base.Init(self, closeOnSelect);
+		UI.DropdownBase.Init(self, closeOnSelect);
 		-- Set the title and tooltip if we can.
 		if(self:GetText()) then
 			-- Tooltip.
-			PowaAuras.UI:Tooltip(self, self:GetText(), (self:GetText() .. "Desc"));
+			UI:Tooltip(self, self:GetText(), (self:GetText() .. "Desc"));
 		end
 	end,
 	SetSelectedKey = function(self, key)
@@ -203,7 +205,7 @@ PowaAuras.UI:Register("DropdownMenu", {
 });
 
 -- This widget is the actual list shown by a dropdown. It's separated in case I need to add multilevel support later.
-PowaAuras.UI:Register("DropdownList", {
+UI:Register("DropdownList", {
 	Menu = nil, -- A single menu list is made and shared among all dropdowns.
 	Owner = nil,
 	SelectedKey = nil,
@@ -282,7 +284,7 @@ PowaAuras.UI:Register("DropdownList", {
 		local count = 0;
 		for _, data in pairs(self.Owner:GetItems()) do
 			-- Get item.
-			local item = PowaAuras.UI:DropdownItem(self.Child, self, (count*20), data.Key, data.Value);
+			local item = UI:DropdownItem(self.Child, self, (count*20), data.Key, data.Value);
 			-- Select if needed.
 			if(self.SelectedKey and data.Key == self.SelectedKey) then
 				item:SetChecked(true);
@@ -327,7 +329,7 @@ PowaAuras.UI:Register("DropdownList", {
 });
 
 -- Dropdown items are recycled.
-PowaAuras.UI:Register("DropdownItem", {
+UI:Register("DropdownItem", {
 	Items = {}, -- Recyclable items.
 	Scripts = {
 		OnClick = true,
@@ -371,7 +373,7 @@ PowaAuras.UI:Register("DropdownItem", {
 		self:SetChecked(false);
 		self:Hide();
 		-- Add to list.
-		tinsert(PowaAuras.UI.DropdownItem.Items, self);
-		print("|cFF527FCCDEBUG (DropdownItem): |rRecycled item,", #(PowaAuras.UI.DropdownItem.Items) , "available.");
+		tinsert(UI.DropdownItem.Items, self);
+		print("|cFF527FCCDEBUG (DropdownItem): |rRecycled item,", #(UI.DropdownItem.Items) , "available.");
 	end,
 });

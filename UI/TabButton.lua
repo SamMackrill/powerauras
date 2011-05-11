@@ -1,5 +1,7 @@
+-- UI upvalue.
+local UI = PowaAuras.UI;
 -- Basic tab button widget. Does nothing fancy.
-PowaAuras.UI:Register("TabButtonBase", {
+UI:Register("TabButtonBase", {
 	Items = {},
 	Hooks = {
 		"SetChecked",
@@ -49,7 +51,7 @@ PowaAuras.UI:Register("TabButtonBase", {
 		 self:Hide();
 		 self.Frame:Hide();
 		 self.Frame = nil;
-		 tinsert(PowaAuras.UI.TabButtonBase.Items, self);
+		 tinsert(UI.TabButtonBase.Items, self);
 	end,
 	SetTabIndex = function(self, index)
 		self.Index = index;
@@ -67,7 +69,7 @@ PowaAuras.UI:Register("TabButtonBase", {
 });
 
 -- Standard tab button.
-PowaAuras.UI:Register("TabButton", {
+UI:Register("TabButton", {
 	Base = "TabButtonBase",
 	Points = {
 		"BOTTOMLEFT",
@@ -79,7 +81,7 @@ PowaAuras.UI:Register("TabButton", {
 	Template = "PowaTabButtonTemplate",
 	Init = function(self, parent, index, text, texture, width, height, left, right, top, bottom, x, y)
 		-- Call parent func.
-		self.Base.Init(self, parent, index);
+		UI.TabButtonBase.Init(self, parent, index);
 		-- Set text.
 		self.Text:SetText(text);
 		-- Displaying an icon?
@@ -100,7 +102,7 @@ PowaAuras.UI:Register("TabButton", {
 	end,
 	SetChecked = function(self, checked)
 		-- Call parent func.
-		self.Base.SetChecked(self, checked);
+		UI.TabButtonBase.SetChecked(self, checked);
 		-- Style.
 		if(checked == true) then
 			-- Texture stuff.
