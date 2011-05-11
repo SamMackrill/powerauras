@@ -120,13 +120,14 @@ PowaAuras.UI:Register("TabButtonIcon", {
 	},
 	Offset = 38,
 	Template = "PowaTabButtonIconTemplate",
-	Init = function(self, parent, index, texture, width, height, left, right, top, bottom)
+	Init = function(self, parent, index, texture, width, height, left, right, top, bottom, x, y)
 		-- Call parent func.
 		self.Base.Init(self, parent, index);
 		-- Set icon.
 		self.Icon:SetTexture(texture);
-		self.Icon:SetSize(width or 16, height or 16);
+		self.Icon:SetSize(width or 24, height or 24);
 		self.Icon:SetTexCoord(left or 0, right or 1, top or 0, bottom or 1);
+		self.Icon:SetPoint("CENTER", x or 1, y or -1);
 	end,
 	SetChecked = function(self, checked)
 		-- Call parent func.
