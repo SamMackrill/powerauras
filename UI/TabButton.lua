@@ -87,8 +87,9 @@ UI:Register("TabButton", {
 		-- Displaying an icon?
 		if(texture) then
 			-- Reposition the text.
-			self.Text:SetPoint("LEFT", 39, -4);
-			self.Text:SetPoint("RIGHT", -35, -4);
+			self.Text:SetPoint("LEFT", 41, -4);
+			-- It looks better left aligned with an icon.
+			self.Text:SetJustifyH("LEFT");
 			-- Set up icon.
 			self.Icon:SetTexture(texture);
 			self.Icon:SetSize(width or 24, height or 24);
@@ -97,6 +98,8 @@ UI:Register("TabButton", {
 			self.Icon:Show();
 		else
 			-- Fine.
+			self.Text:SetPoint("LEFT", 15, -4);
+			self.Text:SetJustifyH("CENTER");
 			self.Icon:Hide();
 		end
 	end,
