@@ -125,9 +125,9 @@ PowaAuras.UI:Register("AuraBrowser", {
 		self:TriageIcones();
 		-- Update our stuffs!
 		if(isCreate) then
-			self.Tabs.Auras:SelectTab(2);
+			self.Tabs.Auras:SetSelectedTab(2);
 		else
-			self.Tabs.Auras:SelectTab(1);
+			self.Tabs.Auras:SetSelectedTab(1);
 			if(not id) then
 				self.Tabs.Auras.Page.SelectedTitle:SetText(PowaAuras.Text["UI_SelAura_None"]);
 				self.Tabs.Auras.Page.AuraDelete:Hide();

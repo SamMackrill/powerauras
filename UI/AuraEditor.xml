@@ -156,7 +156,7 @@
 												self.Src:SetText(PowaAuras.Text["UI_Aura_TexClick"]);
 											</OnLoad>
 											<OnClick>
-												PowaEditorDisplayAuraMain:SelectTab(2);
+												PowaEditorDisplayAuraMain:SetSelectedTab(2);
 											</OnClick>
 										</Scripts>
 									</Button>
@@ -587,18 +587,18 @@
 											</OnHide>
 											<OnLoad>
 												-- Uses the tab sidebar template.
-												PowaAuras.UI:TabFrame(self, 2);
-												self:RegisterTab(self.Default, "UI_Aura_SrcNorm");
-												self:RegisterTab(self.WoW, "UI_Aura_SrcWoW");
-												self:RegisterTab(self.Custom, "UI_Aura_SrcCust");
-												self:RegisterTab(self.Text, "UI_Aura_SrcText");
-												self:RegisterTab(self.Icon, "UI_Aura_SrcIcon");
+												PowaAuras.UI:TabFrame(self, "TabButtonBase");
+												self:AddTab(self.Default, "UI_Aura_SrcNorm");
+												self:AddTab(self.WoW, "UI_Aura_SrcWoW");
+												self:AddTab(self.Custom, "UI_Aura_SrcCust");
+												self:AddTab(self.Text, "UI_Aura_SrcText");
+												self:AddTab(self.Icon, "UI_Aura_SrcIcon");
 												-- Dialog accept/close handlers.
 												self.AcceptButton:SetScript("OnClick", function()
-													PowaEditorDisplayAuraMain:SelectTab(1);
+													PowaEditorDisplayAuraMain:SetSelectedTab(1);
 												end);
 												self.CancelButton:SetScript("OnClick", function()
-													PowaEditorDisplayAuraMain:SelectTab(1);
+													PowaEditorDisplayAuraMain:SetSelectedTab(1);
 												end);
 											</OnLoad>
 										</Scripts>
@@ -607,9 +607,9 @@
 								<Scripts>
 									<OnLoad>
 										-- This is actually a tab enabled frame, but we hide all the tabs.
-										PowaAuras.UI:TabFrame(self, 3);
-										self:RegisterTab(self.Config);
-										self:RegisterTab(self.Selector);
+										PowaAuras.UI:TabFrame(self, "TabButtonBase");
+										self:AddTab(self.Config);
+										self:AddTab(self.Selector);
 									</OnLoad>
 								</Scripts>
 							</Frame>
@@ -660,30 +660,6 @@
 								</Frames>
 								<Scripts>
 									<OnLoad>
-										-- Init layout frame, lock layout to speed up load.
-										--[[
-										PowaAuras.UI:LayoutFrame(self);
-										-- Add columns.
-										self:AddColumn(0.5);
-										self:AddColumn(0.5);
-										for i=1,300 do
-											local item = CreateFrame("Frame", nil, self);
-											item.Texture = item:CreateTexture(nil);
-											item.Texture:SetPoint("TOPLEFT");
-											item.Texture:SetPoint("BOTTOMRIGHT");
-											if(mod(i, 2) == 0) then
-												item.Texture:SetTexture(1-(i*0.003), 0, 0);
-											elseif(mod(i, 3) == 0) then
-												item.Texture:SetTexture(0, 1-(i*0.003), 0);
-											else
-												item.Texture:SetTexture(0, 0, 1-(i*0.003));
-											end
-											item:SetHeight(3);
-											self:AddItem(item);
-										end
-										-- Unlock layout. This will trigger 1 update, as opposed to about 8 updates while initializing.
-										self:SetLocked(false);
-										--]]
 									</OnLoad>
 								</Scripts>
 							</Frame>
@@ -714,10 +690,10 @@
 				</Frames>
 				<Scripts>
 					<OnLoad>
-						PowaAuras.UI:TabFrame(self, 1);
-						self:RegisterTab(self.Aura, "UI_Aura");
-						self:RegisterTab(self.Timer, "UI_Timer");
-						self:RegisterTab(self.Stacks, "UI_Stacks");
+						PowaAuras.UI:TabFrame(self, "TabButton");
+						self:AddTab(self.Aura, PowaAuras.Text["UI_Aura"]);
+						self:AddTab(self.Timer, PowaAuras.Text["UI_Timer"]);
+						self:AddTab(self.Stacks, PowaAuras.Text["UI_Stacks"]);
 					</OnLoad>
 				</Scripts>
 			</Frame>
@@ -756,11 +732,11 @@
 				</Frames>
 				<Scripts>
 					<OnLoad>
-						PowaAuras.UI:TabFrame(self, 1);
-						self:RegisterTab(self.Rules, "UI_Rules");
-						self:RegisterTab(self.Anim, "UI_Anim");
-						self:RegisterTab(self.Sound, "UI_Sound");
-						self:RegisterTab(self.Triggers, "UI_Triggers");
+						PowaAuras.UI:TabFrame(self, "TabButton");
+						self:AddTab(self.Rules, PowaAuras.Text["UI_Rules"]);
+						self:AddTab(self.Anim, PowaAuras.Text["UI_Anim"]);
+						self:AddTab(self.Sound, PowaAuras.Text["UI_Sound"]);
+						self:AddTab(self.Triggers, PowaAuras.Text["UI_Triggers"]);
 					</OnLoad>
 				</Scripts>
 			</Frame>
