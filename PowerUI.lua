@@ -19,10 +19,6 @@ PowaAuras.UI = {
 				widget[k] = v;
 			end
 		end
-		-- Store base element.
-		if(self.Base) then
-			widget.Base = self.Base;
-		end
 		-- Script handlers.
 		if(self.Scripts and widget.SetScript) then
 			for script, func in pairs(self.Scripts) do
@@ -88,6 +84,8 @@ PowaAuras.UI = {
 					data[k] = v;
 				end
 			end
+			-- And now remove data.Base.
+			data.Base = nil;
 		end
 		-- Add constructor.
 		if(not data.Construct) then
