@@ -126,7 +126,7 @@
 						<AbsDimension x="300" y="68" />
 					</Size>
 					<Anchors>
-						<Anchor point="TOP" relativePoint="TOP" x="0" y="13"/>
+						<Anchor point="TOP" relativePoint="TOP" x="0" y="13" />
 					</Anchors>					
 				</Texture>
 				<FontString parentKey="Title" inherits="PowaFontNormal" text="Power Auras %s" justifyH="CENTER" justifyV="TOP">
@@ -134,7 +134,7 @@
 						<AbsDimension x="300" y="68" />
 					</Size>
 					<Anchors>
-						<Anchor point="TOP" relativePoint="TOP" x="0" y="-2"/>
+						<Anchor point="TOP" relativePoint="TOP" x="0" y="-2" />
 					</Anchors>
 				</FontString>
 				<Texture file="Interface\DialogFrame\UI-DialogBox-Corner">
@@ -156,7 +156,7 @@
 				  <AbsDimension y="260" />
 				</Size>
 				<Anchors>
-					<Anchor point="TOP" x="0" y="-65" />
+					<Anchor point="TOP" x="0" y="-60" />
 					<Anchor point="LEFT" x="15" y="0" />
 					<Anchor point="RIGHT" x="-15" y="0" />
 					<Anchor point="BOTTOM" x="0" y="15" />

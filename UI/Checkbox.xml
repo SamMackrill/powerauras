@@ -73,7 +73,7 @@
 		</Layers>
 		<ButtonText name="$parentText" parentKey="Text" font="PowaFontNormalSmall" justifyH="LEFT" justifyV="MIDDLE">
 			<Size>
-				<AbsDimension y="24"/>
+				<AbsDimension y="24" />
 			</Size>
 			<Anchors>
 				<Anchor point="LEFT" x="24" y="0" />

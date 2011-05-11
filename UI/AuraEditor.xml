@@ -51,7 +51,7 @@
 						<AbsDimension x="300" y="68" />
 					</Size>
 					<Anchors>
-						<Anchor point="TOP" relativePoint="TOP" x="0" y="13"/>
+						<Anchor point="TOP" relativePoint="TOP" x="0" y="13" />
 					</Anchors>					
 				</Texture>
 				<FontString name="$parentTitle" inherits="PowaFontNormal" text="Aura Editor" justifyH="CENTER" justifyV="TOP">
@@ -59,7 +59,7 @@
 						<AbsDimension x="300" y="68" />
 					</Size>
 					<Anchors>
-						<Anchor point="TOP" relativePoint="TOP" x="0" y="-2"/>
+						<Anchor point="TOP" relativePoint="TOP" x="0" y="-2" />
 					</Anchors>
 				</FontString>
 				<Texture file="Interface\DialogFrame\UI-DialogBox-Corner">
@@ -117,7 +117,7 @@
 												<AbsDimension x="128" />
 											</Size>
 											<Anchors>
-												<Anchor point="TOP" relativePoint="TOP" x="0" y="-110"/>
+												<Anchor point="TOP" relativePoint="TOP" x="0" y="-110" />
 											</Anchors>
 										</FontString>
 									</Layer>
@@ -146,7 +146,7 @@
 														<AbsDimension x="128" />
 													</Size>
 													<Anchors>
-														<Anchor point="TOP" x="0" y="-110"/>
+														<Anchor point="TOP" x="0" y="-110" />
 													</Anchors>
 												</FontString>
 											</Layer>
@@ -385,7 +385,7 @@
 																<AbsDimension x="256" />
 															</Size>
 															<Anchors>
-																<Anchor point="CENTER" relativePoint="CENTER" x="0" y="0"/>
+																<Anchor point="CENTER" relativePoint="CENTER" x="0" y="0" />
 															</Anchors>
 														</FontString>
 													</Layer>
@@ -476,7 +476,7 @@
 																<AbsDimension x="256" />
 															</Size>
 															<Anchors>
-																<Anchor point="CENTER" relativePoint="CENTER" x="0" y="0"/>
+																<Anchor point="CENTER" relativePoint="CENTER" x="0" y="0" />
 															</Anchors>
 														</FontString>
 													</Layer>
