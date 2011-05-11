@@ -811,9 +811,9 @@
 				<Scripts>
 					<OnLoad>
 						PowaAuras.UI:TabFrame(self, "TabButtonIcon");
-						self:AddTab(self.Auras, "Interface\\GossipFrame\\TrainerGossipIcon");
-						self:AddTab(self.Config, "Interface\\GossipFrame\\BinderGossipIcon");
-						self:AddTab(self.Help, "Interface\\WorldMap\\UI-WorldMap-QuestIcon", 12, 17, 0.171875, 0.359375, 0.109375, 0.375);
+						self:AddTab(self.Auras, "Interface\\Minimap\\Tracking\\Reagents");
+						self:AddTab(self.Config, "Interface\\WorldMap\\Gear_64Grey");
+						self:AddTab(self.Help, "Interface\\Minimap\\Tracking\\OBJECTICONS", 24, 24, 0.25, 0.375, 0.5, 1, 0, -1);
 					</OnLoad>
 				</Scripts>
 			</Frame>
