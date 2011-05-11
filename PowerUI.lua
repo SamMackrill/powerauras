@@ -12,7 +12,7 @@ PowaAuras.UI = {
 				widget["__" .. hook] = widget[hook];
 			end
 		end
-		-- Copy anything we have over automatically...
+		-- Copy anything we have over automatically, don't use metatables because they increase the memory usage a lot.
 		for k,v in pairs(self) do
 			-- Ignore these elements, they're reserved.
 			if(k ~= "Base" and k ~= "Construct" and k ~= "Hooks" and k ~= "Scripts") then
