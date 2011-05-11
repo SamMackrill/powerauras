@@ -810,10 +810,10 @@
 				</Frames>
 				<Scripts>
 					<OnLoad>
-						PowaAuras.UI:TabFrame(self, "TabButtonIcon");
-						self:AddTab(self.Auras, "Interface\\Minimap\\Tracking\\Reagents");
-						self:AddTab(self.Config, "Interface\\WorldMap\\Gear_64Grey");
-						self:AddTab(self.Help, "Interface\\Minimap\\Tracking\\OBJECTICONS", 24, 24, 0.25, 0.375, 0.5, 1, 0, -1);
+						PowaAuras.UI:TabFrame(self, "TabButton");
+						self:AddTab(self.Auras, PowaAuras.Text["UI_Auras"], "Interface\\Minimap\\Tracking\\Reagents");
+						self:AddTab(self.Config, PowaAuras.Text["UI_Config"], "Interface\\WorldMap\\Gear_64Grey");
+						self:AddTab(self.Help, PowaAuras.Text["UI_Help"], "Interface\\Minimap\\Tracking\\OBJECTICONS", 22, 22, 0.25, 0.375, 0.5, 1, 11, -4);
 					</OnLoad>
 				</Scripts>
 			</Frame>

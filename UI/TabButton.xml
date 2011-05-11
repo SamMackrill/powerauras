@@ -33,6 +33,14 @@
 					</Anchors>
 				</Texture>
 			</Layer>
+			<Layer level="ARTWORK">
+				<Texture parentKey="Icon">
+					<Size x="24" y="24" />
+					<Anchors>
+						<Anchor point="LEFT" x="13" y="-4" />
+					</Anchors>
+				</Texture>
+			</Layer>
 			<Layer level="OVERLAY">
 				<Texture file="Interface\PaperDollInfoFrame\PaperDollSidebarTabs">
 					<Size x="34" y="19" />
@@ -65,57 +73,17 @@
 					<Anchors>
 						<Anchor point="TOPRIGHT" x="-8" y="-8" />
 					</Anchors>
-				</Texture>
+				</Texture>				
 			</Layer>
 		</Layers>		
 		<ButtonText parentKey="Text">
 			<Size>
-				<AbsDimension x="0" y="10"/>
+				<AbsDimension x="0" y="10" />
 			</Size>
 			<Anchors>
-				<Anchor point="CENTER" x="3" y="-3" />
+				<Anchor point="LEFT" x="13" y="-4" />
+				<Anchor point="RIGHT" x="-9" y="-4" />
 			</Anchors>
 		</ButtonText>
-	</CheckButton>
-	
-	<CheckButton name="PowaTabButtonIconTemplate" virtual="true">
-		<Size x="33" y="35" />
-		<Layers>
-			<Layer level="BACKGROUND">
-				<Texture file="Interface\PaperDollInfoFrame\PaperDollSidebarTabs" parentKey="TabBg">
-					<Size x="50" y="41" />
-					<TexCoords left="0.01562500" right="0.79687500" top="0.61328125" bottom="0.7734375" />
-					<Anchors>
-						<Anchor point="BOTTOMLEFT" x="-9" y="0" />
-					</Anchors>
-				</Texture>
-			</Layer>
-			<Layer level="ARTWORK">
-				<Texture parentKey="Icon">
-					<Size x="24" y="24" />
-					<Anchors>
-						<Anchor point="CENTER" x="1" y="-1" />
-					</Anchors>
-				</Texture>
-			</Layer>
-			<Layer level="OVERLAY">
-				<Texture file="Interface\PaperDollInfoFrame\PaperDollSidebarTabs">
-					<Size x="34" y="19" />
-					<TexCoords left="0.01562500" right="0.54687500" top="0.11328125" bottom="0.18750000" />
-					<Anchors>
-						<Anchor point="BOTTOM" />
-					</Anchors>
-				</Texture>
-			</Layer>
-			<Layer level="HIGHLIGHT">
-				<Texture parentKey="Highlight" file="Interface\PaperDollInfoFrame\PaperDollSidebarTabs">
-					<Size x="31" y="31" />	
-					<TexCoords left="0.01562500" right="0.50000000" top="0.19531250" bottom="0.31640625" />
-					<Anchors>
-						<Anchor point="TOPLEFT" x="2" y="-3" />
-					</Anchors>
-				</Texture>
-			</Layer>
-		</Layers>
 	</CheckButton>
 </Ui>

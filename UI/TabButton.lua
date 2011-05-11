@@ -77,11 +77,26 @@ PowaAuras.UI:Register("TabButton", {
 	},
 	Offset = 117,
 	Template = "PowaTabButtonTemplate",
-	Init = function(self, parent, index, text)
+	Init = function(self, parent, index, text, texture, width, height, left, right, top, bottom, x, y)
 		-- Call parent func.
 		self.Base.Init(self, parent, index);
 		-- Set text.
-		self.Text:SetText(text);	
+		self.Text:SetText(text);
+		-- Displaying an icon?
+		if(texture) then
+			-- Reposition the text.
+			self.Text:SetPoint("LEFT", 39, -4);
+			self.Text:SetPoint("RIGHT", -35, -4);
+			-- Set up icon.
+			self.Icon:SetTexture(texture);
+			self.Icon:SetSize(width or 24, height or 24);
+			self.Icon:SetTexCoord(left or 0, right or 1, top or 0, bottom or 1);
+			self.Icon:SetPoint("LEFT", x or 13, y or -4);
+			self.Icon:Show();
+		else
+			-- Fine.
+			self.Icon:Hide();
+		end
 	end,
 	SetChecked = function(self, checked)
 		-- Call parent func.
@@ -104,40 +119,6 @@ PowaAuras.UI:Register("TabButton", {
 			self.HighlightL:Show();
 			self.HighlightM:Show();
 			self.HighlightR:Show();
-			self:Enable();
-		end
-	end,
-});
-
--- Icon only version of the button.
-PowaAuras.UI:Register("TabButtonIcon", {
-	Base = "TabButtonBase",
-	Points = {
-		"BOTTOMLEFT",
-		"TOPLEFT",
-		9,
-		-2,
-	},
-	Offset = 38,
-	Template = "PowaTabButtonIconTemplate",
-	Init = function(self, parent, index, texture, width, height, left, right, top, bottom, x, y)
-		-- Call parent func.
-		self.Base.Init(self, parent, index);
-		-- Set icon.
-		self.Icon:SetTexture(texture);
-		self.Icon:SetSize(width or 24, height or 24);
-		self.Icon:SetTexCoord(left or 0, right or 1, top or 0, bottom or 1);
-		self.Icon:SetPoint("CENTER", x or 1, y or -1);
-	end,
-	SetChecked = function(self, checked)
-		-- Call parent func.
-		self.Base.SetChecked(self, checked);
-		-- Style.
-		if(checked == true) then
-			self.TabBg:SetTexCoord(0.01562500, 0.79687500, 0.78906250, 0.953125);
-			self:Disable();
-		else
-			self.TabBg:SetTexCoord(0.01562500, 0.79687500, 0.61328125, 0.7734375);
 			self:Enable();
 		end
 	end,
