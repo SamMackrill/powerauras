@@ -43,7 +43,7 @@
 			</Layer>
 		</Layers>
 		<HighlightTexture file="Interface\Buttons\UI-Panel-Button-Highlight" alphaMode="ADD">
-			<TexCoords left="0" right="0.625" top="0" bottom="0.6875"/>
+			<TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
 		</HighlightTexture>
 		<Scripts>
 			<OnLoad>

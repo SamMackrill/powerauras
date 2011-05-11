@@ -56,7 +56,7 @@
 		<DisabledFont style="PowaFontNormalSmall" />
 		<ButtonText parentKey="Text" justifyH="LEFT">
 			<Size>
-				<AbsDimension x="0" y="24"/>
+				<AbsDimension x="0" y="24" />
 			</Size>
 			<Anchors>
 				<Anchor point="LEFT" x="24" y="0" />
@@ -69,7 +69,7 @@
 		<Frames>
 			<Button parentKey="Expand">
 				<Size>
-					<AbsDimension x="16" y="16"/>
+					<AbsDimension x="16" y="16" />
 				</Size>
 				<Anchors>
 					<Anchor point="TOPRIGHT" x="-4" y="-4" />
