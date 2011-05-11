@@ -1,18 +1,93 @@
--- Create definition.
-PowaAuras.UI:Register("TabButton", {
-	Init = function(tab, id, text, parent)
-		-- Stores status for tab.
-		tab.Selected = false;
-		tab.Id = id;
-		tab:SetText(PowaAuras.Text[text]);
-		tab:SetParent(parent);
-		tab:SetScript("OnClick", function()
-			tab:GetParent():SelectTab(tab.Id);
-			PlaySound("igCharacterInfoTab");
-		end);
+-- Basic tab button widget. Does nothing fancy.
+PowaAuras.UI:Register("TabButtonBase", {
+	Items = {},
+	Hooks = {
+		"SetChecked",
+	},
+	Points = {
+		"BOTTOMLEFT",
+		"TOPLEFT",
+		0,
+		0,
+	},
+	Orientation = "HORIZONTAL",
+	Offset = 0,
+	Template = "",
+	Scripts = {
+		OnClick = true,
+	},
+	Template = "",
+	Construct = function(class, ui, ...)
+		local item = class.Items[1];
+		if(not item) then
+			item = CreateFrame("CheckButton", nil, UIParent, class.Template);
+			-- If the template was blank, hide the frame by default - treat it as a hidden tab.
+			if(class.Template == "") then
+				item:Hide();
+			end
+			return ui.Construct(class, ui, item, ...);
+		else
+			item:Init(parent, ...);
+			return item;
+		end
 	end,
-	SetSelected = function(self, selected)
-		if(selected == true) then
+	Init = function(self, parent, frame)
+		self:SetParent(parent);
+		self.Frame = frame;
+	end,
+	GetTabIndex = function(self)
+		return self.Index;
+	end,
+	OnClick = function(self)
+		self:SetChecked(false);
+		self:GetParent():SetSelectedTab(self.Index);
+		PlaySound("igCharacterInfoTab");
+	end,
+	Recycle = function(self)
+		 self:SetParent(UIParent);
+		 self:ClearAllPoints();
+		 self:Hide();
+		 self.Frame:Hide();
+		 self.Frame = nil;
+		 tinsert(PowaAuras.UI.TabButtonBase.Items, self);
+	end,
+	SetTabIndex = function(self, index)
+		self.Index = index;
+	end,
+	SetChecked = function(self, checked)
+		-- Call normal func.
+		self:__SetChecked(checked);
+		-- Show/hide our frame.
+		if(checked) then
+			self.Frame:Show();
+		else
+			self.Frame:Hide();
+		end
+	end,
+});
+
+-- Standard tab button.
+PowaAuras.UI:Register("TabButton", {
+	Base = "TabButtonBase",
+	Points = {
+		"BOTTOMLEFT",
+		"TOPLEFT",
+		0,
+		-2,
+	},
+	Offset = 117,
+	Template = "PowaTabButtonTemplate",
+	Init = function(self, parent, index, text)
+		-- Call parent func.
+		self.Base.Init(self, parent, index);
+		-- Set text.
+		self.Text:SetText(text);	
+	end,
+	SetChecked = function(self, checked)
+		-- Call parent func.
+		self.Base.SetChecked(self, checked);
+		-- Style.
+		if(checked == true) then
 			-- Texture stuff.
 			self.TabBgL:SetTexCoord(0.01562500, 0.25, 0.78906250, 0.93359375);
 			self.TabBgM:SetTexCoord(0.25, 0.25, 0.78906250, 0.93359375);
@@ -31,5 +106,38 @@ PowaAuras.UI:Register("TabButton", {
 			self.HighlightR:Show();
 			self:Enable();
 		end
-	end
+	end,
+});
+
+-- Icon only version of the button.
+PowaAuras.UI:Register("TabButtonIcon", {
+	Base = "TabButtonBase",
+	Points = {
+		"BOTTOMLEFT",
+		"TOPLEFT",
+		9,
+		-2,
+	},
+	Offset = 38,
+	Template = "PowaTabButtonIconTemplate",
+	Init = function(self, parent, index, texture, width, height, left, right, top, bottom)
+		-- Call parent func.
+		self.Base.Init(self, parent, index);
+		-- Set icon.
+		self.Icon:SetTexture(texture);
+		self.Icon:SetSize(width or 16, height or 16);
+		self.Icon:SetTexCoord(left or 0, right or 1, top or 0, bottom or 1);
+	end,
+	SetChecked = function(self, checked)
+		-- Call parent func.
+		self.Base.SetChecked(self, checked);
+		-- Style.
+		if(checked == true) then
+			self.TabBg:SetTexCoord(0.01562500, 0.79687500, 0.78906250, 0.953125);
+			self:Disable();
+		else
+			self.TabBg:SetTexCoord(0.01562500, 0.79687500, 0.61328125, 0.7734375);
+			self:Enable();
+		end
+	end,
 });

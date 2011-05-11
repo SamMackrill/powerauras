@@ -1,92 +1,83 @@
--- Create definition.
+-- Generic tab frame mixin.
 PowaAuras.UI:Register("TabFrame", {
-	Init = function(frame, tabType, offset)
-		-- Current tab.
-		frame.Tab = 1;
-		-- Stores the name of the frames each tab represents.
-		frame.Tabs = {};
-		frame.TabType = tabType or 1;
-		-- Optional offset for tabs.
-		frame.Offset = offset or (tabType == 4 and 9 or 0);
+	Init = function(self, class)
+		-- Store the name of the tab class we're using.
+		self.TabClass = class;
+		self.SelectedTab = 1;
+		-- And our tabs in here.
+		self.Tabs = {};
+		-- Scripts mixin.
+		PowaAuras.UI:Scripts(self);
 	end,
-	RegisterTab = function(self, tab, text, hidden)
-		if(not tab) then PowaAuras:ShowText("Cannot register tab, tab does not exist."); return; end
-		-- Register the tab.
-		tinsert(self.Tabs, tab);
-		-- Does this tab have its own button?
-		if(not tab.TabButton) then
-			-- Make a new tab button.
-			local tabButton;
-			if(self.TabType == 1) then
-				tabButton = CreateFrame("Button", nil, self, "PowaTabButtonTemplate");
-				tab.TabButton = tabButton;
-				PowaAuras.UI:TabButton(tab.TabButton, #(self.Tabs), text, self);
-			elseif(self.TabType == 2) then
-				tabButton = CreateFrame("Button", nil, self, "PowaTabSidebarButtonTemplate");
-				tab.TabButton = tabButton;
-				PowaAuras.UI:TabSidebarButton(tab.TabButton, #(self.Tabs), text, self);
-			elseif(self.TabType == 3) then
-				-- No tab button.
-				tab.TabButton = nil;
-			elseif(self.TabType == 4) then
-				-- Icon tab button.
-				tabButton = CreateFrame("Button", nil, self, "PowaTabIconButtonTemplate");
-				tab.TabButton = tabButton;
-				PowaAuras.UI:TabIconButton(tab.TabButton, #(self.Tabs), text, self);
-			end
+	AddTab = function(self, frame, ...)
+		-- Create the tab.
+		tinsert(self.Tabs, PowaAuras.UI[self.TabClass](PowaAuras.UI, self, frame, ...));
+		-- Update.
+		self:UpdateTabs();
+	end,
+	ClearTabs = function(self)
+		-- Remove all tabs.
+		while(self.Tabs[1]) do
+			self:RemoveTab(1);
+		end
+	end,
+	HideTab = function(self, index)
+		-- Make sure it exists.
+		if(not self.Tabs[index]) then return; end
+		-- Well this is pretty simple. Note that you can still select hidden tabs programmatically.
+		self.Tabs[index]:Hide();
+	end,
+	RemoveTab = function(self, index)
+		-- Make sure it exists.
+		if(not self.Tabs[index]) then return; end
+		-- Remove the tab.
+		self.Tabs[index]:Recycle();
+		tremove(self.Tabs, index);
+		-- If this tab was selected, select index #1.
+		if(self.SelectedTab and self.SelectedTab == index) then
+			self:SetSelectedTab(1);
 		end
 		-- Update tabs.
-		tab.TabDisabled = (hidden or false);
 		self:UpdateTabs();
 	end,
-	HideTab = function(self, tab)
-		if(not self.Tabs[tab]) then PowaAuras:ShowText("Cannot hide tab, tab does not exist."); return; end
-		-- Disable it.
-		self.Tabs[tab].TabDisabled = true;
-		-- Update selection if needed.
-		if(tab == self.Tab) then self.Tab = (#(self.Tabs) > 0 and 1 or 0); end
+	SetSelectedTab = function(self, index)
+		-- Make sure the index exists, even if its associated tab doesn't.
+		if(not index or not self.Tabs[index]) then index = 1; end
+		-- Set value.
+		self.SelectedTab = index;
+		-- Callback.
+		self:CallScript("OnSelectedTabChanged", index);
+		-- Update tabs.
 		self:UpdateTabs();
 	end,
-	ShowTab = function(self, tab)
-		if(not self.Tabs[tab]) then PowaAuras:ShowText("Cannot show tab, tab does not exist."); return; end
-		-- Enable it.
-		self.Tabs[tab].TabDisabled = false;	
-		self:UpdateTabs();
+	ShowTab = function(self, index)
+		-- Make sure it exists.
+		if(not self.Tabs[index]) then return; end
+		-- Well this is pretty simple.
+		self.Tabs[index]:Show();
 	end,
-	SelectTab = function(self, tab)
-		if(not self.Tabs[tab]) then PowaAuras:ShowText("Cannot select tab, tab does not exist."); return; end
-		self.Tab = tab;
-		self:UpdateTabs();
-	end,
-	UpdateTabs = function(self)
-		-- If no tab is selected, select #1.
-		if(self.Tab == 0) then self.Tab = 1; end
-		-- Go over tabs for offset positioning.
-		local i = 1;
-		for tabId, tab in pairs(self.Tabs) do
-			if(tab) then
-				if(tab.TabDisabled == false and tab.TabButton) then
-					if(self.TabType == 1) then
-						tab.TabButton:SetPoint("BOTTOMLEFT", self, "TOPLEFT", ((i-1)*117)+self.Offset, -2);
-					elseif(self.TabType == 2) then
-						tab.TabButton:SetPoint("TOPRIGHT", self, "TOPLEFT", 0, -((i-1)*24)-self.Offset);	
-					elseif(self.TabType == 4) then		
-						tab.TabButton:SetPoint("BOTTOMLEFT", self, "TOPLEFT", ((i-1)*38)+self.Offset, -2);			
-					end
-					tab.TabButton:SetSelected((tabId == self.Tab));
-					tab.TabButton:Show();
-				elseif(tab.TabButton) then
-					tab.TabButton:Hide();					
-				end
-				-- Allow the tab to be shown, even if it's disabled.
-				if(self.Tab ~= tabId) then
-					tab:Hide();
-				else
-					-- Each tab is individually responsible for positioning its frame.
-					tab:Show();
-				end			
-				i=i+1;
+	UpdateTabs = function(self, index)
+		-- Locals.
+		local offset = 0;
+		-- Position tabs.
+		for index, tab in pairs(self.Tabs) do
+			-- Update the tab index first of all.
+			tab:SetTabIndex(index);
+			-- Checked?
+			tab:SetChecked((self.SelectedTab and self.SelectedTab == index));
+			-- Position it if needed.
+			if(tab:IsShown()) then
+				tab:ClearAllPoints();
+				tab:SetPoint(
+					tab.Points[1],
+					self,
+					tab.Points[2], 
+					(tab.Points[3]+(tab.Orientation == "HORIZONTAL" and offset or 0)),
+					(tab.Points[4]+(tab.Orientation == "VERTICAL" and offset or 0))
+				);
+				-- Bump the offset.
+				offset = offset+tab.Offset;
 			end
 		end
-	end
+	end,
 });

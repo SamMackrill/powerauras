@@ -67,8 +67,6 @@ UI\Slider.xml
 UI\ScrollFrame.xml
 UI\TabButton.xml
 UI\TabDialog.xml
-UI\TabIconButton.xml
-UI\TabSidebarButton.xml
 
 # Elements with dependencies.
 UI\BrowserFrame.xml

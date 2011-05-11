@@ -489,7 +489,7 @@
 										end
 										self.OnCancel = function()
 											PowaBrowser:SetSelectedAura(nil, false);
-											self:GetParent():SelectTab(1);
+											self:GetParent():SetSelectedTab(1);
 										end
 										-- I'm also a radio button host.
 										PowaAuras.UI:RadioGroup(self, "CreateAuraRadioButton", true);
@@ -530,9 +530,9 @@
 						<Scripts>
 							<OnLoad>
 								-- I'm also a tab frame. Hi.
-								PowaAuras.UI:TabFrame(self, 3);
-								self:RegisterTab(self.Page, "");
-								self:RegisterTab(self.Create, "");
+								PowaAuras.UI:TabFrame(self, "TabButtonBase");
+								self:AddTab(self.Page, "");
+								self:AddTab(self.Create, "");
 								self.Create.Title:SetText(PowaAuras.Text["UI_CreateAura"]);
 							</OnLoad>
 						</Scripts>
@@ -557,7 +557,7 @@
 										self:SetSelectedKey(1);
 										-- Change tabs via tree.
 										self.OnSelectionChanged = function(self, key)
-											self:GetParent().Page:SelectTab(key);
+											self:GetParent().Page:SetSelectedTab(key);
 										end
 									</OnLoad>
 								</Scripts>
@@ -776,10 +776,10 @@
 								</Frames>
 								<Scripts>
 									<OnLoad>
-										PowaAuras.UI:TabFrame(self, 3);
-										self:RegisterTab(self.Config, "");
-										self:RegisterTab(self.Perf, "");
-										self:RegisterTab(self.Cust, "");
+										PowaAuras.UI:TabFrame(self, "TabButtonBase");
+										self:AddTab(self.Config, "");
+										self:AddTab(self.Perf, "");
+										self:AddTab(self.Cust, "");
 										self.Config.Title:SetText(PowaAuras.Text["UI_ConfigTitle"]);
 										self.Perf.Title:SetText(PowaAuras.Text["UI_ConfigTitlePerf"]);
 										self.Cust.Title:SetText(PowaAuras.Text["UI_ConfigTitleCust"]);
@@ -810,10 +810,10 @@
 				</Frames>
 				<Scripts>
 					<OnLoad>
-						PowaAuras.UI:TabFrame(self, 4);
-						self:RegisterTab(self.Auras, "Interface\\GossipFrame\\TrainerGossipIcon");
-						self:RegisterTab(self.Config, "Interface\\GossipFrame\\BinderGossipIcon");
-						self:RegisterTab(self.Help, { "Interface\\WorldMap\\UI-WorldMap-QuestIcon", 12, 17, 0.171875, 0.359375, 0.109375, 0.375 });
+						PowaAuras.UI:TabFrame(self, "TabButtonIcon");
+						self:AddTab(self.Auras, "Interface\\GossipFrame\\TrainerGossipIcon");
+						self:AddTab(self.Config, "Interface\\GossipFrame\\BinderGossipIcon");
+						self:AddTab(self.Help, "Interface\\WorldMap\\UI-WorldMap-QuestIcon", 12, 17, 0.171875, 0.359375, 0.109375, 0.375);
 					</OnLoad>
 				</Scripts>
 			</Frame>
