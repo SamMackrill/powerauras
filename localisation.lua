@@ -783,6 +783,10 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	UI_ID                      = "ID",
 	UI_DropdownNone            = "Select an option...",
 	
+	UI_Auras                   = "Auras",
+	UI_Config                  = "Options",
+	UI_Help                    = "Help",
+	
 	UI_CharAuras               = "Character Auras",
 	UI_ClassAuras              = "Class Auras",
 	UI_GlobAuras               = "Global Auras",
