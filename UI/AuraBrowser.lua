@@ -50,17 +50,15 @@ PowaAuras.UI:Register("AuraBrowser", {
 		PlaySound("igCharacterInfoTab");
 		PowaAuras.ModTest = true;
 	end,
-	OnVariablesLoaded = function()
-		-- Easymode.
-		local self = PowaBrowser;
+	OnVariablesLoaded = function(self)
 		-- Do update check.
-		if(PowaAuras.VersionInt > PowaGlobalMisc["LastVersion"]) then
+		if(PowaAuras.VersionInt > PowaAuras.Helpers:GetSetting("LastVersion")) then
 			self.ShowVersionDialog = true;
 		end
 		-- First run check.
-		if(PowaGlobalMisc["FirstRun"] == true) then
+		if(PowaAuras.Helpers:GetSetting("FirstRun") == true) then
 			self.ShowRunDialog = true;
-			PowaGlobalMisc["FirstRun"] = false;
+			PowaAuras.Helpers:SaveSetting("FirstRun", false);
 			-- Don't bother showing the version upgrade dialog if it's the first run.
 			self.ShowVersionDialog = false;
 		end
@@ -270,7 +268,14 @@ PowaAuras.UI:Register("AuraButton", {
 	TooltipRefresh = function(self)
 		-- Need an aura to continue.
 		local aura = self:GetAura();
-		if(not aura and self.State ~= self.Flags["CREATE"]) then return; end
+		if(not aura and self.State ~= self.Flags["CREATE"]) then
+			-- Hang on, we've got a visible aura button with no aura.
+			if(self:GetChecked()) then
+				return PowaBrowser:SetSelectedAura(nil, false);
+			else
+				return PowaBrowser:TriageIcones();
+			end
+		end
 		-- Hide tip.
 		GameTooltip:Hide();
 		-- Reparent.

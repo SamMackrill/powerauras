@@ -80,7 +80,6 @@ PowaAuras.UI:Register("TreeView", {
 		end
 	end,
 	OnSelectionChanged = function(self, key) -- All TreeViews should override this func.
-		print("Selection changed: " .. (key or "nil"));
 	end,
 	RemoveItem = function(self, key)
 		-- Find the item...
@@ -193,14 +192,12 @@ PowaAuras.UI:Register("TreeViewItem", {
 			-- Yay!
 			item = self.Items[1];
 			tremove(self.Items, 1);
-			print("|cFF527FCCDEBUG (TreeViewItem): |rRecycled item! Total available: " .. #(self.Items));
 			-- Skip to init.
 			item:Init(...);
 			return item;
 		else
 			-- Get making.
 			item = CreateFrame("Button", nil, nil, "PowaTreeViewItemTemplate");
-			print("|cFF527FCCDEBUG (TreeViewItem): |rCreating item!");
 			-- Reuse existing constructor.
 			return ui.Construct(self, _, item, ...);
 		end
@@ -240,7 +237,6 @@ PowaAuras.UI:Register("TreeViewItem", {
 	Recycle = function(self)
 		-- Place in recycle table!
 		tinsert(self.Items, self);
-		print("|cFF527FCCDEBUG (TreeViewItem): |rRecycling item! Total available: " .. #(self.Items));
 		self:Hide();
 	end,
 	SetKey = function(self, key)

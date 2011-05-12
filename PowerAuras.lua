@@ -33,7 +33,6 @@ PowaAuras.PowaGlobalMiscDefault = {
 	CustomDebuffTypeIds = {},
 	LastVersion = 10000,
 	FirstRun = true,
-	UIFontSize = 0,
 };
 
 -- Store the actual settings tables without the default suffix.

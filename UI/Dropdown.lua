@@ -2,17 +2,16 @@
 local UI = PowaAuras.UI;
 -- Dropdown widget base.
 UI:Register("DropdownBase", {
+	AllowSelection = true,
 	Scripts = {
 		OnClick = true,
-		OnDropdownMenuHide = true,
 		OnDropdownMenuPosition = true,
-		OnDropdownMenuItemSelected = true,
-		OnDropdownMenuShow = true,
+		OnDropdownMenuSelectionUpdated = true,
 		OnHide = true,
 	},
 	Init = function(self, closeOnSelect)
-		-- If we own a menu, we reference the frame via this.
-		self.Menu = nil;
+		-- Gain access to the menu.
+		self.Menu = UI:DropdownList();
 		-- Store our items in this.
 		self.Items = {};
 		self.CloseOnSelect = (closeOnSelect == nil and true or closeOnSelect);
@@ -27,9 +26,8 @@ UI:Register("DropdownBase", {
 		-- Add.
 		tinsert(self.Items, { Key = key, Value = text });
 		-- Fully update the menu if we add/remove any items.
-		if(self.Menu) then
-			self.Menu:Toggle(false);
-			UI:DropdownList(self, self.SelectedKey):Toggle(true);
+		if(self.Menu:IsOwned(self)) then
+			self.Menu:UpdateItems();
 		end
 		-- Done.
 		return true;
@@ -45,9 +43,8 @@ UI:Register("DropdownBase", {
 					self:SetSelectedKey(nil);
 				end
 				-- Fully update the menu if we add/remove any items.
-				if(self.Menu) then
-					self.Menu:Toggle(false);
-					UI:DropdownList(self, self.SelectedKey):Toggle(true);
+				if(self.Menu:IsOwned(self)) then
+					self.Menu:UpdateItems();
 				end
 				-- Done.
 				return true;
@@ -67,9 +64,8 @@ UI:Register("DropdownBase", {
 				-- Update.
 				self.Items[i].Value = text;
 				-- Fully update the menu if we changed anything.
-				if(self.Menu) then
-					self.Menu:Toggle(false);
-					UI:DropdownList(self, self.SelectedKey):Toggle(true);
+				if(self.Menu:IsOwned(self)) then
+					self.Menu:UpdateItems();
 				end
 				-- Done.
 				return true;
@@ -81,50 +77,39 @@ UI:Register("DropdownBase", {
 	end,
 	OnClick = function(self)
 		-- Request the dropdown menu.
-		UI:DropdownList(self, self.SelectedKey):Toggle();
+		self.Menu:Toggle(self, self.SelectedKey, self.AllowSelection);
 		PlaySound("UChatScrollButton");
 	end,
-	OnDropdownMenuHide = function(self, dropdown)
-		-- Update state.
-		self.Menu = nil;
-		print("|cFF527FCCDEBUG (Dropdown): |r", self, "no longer owns menu", dropdown);
-	end,
-	OnDropdownMenuPosition = function(self, dropdown, count)
+	OnDropdownMenuPosition = function(self, count)
 		-- Update the sizing/positioning of the dropdown.
-		dropdown:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, 0);
-		dropdown:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, 0);
-		dropdown:SetHeight(math.min(168, 8+(count*20)));
-		dropdown.Child:SetSize(168, (count*20)-1);
+		self.Menu:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, 0);
+		self.Menu:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, 0);
+		self.Menu:SetHeight(math.min(168, 8+(count*20)));
+		self.Menu.Child:SetSize(168, (count*20)-1);
 	end,
-	OnDropdownMenuItemSelected = function(self, dropdown, key)
+	OnDropdownMenuSelectionUpdated = function(self, key)
 		-- Update selected key.	
-		self:SetSelectedKey(key);
-		-- Close?
-		if(self.CloseOnSelect and self.Menu) then
-			self.Menu:Toggle(false);
-		end			
-	end,
-	OnDropdownMenuShow = function(self, dropdown)
-		-- Update state.
-		self.Menu = dropdown;
-		print("|cFF527FCCDEBUG (Dropdown): |r", self, "owns menu", dropdown);
-	end,
-	OnHide = function(self)
-		-- Hide the menu if we own it.
-		if(self.Menu) then
-			self.Menu:Toggle(false);
-		end
-	end,
-	SetSelectedKey = function(self, key)
-		print("|cFF527FCCDEBUG (Dropdown): |r", self, "key change on menu", dropdown, "(key =", key, ")");	
-		-- Update selected key.
 		self.SelectedKey = key;
 		-- Fire callback.
 		self:CallScript("OnDropdownItemSelected", key);
+		-- Close?
+		if(self.CloseOnSelect and self.Menu:IsOwned(self)) then
+			self.Menu:Hide(self);
+		end
+	end,
+	OnHide = function(self)
+		-- Hide the menu if we own it.
+		if(self.Menu:IsOwned(self)) then
+			self.Menu:Hide(self);
+		end
+	end,
+	SetSelectedKey = function(self, key)
 		-- Force update if we own the dropdown.
-		if(self.Menu) then
-			self.Menu.SelectedKey = key; -- A bit hackish, but it prevents a loop.
-			self.Menu:UpdateItems();
+		if(self.Menu:IsOwned(self) and self.SelectedKey ~= key) then
+			self.Menu:SetSelectedKey(key);
+		else
+			-- Update selected key.
+			self.SelectedKey = key;
 		end
 	end,
 });
@@ -153,13 +138,21 @@ UI:Register("Dropdown", {
 		UI:Settings(self, setting);
 	end,
 	OnSettingChanged = function(self, key)
+		-- Update text.
+		self:UpdateText(key);
 		-- Don't call this if the key is the same.
 		if(self.SelectedKey == key) then return; end
 		self:SetSelectedKey(key);
 	end,
-	SetSelectedKey = function(self, key)
+	OnDropdownMenuSelectionUpdated = function(self, key)
 		-- Call parent func.
-		UI.DropdownBase.SetSelectedKey(self, key);
+		UI.DropdownBase.OnDropdownMenuSelectionUpdated(self, key);
+		-- Update labels.
+		self:UpdateText(key);
+		-- Save the setting.
+		self:SaveSetting(key);
+	end,
+	UpdateText = function(self, key)
 		-- Find key, change text.
 		local hasChanged = false;
 		for _, data in ipairs(self.Items) do
@@ -173,14 +166,13 @@ UI:Register("Dropdown", {
 		if(not key or not hasChanged) then
 			self.Text:SetText(PowaAuras.Text["UI_DropdownNone"]);
 		end
-		-- Save the setting.
-		self:SaveSetting(key);
 	end,
 });
 
 -- Not to be confused with DropdownList, this makes the list behave as a menu and disables selecting of elements.
 UI:Register("DropdownMenu", {
 	Base = "DropdownBase",
+	AllowSelection = false,
 	Init = function(self, closeOnSelect)
 		-- Call parent init func.
 		UI.DropdownBase.Init(self, closeOnSelect);
@@ -190,16 +182,14 @@ UI:Register("DropdownMenu", {
 			UI:Tooltip(self, self:GetText(), (self:GetText() .. "Desc"));
 		end
 	end,
-	SetSelectedKey = function(self, key)
-		print("|cFF527FCCDEBUG (Dropdown): |r", self, "key change on menu", dropdown, "(key =", key, ")");	
-		-- Selected key is always nil.
+	OnDropdownMenuSelectionUpdated = function(self, key)
+		-- Update selected key to a nil value.	
 		self.SelectedKey = nil;
 		-- Fire callback, pass the key so we know what was clicked.
 		self:CallScript("OnDropdownItemSelected", key);
-		-- Force update if we own the dropdown.
-		if(self.Menu) then
-			self.Menu.SelectedKey = nil; -- A bit hackish, but it prevents a loop.
-			self.Menu:UpdateItems();
+		-- Close?
+		if(self.CloseOnSelect) then
+			self.Menu:Hide(self);
 		end
 	end,
 });
@@ -209,13 +199,13 @@ UI:Register("DropdownList", {
 	Menu = nil, -- A single menu list is made and shared among all dropdowns.
 	Owner = nil,
 	SelectedKey = nil,
+	AllowSelection = true,
 	Items = {}, -- Active DropdownItem list.
-	OnToggleShow = true,
 	Hooks = {
 		"Hide",
 		"Show",
 	},
-	Construct = function(class, ui, ...)
+	Construct = function(class, ui)
 		if(not class.Menu) then
 			-- Make the list frame.
 			local frame = CreateFrame("Frame", nil, UIParent, "PowaBorderedFrameTemplate");
@@ -235,58 +225,76 @@ UI:Register("DropdownList", {
 			-- Register as scrollframe widget.
 			ui:ScrollFrame(frame.Scroll);
 			-- Construct as normal.
-			class.Menu = ui.Construct(class, ui, frame, ...);
-		else
-			-- Go to Init. Do not pass Go. Do not collect £200.
-			class.Menu:Init(...);
+			class.Menu = ui.Construct(class, ui, frame);
 		end
 		-- Return ourself.
 		return class.Menu;
 	end,
-	Init = function(self, owner, defaultKey)
-		-- Reset toggle status if the owner has changed.
-		if(self.Owner ~= owner and self.Owner) then
-			self.OnToggleShow = true;
-			self:Hide();
-		end
-		-- Update selected key if given.
-		self.SelectedKey = defaultKey or nil;
-		-- Update owner.
-		self.Owner = owner;
-		-- Return list.
-		return self;
-	end,
-	Hide = function(self)
+	Hide = function(self, owner)
+		-- Only hide if the owner matches.
+		if(self.Owner and self.Owner ~= owner) then return; end
 		-- Call Hide callback.
-		self.Owner:CallScript("OnDropdownMenuHide", self);
+		self.Owner:CallScript("OnDropdownMenuHide");
 		-- Clear parent, points and so on.
 		self:ClearAllPoints();
 		self:SetParent(UIParent);
+		-- Remove owner.
+		self.Owner = nil;
+		self.SelectedKey = nil;
+		-- Recycle items.
+		self:UpdateItems();
+		-- Hide.
+		self:__Hide();
+	end,
+	IsOwned = function(self, owner)
+		return (self.Owner == owner);
+	end,
+	SetSelectedKey = function(self, key)
+		-- Update selected key and items.
+		self.SelectedKey = (self.AllowSelection and key or nil);
+		self:UpdateItems();
+		-- Fire update callback.
+		self.Owner:CallScript("OnDropdownMenuSelectionUpdated", key);
+	end,
+	Show = function(self, owner, defaultKey, allowSelection)
+		-- If owner has changed, tell them to GTFO.
+		if(self.Owner and self.Owner ~= owner) then
+			self:Hide(self.Owner);
+		end
+		-- Update owner/key.
+		self.Owner = owner;
+		self.SelectedKey = defaultKey or nil;
+		self.AllowSelection = allowSelection;
+		-- Call Show callback.
+		self.Owner:CallScript("OnDropdownMenuShow");
+		-- Update items.
+		self:UpdateItems();
+		-- Show.
+		self:__Show();
+	end,
+	Toggle = function(self, owner, ...)
+		-- Show or hide?
+		if(not self:IsOwned(owner) or not self:IsShown()) then
+			self:Show(owner, ...);
+		else
+			self:Hide(owner);
+		end
+	end,
+	UpdateItems = function(self)
 		-- Recycle all items, then clear the table.
 		for _, item in ipairs(self.Items) do
 			item:Recycle();
 		end
 		wipe(self.Items);
-		-- Hide.
-		self:__Hide();
-	end,
-	SetSelectedKey = function(self, key)
-		-- Update selected key and items.
-		self.SelectedKey = key;
-		self:UpdateItems();
-		-- Fire update callback.
-		self.Owner:CallScript("OnDropdownMenuItemSelected", self, key);
-	end,
-	Show = function(self)
-		-- Call Show callback.
-		self.Owner:CallScript("OnDropdownMenuShow", self);
+		-- Make sure we have an owner before continuing.
+		if(not self.Owner) then return; end
 		-- Get the items the dropdown has.
 		local count = 0;
 		for _, data in pairs(self.Owner:GetItems()) do
 			-- Get item.
 			local item = UI:DropdownItem(self.Child, self, (count*20), data.Key, data.Value);
 			-- Select if needed.
-			if(self.SelectedKey and data.Key == self.SelectedKey) then
+			if(self.AllowSelection and self.SelectedKey and data.Key == self.SelectedKey) then
 				item:SetChecked(true);
 			else
 				item:SetChecked(false);
@@ -298,33 +306,7 @@ UI:Register("DropdownList", {
 		end
 		-- Position dropdown.
 		self:SetParent(self.Owner);
-		self.Owner:CallScript("OnDropdownMenuPosition", self, count);
-		print("|cFF527FCCDEBUG (DropdownList): |rShowing", count, "items.");
-		-- Show.
-		self:__Show();
-	end,
-	Toggle = function(self, force)
-		-- Forcing?
-		if(force ~= nil) then
-			self.OnToggleShow = force;
-		end
-		-- Show or hide?
-		if(self.OnToggleShow) then
-			self:Show();
-		else
-			self:Hide();
-		end
-		-- Invert state.
-		self.OnToggleShow = not self.OnToggleShow;
-	end,
-	UpdateItems = function(self)
-		for _, item in pairs(self.Items) do
-			if(self.SelectedKey and item.Key == self.SelectedKey) then
-				item:SetChecked(true);
-			else
-				item:SetChecked(false);
-			end
-		end
+		self.Owner:CallScript("OnDropdownMenuPosition", count);
 	end,
 });
 
@@ -342,12 +324,10 @@ UI:Register("DropdownItem", {
 			item = CreateFrame("CheckButton", nil, parent, "PowaDropdownItemTemplate");
 			-- Normal ctor.
 			item = ui.Construct(class, ui, item, parent, ...);
-			print("|cFF527FCCDEBUG (DropdownItem): |rCreated item.");
 		else
 			-- Init.
 			tremove(class.Items, 1);
 			item:Init(parent, ...);
-			print("|cFF527FCCDEBUG (DropdownItem): |rReusing item,", #(class.Items) , "remaining.");
 		end
 		-- Done.
 		return item;
@@ -363,6 +343,7 @@ UI:Register("DropdownItem", {
 	end,
 	OnClick = function(self)
 		-- Update selection status.
+		self:SetChecked(false);
 		self.Menu:SetSelectedKey(self.Key);
 		PlaySound("UChatScrollButton");
 	end,
@@ -374,6 +355,5 @@ UI:Register("DropdownItem", {
 		self:Hide();
 		-- Add to list.
 		tinsert(UI.DropdownItem.Items, self);
-		print("|cFF527FCCDEBUG (DropdownItem): |rRecycled item,", #(UI.DropdownItem.Items) , "available.");
 	end,
 });
