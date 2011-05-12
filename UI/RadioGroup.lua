@@ -86,14 +86,12 @@ PowaAuras.UI:Register("RadioButton", {
 			-- Yay!
 			item = self.Items[1];
 			tremove(self.Items, 1);
-			print("|cFF527FCCDEBUG (RadioButton): |rRecycled item! Total available: " .. #(self.Items));
 			-- Skip to init.
 			item:Init(...);
 			return item;
 		else
 			-- Get making.
 			item = CreateFrame("CheckButton", nil, nil, self.Template);
-			print("|cFF527FCCDEBUG (RadioButton): |rCreating item!");
 			-- Reuse existing constructor.
 			return ui.Construct(self, _, item, ...);
 		end
@@ -114,7 +112,6 @@ PowaAuras.UI:Register("RadioButton", {
 	Recycle = function(self)
 		-- Place in recycle table!
 		tinsert(self.Items, self);
-		print("|cFF527FCCDEBUG (RadioButton): |rRecycling item! Total available: " .. #(self.Items));
 		self:Hide();
 	end,
 });

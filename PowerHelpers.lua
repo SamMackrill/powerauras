@@ -101,6 +101,24 @@ PowaAuras.Helpers = {
 		aura:CheckActive(true, true, true);
 		PowaAuras:DisplayAura(i);
 	end,
+	DeleteAura = function(self, id)
+		-- AURA, YOU MUST EXIST.
+		if(not PowaAuras.Auras[id]) then return; end
+		-- Dispose.
+		if(PowaAuras.Auras[id].Timer) then PowaAuras.Auras[id].Timer:Dispose(); end
+		if(PowaAuras.Auras[id].Stacks) then PowaAuras.Auras[id].Stacks:Dispose(); end
+		PowaAuras.Auras[id]:Dispose();
+		-- Remove.
+		PowaAuras.Auras[id] = nil;
+		if(id > 120 and id < 361) then
+			PowaGlobalSet[aura.id] = nil;
+		elseif(id > 360) then
+			PowaClassSet[select(2, UnitClass("player"))][id] = nil;
+		end
+		-- Fix things.
+		PowaAuras:CalculateAuraSequence();
+		PowaBrowser:TriageIcones();
+	end,
 	ToggleAllAuras = function(self, activeOnly, forceDisplay, state)
 		-- Need to be done.
 		if(not (PowaAuras.VariablesLoaded and PowaAuras.SetupDone)) then return; end 

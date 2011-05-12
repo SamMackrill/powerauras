@@ -3170,7 +3170,7 @@ function cPowaPowerType:Init()
 	self._base.Init(self);
 	-- Fix for happiness auras.
 	if(self.PowerType == 4) then
-		self.PowerType = -1;
+		self.PowerType = SPELL_POWER_FOCUS;
 	end
 	self:SetFixedIcon();
 end
