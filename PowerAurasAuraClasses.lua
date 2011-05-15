@@ -3166,12 +3166,12 @@ cPowaPowerType.ShowOptions={
 };
 
 function cPowaPowerType:Init()
+	-- Fix for happiness auras.
+	if(self.PowerType == 4 or self.PowerType == -1) then
+		self.PowerType = SPELL_POWER_RAGE;
+	end
 	-- Set the ranges properly.
 	self._base.Init(self);
-	-- Fix for happiness auras.
-	if(self.PowerType == 4) then
-		self.PowerType = SPELL_POWER_FOCUS;
-	end
 	self:SetFixedIcon();
 end
 
