@@ -245,6 +245,7 @@ PowaAuras = {
 		
 		GTFO = false,
 		UnitMatch = false,
+		PetStance = false,
 
 		-- true if any type should be checked
 		CheckIt = false,
@@ -278,6 +279,7 @@ PowaAuras = {
 		Tracking=24,
 		TypeBuff=25,
 		UnitMatch=26,
+		PetStance=27,
 		GTFO=50,
 	};
 
@@ -637,6 +639,7 @@ PowaAuras:RegisterAuraType('Items');
 PowaAuras:RegisterAuraType('Tracking');
 
 PowaAuras:RegisterAuraType('UnitMatch');
+PowaAuras:RegisterAuraType("PetStance");
 		
 PowaAuras:RegisterAuraType('GTFOHigh');
 PowaAuras:RegisterAuraType('GTFOLow');

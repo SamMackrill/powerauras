@@ -892,3 +892,11 @@ function PowaAuras:UNIT_NAME_UPDATE()
 		self.DoCheck.CheckIt = true;
 	end
 end
+
+-- Fires when the pet action bar is updated, we use this to see what stance is selected.
+function PowaAuras:PET_BAR_UPDATE()
+	if (self.ModTest == false) then
+		self.DoCheck.PetStance = true;
+		self.DoCheck.CheckIt = true;
+	end
+end
