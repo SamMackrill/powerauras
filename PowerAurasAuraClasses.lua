@@ -5,12 +5,12 @@ local strsplit = strsplit;
 
 cPowaAura = PowaClass(function(aura, id, base)
 	--PowaAuras:ShowText("cPowaAura constructor id=", id, " base=", base);
-
-	for k, v in pairs(cPowaAura.ExportSettings) do
+	
+	aura.ExportSettings = {};
+	aura:RegisterSettings();
+	for k, _ in pairs(aura.ExportSettings) do
 		if (base and base[k] ~= nil) then
 			aura[k] = base[k];
-		else
-			aura[k] = v;
 		end
 		-- PowaAuras:ShowText(k," =", aura[k]);
 	end
@@ -70,7 +70,7 @@ cPowaAura = PowaClass(function(aura, id, base)
 			aura.Stacks = cPowaStacks(aura, base.Stacks);
 		end				
 	end
-	
+
 	aura:Init();
 	
 end);
@@ -79,114 +79,114 @@ end);
 -- Be very careful if you change this as it may break many old exports
 -- Stings must always be set as at least an empty string
 -- Numbers and booleans can be set interchangably (e.g. for tri-states)
-cPowaAura.ExportSettings = {
-	off = false,
+function cPowaAura:RegisterSettings()
+	self:RegisterSetting("off", false, "Activation");
+	self:RegisterSetting("bufftype", PowaAuras.BuffTypes.Buff, "Activation");
+	self:RegisterSetting("buffname", "???", "Activation");
 	
-	bufftype = PowaAuras.BuffTypes.Buff,
-	buffname = "???",
+	self:RegisterSetting("texmode", 1, "Appearance");
+	self:RegisterSetting("wowtex", false, "Appearance");
+	self:RegisterSetting("customtex", false, "Appearance");
+	self:RegisterSetting("textaura", false, "Appearance");
+	self:RegisterSetting("owntex", false, "Appearance");
+	self:RegisterSetting("texture", 1, "Appearance");
+	self:RegisterSetting("customname", "", "Appearance");
+	self:RegisterSetting("aurastext", "", "Appearance");
+	self:RegisterSetting("aurastextfont", 1, "Appearance");
+	self:RegisterSetting("icon", "", "Appearance");
+	self:RegisterSetting("strata", "LOW", "Appearance");
+	self:RegisterSetting("timerduration", 0, "Appearance");
 	
-	texmode = 1,
-	wowtex = false,
-	customtex = false,
-	textaura = false,
-	owntex = false,
-	texture = 1,
-	customname = "",
-	aurastext = "",
-	aurastextfont = 1,
-	icon = "",
-	strata = "LOW",
+	self:RegisterSetting("sound", 0, "Sound");
+	self:RegisterSetting("customsound", "", "Sound");
+	self:RegisterSetting("soundend", 0, "Sound");
+	self:RegisterSetting("customsoundend", "", "Sound");
+	
+	self:RegisterSetting("begin", 0, "Animation");
+	self:RegisterSetting("anim1", 1, "Animation");
+	self:RegisterSetting("anim2", 0, "Animation");
+	self:RegisterSetting("speed", 1.00, "Animation");
+	self:RegisterSetting("finish", 1, "Animation");
+	self:RegisterSetting("beginSpin", false, "Animation");
+	self:RegisterSetting("duration", 0, "Animation");
 
-	timerduration = 0,
+	self:RegisterSetting("alpha", 0.75, "Appearance");
+	self:RegisterSetting("size", 0.75, "Appearance");
+	self:RegisterSetting("torsion", 1, "Appearance");
+	self:RegisterSetting("symetrie", 0, "Appearance");
+	self:RegisterSetting("x", 0, "Appearance");
+	self:RegisterSetting("y", -30, "Appearance");
+	self:RegisterSetting("randomcolor", false, "Appearance");
+	self:RegisterSetting("r", 1.0, "Appearance");
+	self:RegisterSetting("g", 1.0, "Appearance");
+	self:RegisterSetting("b", 1.0, "Appearance");
 	
-	-- Sound Settings
-	sound = 0,
-	customsound = "",	
-	soundend = 0,
-	customsoundend = "",	
+	self:RegisterSetting("inverse", false, "Activation");
+	self:RegisterSetting("ignoremaj", true, "Activation");
+	self:RegisterSetting("exact", false, "Activation");
+	self:RegisterSetting("Extra", false, "Activation");
 	
-	-- Animation Settings
-	begin = 0,
-	anim1 = 1,
-	anim2 = 0,
-	speed = 1.00,
-	finish = 1,
-	beginSpin = false,
+	self:RegisterSetting("InvertAuraBelow", 0, "Activation");
 
-	duration = 0,
-	
-	-- Appearance Settings
-	alpha = 0.75,
-	size = 0.75,
-	torsion = 1,
-	symetrie = 0,
-	x = 0,
-	y = -30,
-	randomcolor = false,
-	r = 1.0,
-	g = 1.0,
-	b = 1.0,
-	
-	inverse = false,
-	ignoremaj = true,
-	exact = false,
-	Extra = false,
-	
-	InvertAuraBelow = 0,
+	self:RegisterSetting("stacks", 0, "Activation");
+	self:RegisterSetting("stacksLower", 0, "Activation");
+	self:RegisterSetting("stacksOperator", PowaAuras.DefaultOperator, "Activation");
 
-	stacks = 0,
-	stacksLower = 0,
-	stacksOperator = PowaAuras.DefaultOperator,
+	self:RegisterSetting("threshold", 50, "Activation");
+	self:RegisterSetting("thresholdinvert", false, "Activation");
 
-	threshold = 50,
-	thresholdinvert = false,
-
-	mine = false,
-
-	focus = false,
-	target = false,
-	targetfriend = false,
-	raid = false,
-	groupOrSelf = false,
-	party = false,
-
-	groupany = true,
-	optunitn = false,
-	unitn = "",
-
-	inRaid = 0,
-	inParty = 0,
-	ismounted = false,
-	isResting = 0,
-	inVehicle = false,	
-	combat = 0,
-	isAlive = true,
-	PvP = 0,
+	self:RegisterSetting("focus", false, "Attention");
+	self:RegisterSetting("target", false, "Attention");
+	self:RegisterSetting("targetfriend", false, "Attention");
 	
-	Instance5Man = 0,
-	Instance5ManHeroic = 0,
-	Instance10Man = 0,
-	Instance10ManHeroic = 0,
-	Instance25Man = 0,
-	Instance25ManHeroic = 0,
-	InstanceBg = 0,
-	InstanceArena = 0,
+	self:RegisterSetting("raid", false, "Group");
+	self:RegisterSetting("groupOrSelf", false, "Group");
+	self:RegisterSetting("party", false, "Group");
+	self:RegisterSetting("groupany", true, "Group");
 	
-	RoleTank     = 0,
-	RoleHealer   = 0,
-	RoleMeleDps  = 0,
-	RoleRangeDps = 0,
+	self:RegisterSetting("optunitn", false, "Unit");
+	self:RegisterSetting("unitn", "", "Unit");
+
+	self:RegisterSetting("inRaid", 0, "PlayerState");
+	self:RegisterSetting("inParty", 0, "PlayerState");
+	self:RegisterSetting("ismounted", false, "PlayerState");
+	self:RegisterSetting("isResting", 0, "PlayerState");
+	self:RegisterSetting("inVehicle", false, "PlayerState");
+	self:RegisterSetting("combat", 0, "PlayerState");
+	self:RegisterSetting("isAlive", true, "PlayerState");
+	self:RegisterSetting("PvP", 0, "PlayerState");
 	
-	spec1 = true,
-	spec2 = true,
-	gcd = false,
-	stance = 10,
-	GTFO = 0,
-	PowerType = -1,
-	multiids = "",
-	tooltipCheck = "",
-	UseOldAnimations = false,
-}
+	self:RegisterSetting("Instance5Man", 0, "Location");
+	self:RegisterSetting("Instance5ManHeroic", 0, "Location");
+	self:RegisterSetting("Instance10Man", 0, "Location");
+	self:RegisterSetting("Instance10ManHeroic", 0, "Location");
+	self:RegisterSetting("Instance25Man", 0, "Location");
+	self:RegisterSetting("Instance25ManHeroic", 0, "Location");
+	self:RegisterSetting("InstanceBg", 0, "Location");
+	self:RegisterSetting("InstanceArena", 0, "Location");
+	
+	self:RegisterSetting("RoleTank    ", 0, "Role");
+	self:RegisterSetting("RoleHealer  ", 0, "Role");
+	self:RegisterSetting("RoleMeleDps ", 0, "Role");
+	self:RegisterSetting("RoleRangeDps", 0, "Role");
+	
+	self:RegisterSetting("spec1", true, "Spec");
+	self:RegisterSetting("spec2", true, "Spec");
+	
+	self:RegisterSetting("gcd", false, "Misc");
+	self:RegisterSetting("stance", 10, "Misc");
+	self:RegisterSetting("GTFO", 0, "Misc");
+	self:RegisterSetting("PowerType", -1, "Misc");
+	self:RegisterSetting("multiids", "", "Misc");
+	self:RegisterSetting("tooltipCheck", "", "Misc");
+	self:RegisterSetting("UseOldAnimations", false, "Misc");
+	self:RegisterSetting("mine", false, "Misc");
+end
+
+function cPowaAura:RegisterSetting(name, default, category)
+	self.ExportSettings[name] = default;
+	self[name] = default;
+end
 
 -- --[[
 	-- Possible new settings list. Would need to remain backwards compatible.
@@ -3166,6 +3166,7 @@ cPowaPowerType.ShowOptions={
 };
 
 function cPowaPowerType:Init()
+	self:SetFixedIcon();
 	-- Fix for happiness auras.
 	if(self.PowerType == 4 or self.PowerType == -1) then
 		self.PowerType = SPELL_POWER_RAGE;
