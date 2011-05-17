@@ -8,7 +8,7 @@
 ## Notes-zhTW: 強大的條件觸發式事件提示插件                                                 |cff00ff00撒爾薩里安[|r末日彩虹|cff00ff00]漢化|r
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
-## SavedVariables: PowaClassSet,PowaGlobalSet,PowaGlobalListe,PowaClassListe,PowaGlobalMisc
+## SavedVariables: PowerAurasDB, PowaClassSet,PowaGlobalSet,PowaGlobalListe,PowaClassListe,PowaGlobalMisc
 ## SavedVariablesPerCharacter: PowaSet,PowaMisc,PowaTimer,PowaPlayerListe,PowaState
 
 PowerAurasBase.lua
