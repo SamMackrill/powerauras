@@ -37,7 +37,7 @@ PowaAuras.UI:Register("AuraBrowser", {
 	OnHide = function(self)
 		PlaySound("igMainMenuClose");
 		PowaAuras.ModTest = false;
-		PowaAuras.Helpers:ToggleAllAuras(false, false, false);
+		PowaAuras:ToggleAllAuras(false, false, false);
 		PowaAuras.DoCheck.All = true;
 	end,
 	OnSelectionChanged = function(self, key)
@@ -52,13 +52,13 @@ PowaAuras.UI:Register("AuraBrowser", {
 	end,
 	OnVariablesLoaded = function(self)
 		-- Do update check.
-		if(PowaAuras.VersionInt > PowaAuras.Helpers:GetSetting("LastVersion")) then
+		if(PowaAuras.VersionInt > PowaAuras:GetSetting("LastVersion")) then
 			self.ShowVersionDialog = true;
 		end
 		-- First run check.
-		if(PowaAuras.Helpers:GetSetting("FirstRun") == true) then
+		if(PowaAuras:GetSetting("FirstRun") == true) then
 			self.ShowRunDialog = true;
-			PowaAuras.Helpers:SaveSetting("FirstRun", false);
+			PowaAuras:SaveSetting("FirstRun", false);
 			-- Don't bother showing the version upgrade dialog if it's the first run.
 			self.ShowVersionDialog = false;
 		end
@@ -224,16 +224,14 @@ PowaAuras.UI:Register("AuraButton", {
 			-- Check modifier keys.
 			if(IsAltKeyDown()) then
 				-- Show/Hide aura.
-				print("|cFF527FCCDEBUG (AuraButton): |rShow/Hide aura: " .. self.AuraID);
-				PowaAuras.Helpers:ToggleAuraDisplay(self.AuraID, 
+				PowaAuras:ToggleAuraDisplay(self.AuraID, 
 					((PowaEditor:IsShown() and PowaEditor.AuraID and PowaEditor.AuraID == self.AuraID) or nil));
 			elseif(IsControlKeyDown()) then
 				-- Debug the aura state.
 				print("|cFF527FCCDEBUG (AuraButton): |rDebug aura: " .. self.AuraID);
 			elseif(IsShiftKeyDown()) then
 				-- Disable/Enable aura.
-				print("|cFF527FCCDEBUG (AuraButton): |rDisable/Enable aura: " .. self.AuraID);
-				PowaAuras.Helpers:ToggleAuraEnabled(self.AuraID);
+				PowaAuras:ToggleAuraEnabled(self.AuraID);
 			else
 				-- Select it.
 				PowaBrowser:SetSelectedAura(self.AuraID, false);
@@ -242,7 +240,6 @@ PowaAuras.UI:Register("AuraButton", {
 			-- Shortcut for edit.
 			PowaBrowser:SetSelectedAura(self.AuraID, false);
 			PowaEditor:Show();
-			print("|cFF527FCCDEBUG (AuraBrowser): |rOpen aura editor: " .. self.AuraID);
 		end
 	end,
 	OnEnter = function(self)

@@ -97,16 +97,3 @@ PowaAuras.UI = {
 		self[name] = data;
 	end,
 };
-
--- General functions.
--- Todo: Rewrite this one a bit.
-function PowaAuras:SaveSetting(...)
-	print("|cFF527FCCDEBUG (PowerUI): |rDeprecated function call: PowaAuras:SaveSetting(", ..., ")");
-	-- -- local self = PowaAuras;
-	-- -- auraId = auraId or self.CurrentAuraId;
-	-- -- if(not auraId or not self.Auras[auraId]) then print("No aura ID!"); return; end
-	-- -- -- We don't save settings yet, this is just for debugging purposes.
-	-- -- -- self.Auras[auraId][property] = value;
-	-- -- -- self:RedisplayAura(auraId);
-	-- -- print("Saved: ", property, value, auraId);
-end

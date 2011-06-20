@@ -31,9 +31,9 @@ UI:Register("CheckboxBase", {
 	end,
 	SaveSetting = function(self, value)
 		if(self.Invert) then
-			PowaAuras.Helpers:SaveSetting(self.SettingKey, not self:GetChecked());
+			PowaAuras:SaveSetting(self.SettingKey, not self:GetChecked());
 		else
-			PowaAuras.Helpers:SaveSetting(self.SettingKey, (self:GetChecked() and true or false));
+			PowaAuras:SaveSetting(self.SettingKey, (self:GetChecked() and true or false));
 		end
 	end,
 });
