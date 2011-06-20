@@ -21,6 +21,9 @@ PowaAuras.UI:Register("TabFrame", {
 			self:RemoveTab(1);
 		end
 	end,
+	GetSelectedTab = function(self)
+		return self.SelectedTab;
+	end,
 	HideTab = function(self, index)
 		-- Make sure it exists.
 		if(not self.Tabs[index]) then return; end

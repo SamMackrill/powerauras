@@ -224,20 +224,48 @@
 											<AbsInset left="0" right="0" top="0" bottom="0" />
 										</HitRectInsets>
 										<Scripts>
+											<OnLoad>
+												self.UpdateColours = function(self)
+													if(self:HasFocus()) then
+														if(self:IsMouseOver()) then
+															self:SetBackdropBorderColor(1, 0.82, 0, 1);
+														else
+															self:SetBackdropBorderColor(1, 0.82, 0, 0.8);
+														end
+													else
+														if(self:IsMouseOver()) then
+															self:SetBackdropBorderColor(0.3, 0.3, 0.3, 1);
+														else
+															self:SetBackdropBorderColor(0.3, 0.3, 0.3, 0.8);
+														end
+													end		
+												end
+											</OnLoad>
+											<OnLeave>
+												self:UpdateColours();
+											</OnLeave>
+											<OnEnter>
+												self:UpdateColours();
+											</OnEnter>
 											<OnEscapePressed>
 												self:SetText(PowaBrowser:GetPageName());
 												self:ClearFocus();
+												self:UpdateColours();
 											</OnEscapePressed>
 											<OnEditFocusGained>
 												self:HighlightText();
+												self:UpdateColours();
 											</OnEditFocusGained>
 											<OnEditFocusLost>
 												self:HighlightText(0,0);
+												self:ClearFocus(); -- API bugfix.
+												self:UpdateColours();
 											</OnEditFocusLost>
 											<OnEnterPressed>
 												PowaBrowser:SavePageName(self:GetText());
 												self:SetText(PowaBrowser:GetPageName());
 												self:ClearFocus();
+												self:UpdateColours();
 											</OnEnterPressed>
 										</Scripts>
 									</EditBox>
@@ -468,64 +496,103 @@
 										</FontString>
 									</Layer>
 								</Layers>
-								<Script>
-									print("lol");
-								</Script>
+								<Frames>
+									<Frame parentKey="Main" hidden="true">
+										<Anchors>
+											<Anchor point="TOPLEFT" x="15" y="-45" />
+											<Anchor point="BOTTOMRIGHT" x="-15" y="40" />
+										</Anchors>
+										<Scripts>
+											<OnLoad>
+												-- I'm also a radio button host.
+												PowaAuras.UI:RadioGroup(self, "CreateAuraRadioButton", true);
+												for i=1,3 do
+													local item = self:CreateRadioItem(i);
+													item:SetPoint("TOPLEFT", 0, -((i-1)*63));
+													item:SetPoint("TOPRIGHT", 0, -((i-1)*63));
+													if(i == 1) then
+														item.Title:SetText(PowaAuras.Text["UI_CreateNew"]);
+														item.Desc:SetText(PowaAuras.Text["UI_CreateNewDesc"]);
+														SetDesaturation(item.Icon, false);
+													elseif(i == 2) then
+														item.Icon:SetTexture("Interface\\Glues\\CharacterCreate\\UI-CHARACTERCREATE-CLASSES");
+														item.Icon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[select(2, UnitClass("player"))]));
+														item.Title:SetText(PowaAuras.Text["UI_CreatePreset"]);
+														item.Desc:SetText(PowaAuras.Text["UI_CreatePresetDesc"]);
+														SetDesaturation(item.Icon, true);
+													elseif(i == 3) then
+														item.Icon:SetTexture("Interface\\Buttons\\UI-MicroStream-Green");
+														item.Icon:SetTexCoord(0.15, 0.85, 0.15, 0.85);
+														item.Title:SetText(PowaAuras.Text["UI_CreateImport"]);
+														item.Desc:SetText(PowaAuras.Text["UI_CreateImportDesc"]);
+														SetDesaturation(item.Icon, true);
+													end
+												end
+												-- Update on selection changed.
+												self.OnRadioSelectionChanged = function(self, key)
+													if(key > 1) then
+														self:GetParent().AcceptButton:SetText(PowaAuras.Text["UI_Next"]);
+													else
+														self:GetParent().AcceptButton:SetText(PowaAuras.Text["UI_Save"]);
+													end
+												end
+											</OnLoad>
+										</Scripts>
+									</Frame>
+									<Frame parentKey="Premade" hidden="true">
+										<Anchors>
+											<Anchor point="TOPLEFT" x="15" y="-45" />
+											<Anchor point="BOTTOMRIGHT" x="-15" y="40" />
+										</Anchors>
+									</Frame>
+									<Frame parentKey="Code" hidden="true">
+										<Anchors>
+											<Anchor point="TOPLEFT" x="15" y="-45" />
+											<Anchor point="BOTTOMRIGHT" x="-15" y="40" />
+										</Anchors>
+									</Frame>
+								</Frames>
 								<Scripts>
 									<OnLoad>
 										-- I'm a dialog. Hi.
 										PowaAuras.UI:TabDialog(self, function()
-											if(self:GetSelectedRadioKey() == 1) then
+											if(self.Main:GetSelectedRadioKey() == 1) then
 												-- Create aura.
 												print("|cFF527FCCDEBUG (AuraBrowser): |rCreating Blank Aura");
 												PowaAuras.Helpers:CreateAura();
 												-- Done.
 												PowaBrowser:SetSelectedAura(PowaBrowser:GetSelectedAura(), false);
-											elseif(self:GetSelectedRadioKey() == 2) then
+												self:SetSelectedTab(1);
+												-- Update title.
+												self.Title:SetText(PowaAuras.Text["UI_CreateAura"]);
+											elseif(self.Main:GetSelectedRadioKey() == 2) then
 												-- Import preset.
-												print("|cFF527FCCDEBUG (AuraBrowser): |rPreset Import Dialog NYI");
-											elseif(self:GetSelectedRadioKey() == 3) then
+												self:SetSelectedTab(2);
+												-- Update title.
+												self.Title:SetText(PowaAuras.Text["UI_CreatePresetAura"]);
+											elseif(self.Main:GetSelectedRadioKey() == 3) then
 												-- Import from code.
-												print("|cFF527FCCDEBUG (AuraBrowser): |rPreset Import Code NYI");
+												self:SetSelectedTab(3);
+												-- Update title.
+												self.Title:SetText(PowaAuras.Text["UI_CreateImportAura"]);
 											end
 										end, function()
-											PowaBrowser:SetSelectedAura(nil, false);
-											self:GetParent():SetSelectedTab(1);
+											-- If current tab > 1, return to index. Else, back to aura browser.
+											if(self:GetSelectedTab() > 1) then
+												self:SetSelectedTab(1);
+											else
+												PowaBrowser:SetSelectedAura(nil, false);
+												self:GetParent():SetSelectedTab(1);
+											end
+											-- Either way, fix title to Create.
+											self.Title:SetText(PowaAuras.Text["UI_CreateAura"]);
 										end);
 										-- Did I ever tell you I once hosted a tab frame? It's true!
 										PowaAuras.UI:TabFrame(self, "TabButtonBase");
-										-- I'm also a radio button host.
-										PowaAuras.UI:RadioGroup(self, "CreateAuraRadioButton", true);
-										for i=1,3 do
-											local item = self:CreateRadioItem(i);
-											item:SetPoint("TOPLEFT", 15, -50-((i-1)*63));
-											item:SetPoint("TOPRIGHT", -15, -50-((i-1)*63));
-											if(i == 1) then
-												item.Title:SetText(PowaAuras.Text["UI_CreateNew"]);
-												item.Desc:SetText(PowaAuras.Text["UI_CreateNewDesc"]);
-												SetDesaturation(item.Icon, false);
-											elseif(i == 2) then
-												item.Icon:SetTexture("Interface\\Glues\\CharacterCreate\\UI-CHARACTERCREATE-CLASSES");
-												item.Icon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[select(2, UnitClass("player"))]));
-												item.Title:SetText(PowaAuras.Text["UI_CreatePreset"]);
-												item.Desc:SetText(PowaAuras.Text["UI_CreatePresetDesc"]);
-												SetDesaturation(item.Icon, true);
-											elseif(i == 3) then
-												item.Icon:SetTexture("Interface\\Buttons\\UI-MicroStream-Green");
-												item.Icon:SetTexCoord(0.15, 0.85, 0.15, 0.85);
-												item.Title:SetText(PowaAuras.Text["UI_CreateImport"]);
-												item.Desc:SetText(PowaAuras.Text["UI_CreateImportDesc"]);
-												SetDesaturation(item.Icon, true);
-											end
-										end
-										-- Update on selection changed.
-										self.OnRadioSelectionChanged = function(self, key)
-											if(key > 1) then
-												self.AcceptButton:SetText(PowaAuras.Text["UI_Next"]);
-											else
-												self.AcceptButton:SetText(PowaAuras.Text["UI_Save"]);
-											end
-										end
+										self:AddTab(self.Main);
+										self:AddTab(self.Premade);
+										self:AddTab(self.Code);
+										self.Title:SetText(PowaAuras.Text["UI_CreateAura"]);
 									</OnLoad>
 								</Scripts>
 							</Frame>
@@ -536,7 +603,6 @@
 								PowaAuras.UI:TabFrame(self, "TabButtonBase");
 								self:AddTab(self.Page, "");
 								self:AddTab(self.Create, "");
-								self.Create.Title:SetText(PowaAuras.Text["UI_CreateAura"]);
 							</OnLoad>
 						</Scripts>
 					</Frame>
