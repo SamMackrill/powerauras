@@ -326,5 +326,5 @@ Responds to a version request. Prints it out (send VERSION_REQUEST for debugging
 ------------------------------------------------------------------------------------------------------------------------
 --]]
 PowaComms:AddHandler("VERSION_RESPONSE", function(self, data, from)
-	PowaAuras:ShowText(from, " is using version ", data, ".");
+--	PowaAuras:ShowText(from, " is using version ", data, ".");
 end);
