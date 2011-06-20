@@ -314,20 +314,20 @@
 												self:SetScript("OnDropdownItemSelected", function(self, key)
 													if(key == 1) then
 														-- Lock/Unlock.
-														PowaAuras.Helpers:SaveSetting("Locked", not PowaAuras.Helpers:GetSetting("Locked"));
+														PowaAuras:SaveSetting("Locked", not PowaAuras:GetSetting("Locked"));
 													elseif(key == 2) then
 														-- Show.
-														PowaAuras.Helpers:ToggleAllAuras(false, true);
+														PowaAuras:ToggleAllAuras(false, true);
 													elseif(key == 3) then
 														-- Hide.
-														PowaAuras.Helpers:ToggleAllAuras(false, false, false);
+														PowaAuras:ToggleAllAuras(false, false, false);
 													elseif(key == 4) then
 														-- Export.
 														print("Page Export Dialog NYI");
 													end
 												end);
 												-- Add a callback for the lock setting.
-												PowaAuras.Helpers:RegisterSettingCallback(function(key, value)
+												PowaAuras:RegisterSettingCallback(function(key, value)
 													if(key ~= "Locked") then return; end
 													self:UpdateItem(1, (value == true and PowaAuras.Text["UI_UnlockAll"] or PowaAuras.Text["UI_LockAll"]));
 												end);
@@ -550,6 +550,45 @@
 											<Anchor point="TOPLEFT" x="15" y="-45" />
 											<Anchor point="BOTTOMRIGHT" x="-15" y="40" />
 										</Anchors>
+										<Layers>
+											<Layer level="OVERLAY">
+												<FontString parentKey="SetWarning" font="PowaFontNormal" justifyH="LEFT" justifyV="TOP">
+													<Size x="380" y="72" />
+													<Anchors>
+														<Anchor point="TOPLEFT" x="5" y="-50" />
+														<Anchor point="TOPRIGHT" x="-5" y="-50" />
+													</Anchors>
+													<Color r="1" g="1" b="1" a="1" />
+												</FontString>
+											</Layer>
+										</Layers>
+										<Frames>
+											<EditBox parentKey="Code" inherits="PowaLabelledEditBoxTemplate">
+												<Size x="410" y="24" />
+												<Anchors>
+													<Anchor point="TOPLEFT" x="0" y="-20" />
+													<Anchor point="TOPRIGHT" x="0" y="-20" />
+												</Anchors>
+												<Scripts>
+													<OnLoad>
+														-- Pass nil as setting to avoid any settings crap.
+														PowaAuras.UI:EditBox3(self, "UI_CreateImportExp", nil);
+														-- Can't be bothered to make an OnLoad block in the parent JUST for this.
+														self:GetParent().SetWarning:SetText(PowaAuras.Text["UI_CreateImportWarning"]);
+													</OnLoad>
+													<OnTextChanged>
+														-- Parse string, is it a set or normal import?
+														if(self:GetText():trim():lower():sub(1, 4) == "set=") then
+															-- Set.
+															self:GetParent().SetWarning:Show();
+														else
+															-- Normal.
+															self:GetParent().SetWarning:Hide();
+														end
+													</OnTextChanged>
+												</Scripts>
+											</EditBox>
+										</Frames>
 									</Frame>
 								</Frames>
 								<Scripts>
@@ -559,7 +598,7 @@
 											if(self.Main:GetSelectedRadioKey() == 1) then
 												-- Create aura.
 												print("|cFF527FCCDEBUG (AuraBrowser): |rCreating Blank Aura");
-												PowaAuras.Helpers:CreateAura();
+												PowaAuras:CreateAura();
 												-- Done.
 												PowaBrowser:SetSelectedAura(PowaBrowser:GetSelectedAura(), false);
 												self:SetSelectedTab(1);

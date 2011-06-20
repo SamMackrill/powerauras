@@ -58,7 +58,7 @@ PowaAuras.UI:Register("AuraEditor", {
 		self:ToggleAdvanced(self.Advanced:GetChecked());
 		-- Update some values.
 		-- Force aura showing.
-		PowaAuras.Helpers:ToggleAuraDisplay(auraID, true);
+		PowaAuras:ToggleAuraDisplay(auraID, true);
 		-- Done.
 		return true;
 	end,

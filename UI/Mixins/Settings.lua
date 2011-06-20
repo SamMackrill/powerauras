@@ -15,11 +15,11 @@ PowaAuras.UI:Register("Settings", {
 	end,
 	GetSetting = function(self)
 		if(not self.SettingKey) then return; end
-		return PowaAuras.Helpers:GetSetting(self.SettingKey);
+		return PowaAuras:GetSetting(self.SettingKey);
 	end,
 	SaveSetting = function(self, value)
 		if(not self.SettingKey) then return; end
-		return PowaAuras.Helpers:SaveSetting(self.SettingKey, value);
+		return PowaAuras:SaveSetting(self.SettingKey, value);
 	end,
 	UpdateSetting = function(self, setting)
 		-- Store setting.
@@ -29,7 +29,7 @@ PowaAuras.UI:Register("Settings", {
 		-- Only register the callback once.
 		if(not self.HasRegisteredSettingsCallback) then
 			-- Go go go.
-			PowaAuras.Helpers:RegisterSettingCallback(function(key, value)
+			PowaAuras:RegisterSettingCallback(function(key, value)
 				if(self.SettingKey ~= key) then return; end
 				self:CallScript("OnSettingChanged", value);
 			end);
