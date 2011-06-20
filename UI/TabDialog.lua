@@ -3,21 +3,31 @@ PowaAuras.UI:Register("TabDialog", {
 	Scripts = {
 		OnHide = true,
 	},
-	Init = function(self, acceptKey, cancelKey)
+	Init = function(self, acceptFunc, cancelFunc, acceptKey, cancelKey)
+		-- Replace functions if supplied.
+		if(acceptFunc) then
+			self.OnTabDialogAccept = acceptFunc;
+		end
+		if(cancelFunc) then
+			self.OnTabDialogCancel = cancelFunc;
+		end
+		-- Apply scripts.
 		self.AcceptButton:SetScript("OnClick", function()
-			self:OnAccept();
+			self:OnTabDialogAccept();
 			PlaySound("UChatScrollButton");
 		end);
 		self.CancelButton:SetScript("OnClick", function()
-			self:OnCancel();
+			self:OnTabDialogCancel();
 			PlaySound("UChatScrollButton");
 		end);
+		-- Localize buttons.
 		self.AcceptButton:SetText(PowaAuras.Text[(acceptKey or "UI_Save")]);
 		self.CancelButton:SetText(PowaAuras.Text[(cancelKey or "UI_Cancel")]);
-		self.OnHide = self.OnCancel;
+		-- When frame is hidden, assume cancellation.
+		self.OnHide = self.OnTabDialogCancel;
 	end,
-	OnCancel = function(self)
+	OnTabDialogCancel = function(self)
 	end,
-	OnAccept = function(self)
+	OnTabDialogAccept = function(self)
 	end,
 });

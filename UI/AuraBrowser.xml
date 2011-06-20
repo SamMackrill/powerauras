@@ -468,33 +468,36 @@
 										</FontString>
 									</Layer>
 								</Layers>
+								<Script>
+									print("lol");
+								</Script>
 								<Scripts>
 									<OnLoad>
 										-- I'm a dialog. Hi.
-										PowaAuras.UI:TabDialog(self);
-										self.OnAccept = function()
-											if(self.SelectedKey == 1) then
+										PowaAuras.UI:TabDialog(self, function()
+											if(self:GetSelectedRadioKey() == 1) then
 												-- Create aura.
 												print("|cFF527FCCDEBUG (AuraBrowser): |rCreating Blank Aura");
 												PowaAuras.Helpers:CreateAura();
 												-- Done.
 												PowaBrowser:SetSelectedAura(PowaBrowser:GetSelectedAura(), false);
-											elseif(self.SelectedKey == 2) then
+											elseif(self:GetSelectedRadioKey() == 2) then
 												-- Import preset.
 												print("|cFF527FCCDEBUG (AuraBrowser): |rPreset Import Dialog NYI");
-											elseif(self.SelectedKey == 3) then
+											elseif(self:GetSelectedRadioKey() == 3) then
 												-- Import from code.
 												print("|cFF527FCCDEBUG (AuraBrowser): |rPreset Import Code NYI");
 											end
-										end
-										self.OnCancel = function()
+										end, function()
 											PowaBrowser:SetSelectedAura(nil, false);
 											self:GetParent():SetSelectedTab(1);
-										end
+										end);
+										-- Did I ever tell you I once hosted a tab frame? It's true!
+										PowaAuras.UI:TabFrame(self, "TabButtonBase");
 										-- I'm also a radio button host.
 										PowaAuras.UI:RadioGroup(self, "CreateAuraRadioButton", true);
 										for i=1,3 do
-											local item = self:AddItem(i);
+											local item = self:CreateRadioItem(i);
 											item:SetPoint("TOPLEFT", 15, -50-((i-1)*63));
 											item:SetPoint("TOPRIGHT", -15, -50-((i-1)*63));
 											if(i == 1) then
@@ -516,7 +519,7 @@
 											end
 										end
 										-- Update on selection changed.
-										self.OnSelectionChanged = function(self, key)
+										self.OnRadioSelectionChanged = function(self, key)
 											if(key > 1) then
 												self.AcceptButton:SetText(PowaAuras.Text["UI_Next"]);
 											else

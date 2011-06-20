@@ -2,67 +2,70 @@
 PowaAuras.UI:Register("RadioGroup", {
 	Init = function(self, class, alwaysSelect)
 		-- Add item register.
-		self.Items = {};
-		self.ItemClass = class or "RadioButton";
-		self.AlwaysSelect = alwaysSelect;
-		self.SelectedKey = nil;
+		self.RadioItems = {};
+		self.RadioItemClass = class or "RadioButton";
+		self.RadioAlwaysSelect = alwaysSelect;
+		self.SelectedRadioKey = nil;
 	end,
-	AddItem = function(self, key, ...)
+	CreateRadioItem = function(self, key, ...)
 		-- Make sure it doesn't already exist.
-		if(self.Items[key]) then return; end
+		if(self.RadioItems[key]) then return; end
 		-- Add frame.
-		self.Items[key] = PowaAuras.UI[self.ItemClass](PowaAuras.UI, _, self, key, ...);
+		self.RadioItems[key] = PowaAuras.UI[self.RadioItemClass](PowaAuras.UI, _, self, key, ...);
 		-- Update.
-		self:UpdateItems();
+		self:UpdateRadioItems();
 		-- Return item for manual positioning/sizing.
-		return self.Items[key];
+		return self.RadioItems[key];
 	end,
-	ClearItems = function(self)
+	ClearRadioItems = function(self)
 		-- Go over all items, call remove.
-		for key, _ in pairs(self.Items) do
-			self:RemoveItem(key);
+		for key, _ in pairs(self.RadioItems) do
+			self:RemoveRadioItem(key);
 		end
 	end,
-	GetItem = function(self, key)
+	GetRadioItem = function(self, key)
 		-- Make sure it already exists.
-		if(not self.Items[key]) then return; end
-		return self.Items[key];
+		if(not self.RadioItems[key]) then return; end
+		return self.RadioItems[key];
 	end,
-	RemoveItem = function(self, key)
+	GetSelectedRadioKey = function(self)
+		return self.SelectedRadioKey;
+	end,
+	RemoveRadioItem = function(self, key)
 		-- Make sure it already exists.
-		if(not self.Items[key]) then return; end
+		if(not self.RadioItems[key]) then return; end
 		-- Go go go.
-		self.Items[key]:Recycle();
-		self.Items[key] = nil;
+		self.RadioItems[key]:Recycle();
+		self.RadioItems[key] = nil;
 		-- Update.
-		self:UpdateItems();
+		self:UpdateRadioItems();
 	end,
-	OnSelectionChanged = function(self, key)
+	OnRadioSelectionChanged = function(self, key)
 	end,
-	SelectItem = function(self, key)
+	SetSelectedRadioKey = function(self, key)
 		-- Make sure it already exists. Allow nil though.
-		if(key and not self.Items[key] or key == self.SelectedKey) then return; end
+		if(key and not self.RadioItems[key] or key == self.SelectedRadioKey) then return; end
 		-- Select it.
-		self.SelectedKey = key;
+		self.SelectedRadioKey = key;
 		-- Update.
-		self:OnSelectionChanged(key);
-		self:UpdateItems();
+		self:OnRadioSelectionChanged(key);
+		self:UpdateRadioItems();
 	end,
-	UpdateItems = function(self)
+	UpdateRadioItems = function(self)
 		-- Forcing a selection?
-		if(self.AlwaysSelect and not self.SelectedKey) then
+		if(self.RadioAlwaysSelect and not self.SelectedRadioKey) then
 			-- Umm, isn't there a cleaner way of getting the first key of a hash?
-			for k, v in pairs(self.Items) do
+			for k, v in pairs(self.RadioItems) do
 				if(v) then
-					self:SelectItem(k);
+					self:SetSelectedRadioKey(k);
 					return;
 				end
 			end
 		end
 		-- Simply change the checked state.
-		for _, item in ipairs(self.Items) do
+		for _, item in ipairs(self.RadioItems) do
 			if(item) then
-				if(item.Key == self.SelectedKey) then
+				if(item.Key == self.SelectedRadioKey) then
 					item:SetChecked(true);
 				else
 					item:SetChecked(false);
@@ -106,7 +109,7 @@ PowaAuras.UI:Register("RadioButton", {
 	end,
 	OnClick = function(self)
 		-- Select this key.
-		self:GetParent():SelectItem(self.Key);
+		self:GetParent():SetSelectedRadioKey(self.Key);
 		PlaySound("UChatScrollButton");
 	end,
 	Recycle = function(self)
