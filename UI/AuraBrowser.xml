@@ -517,7 +517,7 @@
 										end
 										-- Update on selection changed.
 										self.OnSelectionChanged = function(self, key)
-											if(key == 2) then
+											if(key > 1) then
 												self.AcceptButton:SetText(PowaAuras.Text["UI_Next"]);
 											else
 												self.AcceptButton:SetText(PowaAuras.Text["UI_Save"]);
