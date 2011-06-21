@@ -1,0 +1,84 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+    ..\..\FrameXML\UI.xsd">
+	<Button name="PowaColorWidgetTemplate" virtual="true">
+		<Size>
+			<AbsDimension x="64" y="16" />
+		</Size>
+		<NormalFont style="PowaFontNormalSmall" />
+		<DisabledFont style="PowaFontDisableSmall" />
+		<HighlightFont style="PowaFontHighlightSmall" />
+		<NormalTexture file="Interface\Buttons\WHITE8X8" alphaMode="DISABLE">
+			<Size>
+				<AbsDimension x="16" y="16" />
+			</Size>
+			<Anchors>
+				<Anchor point="LEFT" relativePoint="LEFT" x="4" y="0" />
+			</Anchors>
+		</NormalTexture>
+		<Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground" edgeFile="Interface\ChatFrame\ChatFrameBackground" tile="true">
+			<EdgeSize>
+				<AbsValue val="1" />
+			</EdgeSize>
+			<TileSize>
+				<AbsValue val="5" />
+			</TileSize>
+			<Color r="0.0" g="0.0" b="0.0" a="0.5" />
+			<BorderColor r="0.3" g="0.3" b="0.3" a="0.8" />
+		</Backdrop>
+		<ButtonText name="$parentText" parentKey="Text" font="PowaFontNormalSmall" justifyH="LEFT" justifyV="MIDDLE">
+			<Size>
+				<AbsDimension x="40" y="24" />
+			</Size>
+			<Anchors>
+				<Anchor point="LEFT" x="28" y="0" />
+			</Anchors>
+		</ButtonText>
+		<Scripts>
+			<OnLoad>
+				self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
+			</OnLoad>
+			<OnClick>
+				if(button == "LeftButton") then
+					-- Set up colours/funcs.
+					local r, g, b = 1, 1, 1;
+					if(self.GetColors) then r, g, b = self:GetColors(); end
+					ColorPickerFrame:SetColorRGB(r, g, b);
+					ColorPickerFrame.hasOpacity = nil;
+					ColorPickerFrame.previousValues = { r, g, b, 1 };
+					-- Set functions.
+					if(not self.ColorChanged) then
+						self.ColorChanged = function(restore)
+							-- Get colors.
+							local r, g, b = ColorPickerFrame:GetColorRGB();
+							if(restore) then r, g, b = unpack(restore); end
+							-- Run custom OnColorChanged function.
+							if(self.OnColorChanged) then
+								self:OnColorChanged(r, g, b);
+							end
+							-- Tint the widget.
+							self:GetNormalTexture():SetVertexColor(r, g, b, 1);
+						end
+					end
+					ColorPickerFrame.func, ColorPickerFrame.cancelFunc = self.ColorChanged, self.ColorChanged;
+					-- Show.
+					ColorPickerFrame:Hide();
+					ColorPickerFrame:Show();
+				else
+					-- Reset to default.
+					self:GetNormalTexture():SetVertexColor(1, 1, 1, 1);
+					if(self.OnColorChanged) then
+						self:OnColorChanged(1, 1, 1);
+					end					
+				end
+			</OnClick>
+			<OnEnter>
+				self:SetBackdropBorderColor(0.3, 0.3, 0.3, 1);
+			</OnEnter>
+			<OnLeave>
+				self:SetBackdropBorderColor(0.3, 0.3, 0.3, 0.8);
+			</OnLeave>
+		</Scripts>
+	</Button>
+</Ui>

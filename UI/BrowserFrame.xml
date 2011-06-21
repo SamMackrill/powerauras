@@ -1,0 +1,92 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+    ..\..\FrameXML\UI.xsd">
+	<Script file="BrowserFrame.lua" />
+	<Frame name="PowaBrowserFrameBaseTemplate" virtual="true" inherits="PowaBorderedFrameTemplate">
+		<Frames>
+			<Button name="$parentPrevPageButton" parentKey="PrevPageButton">
+				<Size>
+					<AbsDimension x="27" y="27" /> <!-- It's actually 27x26, but the texture seems to blur a bit. -->
+				</Size>
+				<Anchors>
+					<Anchor point="LEFT" x="5" y="0" />
+				</Anchors>
+				<NormalTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Up">
+					<TexCoords left="0.0625" right="0.90625" top="0.09375" bottom="0.90625" />
+				</NormalTexture>
+				<PushedTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Down">
+					<TexCoords left="0.0625" right="0.90625" top="0.09375" bottom="0.90625" />
+				</PushedTexture>
+				<DisabledTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Disabled">
+					<TexCoords left="0.0625" right="0.90625" top="0.09375" bottom="0.90625" />
+				</DisabledTexture>
+				<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD">
+					<TexCoords left="0.0625" right="0.90625" top="0.09375" bottom="0.90625" />
+				</HighlightTexture>
+				<Scripts>
+					<OnClick>
+						PlaySound("UChatScrollButton");
+						self:GetParent():PrevPage();
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentNextPageButton" parentKey="NextPageButton">
+				<Size>
+					<AbsDimension x="27" y="27" /> <!-- It's actually 27x26, but the texture seems to blur a bit. -->
+				</Size>
+				<Anchors>
+					<Anchor point="RIGHT" x="-5" y="0" />
+				</Anchors>
+				<NormalTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Up">
+					<TexCoords left="0.0625" right="0.90625" top="0.09375" bottom="0.90625" />
+				</NormalTexture>
+				<PushedTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Down">
+					<TexCoords left="0.0625" right="0.90625" top="0.09375" bottom="0.90625" />
+				</PushedTexture>
+				<DisabledTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Disabled">
+					<TexCoords left="0.0625" right="0.90625" top="0.09375" bottom="0.90625" />
+				</DisabledTexture>
+				<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD">
+					<TexCoords left="0.0625" right="0.90625" top="0.09375" bottom="0.90625" />
+				</HighlightTexture>
+				<Scripts>
+					<OnClick>
+						PlaySound("UChatScrollButton");
+						self:GetParent():NextPage();
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+	</Frame>
+	
+	<Frame name="PowaBrowserFrameTemplate" virtual="true" inherits="PowaBrowserFrameBaseTemplate">
+		<Frames>
+			<EditBox name="$parentPageBox" parentKey="PageBox" inherits="PowaEditBoxTemplate">
+				<Size>
+					<AbsDimension x="70" y="17" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOM" relativePoint="BOTTOM" x="0" y="9" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						PowaAuras.UI:EditBox(self, nil, "UI_BrowserPage");
+					</OnLoad>
+				</Scripts>
+				<OnEscapePressed>
+					self:SetText(self:GetParent().Page);
+					self:ClearFocus();
+				</OnEscapePressed>
+				<OnEnterPressed>
+					if(tonumber(self:GetText(), 10)) then
+						self:GetParent():SetPage(tonumber(self:GetText(), 10));
+					else
+						self:SetText(self:GetParent().Page);
+					end
+					self:ClearFocus();
+				</OnEnterPressed>
+			</EditBox>
+		</Frames>
+	</Frame>
+</Ui>
