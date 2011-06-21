@@ -913,6 +913,16 @@ function PowaAuras:CheckMultiple(aura, reason, giveReason)
 	return true, self:InsertText(self.Text.nomReasonMulti, aura.multiids);	
 end
 
+function PowaAuras:RegisterPremadeAura(premade, classes)
+
+	--premade = {Name=name, Description=description, Code=code};
+	for _, class in pairs(classes) do
+		self.ClassPremades[class].insert(premade);
+	end 
+
+end
+
+
 -- Drag and Drop functions
 
 local function stopFrameMoving(frame)

@@ -73,6 +73,20 @@ PowaAuras = {
 	Cascade = {}; -- Dependant auras that need checking
 
 	UsedInMultis = {};
+	
+	ClassPremades =
+	{
+		PALADIN = {},
+		PRIEST = {},
+		SHAMAN = {},
+		WARRIOR = {},
+		DRUID = {},
+		MAGE = {},
+		WARLOCK = {},
+		ROGUE = {},
+		HUNTER = {},
+		DEATHKNIGHT = {},
+	};
 
 	PowaStance = {[0] = "Humanoid"};
 	
