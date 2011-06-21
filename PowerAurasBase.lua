@@ -17,6 +17,9 @@ PowaAuras = {
 	ExportMaxSize = 4000;
 	ExportWidth = 500;
 	TextureCount = 238;
+	MaxAuras = 480; -- Use this instead of hardcoding 360/480.
+	MaxAurasPerPage = 24;
+	MaxPages = 20;
 	
 	DebugEvents = false;
 	DebugTriggers = false;

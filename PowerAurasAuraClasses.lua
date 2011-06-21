@@ -317,6 +317,39 @@ function cPowaAura:Init()
 	self:SetFixedIcon();
 end
 
+--- Updates the aura ID associated with this aura object. Does not reindex the aura in any way.
+-- @param id The new aura ID to assign the object.
+function cPowaAura:UpdateAuraID(id)
+	self.id = id;
+	if(self.Timer) then
+		self.Timer.id = id;
+	end
+	if(self.Stacks) then
+		self.Stacks.id = id;
+	end
+	for _, v in ipairs(self.Triggers) do
+		v.AuraId = id;
+	end
+end
+
+--- Copies the Triggers, Timers and Stacks displays to a new aura by cloning their objects.
+-- @param id The new aura ID to assign the object.
+function cPowaAura:CopyDecorators(newID)
+	-- Get new aura object.
+	local newAura = PowaAuras.Auras[newID];
+	if(not newAura) then
+		return;
+	end
+	-- Copy decorators.
+	if(self.Timer) then
+		newAura.Timer = cPowaTimer(newAura, self.Timer);
+	end
+	if(self.Stacks) then
+		newAura.Stacks = cPowaStacks(newAura, self.Stacks);
+	end
+	-- TODO: Copy triggers from current aura to new one.
+end
+
 function cPowaAura:SetState(name, value)
 	if (not value or value==self[name]) then return; end
 	self[name] = value;
@@ -333,6 +366,13 @@ function cPowaAura:Dispose()
 	PowaAuras:Dispose("Textures", self.id);
 	PowaAuras:Dispose("SecondaryFrames", self.id);
 	PowaAuras:Dispose("SecondaryTextures", self.id);
+--	-- Dispose child elements. [[UNTESTED]]
+--	if(self.Timer) then
+--		self.Timer:Dispose();
+--	end
+--	if(self.Stacks) then
+--		self.Stacks:Dispose();
+--	end
 end
 
 function cPowaAura:CustomEvents()
@@ -3021,6 +3061,7 @@ function cPowaAuraStats:AddEffectAndEvents()
   and not self.targetfriend 
   and not self.party 
   and not self.raid 
+
   and not self.focus
   and not self.optunitn then
 		table.insert(PowaAuras.AurasByType[self.ValueName], self.id);

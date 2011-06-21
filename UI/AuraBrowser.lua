@@ -28,6 +28,9 @@ PowaAuras.UI:Register("AuraBrowser", {
 			return PowaClassListe[UnitClass("player")][page-15];
 		end
 	end,
+	GetSelectedPage = function(self)
+		return self.SelectedPage;
+	end,
 	GetSelectedAura = function(self)
 		return self.SelectedAura;
 	end,
