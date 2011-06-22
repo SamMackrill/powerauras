@@ -842,7 +842,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	
 	UI_SelAura_None            = "No Aura Selected",
 	UI_SelAura_Title           = "Aura %d",
-	UI_SelAura_TooltipExt      = "\n|cFFFFD100Left-Click: |rSelect Aura\n|cFFFFD100Right-Click: |rEdit Aura\n|cFFFFD100Alt-Click: |rShow/Hide Aura\n|cFFFFD100Ctrl-Click: |rDebug Aura\n|cFFFFD100Shift-Click: |rEnable/Disable Aura",
+	UI_SelAura_TooltipExt      = "\n|cFFFFD100Left-Click: |rSelect Aura\n|cFFFFD100Right-Click: |rEdit Aura\n|cFFFFD100Alt-Click: |rShow/Hide Aura\n|cFFFFD100Shift-Click: |rEnable/Disable Aura",
 	UI_SelAura_Edit            = "Edit",
 	UI_SelAura_EditDesc        = "Opens the aura editor to configure this aura.",
 	UI_SelAura_Move            = "Move/Copy",

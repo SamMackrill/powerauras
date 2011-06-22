@@ -248,8 +248,18 @@
 	</tr>
 
 	<tr>
+	<td class="name" nowrap><a href="#cPowaAura:DisplayAuraTooltip">cPowaAura:DisplayAuraTooltip</a>&nbsp;(tooltip)</td>
+	<td class="summary">Displays additional lines of information about the aura when the tooltip is made visible in the aura browser.</td>
+	</tr>
+
+	<tr>
 	<td class="name" nowrap><a href="#cPowaAura:UpdateAuraID">cPowaAura:UpdateAuraID</a>&nbsp;(id)</td>
 	<td class="summary">Updates the aura ID associated with this aura object.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#cPowaAuraStats:DisplayAuraTooltip">cPowaAuraStats:DisplayAuraTooltip</a>&nbsp;(tooltip)</td>
+	<td class="summary">Displays additional lines of information about the aura when the tooltip is made visible in the aura browser.</td>
 	</tr>
 
 </table>
@@ -300,6 +310,32 @@ Copies the Triggers, Timers and Stacks displays to a new aura by cloning their o
 
 
 
+<dt><a name="cPowaAura:DisplayAuraTooltip"></a><strong>cPowaAura:DisplayAuraTooltip</strong>&nbsp;(tooltip)</dt>
+<dd>
+Displays additional lines of information about the aura when the tooltip is made visible in the aura browser. You should call AddLine from within this function and it will append lines after the ID number of the aura, and before the additional instructions are added. Displays the aura buff name by default.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  tooltip: The tooltip object to modify. This is generally GameTooltip but you shouldn't rely on this.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
 <dt><a name="cPowaAura:UpdateAuraID"></a><strong>cPowaAura:UpdateAuraID</strong>&nbsp;(id)</dt>
 <dd>
 Updates the aura ID associated with this aura object. Does not reindex the aura in any way.
@@ -310,6 +346,32 @@ Updates the aura ID associated with this aura object. Does not reindex the aura 
 	
 	<li>
 	  id: The new aura ID to assign the object.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="cPowaAuraStats:DisplayAuraTooltip"></a><strong>cPowaAuraStats:DisplayAuraTooltip</strong>&nbsp;(tooltip)</dt>
+<dd>
+Displays additional lines of information about the aura when the tooltip is made visible in the aura browser. You should call AddLine from within this function and it will append lines after the ID number of the aura, and before the additional instructions are added. Displays the stat threshold by default.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  tooltip: The tooltip object to modify. This is generally GameTooltip but you shouldn't rely on this.
 	</li>
 	
 </ul>
