@@ -654,7 +654,7 @@
 													else
 														-- Tell user it failed.
 														self.Code.ErrorFailure:Show();
-														PowaAuras:Debug("Import error: " .. tostring(result));
+														PowaAuras:ShowText("Import error: " .. tostring(result));
 													end
 												end
 											end

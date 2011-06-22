@@ -126,11 +126,7 @@ function PowaAuras:CreateAura(page)
 	aura:Init();
 	self.Auras[i] = aura;
 	-- Save to appropriate config table.
-	if(i > 120 and i <= 360) then
-		PowaGlobalSet[i] = aura;
-	elseif(i > 360) then
-		PowaClassSet[select(2, UnitClass("player"))][i] = aura;
-	end
+	self:UpdateAuraTables(i);
 	-- Fix other things.
 	self:ReindexAuras(false);
 	aura:CheckActive(true, true, true);
@@ -285,17 +281,8 @@ function PowaAuras:ReindexAura(oldID, newID, doCopy)
 		end
 	end
 	-- Update global settings tables.
-	if(oldID > 120 and oldID < 361) then
-		PowaGlobalSet[oldID] = self.Auras[oldID];
-	elseif(oldID > 360) then
-		PowaClassSet[select(2, UnitClass("player"))][oldID] = self.Auras[oldID];
-	end
-	-- Same for the new one!
-	if(newID > 120 and newID < 361) then
-		PowaGlobalSet[newID] = self.Auras[newID];
-	elseif(newID > 360) then
-		PowaClassSet[select(2, UnitClass("player"))][newID] = self.Auras[newID];
-	end
+	self:UpdateAuraTables(oldID);
+	self:UpdateAuraTables(newID);
 end
 --- Toggles the display state of an aura, hiding it if already shown and vice versa.
 -- Can optionally force a specific state to be used.
@@ -370,11 +357,7 @@ function PowaAuras:CreateAuraFromImport(importString)
 				self.Auras[auraID] = self:ImportAura(v, auraID, offset);
 				self.Auras[auraID]:Init();
 				-- Save to appropriate config table.
-				if(auraID > 120 and auraID <= 360) then
-					PowaGlobalSet[auraID] = self.Auras[auraID];
-				elseif(auraID > 360) then
-					PowaClassSet[select(2, UnitClass("player"))][auraID] = self.Auras[auraID];
-				end
+				self:UpdateAuraTables(auraID);
 				-- Increment aura ID.
 				auraID = auraID+1;
 			end
@@ -386,8 +369,8 @@ function PowaAuras:CreateAuraFromImport(importString)
 		-- Fix sequences/icons.
 		self:ReindexAuras(true);
 	else
-		-- Single aura.
-		local auraID = PowaBrowser:GetSelectedAura();
+		-- Single aura. Find space on the page.
+		local auraID = self:GetNextFreeSlot();
 		if(not auraID) then
 			-- Error.
 			return false;
@@ -396,16 +379,36 @@ function PowaAuras:CreateAuraFromImport(importString)
 		self.Auras[auraID] = self:ImportAura(importString, auraID);
 		self.Auras[auraID]:Init();
 		-- Save to appropriate config table.
-		if(auraID > 120 and auraID <= 360) then
-			PowaGlobalSet[auraID] = self.Auras[auraID];
-		elseif(auraID > 360) then
-			PowaClassSet[select(2, UnitClass("player"))][auraID] = self.Auras[auraID];
-		end
+		self:UpdateAuraTables(auraID);
 		-- Fix sequences/icons.
 		self:ReindexAuras(true);
 	end
 	-- It probably worked.
 	return true;
+end
+--- Updates the global saved variable tables for Global/Class auras to reflect any changes to a specific aura ID or all
+-- aura ID's.
+-- @param auraID The ID of the aura to use when updating a saved variable table. If omitted, then both the Global and
+-- Class tables are updated for all auras.
+function PowaAuras:UpdateAuraTables(auraID)
+	PowaAuras:ShowText("Updating aura tables for id: " .. tostring(auraID));
+	-- Any aura ID?
+	if(auraID and auraID > 0) then
+		if(auraID > 120 and auraID < 361) then
+			PowaGlobalSet[auraID] = self.Auras[auraID];
+		elseif(auraID > 360) then
+			PowaClassSet[select(2, UnitClass("player"))][auraID] = self.Auras[auraID];
+		end
+	else
+		-- Right, just update the tables.
+		for i=121, self.MaxAuras do
+			if(i > 120 and i < 361) then
+				PowaGlobalSet[i] = self.Auras[i];
+			elseif(i > 360) then
+				PowaClassSet[select(2, UnitClass("player"))][i] = self.Auras[i];
+			end
+		end
+	end
 end
 
 -- Register settings and any handlers below here.
