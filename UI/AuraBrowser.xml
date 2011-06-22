@@ -563,6 +563,14 @@
 													</Anchors>
 													<Color r="1" g="1" b="1" a="1" />
 												</FontString>
+												<FontString parentKey="ErrorFailure" font="PowaFontNormal" justifyH="LEFT" justifyV="BOTTOM">
+													<Size x="380" y="72" />
+													<Anchors>
+														<Anchor point="BOTTOMLEFT" x="5" y="0" />
+														<Anchor point="BOTTOMRIGHT" x="-5" y="0" />
+													</Anchors>
+													<Color r="1" g="1" b="1" a="1" />
+												</FontString>
 											</Layer>
 										</Layers>
 										<Frames>
@@ -594,6 +602,7 @@
 											<OnLoad>
 												-- Localize warning.
 												self.SetWarning:SetText(PowaAuras.Text["UI_CreateImportWarning"]);
+												self.ErrorFailure:SetText(PowaAuras.Text["UI_CreateImportError"]);
 											</OnLoad>
 										</Scripts>
 									</Frame>
@@ -628,15 +637,24 @@
 													-- Update title.
 													self.AcceptButton:SetText(PowaAuras.Text["UI_Save"]);
 													self.Title:SetText(PowaAuras.Text["UI_CreateImportAura"]);
+													self.Code.ErrorFailure:Hide();
 												else
 													-- Second. Import, go to first.
-													PowaAuras:CreateAuraFromImport(self.Code.Input:GetText());
-													self.Code.Input:SetText("");
-													self.AcceptButton:SetText(PowaAuras.Text["UI_Next"]);
-													self.Title:SetText(PowaAuras.Text["UI_CreateAura"]);
-													self:SetSelectedTab(1);
-													PowaBrowser:SetSelectedAura(nil, false);
-													self:GetParent():SetSelectedTab(1);
+													self.Code.ErrorFailure:Hide();
+													local error, result = pcall(PowaAuras.CreateAuraFromImport, PowaAuras, self.Code.Input:GetText());
+													if(error == true and result == true) then
+														-- Import probably succeeded.
+														self.Code.Input:SetText("");
+														self.AcceptButton:SetText(PowaAuras.Text["UI_Next"]);
+														self.Title:SetText(PowaAuras.Text["UI_CreateAura"]);
+														self:SetSelectedTab(1);
+														PowaBrowser:SetSelectedAura(nil, false);
+														self:GetParent():SetSelectedTab(1);
+													else
+														-- Tell user it failed.
+														self.Code.ErrorFailure:Show();
+														PowaAuras:Debug("Import error: " .. tostring(result));
+													end
 												end
 											end
 										end, function()

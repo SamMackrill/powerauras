@@ -804,6 +804,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	UI_CreateImportExp         = "Import Code",
 	UI_CreateImportExpDesc     = "Paste an aura import code into the editbox to import the auras.\n\n|cFFFFD100Ctrl-V: |rPaste",
 	UI_CreateImportWarning     = "|cFFFF0000Note: |rYou are importing an aura set, this will overwrite all existing auras on the selected page.",
+	UI_CreateImportError       = "|cFFFF0000Error: |rAn error occured while trying to import the code, this may be because the code is not valid or has been damaged.",
 	
 	UI_ConfigTitle             = "Configuration",
 	UI_Config_Enable           = "Enable Power Auras",
