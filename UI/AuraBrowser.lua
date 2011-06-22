@@ -122,24 +122,26 @@ PowaAuras.UI:Register("AuraBrowser", {
 		if(PowaEditor:IsShown()) then
 			PowaEditor:Show();
 		end
-		-- Update buttons.
-		self:TriageIcones();
 		-- Update our stuffs!
 		if(isCreate) then
 			self.Tabs.Auras:SetSelectedTab(2);
+			self.SelectedAura = nil;
 		else
 			self.Tabs.Auras:SetSelectedTab(1);
-			if(not id) then
-				self.Tabs.Auras.Page.SelectedTitle:SetText(PowaAuras.Text["UI_SelAura_None"]);
-				self.Tabs.Auras.Page.AuraDelete:Hide();
-				self.Tabs.Auras.Page.AuraEdit:Hide();
-				self.Tabs.Auras.Page.AuraMove:Hide();
-			else
-				self.Tabs.Auras.Page.SelectedTitle:SetText(format(PowaAuras.Text["UI_SelAura_Title"], id));
-				self.Tabs.Auras.Page.AuraDelete:Show();
-				self.Tabs.Auras.Page.AuraEdit:Show();
-				self.Tabs.Auras.Page.AuraMove:Show();
-			end
+		end
+		-- Update buttons.
+		self:TriageIcones();
+		-- Display update.
+		if(not id) then
+			self.Tabs.Auras.Page.SelectedTitle:SetText(PowaAuras.Text["UI_SelAura_None"]);
+			self.Tabs.Auras.Page.AuraDelete:Hide();
+			self.Tabs.Auras.Page.AuraEdit:Hide();
+			self.Tabs.Auras.Page.AuraMove:Hide();
+		else
+			self.Tabs.Auras.Page.SelectedTitle:SetText(format(PowaAuras.Text["UI_SelAura_Title"], id));
+			self.Tabs.Auras.Page.AuraDelete:Show();
+			self.Tabs.Auras.Page.AuraEdit:Show();
+			self.Tabs.Auras.Page.AuraMove:Show();
 		end
 	end,
 	TriageIcones = function(self)
@@ -164,8 +166,11 @@ PowaAuras.UI:Register("AuraBrowser", {
 				button:SetChecked(false);
 				button:Update(button.Flags["NOAURA"]);
 			else
-				-- It'll be a create aura button.
-				button:SetChecked((self.SelectedAura == id));
+				-- It'll be a create aura button. It cannot be selected, EVER.
+				if(self.SelectedAura == id) then
+					self:SetSelectedAura(nil);
+				end
+				button:SetChecked(false);
 				button:Update(button.Flags["CREATE"]);
 				hasDisplayedEmpty = true;
 			end
