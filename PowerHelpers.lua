@@ -336,21 +336,18 @@ end
 -- selected, then it will default to the first page. If you are only importing a single aura, then a slot must be
 -- selected in the editor; not having a slot selected will prevent the import taking place.
 -- @param importString The string to read as an import code. The string is trimmed automatically.
+-- @return True if the import has probably succeeded, false otherwise.
 function PowaAuras:CreateAuraFromImport(importString)
 	-- Make sure we've a string.
 	if(not importString or importString:trim() == "") then
-		return;
+		return false;
 	end
 	-- Trim string.
 	importString = importString:trim();
-	-- Validate format of string.
-	print(importString);
-	
 	-- Set or normal?
 	if(importString:lower():sub(1, 4) == "set=") then
 		-- Set. Delete all auras on this page.
 		local page = ((PowaBrowser:GetSelectedPage() or 1)-1);
-		print("|cFFCC5252Power Auras Classic: |r Deleting all auras on page " .. (page+1));
 		for i=1, 24 do
 			self:DeleteAura((page*24)+i, true);
 		end
@@ -393,8 +390,7 @@ function PowaAuras:CreateAuraFromImport(importString)
 		local auraID = PowaBrowser:GetSelectedAura();
 		if(not auraID) then
 			-- Error.
-			print("|cFFCC5252Power Auras Classic: |r Missing aura ID for singular import!");
-			return;
+			return false;
 		end
 		-- Import it.
 		self.Auras[auraID] = self:ImportAura(importString, auraID);
@@ -408,6 +404,8 @@ function PowaAuras:CreateAuraFromImport(importString)
 		-- Fix sequences/icons.
 		self:ReindexAuras(true);
 	end
+	-- It probably worked.
+	return true;
 end
 
 -- Register settings and any handlers below here.
