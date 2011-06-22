@@ -320,8 +320,10 @@ function PowaAuras:ToggleAuraEnabled(id, state)
 end
 --- Creates a single aura or an entire aura set from the given import string. The type is determined automatically and
 -- if a set is to be imported then all auras on the currently selected page in the editor are deleted. If no page is
--- selected, then it will default to the first page. If you are only importing a single aura, then a slot must be
--- selected in the editor; not having a slot selected will prevent the import taking place.
+-- selected, then it will default to the first page. If you are only importing a single aura, then it will attempt to
+-- find space on the currently selected page in the editor. If no space is found then false is returned, and importing
+-- is cancelled. It is recommended that you wrap any calls to this function inside of pcall() to prevent lua errors 
+-- from being displayed to the user.
 -- @param importString The string to read as an import code. The string is trimmed automatically.
 -- @return True if the import has probably succeeded, false otherwise.
 function PowaAuras:CreateAuraFromImport(importString)
