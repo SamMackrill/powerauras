@@ -253,35 +253,35 @@ function PowaAuras:ReindexAura(oldID, newID, doCopy)
 		-- Clear old crap.
 		oldAura = nil;
 		self.Auras[oldID] = nil;
-	end
-	-- Go over all auras and update any ID references.
-	local reindexTable, reindexCount = reindexTable, 0;
-	for i=1, self.MaxAuras do
-		local aura = self.Auras[i];
-		-- Does aura exist, and have ID's?
-		if(aura and aura.multiids and aura.multiids:trim() ~= "") then
-			-- Wipe temp table.
-			wipe(reindexTable);
-			reindexCount = 0;
-			-- Go over ID's.
-			for id in aura.multiids:trim():gmatch("[^/]+") do
-				-- Inc. counter.
-				reindexCount = reindexCount+1;
-				-- Trim id.
-				id = id:trim();
-				-- Preserve inverse if needed.
-				local isInverse = (id:sub(1, 1) == "!" and true or false);
-				-- Does the ID match the old one?
-				if(isInverse and tonumber(id:sub(2)) == oldID or tonumber(id) == newID) then
-					-- Replace!
-					reindexTable[reindexCount] = (isInverse and "!" or "") .. newID;
-				else
-					-- No, fine.
-					reindexTable[reindexCount] = (isInverse and "!" or "") .. id;
+		-- Go over all auras and update any ID references.
+		local reindexTable, reindexCount = reindexTable, 0;
+		for i=1, self.MaxAuras do
+			local aura = self.Auras[i];
+			-- Does aura exist, and have ID's?
+			if(aura and aura.multiids and aura.multiids:trim() ~= "") then
+				-- Wipe temp table.
+				wipe(reindexTable);
+				reindexCount = 0;
+				-- Go over ID's.
+				for id in aura.multiids:trim():gmatch("[^/]+") do
+					-- Inc. counter.
+					reindexCount = reindexCount+1;
+					-- Trim id.
+					id = id:trim();
+					-- Preserve inverse if needed.
+					local isInverse = (id:sub(1, 1) == "!" and true or false);
+					-- Does the ID match the old one?
+					if(isInverse and tonumber(id:sub(2)) == oldID or tonumber(id) == newID) then
+						-- Replace!
+						reindexTable[reindexCount] = (isInverse and "!" or "") .. newID;
+					else
+						-- No, fine.
+						reindexTable[reindexCount] = (isInverse and "!" or "") .. id;
+					end
 				end
+				-- Replace ID's.
+				aura.multiids = strjoin("/", unpack(reindexTable));
 			end
-			-- Replace ID's.
-			aura.multiids = strjoin("/", unpack(reindexTable));
 		end
 	end
 	-- Update global settings tables.

@@ -333,7 +333,7 @@ function cPowaAura:UpdateAuraID(id)
 end
 
 --- Copies the Triggers, Timers and Stacks displays to a new aura by cloning their objects.
--- @param id The new aura ID to assign the object.
+-- @param newID The new aura ID to assign the object.
 function cPowaAura:CopyDecorators(newID)
 	-- Get new aura object.
 	local newAura = PowaAuras.Auras[newID];

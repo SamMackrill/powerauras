@@ -641,6 +641,7 @@
 												else
 													-- Second. Import, go to first.
 													self.Code.ErrorFailure:Hide();
+													-- Pass PowaAuras manually as arg to pcall.
 													local error, result = pcall(PowaAuras.CreateAuraFromImport, PowaAuras, self.Code.Input:GetText());
 													if(error == true and result == true) then
 														-- Import probably succeeded.
