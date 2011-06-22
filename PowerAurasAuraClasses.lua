@@ -350,6 +350,15 @@ function cPowaAura:CopyDecorators(newID)
 	-- TODO: Copy triggers from current aura to new one.
 end
 
+--- Displays additional lines of information about the aura when the tooltip is made visible in the aura browser.
+-- You should call AddLine from within this function and it will append lines after the ID number of the aura, and
+-- before the additional instructions are added. Displays the aura buff name by default.
+-- @param tooltip The tooltip object to modify. This is generally GameTooltip but you shouldn't rely on this.
+function cPowaAura:DisplayAuraTooltip(tooltip)
+	-- Add buff name.
+	tooltip:AddLine(tostring((self.buffname or "???")), 1, 1, 1, true);
+end
+
 function cPowaAura:SetState(name, value)
 	if (not value or value==self[name]) then return; end
 	self[name] = value;
@@ -1474,6 +1483,7 @@ function cPowaAura:MatchSpell(spellName, spellTexture, spellId, matchString)
 							end
 							if (string.find(textToSearch, matchName, 1, true)) then
 								return true;
+
 							end
 						end
 					end
@@ -3099,6 +3109,16 @@ function cPowaAuraStats:Init()
 	if (not self.PowerType) then return; end
 	self.MaxRange = PowaAuras.PowerRanges[self.PowerType];
 	self.RangeType = PowaAuras.RangeType[self.PowerType];
+end
+
+--- Displays additional lines of information about the aura when the tooltip is made visible in the aura browser.
+-- You should call AddLine from within this function and it will append lines after the ID number of the aura, and
+-- before the additional instructions are added. Displays the stat threshold by default.
+-- @param tooltip The tooltip object to modify. This is generally GameTooltip but you shouldn't rely on this.
+function cPowaAuraStats:DisplayAuraTooltip(tooltip)
+	-- Add buff name.
+	tooltip:AddLine((self.thresholdinvert and ">= " .. tostring(self.threshold) .. "%" 
+		or "<= " .. tostring(self.threshold) .. "%"), 1, 1, 1, true);
 end
 
 function cPowaAuraStats:CheckUnit(unit)

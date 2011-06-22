@@ -234,16 +234,12 @@ PowaAuras.UI:Register("AuraButton", {
 				-- Show/Hide aura.
 				PowaAuras:ToggleAuraDisplay(self.AuraID, 
 					((PowaEditor:IsShown() and PowaEditor.AuraID and PowaEditor.AuraID == self.AuraID) or nil));
-			elseif(IsControlKeyDown()) then
-				-- Debug the aura state.
-				print("|cFF527FCCDEBUG (AuraButton): |rDebug aura: " .. self.AuraID);
 			elseif(IsShiftKeyDown()) then
 				-- Disable/Enable aura.
 				PowaAuras:ToggleAuraEnabled(self.AuraID);
-			else
-				-- Select it.
-				PowaBrowser:SetSelectedAura(self.AuraID, false);
 			end
+			-- By default, always select it.
+			PowaBrowser:SetSelectedAura(self.AuraID, false);
 		elseif(button == "RightButton" and self.State == self.Flags["NORMAL"]) then
 			-- Shortcut for edit.
 			PowaBrowser:SetSelectedAura(self.AuraID, false);
@@ -287,13 +283,15 @@ PowaAuras.UI:Register("AuraButton", {
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0);
 		-- Set back up.
 		if(self.State == self.Flags["NORMAL"]) then
+			-- Display aura ID and type.
 			GameTooltip:SetText(PowaAuras.Text.AuraType[aura.bufftype]);
 			GameTooltip:AddLine(format("|cFFFFD100%s: |r%d", PowaAuras.Text.UI_ID, self.AuraID), 1, 1, 1, true);
-			if(aura.buffname) then
-				GameTooltip:AddLine(tostring(aura.buffname), 1, 1, 1, true);
-			end
+			-- Allow the aura to add tooltip lines.
+			aura:DisplayAuraTooltip(GameTooltip);
+			-- Additional instructions.
 			GameTooltip:AddLine(PowaAuras.Text["UI_SelAura_TooltipExt"], 1, 1, 1, true);
 		else
+			-- Basic create instructions.
 			GameTooltip:SetText(PowaAuras.Text["UI_CreateAura"]);
 			GameTooltip:AddLine(PowaAuras.Text["UI_CreateAura_Tooltip"], 1, 1, 1, true);
 		end
