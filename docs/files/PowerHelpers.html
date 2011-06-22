@@ -253,7 +253,7 @@
 	</tr>
 
 	<tr>
-	<td class="name" nowrap><a href="#PowaAuras:DeleteAura">PowaAuras:DeleteAura</a>&nbsp;(id)</td>
+	<td class="name" nowrap><a href="#PowaAuras:DeleteAura">PowaAuras:DeleteAura</a>&nbsp;(id, quickDelete)</td>
 	<td class="summary">Attempts to delete the aura with the given ID.</td>
 	</tr>
 
@@ -402,7 +402,7 @@ Creates a single aura or an entire aura set from the given import string. The ty
 
 
 
-<dt><a name="PowaAuras:DeleteAura"></a><strong>PowaAuras:DeleteAura</strong>&nbsp;(id)</dt>
+<dt><a name="PowaAuras:DeleteAura"></a><strong>PowaAuras:DeleteAura</strong>&nbsp;(id, quickDelete)</dt>
 <dd>
 Attempts to delete the aura with the given ID. This will in turn invoke an aura reindexing after the aura has been deleted.
 
@@ -412,6 +412,10 @@ Attempts to delete the aura with the given ID. This will in turn invoke an aura 
 	
 	<li>
 	  id: The ID of the aura to delete.
+	</li>
+	
+	<li>
+	  quickDelete: Defaults to false, if set to true then ReindexAuras will not be called.
 	</li>
 	
 </ul>

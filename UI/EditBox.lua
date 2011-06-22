@@ -156,7 +156,7 @@ PowaAuras.UI:Register("EditBox3", {
 			return item;
 		end
 	end,
-	Init = function(self, title, setting)
+	Init = function(self, title)
 		-- Set title.
 		self:SetTitle(title);
 		-- Tooltip mixin.

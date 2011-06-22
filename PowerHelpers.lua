@@ -139,7 +139,8 @@ end
 --- Attempts to delete the aura with the given ID. This will in turn invoke an aura reindexing after the aura has been
 -- deleted.
 -- @param id The ID of the aura to delete.
-function PowaAuras:DeleteAura(id)
+-- @param quickDelete Defaults to false, if set to true then ReindexAuras will not be called.
+function PowaAuras:DeleteAura(id, quickDelete)
 	-- AURA, YOU MUST EXIST.
 	if(not self.Auras[id]) then return; end
 	-- Dispose.
@@ -154,7 +155,9 @@ function PowaAuras:DeleteAura(id)
 		PowaClassSet[select(2, UnitClass("player"))][id] = nil;
 	end
 	-- Fix things.
-	self:ReindexAuras(true);
+	if(not quickDelete) then
+		self:ReindexAuras(true);
+	end
 end
 --- Toggles the displays of all auras. Can optionally force a specific display state, force a refresh or only update
 -- auras that are already actively displaying.
@@ -208,7 +211,7 @@ function PowaAuras:ReindexAuras(fullCheck, checkPage)
 					-- Is the count in line with the aura index on this page?
 					if(count ~= aura) then
 						-- Reindexing required.
-						self:ReindexAura(auraID, ((page-1)*self.MaxAurasPerPage)+count, true);
+						self:ReindexAura(auraID, ((page-1)*self.MaxAurasPerPage)+count, false);
 					end
 				end
 			end
@@ -338,21 +341,26 @@ function PowaAuras:CreateAuraFromImport(importString)
 	if(not importString or importString:trim() == "") then
 		return;
 	end
+	-- Trim string.
+	importString = importString:trim();
+	-- Validate format of string.
+	print(importString);
+	
 	-- Set or normal?
-	if(importString:trim():lower():strsub(1, 4) == "set=") then
+	if(importString:lower():sub(1, 4) == "set=") then
 		-- Set. Delete all auras on this page.
 		local page = ((PowaBrowser:GetSelectedPage() or 1)-1);
 		print("|cFFCC5252Power Auras Classic: |r Deleting all auras on page " .. (page+1));
 		for i=1, 24 do
-			self:DeleteAura((page*24)+i);
+			self:DeleteAura((page*24)+i, true);
 		end
 		-- We'll grab the new page name when parsing the string.
-		local name, offset, auraID = nil, nil, (page*24)+1;
+		local setName, offset, auraID = nil, nil, (page*24)+1;
 		-- Go over values.
-		for k, v in string.gmatch(importString:trim(), "([^\n=@]+)=([^@]+)@") do
+		for k, v in string.gmatch(importString, "([^\n=@]+)=([^@]+)@") do
 			-- Is this the set name declaration?
 			if(k:lower() == "set") then
-				name = v;
+				setName = (v and v:trim() or nil);
 			else
 				-- Normal data. Check imported aura ID offset.
 				if(not offset) then
@@ -367,7 +375,7 @@ function PowaAuras:CreateAuraFromImport(importString)
 				-- Save to appropriate config table.
 				if(auraID > 120 and auraID <= 360) then
 					PowaGlobalSet[auraID] = self.Auras[auraID];
-				elseif(i > 360) then
+				elseif(auraID > 360) then
 					PowaClassSet[select(2, UnitClass("player"))][auraID] = self.Auras[auraID];
 				end
 				-- Increment aura ID.
@@ -375,8 +383,8 @@ function PowaAuras:CreateAuraFromImport(importString)
 			end
 		end
 		-- Did it have a set name?
-		if(setName and setName:trim() ~= "") then
-			PowaBrowser:SavePageName(setName:trim());
+		if(setName and setName ~= "") then
+			PowaBrowser:SavePageName(setName);
 		end
 		-- Fix sequences/icons.
 		self:ReindexAuras(true);
@@ -394,7 +402,7 @@ function PowaAuras:CreateAuraFromImport(importString)
 		-- Save to appropriate config table.
 		if(auraID > 120 and auraID <= 360) then
 			PowaGlobalSet[auraID] = self.Auras[auraID];
-		elseif(i > 360) then
+		elseif(auraID > 360) then
 			PowaClassSet[select(2, UnitClass("player"))][auraID] = self.Auras[auraID];
 		end
 		-- Fix sequences/icons.

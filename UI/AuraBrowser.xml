@@ -146,12 +146,12 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<Button name="$parentCloseButton" inherits="UIPanelCloseButton">
+			<Button inherits="UIPanelCloseButton">
 				<Anchors>
 					<Anchor point="TOPRIGHT" x="0" y="0" />
 				</Anchors>
 			</Button>
-			<Frame name="$parentTabs" parentKey="Tabs" inherits="PowaBorderedFrameTemplate">
+			<Frame parentKey="Tabs" inherits="PowaBorderedFrameTemplate">
 				<Size>
 				  <AbsDimension y="260" />
 				</Size>
@@ -168,7 +168,7 @@
 							<Anchor point="BOTTOMRIGHT" x="-4" y="5" />
 						</Anchors>
 						<Frames>
-							<Frame name="$parentAurasTree" parentKey="Tree" inherits="PowaTreeViewTemplate">
+							<Frame parentKey="Tree" inherits="PowaTreeViewTemplate">
 								<Anchors>
 									<Anchor point="TOPLEFT" x="2" y="-2" />
 									<Anchor point="BOTTOMLEFT" x="2" y="2" />
@@ -452,6 +452,9 @@
 											</OnLoad>
 											<OnClick>
 												PlaySound("UChatScrollButton");
+												if(IsControlKeyDown()) then
+													PowaAuras:DeleteAura(PowaBrowser:GetSelectedAura(), false);
+												end
 											</OnClick>
 											<OnMouseDown>
 												self:GetNormalTexture():SetPoint("TOPLEFT", 1, -1);
@@ -563,7 +566,7 @@
 											</Layer>
 										</Layers>
 										<Frames>
-											<EditBox parentKey="Code" inherits="PowaLabelledEditBoxTemplate">
+											<EditBox parentKey="Input" inherits="PowaLabelledEditBoxTemplate">
 												<Size x="410" y="24" />
 												<Anchors>
 													<Anchor point="TOPLEFT" x="0" y="-20" />
@@ -571,10 +574,8 @@
 												</Anchors>
 												<Scripts>
 													<OnLoad>
-														-- Pass nil as setting to avoid any settings crap.
-														PowaAuras.UI:EditBox3(self, "UI_CreateImportExp", nil);
-														-- Can't be bothered to make an OnLoad block in the parent JUST for this.
-														self:GetParent().SetWarning:SetText(PowaAuras.Text["UI_CreateImportWarning"]);
+														-- Basic editbox.
+														PowaAuras.UI:EditBox3(self, "UI_CreateImportExp");
 													</OnLoad>
 													<OnTextChanged>
 														-- Parse string, is it a set or normal import?
@@ -589,13 +590,22 @@
 												</Scripts>
 											</EditBox>
 										</Frames>
+										<Scripts>
+											<OnLoad>
+												-- Localize warning.
+												self.SetWarning:SetText(PowaAuras.Text["UI_CreateImportWarning"]);
+											</OnLoad>
+										</Scripts>
 									</Frame>
 								</Frames>
 								<Scripts>
 									<OnLoad>
 										-- I'm a dialog. Hi.
 										PowaAuras.UI:TabDialog(self, function()
-											if(self.Main:GetSelectedRadioKey() == 1) then
+											-- Get selected key, it determines the thing we're doing.
+											local mode = self.Main:GetSelectedRadioKey();
+											-- Determine mode.
+											if(mode == 1) then
 												-- Create aura.
 												print("|cFF527FCCDEBUG (AuraBrowser): |rCreating Blank Aura");
 												PowaAuras:CreateAura();
@@ -604,16 +614,30 @@
 												self:SetSelectedTab(1);
 												-- Update title.
 												self.Title:SetText(PowaAuras.Text["UI_CreateAura"]);
-											elseif(self.Main:GetSelectedRadioKey() == 2) then
+											elseif(mode == 2) then
 												-- Import preset.
 												self:SetSelectedTab(2);
 												-- Update title.
 												self.Title:SetText(PowaAuras.Text["UI_CreatePresetAura"]);
-											elseif(self.Main:GetSelectedRadioKey() == 3) then
+											elseif(mode == 3) then
 												-- Import from code.
-												self:SetSelectedTab(3);
-												-- Update title.
-												self.Title:SetText(PowaAuras.Text["UI_CreateImportAura"]);
+												-- Are we on the first page or second?
+												if(self:GetSelectedTab() == 1) then
+													-- Go to second.
+													self:SetSelectedTab(3);
+													-- Update title.
+													self.AcceptButton:SetText(PowaAuras.Text["UI_Save"]);
+													self.Title:SetText(PowaAuras.Text["UI_CreateImportAura"]);
+												else
+													-- Second. Import, go to first.
+													PowaAuras:CreateAuraFromImport(self.Code.Input:GetText());
+													self.Code.Input:SetText("");
+													self.AcceptButton:SetText(PowaAuras.Text["UI_Next"]);
+													self.Title:SetText(PowaAuras.Text["UI_CreateAura"]);
+													self:SetSelectedTab(1);
+													PowaBrowser:SetSelectedAura(nil, false);
+													self:GetParent():SetSelectedTab(1);
+												end
 											end
 										end, function()
 											-- If current tab > 1, return to index. Else, back to aura browser.
@@ -651,7 +675,7 @@
 							<Anchor point="BOTTOMRIGHT" x="-4" y="5" />
 						</Anchors>
 						<Frames>
-							<Frame name="$parentConfigTree" parentKey="Tree" inherits="PowaTreeViewTemplate">
+							<Frame parentKey="Tree" inherits="PowaTreeViewTemplate">
 								<Anchors>
 									<Anchor point="TOPLEFT" x="2" y="-2" />
 									<Anchor point="BOTTOMLEFT" x="2" y="2" />
@@ -902,7 +926,7 @@
 							<Anchor point="BOTTOMRIGHT" x="-4" y="5" />
 						</Anchors>
 						<Frames>
-							<Frame name="$parentHelpTree" parentKey="Tree" inherits="PowaTreeViewTemplate">
+							<Frame parentKey="Tree" inherits="PowaTreeViewTemplate">
 								<Anchors>
 									<Anchor point="TOPLEFT" x="2" y="-2" />
 									<Anchor point="BOTTOMLEFT" x="2" y="2" />

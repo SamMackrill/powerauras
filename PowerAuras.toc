@@ -30,7 +30,6 @@ PowerAurasAuraClasses.lua
 PowerAurasAnimations.lua
 PowerAuras.lua
 PowerUpdate.lua
-PowerHelpers.lua
 PowerAurasEvents.lua
 PowerComms.lua
 PowerOptions.lua
@@ -40,6 +39,8 @@ PowerOptions.xml
 PowerBlizzOptions.xml
 PowerSlots.xml
 
+# Load AFTER old PowerOptions file, it replaces some functions.
+PowerHelpers.lua
 # UI base code.
 PowerUI.lua
 
