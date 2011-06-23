@@ -348,6 +348,80 @@
 											</OnMouseUp>
 										</Scripts>
 									</CheckButton>
+									<Button parentKey="AuraTest">
+										<Size x="24" y="24" />
+										<Anchors>
+											<Anchor point="TOPRIGHT" x="-109" y="-246" />
+										</Anchors>
+										<NormalTexture file="Interface\Buttons\UI-MicroStream-Green" alpha="0.5">
+											<Size x="24" y="24" />
+											<Anchors>
+												<Anchor point="TOPLEFT" x="0" y="0" />
+											</Anchors>
+											<TexCoords left="0.15" right="0.85" top="0.85" bottom="0.15" />
+										</NormalTexture>
+										<HighlightTexture file="Interface\Buttons\UI-MicroStream-Green" alpha="1">
+											<Size x="24" y="24" />
+											<Anchors>
+												<Anchor point="TOPLEFT" x="0" y="0" />
+											</Anchors>
+											<TexCoords left="0.15" right="0.85" top="0.85" bottom="0.15" />
+										</HighlightTexture>
+										<Scripts>
+											<OnLoad>
+												-- I demand a tooltip.
+												PowaAuras.UI:Tooltip(self, "UI_SelAura_Test", "UI_SelAura_TestDesc");
+											</OnLoad>
+											<OnClick>
+												PlaySound("UChatScrollButton");
+											</OnClick>
+											<OnMouseDown>
+												self:GetNormalTexture():SetPoint("TOPLEFT", 1, -1);
+												self:GetHighlightTexture():SetPoint("TOPLEFT", 1, -1);
+											</OnMouseDown>
+											<OnMouseUp>
+												self:GetNormalTexture():SetPoint("TOPLEFT", 0, 0);
+												self:GetHighlightTexture():SetPoint("TOPLEFT", 0, 0);
+											</OnMouseUp>
+										</Scripts>
+									</Button>
+									<Button parentKey="AuraExport">
+										<Size x="24" y="24" />
+										<Anchors>
+											<Anchor point="TOPRIGHT" x="-85" y="-246" />
+										</Anchors>
+										<NormalTexture file="Interface\Buttons\UI-MicroStream-Green" alpha="0.5">
+											<Size x="24" y="24" />
+											<Anchors>
+												<Anchor point="TOPLEFT" x="0" y="0" />
+											</Anchors>
+											<TexCoords left="0.15" right="0.85" top="0.85" bottom="0.15" />
+										</NormalTexture>
+										<HighlightTexture file="Interface\Buttons\UI-MicroStream-Green" alpha="1">
+											<Size x="24" y="24" />
+											<Anchors>
+												<Anchor point="TOPLEFT" x="0" y="0" />
+											</Anchors>
+											<TexCoords left="0.15" right="0.85" top="0.85" bottom="0.15" />
+										</HighlightTexture>
+										<Scripts>
+											<OnLoad>
+												-- I demand a tooltip.
+												PowaAuras.UI:Tooltip(self, "UI_SelAura_Export", "UI_SelAura_ExportDesc");
+											</OnLoad>
+											<OnClick>
+												PlaySound("UChatScrollButton");
+											</OnClick>
+											<OnMouseDown>
+												self:GetNormalTexture():SetPoint("TOPLEFT", 1, -1);
+												self:GetHighlightTexture():SetPoint("TOPLEFT", 1, -1);
+											</OnMouseDown>
+											<OnMouseUp>
+												self:GetNormalTexture():SetPoint("TOPLEFT", 0, 0);
+												self:GetHighlightTexture():SetPoint("TOPLEFT", 0, 0);
+											</OnMouseUp>
+										</Scripts>
+									</Button>
 									<Button parentKey="AuraMove">
 										<Size x="24" y="24" />
 										<Anchors>
