@@ -381,6 +381,7 @@
 											</OnLoad>
 											<OnClick>
 												PlaySound("UChatScrollButton");
+												PowaBrowser:SetMovingAura(PowaBrowser:GetSelectedAura(), IsControlKeyDown());
 											</OnClick>
 											<OnEnter>
 												self:GetNormalTexture():SetAlpha(1);

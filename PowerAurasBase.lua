@@ -1046,10 +1046,17 @@ PowaAuras.DebuffTypeSpellIds={
 };
 
 -- Debugging assistance, if we access a non-existant locale key it'll display the key.
-PowaAuras.Text = setmetatable({}, { __index = function(_,k)
-	if(not k or k == "") then return; end
-	PowaAuras:ShowText("|cFFCC5252Power Auras Classic: |rMissing Localization Key: \"", k, "\", Stack Trace: ", debugstack(2));
-	return k; end
+-- In additition allow a format shorthand via PowaAuras.Text(key, arg1, ...);
+PowaAuras.Text = setmetatable({}, { 
+	__index = function(_, k)
+		if(not k or k == "") then return; end
+		PowaAuras:ShowText("|cFFCC5252Power Auras Classic: |rMissing Localization Key: \"", k, "\", Stack Trace: ", debugstack(2));
+		return k;
+	end,
+	__call = function(self, k, ...)
+		print(self, k, ...);
+		return format((self[k] or k), ...);
+	end,
 });
 
 function PowaAuras:UnitTestDebug(...)

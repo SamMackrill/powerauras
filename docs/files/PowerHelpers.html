@@ -258,6 +258,11 @@
 	</tr>
 
 	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:GetAuraPage">PowaAuras:GetAuraPage</a>&nbsp;(auraID)</td>
+	<td class="summary">Determines what page number the given aura ID belongs to.</td>
+	</tr>
+
+	<tr>
 	<td class="name" nowrap><a href="#PowaAuras:GetNextFreeSlot">PowaAuras:GetNextFreeSlot</a>&nbsp;(page)</td>
 	<td class="summary">Determines the next free aura slot on the given page.</td>
 	</tr>
@@ -383,7 +388,7 @@ Creates a new aura with the default settings and type (Buff) on the given page. 
 
 <dt><a name="PowaAuras:CreateAuraFromImport"></a><strong>PowaAuras:CreateAuraFromImport</strong>&nbsp;(importString)</dt>
 <dd>
-Creates a single aura or an entire aura set from the given import string. The type is determined automatically and if a set is to be imported then all auras on the currently selected page in the editor are deleted. If no page is selected, then it will default to the first page. If you are only importing a single aura, then it will attempt to find space on the currently selected page in the editor. If no space is found then false is returned, and importing is cancelled.  It is recommended that you wrap any calls to this function inside of pcall() to prevent lua errors from being displayed to the user.
+Creates a single aura or an entire aura set from the given import string. The type is determined automatically and if a set is to be imported then all auras on the currently selected page in the editor are deleted. If no page is selected, then it will default to the first page. If you are only importing a single aura, then it will attempt to find space on the currently selected page in the editor. If no space is found then false is returned, and importing is cancelled. It is recommended that you wrap any calls to this function inside of pcall() to prevent lua errors from being displayed to the user.
 
 
 <h3>Parameters</h3>
@@ -432,6 +437,35 @@ Attempts to delete the aura with the given ID. This will in turn invoke an aura 
 
 
 
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:GetAuraPage"></a><strong>PowaAuras:GetAuraPage</strong>&nbsp;(auraID)</dt>
+<dd>
+Determines what page number the given aura ID belongs to.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  auraID: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+The page number the aura ID belongs to.
 
 
 
