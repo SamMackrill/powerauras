@@ -17,7 +17,7 @@ PowaAuras.UI:Register("AuraBrowser", {
 		-- Check...
 		if(PowaAuras.VariablesLoaded) then self:OnVariablesLoaded(); end
 		-- Close on escape key.
-		-- tinsert(UISpecialFrames, self:GetName());
+		tinsert(UISpecialFrames, self:GetName());
 	end,
 	GetPageName = function(self)
 		local page = self.Tabs.Auras.Tree:GetSelectedKey();
@@ -164,11 +164,15 @@ PowaAuras.UI:Register("AuraBrowser", {
 			self.Tabs.Auras.Page.AuraDelete:Hide();
 			self.Tabs.Auras.Page.AuraEdit:Hide();
 			self.Tabs.Auras.Page.AuraMove:Hide();
+			self.Tabs.Auras.Page.AuraExport:Hide();
+			self.Tabs.Auras.Page.AuraTest:Hide();
 		else
 			self.Tabs.Auras.Page.SelectedTitle:SetText(format(PowaAuras.Text["UI_SelAura_Title"], id));
 			self.Tabs.Auras.Page.AuraDelete:Show();
 			self.Tabs.Auras.Page.AuraEdit:Show();
 			self.Tabs.Auras.Page.AuraMove:Show();
+			self.Tabs.Auras.Page.AuraExport:Show();
+			self.Tabs.Auras.Page.AuraTest:Show();
 		end
 	end,
 	SetMovingAura = function(self, id, doCopy)

@@ -102,6 +102,11 @@ function PowaAuras:OnLoad(frame)
 	--- options init
 	SlashCmdList["POWA"] = PowaAuras_CommanLine;
 	SLASH_POWA1 = "/powa";
+	
+	SlashCmdList["POWA2"] = function()
+		PowaBrowser:Show();
+	end
+	SLASH_POWA21 = "/powa2";
 end
 
 function PowaAuras:ReregisterEvents(frame)
