@@ -209,6 +209,10 @@ PowaAuras.UI:Register("AuraBrowser", {
 				button:Update(button.Flags["CREATE"]);
 				hasDisplayedEmpty = true;
 			end
+			-- Tooltip update.
+			if(button:IsMouseOver()) then
+				button:TooltipRefresh();
+			end
 		end
 		-- Bugfix for buttons vanishing.
 		self.Tabs.Auras.Page:UpdateLayout();
@@ -369,11 +373,18 @@ PowaAuras.UI:Register("AuraButton", {
 		elseif(state == self.Flags["CREATE"]) then
 			-- Change texture based on whether or not the editor has a moving aura.
 			if(PowaBrowser:GetMovingAura()) then
-				self.Icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");
+				self.Icon:SetTexture("Interface\\PaperDollInfoFrame\\UI-GearManager-ItemIntoBag");
+				self.Icon:SetTexCoord(0.07, 0.93, 0.07, 0.93);
+				self.Icon:ClearAllPoints();
+				self.Icon:SetPoint("TOPLEFT", 5, -5);
+				self.Icon:SetPoint("BOTTOMRIGHT", -5, 5);
 			else
-				self.Icon:SetTexture("Interface\\GuildBankFrame\\UI-GuildBankFrame-NewTab");
+				self.Icon:SetTexture("Interface\\PaperDollInfoFrame\\Character-Plus");
+				self.Icon:SetTexCoord(0, 1, 0, 1);
+				self.Icon:ClearAllPoints();
+				self.Icon:SetPoint("CENTER");
+				self.Icon:SetSize(32, 32);
 			end
-			self.Icon:SetTexCoord(0.11, 0.93, 0.07, 0.93);
 			self:SetAlpha(1);
 			self.OffText:Hide();
 		elseif(state == self.Flags["NORMAL"] or state == self.Flags["MOVING"]) then		
@@ -385,6 +396,9 @@ PowaAuras.UI:Register("AuraButton", {
 			end
 			-- Restore texcoords.
 			self.Icon:SetTexCoord(0.07, 0.93, 0.07, 0.93);
+			self.Icon:ClearAllPoints();
+			self.Icon:SetPoint("TOPLEFT", 5, -5);
+			self.Icon:SetPoint("BOTTOMRIGHT", -5, 5);
 			-- Is the aura off, showing or not on and not showing?
 			if(aura.off) then
 				SetDesaturation(self.Icon, true);
