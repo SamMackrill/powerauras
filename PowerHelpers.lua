@@ -140,16 +140,13 @@ function PowaAuras:DeleteAura(id, quickDelete)
 	-- AURA, YOU MUST EXIST.
 	if(not self.Auras[id]) then return; end
 	-- Dispose.
+	self:ToggleAuraDisplay(id, false, true);
 	if(self.Auras[id].Timer) then self.Auras[id].Timer:Dispose(); end
 	if(self.Auras[id].Stacks) then self.Auras[id].Stacks:Dispose(); end
 	self.Auras[id]:Dispose();
 	-- Remove.
 	self.Auras[id] = nil;
-	if(id > 120 and id < 361) then
-		PowaGlobalSet[aura.id] = nil;
-	elseif(id > 360) then
-		PowaClassSet[select(2, UnitClass("player"))][id] = nil;
-	end
+	self:UpdateAuraTables(id);
 	-- Fix things.
 	if(not quickDelete) then
 		self:ReindexAuras(true);
@@ -229,7 +226,7 @@ local reindexTable = {};
 function PowaAuras:ReindexAura(oldID, newID, doCopy)
 	-- Get old aura.
 	local oldAura, newAura = self.Auras[oldID];
-	if(not oldAura) then
+	if(not oldAura or not newID) then
 		-- Error.
 		return;
 	end
@@ -244,11 +241,11 @@ function PowaAuras:ReindexAura(oldID, newID, doCopy)
 		-- It's a move. Moving is really easy.
 		self.Auras[newID] = oldAura;
 		newAura = self.Auras[newID];
-		-- Update the ID on the decorators/triggers.
-		newAura:UpdateAuraID(newID);
 		-- Clear old crap.
 		oldAura = nil;
-		self.Auras[oldID] = nil;
+		self:DeleteAura(oldID, true);
+		-- Update the ID on the decorators/triggers. Do this after deleting the old aura, otherwise things explode.
+		newAura:UpdateAuraID(newID);
 		-- Go over all auras and update any ID references.
 		local reindexTable, reindexCount = reindexTable, 0;
 		for i=1, self.MaxAuras do
@@ -411,6 +408,12 @@ function PowaAuras:UpdateAuraTables(auraID)
 			end
 		end
 	end
+end
+--- Determines what page number the given aura ID belongs to.
+-- @params auraID The aura ID to return a page number for.
+-- @return The page number the aura ID belongs to.
+function PowaAuras:GetAuraPage(auraID)
+	return ceil(auraID/self.MaxAurasPerPage);
 end
 
 -- Register settings and any handlers below here.

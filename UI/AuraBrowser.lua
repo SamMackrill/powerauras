@@ -10,6 +10,8 @@ PowaAuras.UI:Register("AuraBrowser", {
 		-- Variables.
 		self.SelectedAura = nil;
 		self.SelectedPage = 1;
+		self.MovingAura = nil;
+		self.CopyAura = false;
 		-- Add OnSelectionChanged function to tree views.
 		self.Tabs.Auras.Tree.OnSelectionChanged = self.OnSelectionChanged;
 		-- Check...
@@ -34,8 +36,14 @@ PowaAuras.UI:Register("AuraBrowser", {
 	GetSelectedAura = function(self)
 		return self.SelectedAura;
 	end,
+	GetMovingAura = function(self)
+		return self.MovingAura;
+	end,
 	IsAuraSelected = function(self, id)
 		return (self.SelectedAura == id);
+	end,
+	IsCopyAura = function(self)
+		return self.CopyAura;
 	end,
 	OnHide = function(self)
 		PlaySound("igMainMenuClose");
@@ -124,8 +132,27 @@ PowaAuras.UI:Register("AuraBrowser", {
 		end
 		-- Update our stuffs!
 		if(isCreate) then
-			self.Tabs.Auras:SetSelectedTab(2);
-			self.SelectedAura = nil;
+			-- Go to create move if we're not moving anything.
+			if(self.MovingAura) then
+				-- Move/Copy the aura, select it and bail. Don't use the given ID as an actual place to put the aura,
+				-- be safe and call GetNextFreeSlot.
+				local newPage, newID = PowaAuras:GetAuraPage(id);
+				newID = PowaAuras:GetNextFreeSlot(newPage);
+				-- Treat like normal.
+				PowaAuras:ReindexAura(self.MovingAura, newID, self.CopyAura);
+				-- Grab aura object before it's moved.
+				local aura = PowaAuras.Auras[newID];
+				-- Force a reindexing on the pages.
+				PowaAuras:ReindexAuras(true);
+				-- Clear move mode.
+				self:SetMovingAura(nil, false);
+				self:SetSelectedAura(aura.id, false);
+				return;
+			else
+				-- Create mode.
+				self.Tabs.Auras:SetSelectedTab(2);
+				self.SelectedAura = nil;
+			end
 		else
 			self.Tabs.Auras:SetSelectedTab(1);
 		end
@@ -144,6 +171,13 @@ PowaAuras.UI:Register("AuraBrowser", {
 			self.Tabs.Auras.Page.AuraMove:Show();
 		end
 	end,
+	SetMovingAura = function(self, id, doCopy)
+		self.MovingAura = id;
+		self.CopyAura = (doCopy and true or false);
+		self:TriageIcones();
+	end,
+	--- test doc for widget func.
+	-- @name AuraBrowserTriageIcones
 	TriageIcones = function(self)
 		print("|cFF527FCCDEBUG (AuraBrowser): |rUpdating aura buttons!");
 		-- Not strictly button related, but it prevents two function calls.
@@ -160,7 +194,8 @@ PowaAuras.UI:Register("AuraBrowser", {
 			if(button:GetAura()) then
 				-- Update like normal.
 				button:SetChecked((self.SelectedAura == id));
-				button:Update(button.Flags["NORMAL"]);
+				button:Update((self.MovingAura and self.MovingAura == id and button.Flags["MOVING"]
+					or button.Flags["NORMAL"]));
 			elseif(hasDisplayedEmpty) then
 				-- Hide the button.
 				button:SetChecked(false);
@@ -186,6 +221,7 @@ PowaAuras.UI:Register("AuraButton", {
 		NORMAL = 0x1,
 		NOAURA = 0x2,
 		CREATE = 0x4,
+		MOVING = 0x8,
 	},
 	Scripts = {
 		OnClick = true,
@@ -237,10 +273,12 @@ PowaAuras.UI:Register("AuraButton", {
 			elseif(IsShiftKeyDown()) then
 				-- Disable/Enable aura.
 				PowaAuras:ToggleAuraEnabled(self.AuraID);
+			else
+				-- By default, always select it.
+				PowaBrowser:SetSelectedAura(self.AuraID, false);
 			end
-			-- By default, always select it.
-			PowaBrowser:SetSelectedAura(self.AuraID, false);
-		elseif(button == "RightButton" and self.State == self.Flags["NORMAL"]) then
+		elseif(button == "RightButton" 
+		and (self.State == self.Flags["NORMAL"] or self.State == self.Flags["MOVING"])) then
 			-- Shortcut for edit.
 			PowaBrowser:SetSelectedAura(self.AuraID, false);
 			PowaEditor:Show();
@@ -282,18 +320,30 @@ PowaAuras.UI:Register("AuraButton", {
 		-- Reparent.
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0);
 		-- Set back up.
-		if(self.State == self.Flags["NORMAL"]) then
+		if(self.State == self.Flags["NORMAL"] or self.State == self.Flags["MOVING"]) then
 			-- Display aura ID and type.
 			GameTooltip:SetText(PowaAuras.Text.AuraType[aura.bufftype]);
-			GameTooltip:AddLine(format("|cFFFFD100%s: |r%d", PowaAuras.Text.UI_ID, self.AuraID), 1, 1, 1, true);
+			GameTooltip:AddLine(format("|cFFFFD100%s: |r%d", PowaAuras.Text["UI_ID"], self.AuraID), 1, 1, 1, true);
 			-- Allow the aura to add tooltip lines.
 			aura:DisplayAuraTooltip(GameTooltip);
 			-- Additional instructions.
 			GameTooltip:AddLine(PowaAuras.Text["UI_SelAura_TooltipExt"], 1, 1, 1, true);
 		else
-			-- Basic create instructions.
-			GameTooltip:SetText(PowaAuras.Text["UI_CreateAura"]);
-			GameTooltip:AddLine(PowaAuras.Text["UI_CreateAura_Tooltip"], 1, 1, 1, true);
+			-- Change tooltip based on copy/move mode.
+			local movingID = PowaBrowser:GetMovingAura();
+			if(movingID) then
+				-- Copy or move mode?
+				local key = "UI_MoveAuraReceive";
+				if(PowaBrowser:IsCopyAura()) then
+					key = "UI_CopyAuraReceive";
+				end
+				GameTooltip:SetText(PowaAuras.Text(key, (movingID or 1), PowaBrowser:GetSelectedPage()));
+				GameTooltip:AddLine(PowaAuras.Text[key .. "_Tooltip"], 1, 1, 1, true);
+			else
+				-- Basic create/move instructions.
+				GameTooltip:SetText(PowaAuras.Text["UI_CreateAura"]);
+				GameTooltip:AddLine(PowaAuras.Text["UI_CreateAura_Tooltip"], 1, 1, 1, true);
+			end
 		end
 		-- Show tip.
 		GameTooltip:Show();
@@ -317,11 +367,16 @@ PowaAuras.UI:Register("AuraButton", {
 			self:Hide();
 			return;
 		elseif(state == self.Flags["CREATE"]) then
-			self.Icon:SetTexture("Interface\\GuildBankFrame\\UI-GuildBankFrame-NewTab");
+			-- Change texture based on whether or not the editor has a moving aura.
+			if(PowaBrowser:GetMovingAura()) then
+				self.Icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");
+			else
+				self.Icon:SetTexture("Interface\\GuildBankFrame\\UI-GuildBankFrame-NewTab");
+			end
 			self.Icon:SetTexCoord(0.11, 0.93, 0.07, 0.93);
 			self:SetAlpha(1);
 			self.OffText:Hide();
-		elseif(state == self.Flags["NORMAL"]) then		
+		elseif(state == self.Flags["NORMAL"] or state == self.Flags["MOVING"]) then		
 			-- Icons.
 			if(not aura.icon or aura.icon == "") then
 				self.Icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");
@@ -343,6 +398,16 @@ PowaAuras.UI:Register("AuraButton", {
 				SetDesaturation(self.Icon, false);
 				self:SetAlpha(0.5);
 				self.OffText:Hide();
+			end
+			-- Update checked texcoords.
+			if(state == self.Flags["MOVING"]) then
+				-- Green-ish.
+				self:GetCheckedTexture():SetTexCoord(0.0078125, 0.2734375, 0.671875, 0.8046875);
+				self:GetHighlightTexture():SetTexCoord(0.0078125, 0.2734375, 0.671875, 0.8046875);
+			else
+				-- Blue-ish.
+				self:GetCheckedTexture():SetTexCoord(0.0078125, 0.2734375, 0.80859375, 0.94140625);
+				self:GetHighlightTexture():SetTexCoord(0.0078125, 0.2734375, 0.80859375, 0.94140625);
 			end
 		end
 		-- Show button.
