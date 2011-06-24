@@ -18,6 +18,45 @@
 		</Backdrop>
 	</Frame>
 	
+	<Frame name="PowaTitledFrameTemplate" virtual="true">
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString parentKey="Title" justifyH="LEFT" justifyV="MIDDLE" font="PowaFontNormalLarge">
+					<Size x="225" y="16" />
+					<Anchors>
+						<Anchor point="TOPLEFT" x="15" y="-15" />
+						<Anchor point="TOPRIGHT" x="-15" y="-15" />
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Description" justifyH="LEFT" justifyV="TOP" font="PowaFontHighlightSmall">
+					<Size x="225" y="32" />
+					<Anchors>
+						<Anchor point="TOPLEFT" x="15" y="-40" />
+						<Anchor point="TOPRIGHT" x="-15" y="-40" />
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				-- We don't need a class definition just for this, I think.
+				self.SetTitle = function(self, title)
+					self.Title:SetText(title);
+				end
+				self.GetTitle = function(self)
+					return self.Title:GetText();
+				end
+				-- Descriptive text.
+				self.SetDescription = function(self, description)
+					self.Description:SetText(description);
+				end
+				self.GetDescription = function(self)
+					return self.Description:GetText();
+				end
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	
 	<Frame name="PowaGenericFrameTemplate" virtual="true" toplevel="true" movable="true" hidden="false" frameStrata="MEDIUM" enableMouse="true" enableKeyboard="true">
 		<Size>
           <AbsDimension x="550" y="450" />
