@@ -17,4 +17,77 @@
 			<BorderColor r="0.3" g="0.3" b="0.3" a="1.0" />
 		</Backdrop>
 	</Frame>
+	
+	<Frame name="PowaGenericFrameTemplate" virtual="true" toplevel="true" movable="true" hidden="false" frameStrata="MEDIUM" enableMouse="true" enableKeyboard="true">
+		<Size>
+          <AbsDimension x="550" y="450" />
+        </Size>
+        <Anchors>
+			<Anchor point="CENTER" relativeTo="UIParent" x="0" y="50" />
+        </Anchors>
+		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+			<BackgroundInsets>
+				<AbsInset left="11" right="12" top="12" bottom="11" />
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="32" />
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="32" />
+			</EdgeSize>
+		</Backdrop>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture file="Interface\DialogFrame\UI-DialogBox-Header">
+					<Size>
+						<AbsDimension x="300" y="68" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOP" relativePoint="TOP" x="0" y="13" />
+					</Anchors>					
+				</Texture>
+				<FontString parentKey="Title" inherits="PowaFontNormal" text="Power Auras %s" justifyH="CENTER" justifyV="TOP">
+					<Size>
+						<AbsDimension x="300" y="68" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOP" relativePoint="TOP" x="0" y="-2" />
+					</Anchors>
+				</FontString>
+				<Texture file="Interface\DialogFrame\UI-DialogBox-Corner">
+					<Size x="32" y="32" />	
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="-4" y="-4" />	
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button inherits="UIPanelCloseButton">
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="0" y="0" />
+				</Anchors>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnMouseDown>
+				if(button == "LeftButton" and not self.isMoving) then
+					self:StartMoving();
+					self.isMoving = true;
+				end
+			</OnMouseDown>
+			<OnMouseUp>
+				if(button == "LeftButton" and self.isMoving) then
+					self:StopMovingOrSizing();
+					self.isMoving = false;
+				end
+			</OnMouseUp>
+			<OnHide>
+				if(self.isMoving) then
+					self:StopMovingOrSizing();
+					self.isMoving = false;
+				end
+			</OnHide>
+		</Scripts>
+	</Frame>
 </Ui>

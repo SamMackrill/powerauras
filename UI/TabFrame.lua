@@ -59,7 +59,7 @@ PowaAuras.UI:Register("TabFrame", {
 		-- Well this is pretty simple.
 		self.Tabs[index]:Show();
 	end,
-	UpdateTabs = function(self, index)
+	UpdateTabs = function(self)
 		-- Locals.
 		local offset = 0;
 		-- Position tabs.
@@ -81,6 +81,34 @@ PowaAuras.UI:Register("TabFrame", {
 				-- Bump the offset.
 				offset = offset+tab.Offset;
 			end
+		end
+	end,
+});
+
+-- Tab frame that is linked to a tree view. If either changes the selected index/key, then they are both updated.
+PowaAuras.UI:Register("TreeControlledTabFrame", {
+	Base = "TabFrame",
+	Init = function(self, tree)
+		-- Initialize tab frame.
+		PowaAuras.UI.TabFrame.Init(self, "TabButtonBase");
+		-- Need a tree.
+		if(not tree) then
+			return;
+		end
+		-- Replace tree view update func.
+		tree.OnSelectionChanged = function(tree, key)
+			-- Update selected tab.
+			self:SetSelectedTab(key);
+		end
+		-- Store tree.
+		self.Tree = tree;
+	end,
+	SetSelectedTab = function(self, index)
+		-- Call parent func.
+		PowaAuras.UI.TabFrame.SetSelectedTab(self, index);
+		-- Make sure keys/indexes match.
+		if(self.Tree:GetSelectedKey() ~= index) then
+			self.Tree:SetSelectedKey(index);
 		end
 	end,
 });
