@@ -313,6 +313,9 @@ cPowaAura.ExportSettings = {
 	-- },
 -- };
 
+--- Aura Initialisation call, 
+-- Will get called at the end of aura creation, 
+-- Can be overridden
 function cPowaAura:Init()
 	self:SetFixedIcon();
 end
@@ -365,9 +368,12 @@ function cPowaAura:SetState(name, value)
 	self:CheckTriggers("State", value, name);
 end
 
+--- Allows aura to set its fixed icon, 
+-- virtual, does nothing by default
 function cPowaAura:SetFixedIcon()
 end
 
+--- Cleans-up aura resouces, 
 function cPowaAura:Dispose()
 	--PowaAuras:ShowText("Aura ", self.id, " Dispose");
 	self:Hide("Dispose");
@@ -384,6 +390,8 @@ function cPowaAura:Dispose()
 --	end
 end
 
+--- Allows aura to set any custom events, 
+-- virtual, does nothing by default
 function cPowaAura:CustomEvents()
 end
 

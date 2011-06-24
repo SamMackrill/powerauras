@@ -1,3 +1,4 @@
+--- Stores all of the variables and methods
 PowaAuras = {
 	Version = GetAddOnMetadata("PowerAuras", "Version");
 	
@@ -69,11 +70,24 @@ PowaAuras = {
 	GroupUnits = {};
 	GroupNames = {};
 	
-	Pending = {}; --- Workaround for 'silent' cooldown end (no event fired)
-	Cascade = {}; -- Dependant auras that need checking
+	--- Auras that require checking at the next update
+	-- @name PowaAuras.Pending
+	-- @class table
+	Pending = {}; 
+	
+	--- Dependant auras that need checking
+	-- @name PowaAuras.Cascade
+	-- @class table
+	Cascade = {};
 
+	--- All auras that are actively used in a mult-aura chain 
+	-- @name PowaAuras.UsedInMultis
+	-- @class table
 	UsedInMultis = {};
 	
+	--- Premade auras available by class
+	-- @name PowaAuras.UsedInMultis
+	-- @class table
 	ClassPremades =
 	{
 		PALADIN = {},
@@ -88,10 +102,19 @@ PowaAuras = {
 		DEATHKNIGHT = {},
 	};
 
+	--- Stances available to the current character
+	-- @name PowaAuras.PowaStance
+	-- @class table
 	PowaStance = {[0] = "Humanoid"};
 	
+	--- GTFO alert types
+	-- @name PowaAuras.PowaGTFO
+	-- @class table
 	PowaGTFO = {[0] = "High Damage", [1] = "Low Damage", [2] = "Fail Alert", [3] = "Friendly Fire"};
 		
+	--- Comparison operators
+	-- @name PowaAuras.allowedOperators
+	-- @class table
 	allowedOperators = {
 		["="] = true,
 		[">"] = true,
