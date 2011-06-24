@@ -347,8 +347,26 @@ function cPowaAura:CopyDecorators(newID)
 	if(self.Stacks) then
 		newAura.Stacks = cPowaStacks(newAura, self.Stacks);
 	end
-	-- TODO: Copy triggers from current aura to new one.
+	
+	self:CopyTriggers(newAura);
 end
+
+function cPowaAura:CopyTriggers(newAura)
+	newAura.Triggers = self:CopyTable(self.Triggers);
+	local triggerIndex = 1;
+	while triggerIndex<=#self.Triggers do
+		local newTrigger = newAura.Triggers[triggerIndex];
+		newTrigger.AuraId = newAura.id;
+		local actionIndex = 1;
+		while actionIndex<=#newTrigger.Actions do
+			newTrigger.Actions[actionIndex].AuraId = newAura.id;
+			actionIndex = actionIndex + 1;
+		end
+		triggersTree:AddItem(triggerIndex.."_NEWACTION", "New Action ...", triggerIndex);
+		triggerIndex = triggerIndex + 1;
+	end
+end
+
 
 --- Displays additional lines of information about the aura when the tooltip is made visible in the aura browser.
 -- You should call AddLine from within this function and it will append lines after the ID number of the aura, and
@@ -449,8 +467,8 @@ function cPowaAura:CreateDefaultTriggers()
 	--PowaAuras:ShowText("CreateDefaultTriggers");
 	self:ClearDefaultTriggers();
 	if (self.off) then return; end
-	local frame, texture, frame2, texture2 = self:CreateFrames();
-
+	self:CreateFrames();
+	
 	-- =====================
 	-- Start/Main Animations
 	-- =====================
@@ -463,13 +481,13 @@ function cPowaAura:CreateDefaultTriggers()
 	if (self.textaura ~= true) then
 		--trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Show Aura"});
 		if (self.begin>0) then
-			table.insert(AnimationChain, {Name="PA_ShowAnim", Frame=frame, HideFrame=frame2, Animation=self.begin, Speed=self.speed, Alpha=self.alpha, BeginSpin=self.beginSpin});
+			table.insert(AnimationChain, {Name="PA_ShowAnim", FrameSource="Frames", HideFrameSource="SecondaryFrames", Animation=self.begin, Speed=self.speed, Alpha=self.alpha, BeginSpin=self.beginSpin});
 		end
 
 		if (self.anim1>1 or self.anim2>0) then
 			--PowaAuras:ShowText("Main animation trigger, anim1=", self.anim1, " anim2=", self.anim2);
 			if (self.anim1>0) then
-				table.insert(AnimationChain, {Name="PA_Main1", Frame=frame, Animation=self.anim1, Speed=self.speed, Alpha=self.alpha, Loop=true});
+				table.insert(AnimationChain, {Name="PA_Main1", FrameSource="Frames", Animation=self.anim1, Speed=self.speed, Alpha=self.alpha, Loop=true});
 			end
 			if (self.anim2>0) then
 				local speed;
@@ -478,7 +496,7 @@ function cPowaAura:CreateDefaultTriggers()
 				else
 					speed = self.speed / 2;
 				end
-				table.insert(AnimationChain, {Name="PA_Main2", Frame=frame2, Animation=self.anim2, Speed=speed, Alpha=self.alpha * 0.5, Loop=true, Secondary=true});
+				table.insert(AnimationChain, {Name="PA_Main2", FrameSource="SecondaryFrames", Animation=self.anim2, Speed=speed, Alpha=self.alpha * 0.5, Loop=true, Secondary=true});
 			end
 		end	
 		if (#AnimationChain>0) then
@@ -498,7 +516,7 @@ function cPowaAura:CreateDefaultTriggers()
 	trigger=self:CreateTrigger(cPowaAuraHideTrigger, {Name="PA_AuraHide", Debug=false});
 	--trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Hide Aura"});
 	if (self.finish>0 and (self.textaura ~= true)) then
-		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_HideAnim", AnimationChain={{Name="PA_HideAnim", Frame=frame, HideFrame=frame2, Animation=self.finish + 100, Speed=self.speed, Alpha=self.alpha, Hide=self}}});
+		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_HideAnim", AnimationChain={{Name="PA_HideAnim", FrameSource="Frames", HideFrameSource="SecondaryFrames", Animation=self.finish + 100, Speed=self.speed, Alpha=self.alpha, Hide=self}}});
 	else
 		trigger:AddAction(cPowaAuraHideAction, {Name="PA_Hide", Aura=true});
 	end
@@ -514,10 +532,10 @@ function cPowaAura:CreateDefaultTriggers()
 	-- =====		
 	if (self.Timer) then
 		if (self.Timer.enabled) then
-			local frame1, frame2 = self.Timer:CreateFrameIfMissing(self)
+			self.Timer:CreateFrameIfMissing(self);
 			if (self.Timer.UpdatePing) then
 				trigger=self:CreateTrigger(cPowaAuraTimerRefreshTrigger, {Name="PA_TimerPing"});
-				if (frame1) then trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_TimerPing1", AnimationChain={{Name="PA_TimerPing1", Frame=frame1, Animation=1000, Alpha=self.alpha, Speed=1}}}); end
+				trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_TimerPing1", AnimationChain={{Name="PA_TimerPing1", FrameSource="TimerFrame", Frame=1, Animation=1000, Alpha=self.alpha, Speed=1}}});
 				--if (frame2) then trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_TimerPing2", Frame=frame2, Animation=1000, Alpha=self.alpha, Speed=1}); end
 			end
 			--trigger=self:CreateTrigger(cPowaAuraTimerTrigger, 12, nil, "<");
@@ -556,9 +574,9 @@ function cPowaAura:CreateDefaultTriggers()
 	-- Stacks
 	-- ======		
 	if (self.Stacks and self.Stacks.UpdatePing and self.Stacks.enabled) then
-		local frame = self.Stacks:CreateFrameIfMissing(self)
+		self.Stacks:CreateFrameIfMissing(self);
 		trigger=self:CreateTrigger(cPowaStacksTrigger, {Name="PA_StacksPing"});
-		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_StacksPing", AnimationChain={{Name="PA_StacksPing", Frame=frame, Animation=1000, Alpha=self.alpha, Speed=1}}});
+		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_StacksPing", AnimationChain={{Name="PA_StacksPing", FrameSource="StacksFrame", Animation=1000, Alpha=self.alpha, Speed=1}}});
 		
 		trigger=self:CreateTrigger(cPowaAuraStacksHideTrigger, {Name="PA_StacksHide", Debug=false});
 		trigger:AddAction(cPowaAuraHideAction, {Name="PA_StacksHide", Stacks=true});
