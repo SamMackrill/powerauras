@@ -1,3 +1,8 @@
+--- UI Widget class definition for TreeViews.
+-- @author Test author.
+-- @copyright Test copyright tag.
+-- @release Test release tag.
+
 -- Create definition.
 PowaAuras.UI:Register("TreeView", {
 	Init = function(self, title, callback)

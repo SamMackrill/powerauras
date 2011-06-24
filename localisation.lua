@@ -911,8 +911,11 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	UI_Editor_TabSound         = "Sounds",
 	
 	UI_Editor_Aura             = "Aura",
+	UI_Editor_AuraDesc         = "Configures the display settings of the aura texture.",
 	UI_Editor_Timer            = "Timer",
+	UI_Editor_AuraDesc         = "Configures the settings of the timer display.",
 	UI_Editor_Stacks           = "Stacks",
+	UI_Editor_AuraDesc         = "Configures the settings of the stacks display.",
 	
 	
 	UI_TriggerAdd              = "Add",

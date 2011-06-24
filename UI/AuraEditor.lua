@@ -82,6 +82,67 @@ PowaAuras.UI:Register("AuraEditor2", {
 	end,
 });
 
+PowaAuras.UI:Register("FrameCategory", {
+	ReusableItems = {},
+	Scripts = {
+		OnDisable = "UpdateTextures",
+		OnEnable = "UpdateTextures",
+		OnEnter = "UpdateTextures",
+		OnLeave = "UpdateTextures",
+		OnMouseDown = true,
+		OnMouseUp = true,
+		OnShow = "UpdateTextures",
+	},
+	Construct = function(class, ui, parent, ...)
+		-- Got any items or not?
+		local item = nil;
+		if(self.Items[1]) then
+			-- Yay!
+			item = self.ReusableItems[1];
+			tremove(self.ReusableItems, 1);
+			-- Skip to init.
+			item:SetParent(parent);
+			item:Init(...);
+			return item;
+		else
+			-- Get making. Create the main header.
+			item = CreateFrame("Button", nil, parent);
+			item.Textures = {};
+			item.Textures.Left = item:CreateTexture(nil, "ARTWORK");
+			item.Textures.Middle = item:CreateTexture(nil, "ARTWORK");
+			item.Textures.Right = item:CreateTexture(nil, "ARTWORK");
+			-- Reuse existing constructor.
+			return ui.Construct(class, ui, item, ...);
+		end
+	end,
+	Init = function(self)
+		-- Update textures immediately.
+		self:UpdateTextures();
+	end,
+	OnMouseDown = function(self)
+		-- Button state doesn't update in time.
+		if(self:IsEnabled()) then
+			self:SetButtonState("PUSHED");
+			self:UpdateTextures();
+		end
+	end,
+	OnMouseUp = function(self)
+		-- Button state doesn't update in time.
+		if(self:IsEnabled()) then
+			self:SetButtonState("NORMAL");
+			self:UpdateTextures();
+		end
+	end,
+	Recycle = function(self)
+		-- Place in recycle table!
+		tinsert(self.ReusableItems, self);
+		self:Hide();
+	end,
+	UpdateTextures = function(self)
+		local state = self:GetButtonState();
+	end
+});
+
 -- Lua style definition of frame. Used to demonstrate BuildFrameFromDefinition, which might be used for the editor.
 local AuraEditor = {
 	Inherits = "PowaGenericFrameTemplate",
@@ -128,64 +189,26 @@ local AuraEditor = {
 							},
 							Children = {
 								[1] = {
+									Inherits = "PowaTitledFrameTemplate",
 									Points = true,
-									Children = {
-										Title = {
-											Type = "FontString",
-											Inherits = "PowaFontNormalLarge",
-											Size = { 225, 40 },
-											Points = {
-												[1] = { "TOPLEFT", 15, -4 },
-												[2] = { "TOPRIGHT", -15, -4 },
-											},
-											OnLoad = function(self)
-												-- Additional setup..
-												self:SetJustifyH("LEFT");
-												self:SetJustifyV("MIDDLE");
-												self:SetText(PowaAuras.Text["UI_Editor_Aura"]);
-											end,
-										},
-									},
+									OnLoad = function(self)
+										self:SetTitle(PowaAuras.Text["UI_Editor_Aura"]);
+										self:SetDescription(PowaAuras.Text["UI_Editor_AuraDesc"]);
+									end,
 								},
 								[2] = {
+									Inherits = "PowaTitledFrameTemplate",
 									Points = true,
-									Children = {
-										Title = {
-											Type = "FontString",
-											Inherits = "PowaFontNormalLarge",
-											Size = { 225, 40 },
-											Points = {
-												[1] = { "TOPLEFT", 15, -4 },
-												[2] = { "TOPRIGHT", -15, -4 },
-											},
-											OnLoad = function(self)
-												-- Additional setup..
-												self:SetJustifyH("LEFT");
-												self:SetJustifyV("MIDDLE");
-												self:SetText(PowaAuras.Text["UI_Editor_Timer"]);
-											end,
-										},
-									},
+									OnLoad = function(self)
+										self:SetTitle(PowaAuras.Text["UI_Editor_Timer"]);
+									end,
 								},
 								[3] = {
+									Inherits = "PowaTitledFrameTemplate",
 									Points = true,
-									Children = {
-										Title = {
-											Type = "FontString",
-											Inherits = "PowaFontNormalLarge",
-											Size = { 225, 40 },
-											Points = {
-												[1] = { "TOPLEFT", 15, -4 },
-												[2] = { "TOPRIGHT", -15, -4 },
-											},
-											OnLoad = function(self)
-												-- Additional setup..
-												self:SetJustifyH("LEFT");
-												self:SetJustifyV("MIDDLE");
-												self:SetText(PowaAuras.Text["UI_Editor_Stacks"]);
-											end,
-										},
-									},
+									OnLoad = function(self)
+										self:SetTitle(PowaAuras.Text["UI_Editor_Stacks"]);
+									end,
 								},
 							},
 							OnLoad = function(self)
@@ -231,9 +254,21 @@ local function BuildFrameFromDefinition(def, parent)
 	if(def.Type == "FontString" or def.Type == "Texture") then
 		-- Make layered object.
 		frame = parent["Create" .. def.Type](parent, def.Name, def.Layer, def.Inherits, def.SubLevel);
-	else
-		-- Make frame.
+	elseif(def.Type ~= "Class") then
+		-- Make frame if not Class type. Class type means instantiate the class without a frame.
 		frame = CreateFrame(def.Type or "Frame", def.Name, parent, def.Inherits);
+	end
+	-- Classes.
+	if(type(def.Class) == "string") then
+		if(def.Type == "Class") then
+			frame = PowaAuras.UI[def.Class](PowaAuras.UI, parent, (def.ClassArgs and unpack(def.ClassArgs) or nil));
+		else
+			PowaAuras.UI[def.Class](PowaAuras.UI, frame, (def.ClassArgs and unpack(def.ClassArgs) or nil));
+		end
+	elseif(type(def.Class) == "table") then
+		for _, class in ipairs(def.Class) do
+			PowaAuras.UI[class](PowaAuras.UI, frame, (def.ClassArgs and unpack(def.ClassArgs) or nil));
+		end
 	end
 	-- Size...
 	if(def.Size) then
@@ -248,14 +283,6 @@ local function BuildFrameFromDefinition(def, parent)
 			for _, point in ipairs(def.Points) do
 				frame:SetPoint(unpack(point));
 			end
-		end
-	end
-	-- Classes.
-	if(type(def.Class) == "string") then
-		PowaAuras.UI[def.Class](PowaAuras.UI, frame);
-	elseif(type(def.Class) == "table") then
-		for _, class in ipairs(def.Class) do
-			PowaAuras.UI[class](PowaAuras.UI, frame);
 		end
 	end
 	-- Keys.
@@ -280,5 +307,5 @@ end
 
 -- Build editor.
 BuildFrameFromDefinition(AuraEditor, UIParent);
--- Nil out the definition to save memory.
+-- Nil out the definition to save memory. Garbage collector will pick it up at some point.
 AuraEditor = nil;
