@@ -3,7 +3,7 @@
     xsi:schemaLocation="http://www.blizzard.com/wow/ui/
     ..\..\FrameXML\UI.xsd">
 	<Script file="ScrollFrame.lua" />
-	<ScrollFrame name="PowaScrollFrameTemplate" virtual="true" enableMouse="true">
+	<ScrollFrame name="PowaScrollFrameTemplate" virtual="true">
 		<Frames>
 			<Slider parentKey="ScrollBar" minValue="0" maxValue="0" valueStep="1" defaultValue="0">
 				<Size x="18" y="1" />
