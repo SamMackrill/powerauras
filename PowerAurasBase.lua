@@ -1054,7 +1054,6 @@ PowaAuras.Text = setmetatable({}, {
 		return k;
 	end,
 	__call = function(self, k, ...)
-		print(self, k, ...);
 		return format((self[k] or k), ...);
 	end,
 });

@@ -47,3 +47,23 @@ PowaAuras.UI:Register("ScrollFrame", {
 		end
 	end,
 });
+
+-- Generic scroll child used in the aura editor.
+PowaAuras.UI:Register("EditorScrollChild", {
+	Init = function(self)
+		-- Update.
+		self:UpdateLayout();
+	end,
+	UpdateLayout = function(self)
+		-- Initial padding of 70.
+		local height = 70;
+		-- Add height of child elements.
+		local count = self:GetNumChildren();
+		for i=1, count do
+			-- +8 for the spacing between elements.
+			height = height+select(i, self:GetChildren()):GetHeight()+8;
+		end
+		-- Update.
+		self:SetHeight(height);
+	end,
+});
