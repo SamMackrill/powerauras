@@ -1,4 +1,8 @@
+--- Event servicing
+-- servicing methods are named PowaAuras:XXXXX_YYYY(...)
+-- Where XXXXX_YYYY matches the actual WoW event
 
+---
 function PowaAuras:VARIABLES_LOADED(...)
 	PowaMisc.disabled = nil;
 
@@ -87,6 +91,7 @@ function PowaAuras:VARIABLES_LOADED(...)
 	self.VariablesLoaded = true;
 end
 
+---
 function PowaAuras:Setup()
 	PowaAuras_Tooltip:SetOwner(UIParent, "ANCHOR_NONE");
 
@@ -138,6 +143,7 @@ function PowaAuras:Setup()
 	self.SetupDone = true;
 end
 
+---
 function PowaAuras:GetInstanceType()
 	local _, instanceType = IsInInstance();
 	if (instanceType=="pvp") then
@@ -170,11 +176,12 @@ function PowaAuras:GetInstanceType()
 	return instanceType;
 end
 
+---
 function PowaAuras:PLAYER_ENTERING_WORLD(...)
 	self:Setup();
 end
 
-		
+---
 function PowaAuras:ACTIVE_TALENT_GROUP_CHANGED(...)
 	self.ActiveTalentGroup = GetActiveTalentGroup();
 	if (self.ModTest == false) then
@@ -182,12 +189,14 @@ function PowaAuras:ACTIVE_TALENT_GROUP_CHANGED(...)
 	end
 end
 
+---
 function PowaAuras:PLAYER_TALENT_UPDATE(...)
 	if (self.ModTest == false) then
 		self.PendingRescan = GetTime() + 1;
 	end
 end
 		
+---
 function PowaAuras:PLAYER_UPDATE_RESTING(...)
 	if (self.ModTest == false) then
 		self.DoCheck.All = true;
@@ -195,6 +204,7 @@ function PowaAuras:PLAYER_UPDATE_RESTING(...)
 	end
 end
 
+---
 function PowaAuras:PARTY_MEMBERS_CHANGED(...)	  
 	if (self.ModTest == false) then
 		self:MarkAuras("PartyBuffs", "GroupOrSelfBuffs", "PartyHealth", "PartyMana", "UnitMatch");
@@ -205,6 +215,7 @@ function PowaAuras:PARTY_MEMBERS_CHANGED(...)
 	self:FillGroup("party", partyCount);
 end
 		
+---
 function PowaAuras:RAID_ROSTER_UPDATE(...)
 	if (self.ModTest == false) then
 		self:MarkAuras("RaidBuffs", "GroupOrSelfBuffs", "RaidHealth", "RaidMana", "UnitMatch");
@@ -214,6 +225,7 @@ function PowaAuras:RAID_ROSTER_UPDATE(...)
 	self:FillGroup("raid", raidCount);
 end
 
+---
 function PowaAuras:FillGroup(group, count)
 	wipe(self.GroupUnits);
 	wipe(self.GroupNames);
@@ -230,30 +242,36 @@ function PowaAuras:FillGroup(group, count)
 	PowaAuras:TrimInspected();
 end
 
+---
 function PowaAuras:INSPECT_TALENT_READY()
 	self:InspectRole();
 end
 	
+---
 function PowaAuras:UNIT_HEALTH(...)
 	local unit = ...;
 	self:SetCheckResource("Health", unit);
 end
 		
+---
 function PowaAuras:UNIT_MAXHEALTH(...)
 	local unit = ...;
 	self:SetCheckResource("Health", unit);
 end
 
+---
 function PowaAuras:UNIT_POWER(...)
 	local unit, resourceType = ...;
 	self:CheckPower(unit, resourceType);
 end
 
+---
 function PowaAuras:UNIT_MAXPOWER(...)
 	local unit, resourceType = ...;
 	self:CheckPower(unit, resourceType);
 end
 
+---
 function PowaAuras:CheckPower(unit, resourceType)
 	if (resourceType=="MANA") then
 		self:SetCheckResource("Mana", unit);
@@ -262,6 +280,7 @@ function PowaAuras:CheckPower(unit, resourceType)
 	end
 end
 
+---
 function PowaAuras:SetCheckResource(resourceType, unitType)
 	if (self.ModTest == false) then
 		if (unitType == "target") then
@@ -280,6 +299,7 @@ function PowaAuras:SetCheckResource(resourceType, unitType)
 	end
 end
 
+---
 function PowaAuras:SpellcastEvent(unit)
 	if (self.ModTest == false) then
 		--- spell alert handling
@@ -310,6 +330,7 @@ function PowaAuras:SpellcastEvent(unit)
 	end
 end
 
+---
 function PowaAuras:UNIT_SPELLCAST_SUCCEEDED(...)	  
 	if (self.ModTest == false) then
 		local unit, spell = ...;
@@ -342,52 +363,62 @@ function PowaAuras:UNIT_SPELLCAST_SUCCEEDED(...)
 	end
 end
 
+---
 function PowaAuras:UNIT_SPELLCAST_START(...)
 	local unit = ...;
 	PowaAuras:SpellcastEvent(unit);
 end
 
+---
 function PowaAuras:UNIT_SPELLCAST_CHANNEL_START(...)
 	local unit = ...;
 	PowaAuras:SpellcastEvent(unit);
 end
 
+---
 function PowaAuras:UNIT_SPELLCAST_DELAYED(...)
 	local unit = ...;
 	PowaAuras:SpellcastEvent(unit);
 end
 
+---
 function PowaAuras:UNIT_SPELLCAST_CHANNEL_UPDATE(...)
 	local unit = ...;
 	PowaAuras:SpellcastEvent(unit);
 end
 
+---
 function PowaAuras:UNIT_SPELLCAST_STOP(...)
 	local unit = ...;
 	PowaAuras:SpellcastEvent(unit);
 end
 
+---
 function PowaAuras:UNIT_SPELLCAST_FAILED(...)
 	local unit = ...;
 	PowaAuras:SpellcastEvent(unit);
 end
 
+---
 function PowaAuras:UNIT_SPELLCAST_INTERRUPTED(...)
 	local unit = ...;
 	PowaAuras:SpellcastEvent(unit);
 end
 
+---
 function PowaAuras:UNIT_SPELLCAST_CHANNEL_STOP(...)
 	local unit = ...;
 	PowaAuras:SpellcastEvent(unit);
 end
 
+---
 function PowaAuras:RUNE_POWER_UPDATE(...)
 	if (self.ModTest == false) then
 		self:MarkAuras("Runes");
 	end
 end
 
+---
 function PowaAuras:RUNE_TYPE_UPDATE(...)
 	local runeId = ...;
 	if (self.ModTest == false) then
@@ -398,12 +429,14 @@ function PowaAuras:RUNE_TYPE_UPDATE(...)
 	end
 end
 	
+---
 function PowaAuras:PLAYER_FOCUS_CHANGED(...)	  
 	if (self.ModTest == false) then
 		self:MarkAuras("FocusBuffs", "FocusHealth", "FocusMana", "FocusPower", "FocusSpells", "StealableFocusSpells", "PurgeableFocusSpells", "UnitMatch");
 	end
 end
 
+---
 function PowaAuras:BuffsChanged(unit)
 	if (not self.ModTest) then
 		--self:ShowText("==>BuffsChanged ", unit, " uip=", UnitIsPlayer(unit));
@@ -431,6 +464,7 @@ function PowaAuras:BuffsChanged(unit)
 	end
 end
 
+---
 function PowaAuras:UNIT_AURA(...)
 	local unit = select(1, ...);
 	if (self.DebugEvents) then
@@ -439,6 +473,7 @@ function PowaAuras:UNIT_AURA(...)
 	self:BuffsChanged(unit);
 end
 
+---
 function PowaAuras:UNIT_AURASTATE(...)
 	local unit = select(1, ...);
 	if (self.DebugEvents) then
@@ -447,6 +482,7 @@ function PowaAuras:UNIT_AURASTATE(...)
 	self:BuffsChanged(unit);
 end
 
+---
 function PowaAuras:PLAYER_DEAD(...)
 	if (self.ModTest == false) then
 		self.DoCheck.All = true;
@@ -457,6 +493,7 @@ function PowaAuras:PLAYER_DEAD(...)
 	self.WeAreAlive = false;
 end
 	
+---
 function PowaAuras:PLAYER_ALIVE(...)
 	if not UnitIsDeadOrGhost("player") then
 		self.WeAreAlive = true;
@@ -467,6 +504,7 @@ function PowaAuras:PLAYER_ALIVE(...)
 	end
 end
 	
+---
 function PowaAuras:PLAYER_UNGHOST(...)
 	if not UnitIsDeadOrGhost("player") then
 		self.WeAreAlive = true;
@@ -477,6 +515,7 @@ function PowaAuras:PLAYER_UNGHOST(...)
 	end
 end
  
+---
 function PowaAuras:PLAYER_TARGET_CHANGED(...)
 	if (self.ModTest == false) then
 		self:MarkAuras("TargetBuffs", "TargetHealth", "TargetMana", "TargetPower", "Actions", "StealableTargetSpells", 
@@ -486,6 +525,7 @@ function PowaAuras:PLAYER_TARGET_CHANGED(...)
 end
 
  
+---
 function PowaAuras:UNIT_TARGET(...)
 	local unit = select(1, ...);
 	local target = unit.."target";
@@ -506,6 +546,7 @@ function PowaAuras:UNIT_TARGET(...)
 	end
 end
 	 
+---
 function PowaAuras:PLAYER_REGEN_DISABLED(...)
 	self.WeAreInCombat = true;
 	if (self.ModTest == false) then
@@ -514,6 +555,7 @@ function PowaAuras:PLAYER_REGEN_DISABLED(...)
 	end	   
 end
 	   
+---
 function PowaAuras:PLAYER_REGEN_ENABLED(...)
 	self.WeAreInCombat = false;
 	if (self.ModTest == false) then
@@ -523,6 +565,7 @@ function PowaAuras:PLAYER_REGEN_ENABLED(...)
 end   
 
 
+---
 function PowaAuras:ZONE_CHANGED_NEW_AREA()
 	local instanceType = self:GetInstanceType();
 	if (self.Instance == instanceType) then return; end
@@ -536,6 +579,7 @@ function PowaAuras:ZONE_CHANGED_NEW_AREA()
 	end
 end
 
+---
 function PowaAuras:UNIT_COMBO_POINTS(...)
 	local unit = ...;
 	if (unit ~= "player") then return; end
@@ -544,6 +588,7 @@ function PowaAuras:UNIT_COMBO_POINTS(...)
 	end
 end
 
+---
 function PowaAuras:UNIT_PET(...)
 	local unit = ...;
 	if (unit ~= "player") then return; end
@@ -552,6 +597,7 @@ function PowaAuras:UNIT_PET(...)
 	end
 end
 
+---
 function PowaAuras:PLAYER_TOTEM_UPDATE(...)
 	local slot = ...;
 	if (self.ModTest == false) then
@@ -569,6 +615,7 @@ function PowaAuras:PLAYER_TOTEM_UPDATE(...)
 	end
 end
 
+---
 function PowaAuras:VehicleCheck(unit, entered)
 	if unit ~= "player" then return; end
 	if (self.ModTest == false) then
@@ -578,16 +625,19 @@ function PowaAuras:VehicleCheck(unit, entered)
 	self.WeAreInVehicle = entered;
 end
 		
+---
 function PowaAuras:UNIT_ENTERED_VEHICLE(...)
 	local unit = ...;
 	self:VehicleCheck(unit, true)
 end
 
+---
 function PowaAuras:UNIT_EXITED_VEHICLE(...)
 	local unit = ...;
 	self:VehicleCheck(unit, false)
 end
 	
+---
 function PowaAuras:PLAYER_FLAGS_CHANGED(...)
 	local unit = ...;
 	if (self.DebugEvents) then
@@ -596,6 +646,7 @@ function PowaAuras:PLAYER_FLAGS_CHANGED(...)
 	self:FlagsChanged(unit);
 end
 
+---
 function PowaAuras:UNIT_FACTION(...)
 	local unit = ...;
 	if (self.DebugEvents) then
@@ -604,6 +655,7 @@ function PowaAuras:UNIT_FACTION(...)
 	self:FlagsChanged(unit);
 end
 
+---
 function PowaAuras:FlagsChanged(unit)
 	if (unit == "player") then
 		local flag = UnitIsPVP("player");
@@ -637,14 +689,17 @@ function PowaAuras:FlagsChanged(unit)
 	end
 end
 	
+---
 function PowaAuras.StringStarts(String,Start)
    return string.sub(String,1,string.len(Start))==Start
 end
 
+---
 function PowaAuras.StringEnds(String,End)
    return End=='' or string.sub(String,-string.len(End))==End
 end
 
+---
 function PowaAuras:COMBAT_LOG_EVENT_UNFILTERED(...)
 	--self:ShowText("COMBAT_LOG_EVENT_UNFILTERED");
 	if (self.ModTest) then return end
@@ -717,12 +772,14 @@ function PowaAuras:COMBAT_LOG_EVENT_UNFILTERED(...)
 
 end
 
+---
 function PowaAuras:ACTIONBAR_SLOT_CHANGED(...)
 	local actionIndex = ...;
 	self:MemorizeActions(actionIndex);
 	self:MarkAuras("Actions");
 end
 	
+---
 function PowaAuras:UPDATE_SHAPESHIFT_FORMS(...)
 	self:GetStances();
 	if (self.ModTest) then return; end
@@ -730,6 +787,7 @@ function PowaAuras:UPDATE_SHAPESHIFT_FORMS(...)
 	self:MarkAuras("Stance");
 end
 
+---
 function PowaAuras:GetStances()
 	if (self.playerclass=="WARLOCK") then -- Fix for Warlock metamorphosis
 		self.PowaStance[2] = select(2,GetShapeshiftFormInfo(1));
@@ -745,27 +803,32 @@ function PowaAuras:GetStances()
 	end
 end
 	
+---
 function PowaAuras:ACTIONBAR_UPDATE_COOLDOWN(...)
 	if (self.ModTest) then return; end
 	self:MarkAuras("Stance", "Actions");
 end
 		
+---
 function PowaAuras:ACTIONBAR_UPDATE_USABLE(...)
 	if (self.ModTest) then return; end
 	self:MarkAuras("Stance", "Actions");
 end
 	
+---
 function PowaAuras:SPELL_UPDATE_USABLE(...)
 	if (self.ModTest) then return; end
 	--self:DisplayText("SPELL_UPDATE_USABLE ", unit);
 	self:MarkAuras("SpellCooldowns");
 end
 		
+---
 function PowaAuras:UPDATE_SHAPESHIFT_FORM(...)
 	if (self.ModTest) then return; end
 	self:MarkAuras("Stance", "Actions", "Combo");
 end
 
+---
 function PowaAuras:UNIT_INVENTORY_CHANGED(...)
 	if (self.ModTest == false) then
 		local unit = ...;
@@ -784,24 +847,28 @@ function PowaAuras:UNIT_INVENTORY_CHANGED(...)
 	end  
 end
 
+---
 function PowaAuras:BAG_UPDATE_COOLDOWN()
 	if (self.ModTest == false) then
 		self:MarkAuras("Items", "Slots");
 	end
 end
 
+---
 function PowaAuras:BAG_UPDATE()
 	if (self.ModTest == false) then
 		self:MarkAuras("Items", "Slots");
 	end
 end
 
+---
 function PowaAuras:MINIMAP_UPDATE_TRACKING()
 	if (self.ModTest == false) then
 		self:MarkAuras("Tracking");
 	end
 end
 
+---
 function PowaAuras:UNIT_THREAT_SITUATION_UPDATE(...)
 	if (self.ModTest == false) then
 		local unit = ...;
@@ -823,13 +890,14 @@ function PowaAuras:UNIT_THREAT_SITUATION_UPDATE(...)
 	end
 end
 
--- Enables the boss1-boss3 units.
+--- Enables the boss1-boss3 units.
 function PowaAuras:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
 	if (self.ModTest == false) then
 		self:MarkAuras("UnitMatch");
 	end
 end
 
+---
 function PowaAuras:UNIT_NAME_UPDATE()
 	if (self.ModTest == false) then
 		self:MarkAuras("UnitMatch");
