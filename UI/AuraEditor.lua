@@ -155,7 +155,7 @@ PowaAuras.UI:Register("FrameCategory", {
 		-- Call normal func.
 		self:__SetChecked(checked);
 		-- Hide/Show children.
-		local count = select("#", self:GetChildren());
+		local count = self:GetNumChildren();
 		for i=1, count do
 			if(checked) then
 				select(i, self:GetChildren()):Show();
@@ -163,9 +163,9 @@ PowaAuras.UI:Register("FrameCategory", {
 				select(i, self:GetChildren()):Hide();
 			end
 		end
-		-- Same for regions, except start at #6 - 1 through 5 are all internal ones.
-		count = select("#", self:GetRegions());
-		for i=6, count do
+		-- Same for regions, except start at #7 - 1 through 6 are all internal ones.
+		count = self:GetNumRegions();
+		for i=7, count do
 			if(checked) then
 				select(i, self:GetRegions()):Show();
 			else
@@ -176,9 +176,11 @@ PowaAuras.UI:Register("FrameCategory", {
 		if(checked) then
 			self:LockHighlight();
 			self:SetHeight(select(4, self:GetBoundsRect()));
+			self.Expand:SetTexCoord(0, 0.9375, 0.6875, 0);
 		else
 			self:UnlockHighlight();
 			self:SetHeight(25);
+			self.Expand:SetTexCoord(0, 0.9375, 0, 0.6875);
 		end
 		-- Layout parent if needed.
 		if(self:GetParent().UpdateLayout) then
@@ -328,7 +330,7 @@ local AuraEditor = {
 													-- Calculate the height to display...
 													-- Do not use GetBoundsRect to update the height - It will always 
 													-- apply a scrollbar since it chains to all children.
-													local height = 70; -- 70 (Height of title area) + 15 (Padding).
+													local height = 70; -- 70 (Height of title area)
 													-- Add height of child elements.
 													local count = self:GetNumChildren();
 													for i=1, count do
@@ -451,7 +453,6 @@ local function BuildFrameFromDefinition(def, parent)
 		elseif(type(def.Points) == "table") then
 			for _, point in ipairs(def.Points) do
 				if(not def.RelativeAnchor) then
-					print(def.RelativeAnchor);
 					frame:SetPoint(unpack(point));
 				else
 					frame:SetPoint(point[1], def.RelativeAnchor, unpack(point, 2));

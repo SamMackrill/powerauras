@@ -25,14 +25,13 @@
 					<TexCoords left="0.00195313" right="0.12695313" top="0.42968750" bottom="0.62500000" />	
 				</Texture>
 			</Layer>
-			<Layer level="HIGHLIGHT">
-				<Texture parentKey="HighlightMiddle" file="Interface\HELPFRAME\KnowledgeBaseButtton">
-					<Size x="64" y="25" />
+			<Layer level="OVERLAY">
+				<Texture parentKey="Expand" file="Interface\Calendar\MoreArrow">
+					<Size x="15" y="11" />
 					<Anchors>
-						<Anchor point="TOPLEFT" x="0" y="0" />
-						<Anchor point="TOPRIGHT" x="0" y="0" />
+						<Anchor point="TOPLEFT" x="5" y="-7" />
 					</Anchors>
-					<TexCoords left="0.13085938" right="0.63085938" top="0.00781250" bottom="0.20312500" />	
+					<TexCoords left="0" right="0.9375" top="0" bottom="0.6875" />
 				</Texture>
 			</Layer>
 		</Layers>
@@ -51,6 +50,14 @@
 			</Anchors>
 			<TexCoords left="0.13085938" right="0.63085938" top="0.21875000" bottom="0.41406250" />	
 		</NormalTexture>
+		<HighlightTexture parentKey="HighlightMiddle" file="Interface\HELPFRAME\KnowledgeBaseButtton">
+			<Size x="64" y="25" />
+			<Anchors>
+				<Anchor point="TOPLEFT" x="0" y="0" />
+				<Anchor point="TOPRIGHT" x="0" y="0" />
+			</Anchors>
+			<TexCoords left="0.13085938" right="0.63085938" top="0.00781250" bottom="0.20312500" />
+		</HighlightTexture>
 	</CheckButton>
 	
 	<Script file="AuraEditor.lua" />
