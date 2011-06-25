@@ -1,0 +1,49 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+    ..\..\FrameXML\UI.xsd">
+	<Script file="Button.lua" />
+	<Button name="PowaButtonTemplate" virtual="true">
+		<Size x="118" y="22" />
+		<NormalFont style="PowaFontNormal" />
+		<HighlightFont style="PowaFontHighlight" />
+		<DisabledFont style="PowaFontDisable" />
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="BackgroundLeft" file="Interface\Buttons\UI-Panel-Button-Up">
+					<Size>
+						<AbsDimension x="12" y="22" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" />
+						<Anchor point="BOTTOMLEFT" />
+					</Anchors>
+					<TexCoords left="0" right="0.09375" top="0" bottom="0.6875" />
+				</Texture>
+				<Texture parentKey="BackgroundMiddle" file="Interface\Buttons\UI-Panel-Button-Up">
+					<Size>
+						<AbsDimension x="12" y="22" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="12" y="0" />
+						<Anchor point="BOTTOMRIGHT" x="-12" y="0" />
+					</Anchors>
+					<TexCoords left="0.09375" right="0.53125" top="0" bottom="0.6875" />
+				</Texture>
+				<Texture parentKey="BackgroundRight" file="Interface\Buttons\UI-Panel-Button-Up">
+					<Size>
+						<AbsDimension x="12" y="22" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPRIGHT" />
+						<Anchor point="BOTTOMRIGHT" />
+					</Anchors>
+					<TexCoords left="0.53125" right="0.625" top="0" bottom="0.6875" />
+				</Texture>				
+			</Layer>
+		</Layers>
+		<HighlightTexture file="Interface\Buttons\UI-Panel-Button-Highlight" alphaMode="ADD">
+			<TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
+		</HighlightTexture>
+	</Button>
+</Ui>
