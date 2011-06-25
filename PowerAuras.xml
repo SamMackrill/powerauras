@@ -1639,8 +1639,8 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Anchors>
                 <Scripts>
                   <OnLoad>
-                  	self.tooltipText = PowaAuras.Text.aideExtra; 
-                  	getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomExtra); 
+<!--                  	self.tooltipText = PowaAuras.Text.aideExtra; -->
+<!--                  	getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomExtra); -->
                   </OnLoad>
                   <OnClick>PowaAuras:SettingChecked(self, "Extra");</OnClick>
                 </Scripts>
@@ -3317,6 +3317,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Scripts>
               </CheckButton>
 			  
+
               <CheckButton name="PowaBuffTimerTransparentButton"
                            inherits="PowaCheckTemplate">
                 <Size>

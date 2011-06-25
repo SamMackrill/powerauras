@@ -1,6 +1,6 @@
 -- More definitions, yes please.
 PowaAuras.UI:Register("AuraEditor", {
-	AdvancedElements = {}, -- It'll reference, but that's no problem. There's only 1 aura editor.
+	Instance = nil,
 	Scripts = {
 		OnHide = true,
 		OnShow = true,
@@ -8,13 +8,20 @@ PowaAuras.UI:Register("AuraEditor", {
 	Hooks = {
 		"Show",
 	},
-	Init = function(self)
-		-- Hide advanced elements.
-		self.Advanced:SetChecked(false);
-		self:ToggleAdvanced(false);
-		
+	Construct = function(class, ui, frame, ...)
+		-- Construct or return instance. Yes, this is in theory a singleton. I'm sorry.
+		if(class.Instance) then
+			return class.Instance;
+		end
+		-- Construct.
+		ui.Construct(class, ui, frame, ...);
+		-- Done.
+		class.Instance = frame;
+		return frame;
+	end,
+	Init = function(self)		
 		-- Close on escape key.
-		tinsert(UISpecialFrames, self:GetName());
+--		tinsert(UISpecialFrames, self:GetName());
 	end,
 	Show = function(self)
 		-- Make sure this stuff is correct...
@@ -30,21 +37,9 @@ PowaAuras.UI:Register("AuraEditor", {
 	OnShow = function(self)
 		PlaySound("igCharacterInfoTab");
 	end,
-	RegisterAdvanced = function(self, element)
-		tinsert(self.AdvancedElements, element);
-	end,
-	ToggleAdvanced = function(self, state)
-		for _,v in ipairs(self.AdvancedElements) do
-			if(state) then
-				v:Show();
-			else
-				v:Hide();
-			end
-			if(v:GetParent().UpdateLayout) then v:GetParent():UpdateLayout(); end
-		end
-	end,
 	UpdateElements = function(self, auraID)
 		-- Get the aura.
+		auraID = auraID or 1;
 		local aura = PowaAuras.Auras[auraID];
 		if(not aura) then
 			self.AuraID = nil;
@@ -53,9 +48,7 @@ PowaAuras.UI:Register("AuraEditor", {
 		-- Update ID.
 		self.AuraID = auraID;
 		-- Update controls.
-		aura:UpdateTriggerTree(PowaEditorActivation.Triggers.Tree);		
-		-- Toggle advanced elements.
-		self:ToggleAdvanced(self.Advanced:GetChecked());
+		aura:UpdateTriggerTree(self.Tabs.Triggers.Tree);
 		-- Update some values.
 		-- Force aura showing.
 		PowaAuras:ToggleAuraDisplay(auraID, true);
@@ -64,21 +57,6 @@ PowaAuras.UI:Register("AuraEditor", {
 	end,
 	AddNewTrigger = function(self)
 		PowaAuras:ShowText("Add New Trigger auraId=", PowaBrowser:GetSelectedAura());
-	end,
-});
-
-PowaAuras.UI:Register("AuraEditor2", {
-	Instance = nil,
-	Construct = function(class, ui, frame, ...)
-		-- Construct or return instance. Yes, this is in theory a singleton. I'm sorry.
-		if(class.Instance) then
-			return class.Instance;
-		end
-		-- Construct.
-		ui.Construct(class, ui, frame, ...);
-		-- Done.
-		class.Instance = frame;
-		return frame;
 	end,
 });
 
@@ -212,8 +190,8 @@ PowaAuras.UI:Register("FrameCategory", {
 --- Lua style definition of frame. Used to demonstrate BuildFrameFromDefinition, which might be used for the editor.
 local AuraEditor = {
 	Inherits = "PowaGenericFrameTemplate",
-	Name = "PowaEditor2",
-	Class = "AuraEditor2",
+	Name = "PowaEditor",
+	Class = "AuraEditor",
 	Size = { 760, 520 },
 	Points = {
 		[1] = { "CENTER" },
@@ -262,8 +240,9 @@ local AuraEditor = {
 										[2] = { "BOTTOMRIGHT", -4, 4 },
 									},
 									Children = {
-										ScrollChild = {
+										Child = {
 											Inherits = "PowaTitledFrameTemplate",
+											Class = "EditorScrollChild",
 											Size = { 419, 1 },
 											Points = {
 												[1] = { "TOPLEFT", 0, 0 },
@@ -278,24 +257,6 @@ local AuraEditor = {
 														[1] = { "TOPLEFT", 15, -70 },
 														[2] = { "TOPRIGHT", -15, -70 },
 													},
-													OnLoad = function(self)
-														for i=1, 3 do
-															for j=0, 1, 0.01 do
-																local tex = self:CreateTexture(nil, "OVERLAY");
-																tex:SetPoint("TOPLEFT", (i-1)*64, -25-(j*100)*3);
-																tex:SetSize(64, 3);
-																if(i == 1) then
-																	tex:SetTexture(j, 0, 0);
-																elseif(i == 2) then
-																	tex:SetTexture(0, j, 0);
-																elseif(i == 3) then
-																	tex:SetTexture(0, 0, j);
-																end
-															end
-														end
-														-- Status fix.
-														self:UpdateChildren();
-													end,
 												},
 												[2] = {
 													ParentKey = "Style",
@@ -325,44 +286,71 @@ local AuraEditor = {
 												self:SetTitle(PowaAuras.Text["UI_Editor_Aura"]);
 												self:SetDescription(PowaAuras.Text("UI_Editor_CatSuffix", 
 													PowaAuras.Text["UI_Editor_AuraDesc"]));
-												-- Add UpdateLayout function.
-												self.UpdateLayout = function(self)
-													-- Calculate the height to display...
-													-- Do not use GetBoundsRect to update the height - It will always 
-													-- apply a scrollbar since it chains to all children.
-													local height = 70; -- 70 (Height of title area)
-													-- Add height of child elements.
-													local count = self:GetNumChildren();
-													for i=1, count do
-														-- +8 for the spacing between elements.
-														height = height+select(i, self:GetChildren()):GetHeight()+8;
-													end
-													-- Update.
-													self:SetHeight(height);
-												end
-												-- Call it.
-												self:UpdateLayout();
 											end,
 										},
 									},
 									OnLoad = function(self)
 										-- Set scroll child.
-										self:SetScrollChild(self.ScrollChild);
+										self:SetScrollChild(self.Child);
 										PowaAuras.UI:ScrollFrame(self);
 									end,
 								},
 								[2] = {
-									Inherits = "PowaTitledFrameTemplate",
-									Points = true,
+									Type = "ScrollFrame",
+									Inherits = "PowaScrollFrameTemplate",
+									Points = {
+										[1] = { "TOPLEFT", 4, -4 },
+										[2] = { "BOTTOMRIGHT", -4, 4 },
+									},
+									Children = {
+										Child = {
+											Inherits = "PowaTitledFrameTemplate",
+											Class = "EditorScrollChild",
+											Size = { 419, 1 },
+											Points = {
+												[1] = { "TOPLEFT", 0, 0 },
+											},
+											OnLoad = function(self)
+												-- Set title.
+												self:SetTitle(PowaAuras.Text["UI_Editor_Timer"]);
+												self:SetDescription(PowaAuras.Text("UI_Editor_CatSuffix", 
+													PowaAuras.Text["UI_Editor_TimerDesc"]));
+											end,
+										},
+									},
 									OnLoad = function(self)
-										self:SetTitle(PowaAuras.Text["UI_Editor_Timer"]);
+										-- Set scroll child.
+										self:SetScrollChild(self.Child);
+										PowaAuras.UI:ScrollFrame(self);
 									end,
 								},
 								[3] = {
-									Inherits = "PowaTitledFrameTemplate",
-									Points = true,
+									Type = "ScrollFrame",
+									Inherits = "PowaScrollFrameTemplate",
+									Points = {
+										[1] = { "TOPLEFT", 4, -4 },
+										[2] = { "BOTTOMRIGHT", -4, 4 },
+									},
+									Children = {
+										Child = {
+											Inherits = "PowaTitledFrameTemplate",
+											Class = "EditorScrollChild",
+											Size = { 419, 1 },
+											Points = {
+												[1] = { "TOPLEFT", 0, 0 },
+											},
+											OnLoad = function(self)
+												-- Set title.
+												self:SetTitle(PowaAuras.Text["UI_Editor_Stacks"]);
+												self:SetDescription(PowaAuras.Text("UI_Editor_CatSuffix", 
+													PowaAuras.Text["UI_Editor_StacksDesc"]));
+											end,
+										},
+									},
 									OnLoad = function(self)
-										self:SetTitle(PowaAuras.Text["UI_Editor_Stacks"]);
+										-- Set scroll child.
+										self:SetScrollChild(self.Child);
+										PowaAuras.UI:ScrollFrame(self);
 									end,
 								},
 							},
@@ -379,12 +367,147 @@ local AuraEditor = {
 						},
 					},
 				},
+				Activation = {
+					Points = {
+						[1] = { "TOPLEFT", 4, -4 },
+						[2] = { "BOTTOMRIGHT", -4, 5 },
+					},
+					Children = {
+						[1] = {
+							ParentKey = "Tree",
+							Inherits = "PowaTreeViewTemplate",
+							Class = "TreeView",
+							Points = {
+								[1] = { "TOPLEFT", 2, -2 },
+								[2] = { "BOTTOMLEFT", 2, 2 },
+							},
+							OnLoad = function(self)
+								self:AddItem(1, PowaAuras.Text["UI_Editor_Activation"]);
+								self:AddItem(2, PowaAuras.Text["UI_Editor_Rules"]);
+							end,
+						},
+						[2] = {
+							ParentKey = "Tabs",
+							Inherits = "PowaBorderedFrameTemplate",
+							Points = {
+								[1] = { "TOPLEFT", 177, -2 },
+								[2] = { "BOTTOMRIGHT", -2, 2 },
+							},
+							Children = {
+								[1] = {
+									Type = "ScrollFrame",
+									Inherits = "PowaScrollFrameTemplate",
+									Points = {
+										[1] = { "TOPLEFT", 4, -4 },
+										[2] = { "BOTTOMRIGHT", -4, 4 },
+									},
+									Children = {
+										Child = {
+											Inherits = "PowaTitledFrameTemplate",
+											Class = "EditorScrollChild",
+											Size = { 419, 1 },
+											Points = {
+												[1] = { "TOPLEFT", 0, 0 },
+											},
+											OnLoad = function(self)
+												-- Set title.
+												self:SetTitle(PowaAuras.Text["UI_Editor_Timer"]);
+												self:SetDescription(PowaAuras.Text("UI_Editor_CatSuffix", 
+													PowaAuras.Text["UI_Editor_TimerDesc"]));
+											end,
+										},
+									},
+									OnLoad = function(self)
+										-- Set scroll child.
+										self:SetScrollChild(self.Child);
+										PowaAuras.UI:ScrollFrame(self);
+									end,
+								},
+								[2] = {
+									Type = "ScrollFrame",
+									Inherits = "PowaScrollFrameTemplate",
+									Points = {
+										[1] = { "TOPLEFT", 4, -4 },
+										[2] = { "BOTTOMRIGHT", -4, 4 },
+									},
+									Children = {
+										Child = {
+											Inherits = "PowaTitledFrameTemplate",
+											Class = "EditorScrollChild",
+											Size = { 419, 1 },
+											Points = {
+												[1] = { "TOPLEFT", 0, 0 },
+											},
+											OnLoad = function(self)
+												-- Set title.
+												self:SetTitle(PowaAuras.Text["UI_Editor_Timer"]);
+												self:SetDescription(PowaAuras.Text("UI_Editor_CatSuffix", 
+													PowaAuras.Text["UI_Editor_TimerDesc"]));
+											end,
+										},
+									},
+									OnLoad = function(self)
+										-- Set scroll child.
+										self:SetScrollChild(self.Child);
+										PowaAuras.UI:ScrollFrame(self);
+									end,
+								},
+							},
+							OnLoad = function(self)
+								-- Register class manually.
+								PowaAuras.UI:TreeControlledTabFrame(self, self:GetParent().Tree);
+								-- Add tabs.
+								self:AddTab(self[1]);
+								self:AddTab(self[2]);
+								-- Select tab.
+								self:SetSelectedTab(1);
+							end,
+						},
+					},
+				},
+				Triggers = {
+					Points = {
+						[1] = { "TOPLEFT", 4, -4 },
+						[2] = { "BOTTOMRIGHT", -4, 5 },
+					},
+					Children = {
+						[1] = {
+							ParentKey = "Tree",
+							Inherits = "PowaTreeViewTemplate",
+							Class = "TreeView",
+							Points = {
+								[1] = { "TOPLEFT", 2, -2 },
+								[2] = { "BOTTOMLEFT", 2, 2 },
+							},
+							OnLoad = function(self)
+							end,
+						},
+						[2] = {
+							ParentKey = "Tabs",
+							Inherits = "PowaBorderedFrameTemplate",
+							Points = {
+								[1] = { "TOPLEFT", 177, -2 },
+								[2] = { "BOTTOMRIGHT", -2, 2 },
+							},
+							OnLoad = function(self)
+								-- Register class manually.
+--								PowaAuras.UI:TreeControlledTabFrame(self, self:GetParent().Tree);
+								-- Select tab.
+--								self:SetSelectedTab(1);
+							end,
+						},
+					},
+				},
 			},
 			OnLoad = function(self)
 				-- Register class.
 				PowaAuras.UI:TabFrame(self, "TabButton");
 				-- Add tabs.
 				self:AddTab(self.Display, PowaAuras.Text["UI_Editor_TabDisplay"], 
+					"Interface\\Minimap\\Tracking\\Reagents");
+				self:AddTab(self.Activation, PowaAuras.Text["UI_Editor_TabActivation"], 
+					"Interface\\Minimap\\Tracking\\Reagents");
+				self:AddTab(self.Triggers, PowaAuras.Text["UI_Editor_TabTriggers"], 
 					"Interface\\Minimap\\Tracking\\Reagents");
 			end,
 		},
