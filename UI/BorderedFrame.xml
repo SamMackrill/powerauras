@@ -29,7 +29,7 @@
 					</Anchors>
 				</FontString>
 				<FontString parentKey="Description" justifyH="LEFT" justifyV="TOP" font="PowaFontHighlightSmall">
-					<Size x="225" y="32" />
+					<Size x="225" y="24" />
 					<Anchors>
 						<Anchor point="TOPLEFT" x="15" y="-40" />
 						<Anchor point="TOPRIGHT" x="-15" y="-40" />

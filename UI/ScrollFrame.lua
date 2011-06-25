@@ -9,6 +9,7 @@ PowaAuras.UI:Register("ScrollFrame", {
 	Init = function(self)
 		-- Immediate update.
 		self:ScrollUpdate();
+		self:EnableMouseWheel(true); -- Don't need full mouse functionality - it prevents dragging.
 	end,
 	OnVerticalScroll = function(self, offset)
 		self.ScrollBar:SetValue(offset);

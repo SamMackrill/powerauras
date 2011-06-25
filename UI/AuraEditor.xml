@@ -2,7 +2,59 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.blizzard.com/wow/ui/
     ..\..\FrameXML\UI.xsd">
+	
+	<CheckButton name="PowaFrameCategoryTemplate" virtual="true">
+		<Size x="445" y="25" />
+		<HitRectInsets>
+			<AbsInset left="0" right="0" top="0" bottom="0" />
+		</HitRectInsets>
+		<Layers>
+			<Layer level="ARTWORK" textureSubLevel="2">
+				<Texture parentKey="NormalLeft" file="Interface\HELPFRAME\KnowledgeBaseButtton">
+					<Size x="64" y="25" />
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-5" y="0" />
+					</Anchors>
+					<TexCoords left="0.00195313" right="0.12695313" top="0.00781250" bottom="0.20312500" />	
+				</Texture>
+				<Texture parentKey="NormalRight" file="Interface\HELPFRAME\KnowledgeBaseButtton">
+					<Size x="64" y="25" />
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="5" y="0" />
+					</Anchors>
+					<TexCoords left="0.00195313" right="0.12695313" top="0.42968750" bottom="0.62500000" />	
+				</Texture>
+			</Layer>
+			<Layer level="HIGHLIGHT">
+				<Texture parentKey="HighlightMiddle" file="Interface\HELPFRAME\KnowledgeBaseButtton">
+					<Size x="64" y="25" />
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0" />
+						<Anchor point="TOPRIGHT" x="0" y="0" />
+					</Anchors>
+					<TexCoords left="0.13085938" right="0.63085938" top="0.00781250" bottom="0.20312500" />	
+				</Texture>
+			</Layer>
+		</Layers>
+		<ButtonText parentKey="Title" inherits="PowaFontHighlight" justifyH="LEFT" justifyV="MIDDLE">
+			<Size x="0" y="25" />
+			<Anchors>
+				<Anchor point="TOPLEFT" x="25" y="0" />
+				<Anchor point="TOPRIGHT" x="-5" y="0" />
+			</Anchors>
+		</ButtonText>
+		<NormalTexture parentKey="NormalMiddle" file="Interface\HELPFRAME\KnowledgeBaseButtton">
+			<Size x="64" y="25" />
+			<Anchors>
+				<Anchor point="TOPLEFT" x="0" y="0" />
+				<Anchor point="TOPRIGHT" x="0" y="0" />
+			</Anchors>
+			<TexCoords left="0.13085938" right="0.63085938" top="0.21875000" bottom="0.41406250" />	
+		</NormalTexture>
+	</CheckButton>
+	
 	<Script file="AuraEditor.lua" />
+	
 	<Frame name="PowaEditor" toplevel="true" movable="true" parent="PowaBrowser" hidden="true" frameStrata="MEDIUM" enableMouse="true" enableKeyboard="true">
 		<Size>
           <AbsDimension x="550" y="650" />

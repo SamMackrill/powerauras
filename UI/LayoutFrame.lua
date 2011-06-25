@@ -185,7 +185,10 @@ PowaAuras.UI:Register("LayoutFrame", {
 		end
 		-- Is the current parent frame a scrollchild?
 		if(self.IsScrollChild) then
-			self:SetHeight(oY+mY); -- +5 for some padding.
+			self:SetHeight(abs(oY-mY)); -- +5 for some padding.
+			if(self:GetParent().ScrollUpdate) then
+				self:GetParent():ScrollUpdate();
+			end
 		end
 	end,
 	DebugItem = function(self, item, fcW, fcH, cW, cH, pL, pR, pT, pB, mL, mR, mT, mB, oX, oY)
@@ -217,6 +220,7 @@ PowaAuras.UI:Register("LayoutFrame", {
 					frame:SetHeight(math.abs(cH));
 				elseif(i == 3) then
 					frame:SetPoint("LEFT", item, "RIGHT");
+
 					PowaAuras.UI:Tooltip(frame, item:GetName(), "Padding (R): " .. pR);
 					frame:SetWidth(math.abs(pR));
 					frame:SetHeight(math.abs(cH));
