@@ -1083,7 +1083,7 @@ function PowaAuras:Different(o1, o2)
 	local t1 = type(t1);
 	local t2 = type(t2);
 	if (t1~=t2 or t1 == "string" or t2 == "string") then
-		return tostring(o1)~=tostring(o1);
+		return tostring(o1)~=tostring(o2);
 	end
 	if (t1=="number") then
 		return math.abs(o1-o2) > 1e-9;
