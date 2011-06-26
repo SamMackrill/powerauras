@@ -108,8 +108,10 @@ end
 -- Parameters:
 --  Name
 --  AnimationChain
---    Name  
---    Frame
+--    Name
+--	  FrameSource
+--    Frame (optional)
+--    HideFrameSource (optional)
 --    HideFrame (optional)
 --    Animation
 --    Loop
@@ -142,15 +144,21 @@ function cPowaAuraAnimationAction:PlayNextAnimation()
 	self.Current = self.Current + 1;
 	animation = self.Parameters.AnimationChain[self.Current];
 	if (not animation) then return;	end
-	if (animation.HideFrame) then
-		animation.HideFrame:StopAnimating();
-		animation.HideFrame:Hide();
+	if (animation.HideFrameSource) then
+		local hideFrame = PowaAuras:GetFrame(self.AuraId, animation.HideFrameSource, animation.HideFrame);
+		if (hideFrame) then
+			hideFrame:StopAnimating();
+			hideFrame:Hide();
+		end
 	end
 	if (PowaAuras.DebugTriggers or self.Debug) then
 		PowaAuras:DisplayText("Play Animation: ", self.Current, " ", animation.Name );
 	end
-	animation.Frame:StopAnimating();
-	animation.Frame:Show();
+	local frame = PowaAuras:GetFrame(self.AuraId, animation.FrameSource, animation.Frame);
+	if (frame) then
+		frame:StopAnimating();
+		frame:Show();
+	end
 	animation.AnimationGroup:Play();
 end
 
@@ -161,11 +169,14 @@ function cPowaAuraAnimationAction:Init()
 		if (PowaAuras.DebugTriggers or self.Debug) then
 			PowaAuras:DisplayText("Add Animation: ", animation.Animation, " (", animation.Name, ") Group=", groupName );
 		end
-		if (animation.Loop) then
-			animation.AnimationGroup =  PowaAuras:AddLoopingAnimation(aura, self, animation.Frame, animation.Animation, groupName, animation.Speed, animation.Alpha, animation.Secondary, "REPEAT");
-			return;
-		else
-			animation.AnimationGroup =  PowaAuras:AddAnimation(self, animation.Frame, animation.Animation, groupName, animation.Speed, animation.Alpha, animation.BeginSpin, animation.Hide);
+		local frame = PowaAuras:GetFrame(self.AuraId, animation.FrameSource, animation.Frame);
+		if (frame) then
+			if (animation.Loop) then
+				animation.AnimationGroup = PowaAuras:AddLoopingAnimation(aura, self, frame, animation.Animation, groupName, animation.Speed, animation.Alpha, animation.Secondary, "REPEAT");
+				return;
+			else
+				animation.AnimationGroup = PowaAuras:AddAnimation(self, frame, animation.Animation, groupName, animation.Speed, animation.Alpha, animation.BeginSpin, animation.Hide);
+			end
 		end
 	end
 end

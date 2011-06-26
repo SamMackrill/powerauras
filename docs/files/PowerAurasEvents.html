@@ -234,10 +234,352 @@
 <h1>File <code>PowerAurasEvents.lua</code></h1>
 
 
+<p>Event servicing servicing methods are named PowaAuras:XXXXX_YYYY(...) Where XXXXX_YYYY matches the actual WoW event</p>
 
 
 
 
+
+
+<h2>Functions</h2>
+<table class="function_list">
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras.StringEnds">PowaAuras.StringEnds</a>&nbsp;(String, End)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras.StringStarts">PowaAuras.StringStarts</a>&nbsp;(String, Start)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:ACTIONBAR_SLOT_CHANGED">PowaAuras:ACTIONBAR_SLOT_CHANGED</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:ACTIONBAR_UPDATE_COOLDOWN">PowaAuras:ACTIONBAR_UPDATE_COOLDOWN</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:ACTIONBAR_UPDATE_USABLE">PowaAuras:ACTIONBAR_UPDATE_USABLE</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:ACTIVE_TALENT_GROUP_CHANGED">PowaAuras:ACTIVE_TALENT_GROUP_CHANGED</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:BAG_UPDATE">PowaAuras:BAG_UPDATE</a>&nbsp;()</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:BAG_UPDATE_COOLDOWN">PowaAuras:BAG_UPDATE_COOLDOWN</a>&nbsp;()</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:BuffsChanged">PowaAuras:BuffsChanged</a>&nbsp;(unit)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:COMBAT_LOG_EVENT_UNFILTERED">PowaAuras:COMBAT_LOG_EVENT_UNFILTERED</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:CheckPower">PowaAuras:CheckPower</a>&nbsp;(unit, resourceType)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:FillGroup">PowaAuras:FillGroup</a>&nbsp;(group, count)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:FlagsChanged">PowaAuras:FlagsChanged</a>&nbsp;(unit)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:GetInstanceType">PowaAuras:GetInstanceType</a>&nbsp;()</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:GetStances">PowaAuras:GetStances</a>&nbsp;()</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:INSPECT_TALENT_READY">PowaAuras:INSPECT_TALENT_READY</a>&nbsp;()</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:INSTANCE_ENCOUNTER_ENGAGE_UNIT">PowaAuras:INSTANCE_ENCOUNTER_ENGAGE_UNIT</a>&nbsp;()</td>
+	<td class="summary">Enables the boss1-boss3 units.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:MINIMAP_UPDATE_TRACKING">PowaAuras:MINIMAP_UPDATE_TRACKING</a>&nbsp;()</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:PARTY_MEMBERS_CHANGED">PowaAuras:PARTY_MEMBERS_CHANGED</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:PLAYER_ALIVE">PowaAuras:PLAYER_ALIVE</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:PLAYER_DEAD">PowaAuras:PLAYER_DEAD</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:PLAYER_ENTERING_WORLD">PowaAuras:PLAYER_ENTERING_WORLD</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:PLAYER_FLAGS_CHANGED">PowaAuras:PLAYER_FLAGS_CHANGED</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:PLAYER_FOCUS_CHANGED">PowaAuras:PLAYER_FOCUS_CHANGED</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:PLAYER_REGEN_DISABLED">PowaAuras:PLAYER_REGEN_DISABLED</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:PLAYER_REGEN_ENABLED">PowaAuras:PLAYER_REGEN_ENABLED</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:PLAYER_TALENT_UPDATE">PowaAuras:PLAYER_TALENT_UPDATE</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:PLAYER_TARGET_CHANGED">PowaAuras:PLAYER_TARGET_CHANGED</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:PLAYER_TOTEM_UPDATE">PowaAuras:PLAYER_TOTEM_UPDATE</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:PLAYER_UNGHOST">PowaAuras:PLAYER_UNGHOST</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:PLAYER_UPDATE_RESTING">PowaAuras:PLAYER_UPDATE_RESTING</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:RAID_ROSTER_UPDATE">PowaAuras:RAID_ROSTER_UPDATE</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:RUNE_POWER_UPDATE">PowaAuras:RUNE_POWER_UPDATE</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:RUNE_TYPE_UPDATE">PowaAuras:RUNE_TYPE_UPDATE</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:SPELL_UPDATE_USABLE">PowaAuras:SPELL_UPDATE_USABLE</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:SetCheckResource">PowaAuras:SetCheckResource</a>&nbsp;(resourceType, unitType)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:Setup">PowaAuras:Setup</a>&nbsp;()</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:SpellcastEvent">PowaAuras:SpellcastEvent</a>&nbsp;(unit)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:UNIT_AURA">PowaAuras:UNIT_AURA</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:UNIT_AURASTATE">PowaAuras:UNIT_AURASTATE</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:UNIT_COMBO_POINTS">PowaAuras:UNIT_COMBO_POINTS</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:UNIT_ENTERED_VEHICLE">PowaAuras:UNIT_ENTERED_VEHICLE</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:UNIT_EXITED_VEHICLE">PowaAuras:UNIT_EXITED_VEHICLE</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:UNIT_FACTION">PowaAuras:UNIT_FACTION</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:UNIT_HEALTH">PowaAuras:UNIT_HEALTH</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:UNIT_INVENTORY_CHANGED">PowaAuras:UNIT_INVENTORY_CHANGED</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:UNIT_MAXHEALTH">PowaAuras:UNIT_MAXHEALTH</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:UNIT_MAXPOWER">PowaAuras:UNIT_MAXPOWER</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:UNIT_NAME_UPDATE">PowaAuras:UNIT_NAME_UPDATE</a>&nbsp;()</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:UNIT_PET">PowaAuras:UNIT_PET</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:UNIT_POWER">PowaAuras:UNIT_POWER</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:UNIT_SPELLCAST_CHANNEL_START">PowaAuras:UNIT_SPELLCAST_CHANNEL_START</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:UNIT_SPELLCAST_CHANNEL_STOP">PowaAuras:UNIT_SPELLCAST_CHANNEL_STOP</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:UNIT_SPELLCAST_CHANNEL_UPDATE">PowaAuras:UNIT_SPELLCAST_CHANNEL_UPDATE</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:UNIT_SPELLCAST_DELAYED">PowaAuras:UNIT_SPELLCAST_DELAYED</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:UNIT_SPELLCAST_FAILED">PowaAuras:UNIT_SPELLCAST_FAILED</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:UNIT_SPELLCAST_INTERRUPTED">PowaAuras:UNIT_SPELLCAST_INTERRUPTED</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:UNIT_SPELLCAST_START">PowaAuras:UNIT_SPELLCAST_START</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:UNIT_SPELLCAST_STOP">PowaAuras:UNIT_SPELLCAST_STOP</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:UNIT_SPELLCAST_SUCCEEDED">PowaAuras:UNIT_SPELLCAST_SUCCEEDED</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:UNIT_TARGET">PowaAuras:UNIT_TARGET</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:UNIT_THREAT_SITUATION_UPDATE">PowaAuras:UNIT_THREAT_SITUATION_UPDATE</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:UPDATE_SHAPESHIFT_FORM">PowaAuras:UPDATE_SHAPESHIFT_FORM</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:UPDATE_SHAPESHIFT_FORMS">PowaAuras:UPDATE_SHAPESHIFT_FORMS</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:VARIABLES_LOADED">PowaAuras:VARIABLES_LOADED</a>&nbsp;(...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:VehicleCheck">PowaAuras:VehicleCheck</a>&nbsp;(unit, entered)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:ZONE_CHANGED_NEW_AREA">PowaAuras:ZONE_CHANGED_NEW_AREA</a>&nbsp;()</td>
+	<td class="summary"> </td>
+	</tr>
+
+</table>
 
 
 
@@ -249,6 +591,1687 @@
 
 
 
+
+<h2><a name="functions"></a>Functions</h2>
+<dl class="function">
+
+
+
+<dt><a name="PowaAuras.StringEnds"></a><strong>PowaAuras.StringEnds</strong>&nbsp;(String, End)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>String</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>End</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras.StringStarts"></a><strong>PowaAuras.StringStarts</strong>&nbsp;(String, Start)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>String</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>Start</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:ACTIONBAR_SLOT_CHANGED"></a><strong>PowaAuras:ACTIONBAR_SLOT_CHANGED</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:ACTIONBAR_UPDATE_COOLDOWN"></a><strong>PowaAuras:ACTIONBAR_UPDATE_COOLDOWN</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:ACTIONBAR_UPDATE_USABLE"></a><strong>PowaAuras:ACTIONBAR_UPDATE_USABLE</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:ACTIVE_TALENT_GROUP_CHANGED"></a><strong>PowaAuras:ACTIVE_TALENT_GROUP_CHANGED</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:BAG_UPDATE"></a><strong>PowaAuras:BAG_UPDATE</strong>&nbsp;()</dt>
+<dd>
+
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:BAG_UPDATE_COOLDOWN"></a><strong>PowaAuras:BAG_UPDATE_COOLDOWN</strong>&nbsp;()</dt>
+<dd>
+
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:BuffsChanged"></a><strong>PowaAuras:BuffsChanged</strong>&nbsp;(unit)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>unit</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:COMBAT_LOG_EVENT_UNFILTERED"></a><strong>PowaAuras:COMBAT_LOG_EVENT_UNFILTERED</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:CheckPower"></a><strong>PowaAuras:CheckPower</strong>&nbsp;(unit, resourceType)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>unit</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>resourceType</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:FillGroup"></a><strong>PowaAuras:FillGroup</strong>&nbsp;(group, count)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>group</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>count</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:FlagsChanged"></a><strong>PowaAuras:FlagsChanged</strong>&nbsp;(unit)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>unit</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:GetInstanceType"></a><strong>PowaAuras:GetInstanceType</strong>&nbsp;()</dt>
+<dd>
+
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:GetStances"></a><strong>PowaAuras:GetStances</strong>&nbsp;()</dt>
+<dd>
+
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:INSPECT_TALENT_READY"></a><strong>PowaAuras:INSPECT_TALENT_READY</strong>&nbsp;()</dt>
+<dd>
+
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:INSTANCE_ENCOUNTER_ENGAGE_UNIT"></a><strong>PowaAuras:INSTANCE_ENCOUNTER_ENGAGE_UNIT</strong>&nbsp;()</dt>
+<dd>
+Enables the boss1-boss3 units.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:MINIMAP_UPDATE_TRACKING"></a><strong>PowaAuras:MINIMAP_UPDATE_TRACKING</strong>&nbsp;()</dt>
+<dd>
+
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:PARTY_MEMBERS_CHANGED"></a><strong>PowaAuras:PARTY_MEMBERS_CHANGED</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:PLAYER_ALIVE"></a><strong>PowaAuras:PLAYER_ALIVE</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:PLAYER_DEAD"></a><strong>PowaAuras:PLAYER_DEAD</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:PLAYER_ENTERING_WORLD"></a><strong>PowaAuras:PLAYER_ENTERING_WORLD</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:PLAYER_FLAGS_CHANGED"></a><strong>PowaAuras:PLAYER_FLAGS_CHANGED</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:PLAYER_FOCUS_CHANGED"></a><strong>PowaAuras:PLAYER_FOCUS_CHANGED</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:PLAYER_REGEN_DISABLED"></a><strong>PowaAuras:PLAYER_REGEN_DISABLED</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:PLAYER_REGEN_ENABLED"></a><strong>PowaAuras:PLAYER_REGEN_ENABLED</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:PLAYER_TALENT_UPDATE"></a><strong>PowaAuras:PLAYER_TALENT_UPDATE</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:PLAYER_TARGET_CHANGED"></a><strong>PowaAuras:PLAYER_TARGET_CHANGED</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:PLAYER_TOTEM_UPDATE"></a><strong>PowaAuras:PLAYER_TOTEM_UPDATE</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:PLAYER_UNGHOST"></a><strong>PowaAuras:PLAYER_UNGHOST</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:PLAYER_UPDATE_RESTING"></a><strong>PowaAuras:PLAYER_UPDATE_RESTING</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:RAID_ROSTER_UPDATE"></a><strong>PowaAuras:RAID_ROSTER_UPDATE</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:RUNE_POWER_UPDATE"></a><strong>PowaAuras:RUNE_POWER_UPDATE</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:RUNE_TYPE_UPDATE"></a><strong>PowaAuras:RUNE_TYPE_UPDATE</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:SPELL_UPDATE_USABLE"></a><strong>PowaAuras:SPELL_UPDATE_USABLE</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:SetCheckResource"></a><strong>PowaAuras:SetCheckResource</strong>&nbsp;(resourceType, unitType)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>resourceType</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>unitType</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:Setup"></a><strong>PowaAuras:Setup</strong>&nbsp;()</dt>
+<dd>
+
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:SpellcastEvent"></a><strong>PowaAuras:SpellcastEvent</strong>&nbsp;(unit)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>unit</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:UNIT_AURA"></a><strong>PowaAuras:UNIT_AURA</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:UNIT_AURASTATE"></a><strong>PowaAuras:UNIT_AURASTATE</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:UNIT_COMBO_POINTS"></a><strong>PowaAuras:UNIT_COMBO_POINTS</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:UNIT_ENTERED_VEHICLE"></a><strong>PowaAuras:UNIT_ENTERED_VEHICLE</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:UNIT_EXITED_VEHICLE"></a><strong>PowaAuras:UNIT_EXITED_VEHICLE</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:UNIT_FACTION"></a><strong>PowaAuras:UNIT_FACTION</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:UNIT_HEALTH"></a><strong>PowaAuras:UNIT_HEALTH</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:UNIT_INVENTORY_CHANGED"></a><strong>PowaAuras:UNIT_INVENTORY_CHANGED</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:UNIT_MAXHEALTH"></a><strong>PowaAuras:UNIT_MAXHEALTH</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:UNIT_MAXPOWER"></a><strong>PowaAuras:UNIT_MAXPOWER</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:UNIT_NAME_UPDATE"></a><strong>PowaAuras:UNIT_NAME_UPDATE</strong>&nbsp;()</dt>
+<dd>
+
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:UNIT_PET"></a><strong>PowaAuras:UNIT_PET</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:UNIT_POWER"></a><strong>PowaAuras:UNIT_POWER</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:UNIT_SPELLCAST_CHANNEL_START"></a><strong>PowaAuras:UNIT_SPELLCAST_CHANNEL_START</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:UNIT_SPELLCAST_CHANNEL_STOP"></a><strong>PowaAuras:UNIT_SPELLCAST_CHANNEL_STOP</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:UNIT_SPELLCAST_CHANNEL_UPDATE"></a><strong>PowaAuras:UNIT_SPELLCAST_CHANNEL_UPDATE</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:UNIT_SPELLCAST_DELAYED"></a><strong>PowaAuras:UNIT_SPELLCAST_DELAYED</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:UNIT_SPELLCAST_FAILED"></a><strong>PowaAuras:UNIT_SPELLCAST_FAILED</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:UNIT_SPELLCAST_INTERRUPTED"></a><strong>PowaAuras:UNIT_SPELLCAST_INTERRUPTED</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:UNIT_SPELLCAST_START"></a><strong>PowaAuras:UNIT_SPELLCAST_START</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:UNIT_SPELLCAST_STOP"></a><strong>PowaAuras:UNIT_SPELLCAST_STOP</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:UNIT_SPELLCAST_SUCCEEDED"></a><strong>PowaAuras:UNIT_SPELLCAST_SUCCEEDED</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:UNIT_TARGET"></a><strong>PowaAuras:UNIT_TARGET</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:UNIT_THREAT_SITUATION_UPDATE"></a><strong>PowaAuras:UNIT_THREAT_SITUATION_UPDATE</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:UPDATE_SHAPESHIFT_FORM"></a><strong>PowaAuras:UPDATE_SHAPESHIFT_FORM</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:UPDATE_SHAPESHIFT_FORMS"></a><strong>PowaAuras:UPDATE_SHAPESHIFT_FORMS</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:VARIABLES_LOADED"></a><strong>PowaAuras:VARIABLES_LOADED</strong>&nbsp;(...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:VehicleCheck"></a><strong>PowaAuras:VehicleCheck</strong>&nbsp;(unit, entered)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>unit</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>entered</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:ZONE_CHANGED_NEW_AREA"></a><strong>PowaAuras:ZONE_CHANGED_NEW_AREA</strong>&nbsp;()</dt>
+<dd>
+
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+</dl>
 
 
 

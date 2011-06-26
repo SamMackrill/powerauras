@@ -1,3 +1,4 @@
+--- Setup and Control
 -->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 --      << Power Auras >>
 -->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -558,6 +559,7 @@ do
 		self:MarkAuras(select(2, ...));
 	end
 end
+
 function PowaAuras:OnUpdate(elapsed)
 	--self:UnitTestInfo("OnUpdate", elapsed);
 	if (self.NextDebugCheck>0 and self.DebugTimer > self.NextDebugCheck) then
@@ -1097,6 +1099,33 @@ function PowaAuras:DisplayAura(auraId)
 	
 	aura:Show(PowaAuras.ModTest);
 
+end
+
+function PowaAuras:GetFrame(auraId, frameSource, frame)
+	if (not auraId) then 
+		--self:ShowText("GetFrame auraId nil");
+		return nil;
+	end
+	if (not frameSource) then
+		--self:ShowText("GetFrame invalid frameSource=", frameSource);
+		return nil;
+	end
+	if (not self[frameSource]) then
+		--self:ShowText("GetFrame invalid self[", frameSource, "]=", self[frameSource]);
+		return nil;
+	end
+	if (not self[frameSource][auraId]) then
+		--self:ShowText("GetFrame invalid self[", frameSource, "][", auraId, "]=", self[frameSource][auraId]);
+		return nil;
+	end
+	if (frame) then
+		if (not self[frameSource][auraId][frame]) then
+			--self:ShowText("GetFrame invalid self[", frameSource, "][", auraId, "][", frame, "]=", self[frameSource][auraId][frame]);
+			return nil;
+		end
+		return self[frameSource][auraId][frame];
+	end
+	return self[frameSource][auraId];
 end
 
 function PowaAuras:InitialiseAuraFrame(aura, frame, texture, alpha)
