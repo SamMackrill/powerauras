@@ -1,4 +1,6 @@
-﻿--if (GetLocale() == "enEN") then
+﻿--- English localisations
+
+--if (GetLocale() == "enEN") then
 
 PowaAuras.Anim[0] = "[Invisible]";
 PowaAuras.Anim[1] = "Static";
