@@ -1,0 +1,78 @@
+﻿## Interface: 40100
+## Title: Power Auras Classic
+## Author: Smacker & Meorawr 'lolcat',Driizt 'classic',Garstiger 'continued',Sinsthar 'base'
+## Version: 5.0
+## Notes: Cool Effects around the player for ingame events.                                 Authors: |cff7f7fff-Sinsthar-, -Garstiger-, -Driizt-, -Smacker and Meorawr-|r
+## Notes-frFR: Affiche des effets visuels autour du personnage.
+## Notes-zhCN: 强大的条件触发式事件提示插件                                                 |cff00ff00基尔罗格[|r末日彩虹|cff00ff00]汉化|r
+## Notes-zhTW: 強大的條件觸發式事件提示插件                                                 |cff00ff00撒爾薩里安[|r末日彩虹|cff00ff00]漢化|r
+## DefaultState: Enabled
+## LoadOnDemand: 0
+## SavedVariables: PowaClassSet,PowaGlobalSet,PowaGlobalListe,PowaClassListe,PowaGlobalMisc
+## SavedVariablesPerCharacter: PowaSet,PowaMisc,PowaTimer,PowaPlayerListe,PowaState
+
+PowerAurasBase.lua
+localisation.lua
+localisation_frFR.lua
+localisation_deDE.lua
+localisation_ruRU.lua
+localisation_zhCN.lua
+localisation_zhTW.lua
+localisation_koKR.lua
+localisation_esES.lua
+localisation_esMX.lua
+PowerAurasRole.lua
+PowerAurasDump.lua
+PowerAurasTriggers.lua
+PowerAurasActions.lua
+PowerAurasDecoratorClasses.lua
+PowerAurasAuraClasses.lua
+PowerAurasAnimations.lua
+PowerAuras.lua
+PowerUpdate.lua
+PowerAurasEvents.lua
+PowerComms.lua
+PowerOptions.lua
+PowerAuras.xml
+PowerOptions.xml
+# We can remove this now, but all the old editor code still relies on it.
+PowerBlizzOptions.xml
+PowerSlots.xml
+
+# Load AFTER old PowerOptions file, it replaces some functions.
+PowerHelpers.lua
+# UI base code.
+PowerUI.lua
+
+# Do fonts now, any later and you get errors.
+UI\Fonts.xml
+
+# Mixins
+UI\Mixins\Scripts.lua
+UI\Mixins\Settings.lua
+UI\Mixins\Tooltip.lua
+
+# Generic classes.
+UI\LayoutFrame.lua
+UI\TabFrame.lua
+
+# Generic elements.
+UI\BorderedFrame.xml
+UI\Button.xml
+UI\Checkbox.xml
+UI\ColorWidget.xml
+UI\EditBox.xml
+UI\FrameCategory.xml
+UI\RadioGroup.xml
+UI\Slider.xml
+UI\ScrollFrame.xml
+UI\TabButton.xml
+UI\TabDialog.xml
+
+# Elements with dependencies.
+UI\Dropdown.xml
+UI\TreeView.xml
+
+# Actual frames!
+UI\AuraBrowser.xml
+UI\AuraEditor.lua

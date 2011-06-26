@@ -1,0 +1,194 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+    ..\..\FrameXML\UI.xsd">
+	<Script file="Checkbox.lua" />
+	<CheckButton name="PowaCheckboxTemplate" virtual="true">
+		<Size x="150" y="24" />
+		<NormalFont style="PowaFontNormalSmall" />
+		<DisabledFont style="PowaFontDisableSmall" />
+		<HighlightFont style="PowaFontHighlightSmall" />
+		<NormalTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled" alphaMode="DISABLE">
+			<Size>
+				<AbsDimension x="20" y="20" />
+			</Size>
+			<Anchors>
+				<Anchor point="LEFT" relativePoint="LEFT" x="2" y="-1" />
+			</Anchors>
+		</NormalTexture>
+		<CheckedTexture file="Interface\Buttons\UI-CheckBox-Check" alphaMode="DISABLE">
+			<Size>
+				<AbsDimension x="20" y="20" />
+			</Size>
+			<Anchors>
+				<Anchor point="LEFT" relativePoint="LEFT" x="2" y="-1" />
+			</Anchors>
+		</CheckedTexture>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture file="Interface\Buttons\WHITE8X8">
+					<Size x="150" y="1" />
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0" />
+						<Anchor point="BOTTOMRIGHT" x="0" y="0" />
+					</Anchors>
+					<Gradient orientation="HORIZONTAL">
+						<MinColor r="0" g="0" b="0" a="1" />
+						<MaxColor r="0" g="0" b="0" a="0" />
+					</Gradient>
+				</Texture>			
+			</Layer>
+			<Layer level="BORDER">
+				<Texture parentKey="BorderLeft" file="Interface\Buttons\WHITE8X8">
+					<Size x="1" y="1" />
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0" />
+						<Anchor point="BOTTOMLEFT" x="0" y="0" />
+					</Anchors>
+					<Color r="1" g="0.82" b="0" a="1" />
+				</Texture>
+				<Texture parentKey="BorderTop" file="Interface\Buttons\WHITE8X8">
+					<Size x="150" y="1" />
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0" />
+						<Anchor point="TOPRIGHT" x="0" y="0" />
+					</Anchors>
+					<Gradient orientation="HORIZONTAL">
+						<MinColor r="1" g="0.82" b="0" a="1" />
+						<MaxColor r="1" g="0.82" b="0" a="0" />
+					</Gradient>
+				</Texture>
+				<Texture parentKey="BorderBottom" file="Interface\Buttons\WHITE8X8">
+					<Size x="150" y="1" />
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="0" y="0" />
+						<Anchor point="BOTTOMRIGHT" x="0" y="0" />
+					</Anchors>
+					<Gradient orientation="HORIZONTAL">
+						<MinColor r="1" g="0.82" b="0" a="1" />
+						<MaxColor r="1" g="0.82" b="0" a="0" />
+					</Gradient>
+				</Texture>
+			</Layer>
+		</Layers>
+		<ButtonText name="$parentText" parentKey="Text" font="PowaFontNormalSmall" justifyH="LEFT" justifyV="MIDDLE">
+			<Size>
+				<AbsDimension y="24" />
+			</Size>
+			<Anchors>
+				<Anchor point="LEFT" x="24" y="0" />
+			</Anchors>
+		</ButtonText>
+		<Scripts>
+			<PostClick>
+				self:UpdateColors();
+			</PostClick>
+			<OnEnter>
+				self:UpdateColors();
+			</OnEnter>
+			<OnLeave>
+				self:UpdateColors();
+			</OnLeave>
+		</Scripts>
+	</CheckButton>
+	
+	<CheckButton name="PowaNormalCheckboxTemplate" virtual="true">
+		<Size x="150" y="28" />
+		<NormalFont style="PowaFontNormal" />
+		<DisabledFont style="PowaFontDisable" />
+		<HighlightFont style="PowaFontHighlight" />
+		<!--
+		Not sure if I liked the old texture. Or the new.
+		<NormalTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled" alphaMode="DISABLE">
+			<Size>
+				<AbsDimension x="24" y="24" />
+			</Size>
+			<Anchors>
+				<Anchor point="LEFT" relativePoint="LEFT" x="2" y="-1" />
+			</Anchors>
+		</NormalTexture>
+		-->
+		<NormalTexture file="Interface\Buttons\UI-CheckBox-Up" alphaMode="DISABLE">
+			<Size>
+				<AbsDimension x="24" y="24" />
+			</Size>
+			<Anchors>
+				<Anchor point="LEFT" relativePoint="LEFT" x="2" y="-1" />
+			</Anchors>
+		</NormalTexture>
+		<CheckedTexture file="Interface\Buttons\UI-CheckBox-Check" alphaMode="DISABLE">
+			<Size>
+				<AbsDimension x="24" y="24" />
+			</Size>
+			<Anchors>
+				<Anchor point="LEFT" relativePoint="LEFT" x="2" y="-1" />
+			</Anchors>
+		</CheckedTexture>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture file="Interface\Buttons\WHITE8X8">
+					<Size x="150" y="1" />
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0" />
+						<Anchor point="BOTTOMRIGHT" x="0" y="0" />
+					</Anchors>
+					<Gradient orientation="HORIZONTAL">
+						<MinColor r="0" g="0" b="0" a="1" />
+						<MaxColor r="0" g="0" b="0" a="0" />
+					</Gradient>
+				</Texture>			
+			</Layer>
+			<Layer level="BORDER">
+				<Texture parentKey="BorderLeft" file="Interface\Buttons\WHITE8X8">
+					<Size x="1" y="1" />
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0" />
+						<Anchor point="BOTTOMLEFT" x="0" y="0" />
+					</Anchors>
+					<Color r="1" g="0.82" b="0" a="1" />
+				</Texture>
+				<Texture parentKey="BorderTop" file="Interface\Buttons\WHITE8X8">
+					<Size x="150" y="1" />
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0" />
+						<Anchor point="TOPRIGHT" x="0" y="0" />
+					</Anchors>
+					<Gradient orientation="HORIZONTAL">
+						<MinColor r="1" g="0.82" b="0" a="1" />
+						<MaxColor r="1" g="0.82" b="0" a="0" />
+					</Gradient>
+				</Texture>
+				<Texture parentKey="BorderBottom" file="Interface\Buttons\WHITE8X8">
+					<Size x="150" y="1" />
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="0" y="0" />
+						<Anchor point="BOTTOMRIGHT" x="0" y="0" />
+					</Anchors>
+					<Gradient orientation="HORIZONTAL">
+						<MinColor r="1" g="0.82" b="0" a="1" />
+						<MaxColor r="1" g="0.82" b="0" a="0" />
+					</Gradient>
+				</Texture>
+			</Layer>
+		</Layers>
+		<ButtonText name="$parentText" parentKey="Text" justifyH="LEFT" justifyV="MIDDLE">
+			<Size>
+				<AbsDimension y="28" />
+			</Size>
+			<Anchors>
+				<Anchor point="LEFT" x="28" y="0" />
+			</Anchors>
+		</ButtonText>
+		<Scripts>
+			<PostClick>
+				self:UpdateColors();
+			</PostClick>
+			<OnEnter>
+				self:UpdateColors();
+			</OnEnter>
+			<OnLeave>
+				self:UpdateColors();
+			</OnLeave>
+		</Scripts>
+	</CheckButton>
+</Ui>
