@@ -313,6 +313,11 @@ cPowaAura.ExportSettings = {
 	-- },
 -- };
 
+-- Editor UI definitions.
+cPowaAura.UI = {
+	Activation = {},
+};
+
 function cPowaAura:Init()
 	self:SetFixedIcon();
 end
@@ -375,6 +380,25 @@ end
 function cPowaAura:DisplayAuraTooltip(tooltip)
 	-- Add buff name.
 	tooltip:AddLine(tostring((self.buffname or "???")), 1, 1, 1, true);
+end
+
+--- Returns the elements to be added to the editor for the Activation tab. The elements should be generated on request,
+-- as opposed to generated in advance at load.
+-- @param parent The parent of the activation UI frame.
+function cPowaAura:GetActivationUI(parent)
+	-- Is the UI a frame or table?
+	if(not self.UI.Activation.GetObjectType) then
+		-- Table, build frame.
+		self.UI.Activation = PowaAuras.UI:BuildFrameFromDefinition(self.UI.Activation, parent);
+	end
+	-- Return frame.
+	return self.UI.Activation;
+end
+
+--- Called when the editor Activation UI for this aura class is hidden, either through the editor closing or changing
+-- tabs. You do not need to implement this function, but may do so to implement element recycling or anything else.
+function cPowaAura:OnHideActivationUI()
+	-- Dummy function, you can override this if you want to use element recyling or something else.
 end
 
 function cPowaAura:SetState(name, value)
@@ -790,6 +814,7 @@ function cPowaAura:CheckActive(shouldShow, ignoreCascade, testing)
 		if (not ignoreCascade and not testing) then PowaAuras:AddChildrenToCascade(self); end
 	end
 		
+
 	if (self.Timer) then self.Timer:CheckActive(self, testing); end
 	if (self.Stacks) then self.Stacks:CheckActive(self, testing); end
 	

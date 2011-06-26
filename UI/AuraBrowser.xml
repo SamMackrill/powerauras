@@ -291,12 +291,9 @@
 												-- Use basic dropdown for this.
 												PowaAuras.UI:DropdownMenu(self, false);
 												-- Override dropdown positioning function.
-												self:SetScript("OnDropdownMenuPosition", function(self, count)
-													-- Update the sizing/positioning of the dropdown.
-													self.Menu:SetWidth(168);
+												self:SetScript("OnDropdownMenuPosition", function(self)
+													-- Update the positioning of the dropdown.
 													self.Menu:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, 0);
-													self.Menu:SetHeight(math.min(168, 8+(count*20)));
-													self.Menu.Child:SetSize(168, (count*20)-1);
 												end);
 												-- Show/hide funcs.
 												self:SetScript("OnDropdownMenuShow", function(self, dropdown)

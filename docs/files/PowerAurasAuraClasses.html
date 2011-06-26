@@ -253,6 +253,16 @@
 	</tr>
 
 	<tr>
+	<td class="name" nowrap><a href="#cPowaAura:GetActivationUI">cPowaAura:GetActivationUI</a>&nbsp;(parent)</td>
+	<td class="summary">Returns the elements to be added to the editor for the Activation tab.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#cPowaAura:OnHideActivationUI">cPowaAura:OnHideActivationUI</a>&nbsp;()</td>
+	<td class="summary">Called when the editor Activation UI for this aura class is hidden, either through the editor closing or changing tabs.</td>
+	</tr>
+
+	<tr>
 	<td class="name" nowrap><a href="#cPowaAura:UpdateAuraID">cPowaAura:UpdateAuraID</a>&nbsp;(id)</td>
 	<td class="summary">Updates the aura ID associated with this aura object.</td>
 	</tr>
@@ -285,11 +295,11 @@
 Copies the Triggers, Timers and Stacks displays to a new aura by cloning their objects.
 
 
-<h3>Parameters:</h3>
+<h3>Parameters</h3>
 <ul>
 	
 	<li>
-	  <code><em>newID</em></code>: The new aura ID to assign the object.
+	  newID: The new aura ID to assign the object.
 	</li>
 	
 </ul>
@@ -311,14 +321,57 @@ Copies the Triggers, Timers and Stacks displays to a new aura by cloning their o
 Displays additional lines of information about the aura when the tooltip is made visible in the aura browser. You should call AddLine from within this function and it will append lines after the ID number of the aura, and before the additional instructions are added. Displays the aura buff name by default.
 
 
-<h3>Parameters:</h3>
+<h3>Parameters</h3>
 <ul>
 	
 	<li>
-	  <code><em>tooltip</em></code>: The tooltip object to modify. This is generally GameTooltip but you shouldn't rely on this.
+	  tooltip: The tooltip object to modify. This is generally GameTooltip but you shouldn't rely on this.
 	</li>
 	
 </ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="cPowaAura:GetActivationUI"></a><strong>cPowaAura:GetActivationUI</strong>&nbsp;(parent)</dt>
+<dd>
+Returns the elements to be added to the editor for the Activation tab. The elements should be generated on request, as opposed to generated in advance at load.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  parent: The parent of the activation UI frame.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="cPowaAura:OnHideActivationUI"></a><strong>cPowaAura:OnHideActivationUI</strong>&nbsp;()</dt>
+<dd>
+Called when the editor Activation UI for this aura class is hidden, either through the editor closing or changing tabs. You do not need to implement this function, but may do so to implement element recycling or anything else.
+
 
 
 
@@ -337,11 +390,11 @@ Displays additional lines of information about the aura when the tooltip is made
 Updates the aura ID associated with this aura object. Does not reindex the aura in any way.
 
 
-<h3>Parameters:</h3>
+<h3>Parameters</h3>
 <ul>
 	
 	<li>
-	  <code><em>id</em></code>: The new aura ID to assign the object.
+	  id: The new aura ID to assign the object.
 	</li>
 	
 </ul>
@@ -363,11 +416,11 @@ Updates the aura ID associated with this aura object. Does not reindex the aura 
 Displays additional lines of information about the aura when the tooltip is made visible in the aura browser. You should call AddLine from within this function and it will append lines after the ID number of the aura, and before the additional instructions are added. Displays the stat threshold by default.
 
 
-<h3>Parameters:</h3>
+<h3>Parameters</h3>
 <ul>
 	
 	<li>
-	  <code><em>tooltip</em></code>: The tooltip object to modify. This is generally GameTooltip but you shouldn't rely on this.
+	  tooltip: The tooltip object to modify. This is generally GameTooltip but you shouldn't rely on this.
 	</li>
 	
 </ul>

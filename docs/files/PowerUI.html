@@ -234,10 +234,32 @@
 <h1>File <code>PowerUI.lua</code></h1>
 
 
+<p>Contains functions for registering UI widgets and initialising them to work with frames.</p>
 
 
 
 
+
+
+<h2>Functions</h2>
+<table class="function_list">
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras.UI:BuildFrameFromDefinition">PowaAuras.UI:BuildFrameFromDefinition</a>&nbsp;(def, parent)</td>
+	<td class="summary">Builds a frame from a table based definition.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras.UI:Construct">PowaAuras.UI:Construct</a>&nbsp;(ui, widget, ...)</td>
+	<td class="summary">Generic constructor function for all UI widgets.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras.UI:Register">PowaAuras.UI:Register</a>&nbsp;(name, data)</td>
+	<td class="summary">Turns a widget definition table into metatables with constructor-like functionality.</td>
+	</tr>
+
+</table>
 
 
 
@@ -249,6 +271,105 @@
 
 
 
+
+<h2><a name="functions"></a>Functions</h2>
+<dl class="function">
+
+
+
+<dt><a name="PowaAuras.UI:BuildFrameFromDefinition"></a><strong>PowaAuras.UI:BuildFrameFromDefinition</strong>&nbsp;(def, parent)</dt>
+<dd>
+Builds a frame from a table based definition. This allows you to bypass using XML for frame creation while also handling all of the boring SetPoint/SetSize calls that are otherwise present.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  def: The definition to load.
+	</li>
+	
+	<li>
+	  parent: The parent frame of the frame.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras.UI:Construct"></a><strong>PowaAuras.UI:Construct</strong>&nbsp;(ui, widget, ...)</dt>
+<dd>
+Generic constructor function for all UI widgets. Performs the mundane functions of copying the Hooks and values from the class definitions, registering scripts and initialising the widget.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  ui: The PowaAuras.UI table.
+	</li>
+	
+	<li>
+	  widget: The frame to be constructed with a class.
+	</li>
+	
+	<li>
+	  ...: Arguments to be passed to the Init function of the class, if it exists.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras.UI:Register"></a><strong>PowaAuras.UI:Register</strong>&nbsp;(name, data)</dt>
+<dd>
+Turns a widget definition table into metatables with constructor-like functionality.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  name: The name of the widget class to define.
+	</li>
+	
+	<li>
+	  data: The table of data to use when defining the class.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+</dl>
 
 
 

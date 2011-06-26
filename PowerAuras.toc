@@ -62,7 +62,7 @@ UI\Button.xml
 UI\Checkbox.xml
 UI\ColorWidget.xml
 UI\EditBox.xml
-UI\FrameSeparator.xml
+UI\FrameCategory.xml
 UI\RadioGroup.xml
 UI\Slider.xml
 UI\ScrollFrame.xml
@@ -70,10 +70,9 @@ UI\TabButton.xml
 UI\TabDialog.xml
 
 # Elements with dependencies.
-UI\BrowserFrame.xml
 UI\Dropdown.xml
 UI\TreeView.xml
 
 # Actual frames!
 UI\AuraBrowser.xml
-UI\AuraEditor.xml
+UI\AuraEditor.lua

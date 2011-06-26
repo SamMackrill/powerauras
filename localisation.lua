@@ -878,7 +878,6 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	UI_Aura_SrcIcon            = "Ability Icon",
 	
 	UI_Aura_TexErr             = "There was an error loading the texture:\n%s",
-	UI_Aura_TexErrCust         = "You have not assigned a custom texture to this page yet.\n\nCustom textures are loaded from:\n%s",
 	
 --	UI_Aura_TexClick           = "Click the aura to change it.",
 --	UI_Aura_Separator1         = "Style",
@@ -913,16 +912,21 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	UI_Editor_TabSound         = "Sounds",
 	UI_Editor_CatSuffix        = "%s Select a category below to display the options available.",
 	
-	UI_Editor_Aura             = "Aura",
+	UI_Editor_Aura             = "Aura", -- Duplicate string.
 	UI_Editor_AuraDesc         = "Configures the display settings of the aura texture.",
 	UI_Editor_Aura_CatTexture  = "Texture Source",
 	UI_Editor_Aura_CatStyle    = "Style",
 	UI_Editor_Aura_CatSize     = "Size and Positioning",
-	
 	UI_Editor_Timer            = "Timer",
-	UI_Editor_AuraDesc         = "Configures the settings of the timer display.",
+	UI_Editor_TimerDesc        = "Configures the settings of the timer display.",
 	UI_Editor_Stacks           = "Stacks",
-	UI_Editor_AuraDesc         = "Configures the settings of the stacks display.",
+	UI_Editor_StacksDesc       = "Configures the settings of the stacks display.",
+	UI_Editor_Activation       = "Activation", -- Duplicate string, will fix later.
+	UI_Editor_ActivationDesc   = "Configures the main activation criteria that must be met for this aura to show, these change based on the type of aura being used.",
+	UI_Editor_Type             = "Activation Type",
+	UI_Editor_TypeDesc         = "Changes the type of activation class to use for this aura, which controls what the aura responds to such as Buffs, Health and Spells.",
+	UI_Editor_Rules            = "Rules",
+	UI_Editor_RulesDesc        = "Configures additional criteria that must be met for the aura to show, such as being in or out of combat.",
 	
 	
 	UI_TriggerAdd              = "Add",

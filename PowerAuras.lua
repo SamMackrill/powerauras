@@ -29,8 +29,6 @@ PowaAuras.PowaGlobalMiscDefault = {
 	PathToAuras = "Interface\\Addons\\PowerAuras\\Custom\\",
 	BlockIncomingAuras = false,
 	FixExports = false,
-	CustomTextures = {}, -- DEPRECATED: Don't remove yet though, it'll break the editor.
-	EditorCategoryState = {},
 	LastVersion = 10000,
 	FirstRun = true,
 };

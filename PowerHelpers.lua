@@ -1,3 +1,5 @@
+--- Contains a large amount of helper functions for use with auras, settings and saved variable management.
+
 --- Stores all of the registered settings by their associated keys.
 -- @name PowaAuras.SettingsByKey
 -- @class table
