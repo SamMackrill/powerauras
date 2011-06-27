@@ -10,7 +10,7 @@
 			<Anchor point="BOTTOMRIGHT" x="0" y="16" /> 
 		</Anchors>
 		<Frames>
-			<Button parentKey="ScrollUp" inherits="UIPanelScrollUpButtonTemplate">
+			<Button parentKey="ScrollUp">
 				<Size x="18" y="16" />
 				<Anchors>
 					<Anchor point="TOPRIGHT" x="0" y="16" />
@@ -20,7 +20,7 @@
 				<DisabledTexture inherits="UIPanelScrollBarButton" file="Interface\Buttons\UI-ScrollBar-ScrollUpButton-Disabled" />
 				<HighlightTexture inherits="UIPanelScrollBarButton" file="Interface\Buttons\UI-ScrollBar-ScrollUpButton-Highlight" alphaMode="ADD" />
 			</Button>
-			<Button parentKey="ScrollDown" inherits="UIPanelScrollDownButtonTemplate">
+			<Button parentKey="ScrollDown">
 				<Size x="18" y="16" />
 				<Anchors>
 					<Anchor point="BOTTOMRIGHT" x="0" y="-16" />
@@ -36,10 +36,4 @@
 			<TexCoords left="0.20" right="0.80" top="0.25" bottom="0.75" />
 		</ThumbTexture>
 	</Slider>
-	
-	<ScrollFrame name="PowaScrollFrameTemplate" virtual="true">
-		<Frames>
-			<Slider parentKey="ScrollBar" inherits="PowaScrollBarTemplate" />
-		</Frames>
-	</ScrollFrame>
 </Ui>
