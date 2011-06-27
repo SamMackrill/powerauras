@@ -61,6 +61,7 @@ UI\BorderedFrame.xml
 UI\Button.xml
 UI\Checkbox.xml
 UI\ColorWidget.xml
+UI\Dropdown.xml
 UI\EditBox.xml
 UI\FrameCategory.xml
 UI\RadioGroup.lua
@@ -68,9 +69,6 @@ UI\Slider.xml
 UI\ScrollFrame.xml
 UI\TabButton.xml
 UI\TabDialog.xml
-
-# Elements with dependencies.
-UI\Dropdown.xml
 UI\TreeView.xml
 
 # Actual frames!

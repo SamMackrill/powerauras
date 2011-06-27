@@ -6,9 +6,16 @@ PowaAuras.UI:Register("ScrollFrame", {
 		OnScrollRangeChanged = true,
 		OnMouseWheel = true,
 	},
+	Construct = function(class, ui, frame, ...)
+		-- Forcibly add scrollbar.
+		if(not frame.ScrollBar) then
+			frame.ScrollBar = CreateFrame("Slider", nil, frame, "PowaScrollBarTemplate");
+			ui:ScrollBar(frame.ScrollBar);
+		end
+		-- Go go constructor.
+		ui.Construct(class, ui, frame, ...);
+	end,
 	Init = function(self)
-		-- Register the scrollbar as...A scrollbar?
-		PowaAuras.UI:ScrollBar(self.ScrollBar);
 		-- Immediate update.
 		self:ScrollUpdate();
 		self:EnableMouseWheel(true); -- Don't need full mouse functionality - it prevents dragging.
@@ -30,6 +37,7 @@ PowaAuras.UI:Register("ScrollFrame", {
 		self:ScrollUpdate();
 	end,
 	ScrollUpdate = function(self)
+		if(not self:GetScrollChild()) then return; end
 		if(self:GetScrollChild():GetHeight() > self:GetHeight()) then
 			self.ScrollBar:Show();
 			self:GetScrollChild():SetWidth(self:GetWidth()-18);

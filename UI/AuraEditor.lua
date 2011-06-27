@@ -114,7 +114,7 @@ local AuraEditor = {
 							Children = {
 								[1] = {
 									Type = "ScrollFrame",
-									Inherits = "PowaScrollFrameTemplate",
+									Class = "ScrollFrame",
 									Points = {
 										[1] = { "TOPLEFT", 4, -4 },
 										[2] = { "BOTTOMRIGHT", -4, 4 },
@@ -172,12 +172,12 @@ local AuraEditor = {
 									OnLoad = function(self)
 										-- Set scroll child.
 										self:SetScrollChild(self.Child);
-										PowaAuras.UI:ScrollFrame(self);
+										self:ScrollUpdate();
 									end,
 								},
 								[2] = {
 									Type = "ScrollFrame",
-									Inherits = "PowaScrollFrameTemplate",
+									Class = "ScrollFrame",
 									Points = {
 										[1] = { "TOPLEFT", 4, -4 },
 										[2] = { "BOTTOMRIGHT", -4, 4 },
@@ -206,7 +206,7 @@ local AuraEditor = {
 								},
 								[3] = {
 									Type = "ScrollFrame",
-									Inherits = "PowaScrollFrameTemplate",
+									Class = "ScrollFrame",
 									Points = {
 										[1] = { "TOPLEFT", 4, -4 },
 										[2] = { "BOTTOMRIGHT", -4, 4 },
@@ -230,7 +230,7 @@ local AuraEditor = {
 									OnLoad = function(self)
 										-- Set scroll child.
 										self:SetScrollChild(self.Child);
-										PowaAuras.UI:ScrollFrame(self);
+										self:ScrollUpdate();
 									end,
 								},
 							},
@@ -354,7 +354,7 @@ local AuraEditor = {
 								},
 								[2] = {
 									Type = "ScrollFrame",
-									Inherits = "PowaScrollFrameTemplate",
+									Class = "ScrollFrame",
 									Points = {
 										[1] = { "TOPLEFT", 4, -4 },
 										[2] = { "BOTTOMRIGHT", -4, 4 },
@@ -377,7 +377,7 @@ local AuraEditor = {
 									OnLoad = function(self)
 										-- Set scroll child.
 										self:SetScrollChild(self.Child);
-										PowaAuras.UI:ScrollFrame(self);
+										self:ScrollUpdate();
 									end,
 								},
 							},
