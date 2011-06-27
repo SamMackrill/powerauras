@@ -176,7 +176,6 @@ UI:Register("Dropdown", {
 	SetTitle = function(self, title)
 		if(self.Title) then
 			self.Title:SetText(title);
-			print(self.TooltipText);
 		end
 	end,
 	UpdateText = function(self, key)
@@ -237,7 +236,7 @@ UI:Register("DropdownList", {
 			-- Make the list frame.
 			local frame = CreateFrame("Frame", nil, UIParent, "PowaBorderedFrameTemplate");
 			-- Some other things need setting up too.
-			frame:SetFrameStrata("FULLSCREEN_DIALOG");
+			frame:SetFrameStrata("DIALOG");
 			frame:SetToplevel(true);
 			frame:SetClampedToScreen(true);
 			frame:SetBackdropColor(0, 0, 0, 1);
@@ -291,6 +290,8 @@ UI:Register("DropdownList", {
 		self:UpdateScrollList();
 		-- Show.
 		self:__Show();
+		-- Fix strata.
+		self:SetFrameStrata("DIALOG");
 	end,
 	Toggle = function(self, owner, ...)
 		-- Show or hide?

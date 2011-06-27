@@ -55,7 +55,6 @@ function PowaAuras:GetSetting(key, id)
 	if(not setting) then return false; end
 	if(setting.Location == self.SettingLocations.Aura and self.Auras[(id or PowaBrowser:GetSelectedAura())]) then
 		-- Aura value.
-		print(setting.Name);
 		return self.Auras[(id or PowaBrowser:GetSelectedAura())][setting.Name];
 	elseif(setting.Location == self.SettingLocations.Global) then
 		-- Global value.
@@ -77,7 +76,6 @@ function PowaAuras:SaveSetting(key, value, id)
 	-- Act based on location.
 	if(setting.Location == self.SettingLocations.Aura and self.Auras[(id or PowaBrowser:GetSelectedAura())]) then
 		-- Save value to aura.
-		print(setting.Name);
 		self.Auras[(id or PowaBrowser:GetSelectedAura())][setting.Name] = value;
 		ret = true;
 	elseif(setting.Location == self.SettingLocations.Global) then
@@ -174,6 +172,29 @@ function PowaAuras:DeleteAura(id, quickDelete)
 	if(not quickDelete) then
 		self:ReindexAuras(true);
 	end
+end
+--- Attempts to change the type of the aura with the given ID.
+-- @param id The iD of the aura to change type.
+-- @param new The new type of aura.
+function PowaAuras:ChangeAuraType(id, new)
+	-- Get the old aura.
+	local aura, oldAura = nil, self.Auras[id];
+	if(not oldAura) then
+		return;
+	end
+	-- Dispose of old aura.
+	oldAura:Dispose();
+	-- Clear icon on old aura.
+	oldAura.icon = "";
+	-- Build the new aura.
+	aura = self:AuraFactory(new, id, oldAura);
+	-- Initialise it.
+	aura:Init();
+	self.Auras[id] = aura;
+	-- Save to appropriate config table.
+	self:UpdateAuraTables(id);
+	-- Fix other things.
+	self:ReindexAuras(false);	
 end
 --- Toggles the displays of all auras. Can optionally force a specific display state, force a refresh or only update
 -- auras that are already actively displaying.

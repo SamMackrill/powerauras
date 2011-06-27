@@ -315,7 +315,17 @@ cPowaAura.ExportSettings = {
 
 -- Editor UI definitions.
 cPowaAura.UI = {
-	Activation = {},
+	Activation = {
+		Children = {
+			[1] = {
+				Type = "Texture",
+				Points = true,
+				OnLoad = function(self)
+					self:SetTexture(1, 0, 0);
+				end,
+			},
+		},
+	},
 };
 
 function cPowaAura:Init()
@@ -395,12 +405,6 @@ function cPowaAura:GetActivationUI(parent)
 	return self.UI.Activation;
 end
 
---- Called when the editor Activation UI for this aura class is hidden, either through the editor closing or changing
--- tabs. You do not need to implement this function, but may do so to implement element recycling or anything else.
-function cPowaAura:OnHideActivationUI()
-	-- Dummy function, you can override this if you want to use element recyling or something else.
-end
-
 function cPowaAura:SetState(name, value)
 	if (not value or value==self[name]) then return; end
 	self[name] = value;
@@ -417,13 +421,13 @@ function cPowaAura:Dispose()
 	PowaAuras:Dispose("Textures", self.id);
 	PowaAuras:Dispose("SecondaryFrames", self.id);
 	PowaAuras:Dispose("SecondaryTextures", self.id);
---	-- Dispose child elements. [[UNTESTED]]
---	if(self.Timer) then
---		self.Timer:Dispose();
---	end
---	if(self.Stacks) then
---		self.Stacks:Dispose();
---	end
+	-- Dispose child elements. [[UNTESTED]]
+	if(self.Timer) then
+		self.Timer:Dispose();
+	end
+	if(self.Stacks) then
+		self.Stacks:Dispose();
+	end
 end
 
 function cPowaAura:CustomEvents()
@@ -556,6 +560,7 @@ function cPowaAura:CreateDefaultTriggers()
 	-- =====		
 	if (self.Timer) then
 		if (self.Timer.enabled) then
+
 			self.Timer:CreateFrameIfMissing(self);
 			if (self.Timer.UpdatePing) then
 				trigger=self:CreateTrigger(cPowaAuraTimerRefreshTrigger, {Name="PA_TimerPing"});
@@ -1468,6 +1473,7 @@ function cPowaAura:MatchSpell(spellName, spellTexture, spellId, matchString)
 	end
 	if (matchString=="*") then
 		return true;
+
 	end
 	if (self.Debug) then
 		PowaAuras:Message("--MatchSpell--"); --OK
@@ -4556,6 +4562,21 @@ cPowaUnitMatch.CheckBoxes={
 	["PowaRoleMeleDpsButton"]=1,
 	["PowaRoleRangeDpsButton"]=1,
 }
+
+-- Editor UI definitions.
+cPowaUnitMatch.UI = {
+	Activation = {
+		Children = {
+			[1] = {
+				Type = "Texture",
+				Points = true,
+				OnLoad = function(self)
+					self:SetTexture(0, 1, 0);
+				end,
+			},
+		},
+	},
+};
 
 function cPowaUnitMatch:AddEffectAndEvents()
 	table.insert(PowaAuras.AurasByType[self.AuraType], self.id);
