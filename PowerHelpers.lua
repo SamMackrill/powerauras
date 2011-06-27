@@ -45,6 +45,12 @@ function PowaAuras:RegisterSettingCallback(func)
 	tinsert(self.SettingCallbacks, func);
 	return true;
 end
+--- Checks if the setting with the given key exists.
+-- @param key The settings key to check for.
+-- @return Returns true if the setting exists, false otherwise.
+function PowaAuras:SettingExists(key)
+	return self.SettingsByKey[key] and true or false;
+end
 --- Retrieves a setting with the associated key.
 -- @param key The setting to be retrieved.
 -- @param id The ID of the aura to retrieve settings for, if the key represents an aura setting.

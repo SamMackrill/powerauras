@@ -22,8 +22,13 @@ PowaAuras.UI:Register("Settings", {
 		return PowaAuras:SaveSetting(self.SettingKey, value);
 	end,
 	UpdateSetting = function(self, setting)
-		-- Store setting.
-		self.SettingKey = setting;
+		-- Update setting key if needed, but only if it exists.
+		if(setting and self.SettingKey ~= setting and PowaAuras:SettingExists(setting)) then
+			self.SettingKey = setting;
+		elseif(setting and self.SettingKey ~= setting or not setting) then
+			-- You tried to change it but the new one doesn't exist...
+			self.SettingKey = nil;
+		end
 		-- Need a setting brah!
 		if(not self.SettingKey) then return; end
 		-- Only register the callback once.

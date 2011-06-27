@@ -122,9 +122,13 @@ end
 --- Turns a widget definition table into metatables with constructor-like functionality.
 -- @param name The name of the widget class to define.
 -- @param data The table of data to use when defining the class.
-function PowaAuras.UI:Register(name, data)
+-- @param isAnonymous Defaults to false, if set to true then the name of the class is not checked and it will not be
+-- registered with the UI table.
+function PowaAuras.UI:Register(name, data, isAnonymous)
 	-- Simple check...
-	if(self[name]) then return PowaAuras:ShowText("Widget type with name ", name, " already exists."); end
+	if(not isAnonymous and self[name]) then
+		return PowaAuras:Debug("Widget type with name ", name, " already exists.");
+	end
 	-- Does the data reference a parent class?
 	if(data.Base) then
 		-- Turn the base class name into a direct reference.
@@ -177,7 +181,25 @@ function PowaAuras.UI:Register(name, data)
 	-- Add a metatable to the widget definition.
 	setmetatable(data, { __call = data.Construct });
 	-- Store widget table.
-	self[name] = data;
+	if(not isAnonymous) then
+		self[name] = data;
+	end
+	-- Done.
+	return data;
+end
+--- Initialises a frame with an anonymous widget class, which extends a class on the fly to create a class tailored to
+-- specific needs at runtime. The class is then immediately constructed afterwards.
+-- @param class The name of the class to extend.
+-- @param data The data table of the class to merge in.
+-- @param ... Any arguments to pass to the constructor and init functions.
+function PowaAuras.UI:AnonymousWidget(class, data, ...)
+	-- Extend base.
+	if(not data.Base) then
+		data.Base = class;
+	end
+	-- Make class, construct, done.
+	local class = self:Register(nil, data, true);
+	class(self, ...);
 end
 
 -- Accepted definition keys:
