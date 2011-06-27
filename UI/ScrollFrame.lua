@@ -165,9 +165,9 @@ PowaAuras.UI:Register("ScrollableItemsFrame", {
 	SetScrollOffset = function(self, offset)
 		-- Set offset.
 		self.ScrollOffset = offset;
-		self:UpdateScrollOffset(false);
 		self:CallScript("OnScrollOffsetChanged", self.ScrollOffset);
-		self:UpdateScrollList();
+		-- Update.
+		self:UpdateScrollOffset();
 	end,
 	SetScrollRange = function(self, minRange, maxRange)
 		-- Update ranges.
@@ -175,20 +175,20 @@ PowaAuras.UI:Register("ScrollableItemsFrame", {
 		self.ScrollRangeMax = max(maxRange, minRange);
 		self:CallScript("OnScrollRangeChanged", minRange, maxRange);
 		-- Update.
-		self:UpdateScrollOffset(false);
+		self:UpdateScrollOffset();
 	end,
 	SetScrollStep = function(self, step)
 		-- Set step.
 		self.ScrollStep = step;
-		self:CallScript("OnScrollStepChanged", step);
 		self.ScrollBar:SetValueStep(step);
+		self:CallScript("OnScrollStepChanged", step);
 		-- Force scroll to be a multiple of the step.
 		self:SetScrollOffset(self.ScrollOffset - mod(self.ScrollOffset, step));
 	end,
 	UpdateScrollList = function(self)
 		-- Rest must be implemented manually!
 	end,
-	UpdateScrollOffset = function(self, triggerUpdate)
+	UpdateScrollOffset = function(self)
 		-- Cap it.
 		self.ScrollOffset = min(self.ScrollOffset, self.ScrollRangeMax);
 		self.ScrollOffset = max(self.ScrollOffset, self.ScrollRangeMin);
@@ -213,9 +213,7 @@ PowaAuras.UI:Register("ScrollableItemsFrame", {
 		else
 			self.ScrollBar:Show();
 		end
-		-- Update if needed.
-		if(triggerUpdate) then
-			self:UpdateScrollList();
-		end
+		-- Update.
+		self:UpdateScrollList();
 	end,
 });

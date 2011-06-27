@@ -7,44 +7,6 @@
 		<Size>
 			<AbsDimension x="172" y="0" />
 		</Size>
-		<Frames>
-			<ScrollFrame parentKey="Scroll" inherits="PowaScrollFrameTemplate">
-				<Size>
-					<AbsDimension x="172" y="0" />
-				</Size>
-				<Anchors>
-					<Anchor point="TOPLEFT" x="4" y="-4" />
-					<Anchor point="BOTTOMRIGHT" x="-4" y="4" />
-				</Anchors>
-				<ScrollChild>
-					<Frame parentKey="Child">
-						<Size>
-							<AbsDimension x="147" y="0" />
-						</Size>
-						<Anchors>
-							<Anchor point="TOPLEFT" x="4" y="-4" />
-							<Anchor point="BOTTOMRIGHT" x="4" y="4" />
-						</Anchors>
-						<Layers>
-							<Layer level="OVERLAY">
-								<FontString parentKey="Title" inherits="PowaFontNormal" justifyH="CENTER" justifyV="MIDDLE">
-									<Size x="140" y="24" />
-									<Anchors>
-										<Anchor point="TOPLEFT" x="0" y="0" />
-										<Anchor point="TOPRIGHT" x="0" y="0" />
-									</Anchors>
-								</FontString>
-							</Layer>
-						</Layers>
-					</Frame>
-				</ScrollChild>
-				<Scripts>
-					<OnLoad>
-						PowaAuras.UI:ScrollFrame(self);
-					</OnLoad>
-				</Scripts>
-			</ScrollFrame>
-		</Frames>
 	</Frame>
 	
 	<Button name="PowaTreeViewItemTemplate" virtual="true" >
@@ -81,7 +43,7 @@
 				<Scripts>
 					<OnClick>
 						-- Epicly long line of code right there.
-						self:GetParent():GetParent():GetParent():GetParent():ToggleElementChildren(self:GetParent():GetKey());
+						self:GetParent():GetParent():ToggleElementChildren(self:GetParent():GetKey());
 						PlaySound("UChatScrollButton");
 					</OnClick>
 				</Scripts>

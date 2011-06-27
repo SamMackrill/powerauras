@@ -27,7 +27,7 @@ UI:Register("DropdownBase", {
 		tinsert(self.Items, { Key = key, Value = text, Tooltip = tooltip });
 		-- Fully update the menu if we add/remove any items.
 		if(self.Menu:IsOwned(self)) then
-			self.Menu:UpdateScrollList();
+			self.Menu:UpdateItems();
 		end
 		-- Done.
 		return true;
@@ -44,7 +44,7 @@ UI:Register("DropdownBase", {
 				end
 				-- Fully update the menu if we add/remove any items.
 				if(self.Menu:IsOwned(self)) then
-					self.Menu:UpdateScrollList();
+					self.Menu:UpdateItems();
 				end
 				-- Done.
 				return true;
@@ -66,7 +66,7 @@ UI:Register("DropdownBase", {
 				self.Items[i].Tooltip = tooltip;
 				-- Fully update the menu if we changed anything.
 				if(self.Menu:IsOwned(self)) then
-					self.Menu:UpdateScrollList();
+					self.Menu:UpdateItems();
 				end
 				-- Done.
 				return true;
@@ -110,7 +110,7 @@ UI:Register("DropdownBase", {
 		sort(self.Items, callback or self.SortCallback);
 		-- Fully update the menu.
 		if(self.Menu:IsOwned(self)) then
-			self.Menu:UpdateScrollList();
+			self.Menu:UpdateItems();
 		end
 	end,
 	SetSelectedKey = function(self, key)
@@ -242,7 +242,6 @@ UI:Register("DropdownList", {
 			frame:SetBackdropColor(0, 0, 0, 1);
 			-- Register as scrollable.
 			ui:ScrollableItemsFrame(frame);
-			frame.ScrollBar:Show();
 			-- Construct as normal.
 			class.Menu = ui.Construct(class, ui, frame);
 		end
@@ -261,7 +260,7 @@ UI:Register("DropdownList", {
 		self.Owner = nil;
 		self.SelectedKey = nil;
 		-- Recycle items.
-		self:UpdateScrollList();
+		self:UpdateItems();
 		-- Hide.
 		self:__Hide();
 	end,
@@ -271,7 +270,7 @@ UI:Register("DropdownList", {
 	SetSelectedKey = function(self, key)
 		-- Update selected key and items.
 		self.SelectedKey = (self.AllowSelection and key or nil);
-		self:UpdateScrollList();
+		self:UpdateItems();
 		-- Fire update callback.
 		self.Owner:CallScript("OnDropdownMenuSelectionUpdated", key);
 	end,
@@ -287,7 +286,7 @@ UI:Register("DropdownList", {
 		-- Call Show callback.
 		self.Owner:CallScript("OnDropdownMenuShow");
 		-- Update items.
-		self:UpdateScrollList();
+		self:UpdateItems();
 		-- Show.
 		self:__Show();
 		-- Fix strata.
@@ -301,6 +300,12 @@ UI:Register("DropdownList", {
 			self:Hide(owner);
 		end
 	end,
+	UpdateItems = function(self)
+		-- Fix the scroll range, this will in turn invoke an update.
+		local max = (self.Owner and #(self.Owner:GetItems()) or 0);
+		-- Set the top limit to max-8, which compensates for the height of the dropdown (8 items max onscreen).
+		self:SetScrollRange(0, max-8);
+	end,
 	UpdateScrollList = function(self)
 		-- Recycle all items, then clear the table.
 		for _, item in ipairs(self.Items) do
@@ -311,8 +316,6 @@ UI:Register("DropdownList", {
 		if(not self.Owner) then return; end
 		-- Get items.
 		local items, count = self.Owner:GetItems(), 0;
-		-- Update scroll range.
-		self:SetScrollRange(0, #(items)-8);
 		-- Add child items.
 		for i=self.ScrollOffset+1, self.ScrollOffset+8 do
 			-- Get item data.
