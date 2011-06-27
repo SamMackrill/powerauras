@@ -3,11 +3,6 @@
     xsi:schemaLocation="http://www.blizzard.com/wow/ui/
     ..\..\FrameXML\UI.xsd">
 	<Script file="TreeView.lua" />
-	<Frame name="PowaTreeViewTemplate" virtual="true" inherits="PowaBorderedFrameTemplate">
-		<Size>
-			<AbsDimension x="172" y="0" />
-		</Size>
-	</Frame>
 	
 	<Button name="PowaTreeViewItemTemplate" virtual="true" >
 		<Size>

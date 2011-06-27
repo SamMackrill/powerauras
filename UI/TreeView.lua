@@ -5,9 +5,6 @@
 
 -- Create definition.
 PowaAuras.UI:Register("TreeView", {
-	Scripts = {
-		OnSelectedKeyChanged = true, -- Temp.
-	},
 	Construct = function(class, ui, self, ...)
 		-- Add scripts mixin and special scrolly thing to frame.
 		ui:ScrollableItemsFrame(self);

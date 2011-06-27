@@ -5,7 +5,7 @@
 	<Script file="TabDialog.lua" />
 	<Frame name="PowaTabDialogTemplate" virtual="true">
 		<Frames>
-			<Button parentKey="AcceptButton" name="$parentAcceptButton" inherits="UIPanelButtonTemplate2" text="Save">
+			<Button parentKey="AcceptButton" inherits="PowaButtonTemplate" text="Save">
 				<Size>
 					<AbsDimension x="118" y="22" />
 				</Size>
@@ -13,7 +13,7 @@
 					<Anchor point="BOTTOMRIGHT" x="-5" y="5" />
 				</Anchors>
 			</Button>
-			<Button parentKey="CancelButton" name="$parentCancelButton" inherits="UIPanelButtonTemplate2" text="Cancel">
+			<Button parentKey="CancelButton" inherits="PowaButtonTemplate" text="Cancel">
 				<Size>
 					<AbsDimension x="118" y="22" />
 				</Size>

@@ -59,7 +59,7 @@
 	
 	<Frame name="PowaGenericFrameTemplate" virtual="true" toplevel="true" movable="true" hidden="false" frameStrata="MEDIUM" enableMouse="true" enableKeyboard="true">
 		<Size>
-          <AbsDimension x="550" y="450" />
+          <AbsDimension x="550" y="456" />
         </Size>
         <Anchors>
 			<Anchor point="CENTER" relativeTo="UIParent" x="0" y="50" />

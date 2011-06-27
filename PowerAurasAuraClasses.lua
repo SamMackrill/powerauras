@@ -470,9 +470,9 @@ end
 
 function cPowaAura:UpdateTriggerTree(triggersTree)
 
-	triggersTree.OnSelectionChanged = function(self, key)
+	triggersTree:SetScript("OnSelectedKeyChanged", function(self, key)
 		PowaAuras:ShowText("Trigger Selection changed: ", (key or "nil"), " auraId=", PowaBrowser:GetSelectedAura());
-	end
+	end);
 	
 	triggersTree:ClearItems();
 	local triggerIndex = 1;
