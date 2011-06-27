@@ -303,6 +303,13 @@ UI:Register("DropdownList", {
 	UpdateItems = function(self)
 		-- Fix the scroll range, this will in turn invoke an update.
 		local max = (self.Owner and #(self.Owner:GetItems()) or 0);
+		-- Manually set scroll offset to the position of the selected item.
+		for i=1, max do
+			if(self.Owner:GetItems()[i].Key == self.SelectedKey) then
+				self.ScrollOffset = i-1;
+				break;
+			end
+		end
 		-- Set the top limit to max-8, which compensates for the height of the dropdown (8 items max onscreen).
 		self:SetScrollRange(0, max-8);
 	end,
