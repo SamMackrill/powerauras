@@ -56,16 +56,6 @@ PowaAuras.UI:Register("AuraEditor", {
 		self.AuraID = auraID;
 		-- Update controls.
 		aura:UpdateTriggerTree(self.Tabs.Triggers.Tree);
-		-- Easy frame access.
-		local frame = self;
---		-- Display tab.
---		---- Aura tree.
---		---- Timer tree.
---		---- Stacks tree.
---		-- Activation tab.
---		---- Activation tree.
---		---- Rules tree.
-		
 		-- Force aura showing.
 		PowaAuras:ToggleAuraDisplay(auraID, true);
 		-- Done.
@@ -284,54 +274,80 @@ local AuraEditor = {
 							},
 							Children = {
 								[1] = {
-									Type = "ScrollFrame",
-									Inherits = "PowaScrollFrameTemplate",
+									Inherits = "PowaTitledFrameTemplate",
+									Size = { 419, 1 },
 									Points = {
 										[1] = { "TOPLEFT", 4, -4 },
 										[2] = { "BOTTOMRIGHT", -4, 4 },
 									},
 									Children = {
-										Child = {
-											Inherits = "PowaTitledFrameTemplate",
-											Class = "EditorScrollChild",
-											Size = { 419, 1 },
+										Type = {
+											Type = "Button",
+											Inherits = "PowaLabelledDropdownTemplate",
 											Points = {
-												[1] = { "TOPLEFT", 0, 0 },
-												[3] = { "BOTTOMRIGHT", 0, 0 },
-											},
-											Children = {
-												Type = {
-													Type = "Button",
-													Inherits = "PowaLabelledDropdownTemplate",
-													Points = {
-														[1] = { "TOPLEFT", 15, -90 },
-													},
-													OnLoad = function(self)
-														-- Set localized title.
-														self:SetText("UI_Editor_Type");
-														-- Initialise as dropdown.
-														PowaAuras.UI:Dropdown(self, "Aura.bufftype");
-														-- Add all possible types.
-														for k, v in pairs(PowaAuras.BuffTypes) do
-															self:AddItem(v, PowaAuras.Text["AuraType"][v], 
-																PowaAuras.Text["AuraTypeDesc"][v]);
-														end
-														-- Sort.
-														self:SortItems();
-													end,
-												},
+												[1] = { "TOPLEFT", 15, -90 },
 											},
 											OnLoad = function(self)
-												-- Set title.
-												self:SetTitle(PowaAuras.Text["UI_Editor_Activation"]);
-												self:SetDescription(PowaAuras.Text["UI_Editor_ActivationDesc"]);
+												-- Set localized title.
+												self:SetText("UI_Editor_Type");
+												-- Initialise as dropdown. No settings, though.
+												PowaAuras.UI:Dropdown(self);
+												-- Add all possible types.
+												for k, v in pairs(PowaAuras.BuffTypes) do
+													self:AddItem(v, PowaAuras.Text["AuraType"][v], 
+														PowaAuras.Text["AuraTypeDesc"][v]);
+												end
+												-- Sort.
+												self:SortItems();
+												-- Register settings callback to update the text.
+												PowaAuras:RegisterSettingCallback(function(key, value)
+													if(key ~= "Aura.bufftype") then
+														return;
+													end
+													-- Fix text.
+													self:UpdateText(value);
+												end);
+												-- Register callback script.
+												self:SetScript("OnDropdownItemSelected", function(self, key)
+													-- Change selected aura type.
+													local id = PowaBrowser:GetSelectedAura() or 0;
+													if(PowaAuras.Auras[id]) then
+														PowaAuras:ChangeAuraType(id, key);
+														PowaAuras:UpdateSetting("Aura.bufftype", key);
+														PowaAuras:ToggleAuraDisplay(id, true);
+													end
+												end);
 											end,
 										},
 									},
 									OnLoad = function(self)
-										-- Set scroll child.
-										self:SetScrollChild(self.Child);
-										PowaAuras.UI:ScrollFrame(self);
+										-- Set title.
+										self:SetTitle(PowaAuras.Text["UI_Editor_Activation"]);
+										self:SetDescription(PowaAuras.Text["UI_Editor_ActivationDesc"]);
+										-- Register setting callback for activation type.
+										PowaAuras:RegisterSettingCallback(function(key, value)
+											-- Buff type?
+											if(key ~= "Aura.bufftype") then
+												return;
+											end
+											-- Get edited aura.
+											local aura = PowaAuras.Auras[(PowaBrowser:GetSelectedAura() or 0)];
+											if(not aura) then return; end
+											-- Hide existing UI.
+											if(self.Editor) then
+												self.Editor:ClearAllPoints();
+												self.Editor:Hide();
+												self.Editor:SetParent(nil);
+												self.Editor = nil;
+											end
+											-- Show the correct editor UI this type.
+											self.Editor = aura:GetActivationUI(self);
+											-- Position and show.
+											self.Editor:SetParent(self);
+											self.Editor:SetPoint("TOPLEFT", 15, -125);
+											self.Editor:SetPoint("BOTTOMRIGHT", -15, 15);
+											self.Editor:Show();
+										end);
 									end,
 								},
 								[2] = {
