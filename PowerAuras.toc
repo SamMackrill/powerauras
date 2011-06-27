@@ -63,7 +63,7 @@ UI\Checkbox.xml
 UI\ColorWidget.xml
 UI\EditBox.xml
 UI\FrameCategory.xml
-UI\RadioGroup.xml
+UI\RadioGroup.lua
 UI\Slider.xml
 UI\ScrollFrame.xml
 UI\TabButton.xml

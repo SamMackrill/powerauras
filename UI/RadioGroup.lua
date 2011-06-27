@@ -77,7 +77,7 @@ PowaAuras.UI:Register("RadioGroup", {
 
 -- Any extensions to this should inherit this via the Base field and change the Template field.
 PowaAuras.UI:Register("RadioButton", {
-	Template = "PowaRadioButtonTemplate",
+	Template = nil,
 	Items = {}, -- Shared pool of reusable buttons.
 	Scripts = {
 		OnClick = true,

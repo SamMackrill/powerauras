@@ -5,13 +5,21 @@
 
 -- Create definition.
 PowaAuras.UI:Register("TreeView", {
-	Init = function(self, title, callback)
+	Scripts = {
+		OnSelectedKeyChanged = true, -- Temp.
+	},
+	Construct = function(class, ui, self, ...)
+		-- Add scripts mixin and special scrolly thing to frame.
+		ui:ScrollableItemsFrame(self);
+		ui:Scripts(self);
+		-- Normal ctor.
+		return ui.Construct(class, ui, self, ...);
+	end,
+	Init = function(self)
 		-- Store our items in these...
 		self.ItemsByOrder = {};
 		self.ItemsByKey = {};
 		self.SelectedKey = nil;
-		-- Set ze title.
-		self:SetTitle(title);
 		-- Initial update! (Fixed the scrollbar).
 		self:UpdateItems();
 	end,
@@ -23,9 +31,11 @@ PowaAuras.UI:Register("TreeView", {
 		if(not parent) then parent = self.ItemsByOrder; end
 		-- Let's do it.
 		tinsert(parent, { Key = key });
-		self.ItemsByKey[key] = PowaAuras.UI:TreeViewItem(nil, self, parent["Key"], key, text);
+		self.ItemsByKey[key] = PowaAuras.UI:TreeViewItem(self, parent["Key"], key, text);
 		-- Disable if needed.
 		if(disable) then self:DisableItem(key); else self:EnableItem(key); end
+		-- Invalidate item count.
+		self.ItemCount = nil;
 		-- Update.
 		self:UpdateItems();
 		return true;
@@ -36,6 +46,34 @@ PowaAuras.UI:Register("TreeView", {
 			self:RemoveItem(k);
 		end
 		self:UpdateItems();
+	end,
+	CountItems = function(self, parent)
+		-- Long count, go.
+		local count = 0;
+		for k, v in pairs(parent or self.ItemsByOrder) do
+			if(k ~= "Key") then
+				count = count+1;
+				-- Recursively loop...
+				count = count+self:CountItems(v);
+			end
+		end
+		-- Done.
+		return count;
+	end,
+	CountShownItems = function(self, parent)
+		-- Long count, go.
+		local count, key = 0, nil;
+		for k, v in pairs(parent or self.ItemsByOrder) do
+			-- Get object by key...
+			key = self.ItemsByKey[v["Key"]];
+			count = count+1;
+			-- Recursively loop if we should.
+			if(key and key:GetExpanded()) then
+				count = count+self:CountItems(v);
+			end
+		end
+		-- Done.
+		return count;
 	end,
 	FindItemByKey = function(self, key, items)
 		-- Go go power rangers.
@@ -84,8 +122,6 @@ PowaAuras.UI:Register("TreeView", {
 			return true;
 		end
 	end,
-	OnSelectionChanged = function(self, key) -- All TreeViews should override this func.
-	end,
 	RemoveItem = function(self, key)
 		-- Find the item...
 		if(not self.ItemsByKey[key]) then return; end
@@ -111,6 +147,8 @@ PowaAuras.UI:Register("TreeView", {
 		item:Recycle();
 		-- Change selection if needed.
 		if(self.SelectedKey == key) then self:SetSelectedKey(nil); end
+		-- Invalidate item count.
+		self.ItemCount = nil;
 		-- Update.
 		self:UpdateItems();
 	end,
@@ -118,13 +156,10 @@ PowaAuras.UI:Register("TreeView", {
 		-- Go go go.
 		if(key == nil or (self.ItemsByKey[key] and self.SelectedKey ~= key)) then
 			self.SelectedKey = key;
-			self:OnSelectionChanged(self.SelectedKey);
+			self:CallScript("OnSelectedKeyChanged", self.SelectedKey);
 		end
 		-- Update.
 		self:UpdateItems();
-	end,
-	SetTitle = function(self, title)
-		self.Scroll.Child.Title:SetText(title);
 	end,
 	ToggleElementChildren = function(self, key)
 		-- Get item.
@@ -135,24 +170,32 @@ PowaAuras.UI:Register("TreeView", {
 		-- Update.
 		self:UpdateItems();
 	end,
-	UpdateItems = function(self, items, level, offset, shouldShow)
+	UpdateItems = function(self)
+		-- Change scroll boundaries. Invokes an update.
+		self:SetScrollRange(0, self:CountShownItems()-floor(self:GetHeight()/24));
+	end,
+	UpdateScrollList = function(self, items, level, offset, iteratedOffset, shouldShow)
 		-- Fix missing params.
 		if(not level) then level = 1; end
 		if(not items) then items = self.ItemsByOrder; end
 		if(level == 1) then shouldShow = true; end
-		local count, item, itemKey, offset, showChildren = #(items), nil, nil, (offset or 0), true;
-		for i=1,count do
+		local count, item, itemKey, offset, iteratedOffset, showChildren = #(items), nil, nil, (offset or 0), 
+			(iteratedOffset or 0), true;
+		for i=1, count do
 			-- Update locals.
 			itemKey = items[i];
 			item = self.ItemsByKey[itemKey["Key"]];
+			-- Increment iteratedOffset.
+			iteratedOffset = iteratedOffset+1;
 			-- Should it show?
-			if(shouldShow) then
+			if(shouldShow and iteratedOffset > self:GetScrollOffset() 
+			and offset < floor(self:GetHeight()/24)) then
 				-- Increment offset.
 				offset = offset+1;
 				-- Show + position.
 				item:Show();
-				item:SetPoint("TOPLEFT", 0, -((offset-1)*24));
-				item:SetPoint("TOPRIGHT", 0, -((offset-1)*24));
+				item:SetPoint("TOPLEFT", 4, -4-((offset-1)*24));
+				item:SetPoint("TOPRIGHT", (self.ScrollBar:IsShown() and -20 or -4), -4-((offset-1)*24));
 				-- Indent text (do NOT indent the entire item, it looks weird).
 				item.Text:SetPoint("LEFT", 4+((level-1)*10), 0);
 				-- Show or hide expand button.
@@ -168,17 +211,13 @@ PowaAuras.UI:Register("TreeView", {
 			-- Selected?
 			item:SetSelected((self.SelectedKey == itemKey["Key"]));
 			-- Update children.
-			showChildren = item:GetExpanded();
-			if(shouldShow == false) then showChildren = false; end
-			offset = self:UpdateItems(itemKey, level+1, offset, showChildren);
+			showChildren = (shouldShow == true and item:GetExpanded() or false);
+			offset, iteratedOffset = self:UpdateScrollList(itemKey, level+1, offset, iteratedOffset, showChildren);
 		end
 		-- Check level.
 		if(level > 1) then
 			-- Return amount of shown we iterated over.
-			return offset;
-		else
-			-- Update scrollchild height.
-			self.Scroll.Child:SetHeight((self:HasTitle() and 24 or 0)+(offset*24));
+			return offset, iteratedOffset;
 		end
 	end,
 });
@@ -190,7 +229,7 @@ PowaAuras.UI:Register("TreeViewItem", {
 		"Disable",
 		"Enable",
 	},
-	Construct = function(self, ui, item, ...)
+	Construct = function(self, ui, ...)
 		-- Got any items or not?
 		local item = nil;
 		if(self.Items[1]) then
@@ -209,7 +248,7 @@ PowaAuras.UI:Register("TreeViewItem", {
 	end,
 	Init = function(self, parentTree, parentKey, key, text)
 		-- Set us up!
-		self:SetParent(parentTree.Scroll.Child);
+		self:SetParent(parentTree);
 		self:SetKey(key);
 		self:SetText(text);
 		self:SetParentKey(parentKey);
@@ -235,8 +274,8 @@ PowaAuras.UI:Register("TreeViewItem", {
 		return self.ParentKey;
 	end,
 	OnClick = function(self)
-		-- I know it looks ugly, the parent is the scrollchild so we need to work our way up...
-		self:GetParent():GetParent():GetParent():SetSelectedKey(self.Key);
+		-- Could be implemented in a nicer way, but meh.
+		self:GetParent():SetSelectedKey(self.Key);
 		PlaySound("UChatScrollButton");
 	end,
 	Recycle = function(self)
