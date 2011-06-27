@@ -1095,7 +1095,7 @@ function PowaAuras:DisplayAura(auraId)
 		aura.Timer.Start = GetTime();
 	end
 	
-	aura:Show(PowaAuras.ModTest);
+	aura:Show(self.ModTest);
 
 end
 
