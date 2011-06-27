@@ -218,7 +218,7 @@ PowaAuras.UI:Register("AuraBrowser", {
 				hasDisplayedEmpty = true;
 			end
 			-- Tooltip update.
-			if(button:IsMouseOver()) then
+			if(button:IsMouseOver() and button:IsVisible()) then
 				button:TooltipRefresh();
 			end
 		end

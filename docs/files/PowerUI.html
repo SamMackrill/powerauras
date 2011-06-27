@@ -237,6 +237,11 @@
 <table class="function_list">
 
 	<tr>
+	<td class="name" nowrap><a href="#PowaAuras.UI:AnonymousWidget">PowaAuras.UI:AnonymousWidget</a>&nbsp;(class, data, ...)</td>
+	<td class="summary">Initialises a frame with an anonymous widget class, which extends a class on the fly to create a class tailored to specific needs at runtime.</td>
+	</tr>
+
+	<tr>
 	<td class="name" nowrap><a href="#PowaAuras.UI:BuildFrameFromDefinition">PowaAuras.UI:BuildFrameFromDefinition</a>&nbsp;(def, parent)</td>
 	<td class="summary">Builds a frame from a table based definition.</td>
 	</tr>
@@ -247,7 +252,7 @@
 	</tr>
 
 	<tr>
-	<td class="name" nowrap><a href="#PowaAuras.UI:Register">PowaAuras.UI:Register</a>&nbsp;(name, data)</td>
+	<td class="name" nowrap><a href="#PowaAuras.UI:Register">PowaAuras.UI:Register</a>&nbsp;(name, data, isAnonymous)</td>
 	<td class="summary">Turns a widget definition table into metatables with constructor-like functionality.</td>
 	</tr>
 
@@ -266,6 +271,40 @@
 
 <h2><a name="functions"></a>Functions</h2>
 <dl class="function">
+
+
+
+<dt><a name="PowaAuras.UI:AnonymousWidget"></a><strong>PowaAuras.UI:AnonymousWidget</strong>&nbsp;(class, data, ...)</dt>
+<dd>
+Initialises a frame with an anonymous widget class, which extends a class on the fly to create a class tailored to specific needs at runtime. The class is then immediately constructed afterwards.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  class: The name of the class to extend.
+	</li>
+	
+	<li>
+	  data: The data table of the class to merge in.
+	</li>
+	
+	<li>
+	  ...: Any arguments to pass to the constructor and init functions.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
 
 
 
@@ -333,7 +372,7 @@ Generic constructor function for all UI widgets. Performs the mundane functions 
 
 
 
-<dt><a name="PowaAuras.UI:Register"></a><strong>PowaAuras.UI:Register</strong>&nbsp;(name, data)</dt>
+<dt><a name="PowaAuras.UI:Register"></a><strong>PowaAuras.UI:Register</strong>&nbsp;(name, data, isAnonymous)</dt>
 <dd>
 Turns a widget definition table into metatables with constructor-like functionality.
 
@@ -347,6 +386,10 @@ Turns a widget definition table into metatables with constructor-like functional
 	
 	<li>
 	  data: The table of data to use when defining the class.
+	</li>
+	
+	<li>
+	  isAnonymous: Defaults to false, if set to true then the name of the class is not checked and it will not be registered with the UI table.
 	</li>
 	
 </ul>

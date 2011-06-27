@@ -1,6 +1,6 @@
 -- Create definition.
 PowaAuras.UI:Register("Tooltip", {
-	Construct = function(self, ui, frame, title, text, children)
+	Construct = function(self, ui, frame, title, text, ...)
 		-- Store data.
 		frame.TooltipTitle = PowaAuras.Text[title];
 		frame.TooltipText = PowaAuras.Text[text];
@@ -15,8 +15,10 @@ PowaAuras.UI:Register("Tooltip", {
 		self:ApplyScript(frame, "OnEnter", frame.TooltipRefresh);
 		self:ApplyScript(frame, "OnLeave", frame.TooltipLeave);
 		-- Add to children too.
-		if(children) then
-			for _, child in pairs(children) do
+		local count = select("#", ...);
+		if(count > 0) then
+			for i=1, count do
+				local child = select(i, ...);
 				self:ApplyScript(frame[child], "OnEnter", function() frame:TooltipRefresh(); end);
 				self:ApplyScript(frame[child], "OnLeave", function() frame:TooltipLeave(); end);
 			end

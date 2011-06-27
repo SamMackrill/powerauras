@@ -596,7 +596,7 @@
 												<Scripts>
 													<OnLoad>
 														-- Basic editbox.
-														PowaAuras.UI:EditBox3(self, "UI_CreateImportExp");
+														PowaAuras.UI:EditBox(self, "UI_CreateImportExp");
 													</OnLoad>
 													<OnTextChanged>
 														-- Parse string, is it a set or normal import?
@@ -824,7 +824,7 @@
 											</Layer>
 										</Layers>
 										<Frames>
-											<Slider minValue="1" maxValue="100" defaultValue="100" valueStep="1" parentKey="UpdateSpeed" inherits="PowaSliderTemplate">
+											<Slider minValue="0" maxValue="100" defaultValue="100" valueStep="1" parentKey="UpdateSpeed" inherits="PowaSliderTemplate">
 												<Size x="300" y="15" />
 												<Anchors>
 													<!-- Slider is designed in a weird way due to backdrop limitations, hence the huge Y offset -->
@@ -833,11 +833,36 @@
 												</Anchors>
 												<Scripts>
 													<OnLoad>
-														PowaAuras.UI:Slider(self, "UI_Config_UpdateSpeed", "%");
+														-- Create an anonymous slider extension widget.
+														PowaAuras.UI:AnonymousWidget("Slider", {
+															OnSettingChanged = function(self, value)
+																if(self:GetValue() ~= (100-200*value)) then
+																	self:SetValue(100-200*value);
+																end
+															end,
+															OnValueChanged = function(self, value)
+																-- Store value.
+																if(self:GetSetting() ~= ((100-value)/200)) then
+																	self:SaveSetting((100-value)/200);
+																end
+															end,
+															OnEditBoxSettingChanged = function(self, value)
+																self:SetText(tostring(100-200*value));
+															end,
+															OnEditBoxValueChanged = function(self)
+																if(tonumber(self:GetText()) 
+																and self:GetSetting() ~= ((100-tonumber(self:GetText()))/200)) then
+																	self:SaveSetting(((100-tonumber(self:GetText()))/200));
+																end
+																self:ClearFocus();
+															end,
+														}, self, "UI_Config_UpdateSpeed", "OnUpdateLimit");
+														-- Set the unit.
+														self:SetUnit("%");
 													</OnLoad>
 												</Scripts>
 											</Slider>
-											<Slider minValue="1" maxValue="100" defaultValue="100" valueStep="1" parentKey="TimerSpeed" inherits="PowaSliderTemplate">
+											<Slider minValue="0" maxValue="100" defaultValue="100" valueStep="1" parentKey="TimerSpeed" inherits="PowaSliderTemplate">
 												<Size x="300" y="15" />
 												<Anchors>
 													<!-- Slider is designed in a weird way due to backdrop limitations, hence the huge Y offset -->
@@ -846,7 +871,31 @@
 												</Anchors>
 												<Scripts>
 													<OnLoad>
-														PowaAuras.UI:Slider(self, "UI_Config_TimerSpeed", "%");
+														-- Create an anonymous slider extension widget.
+														PowaAuras.UI:AnonymousWidget("Slider", {
+															OnSettingChanged = function(self, value)
+																if(self:GetValue() ~= (100-1000*value)) then
+																	self:SetValue((100-1000*value));
+																end
+															end,
+															OnValueChanged = function(self, value)
+																if(self:GetSetting() ~= ((100-value)/1000)) then
+																	self:SaveSetting(((100-value)/1000));
+																end
+															end,
+															OnEditBoxSettingChanged = function(self, value)
+																self:SetText(tostring((100-1000*value)));
+															end,
+															OnEditBoxValueChanged = function(self)
+																if(tonumber(self:GetText()) 
+																and self:GetSetting() ~= ((100-tonumber(self:GetText()))/1000)) then
+																	self:SaveSetting(((100-tonumber(self:GetText()))/1000));
+																end
+																self:ClearFocus();
+															end,
+														}, self, "UI_Config_TimerSpeed", "AnimationLimit");
+														-- Set the unit.
+														self:SetUnit("%");
 													</OnLoad>
 												</Scripts>
 											</Slider>
@@ -877,7 +926,7 @@
 												</Anchors>
 												<Scripts>
 													<OnLoad>
-														PowaAuras.UI:EditBox2(self, "UI_Config_PathTex", "PathToAuras");
+														PowaAuras.UI:SettingsEditBox(self, "UI_Config_PathTex", "PathToAuras");
 													</OnLoad>
 												</Scripts>
 											</EditBox>
@@ -889,7 +938,7 @@
 												</Anchors>
 												<Scripts>
 													<OnLoad>
-														PowaAuras.UI:EditBox2(self, "UI_Config_PathSfx", "PathToSounds");
+														PowaAuras.UI:SettingsEditBox(self, "UI_Config_PathSfx", "PathToSounds");
 													</OnLoad>
 												</Scripts>
 											</EditBox>

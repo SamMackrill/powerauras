@@ -1,30 +1,67 @@
 -- Create definition.
 PowaAuras.UI:Register("Slider", {
-	Hooks = {
-		"GetValue",
-		"SetValue",
+	Scripts = {
+		OnSettingChanged = true,
+		OnValueChanged = true,
 	},
-	Init = function(self, title, unit, minLabel, maxLabel, tooltipDesc)
-		-- Call them.
-		self:SetMinMaxLabels(minLabel, maxLabel);
-		self:SetUnit(unit or "");
+	Init = function(self, title, setting)
+		-- Set the title....
 		self:SetTitle(title or "");
 		-- Add tooltips to the slider, background frame and editbox.
-		PowaAuras.UI:Tooltip(self, title, tooltipDesc or title .. "Desc", { "Value" });
-		-- Update editbox value.
-		self.Value:SetText(self:GetValue());
-	end,
-	GetMinValue = function(self)
-		return select(1, self:GetMinMaxValues());
+		PowaAuras.UI:Tooltip(self, title, (title .. "Desc"), "Value");
+		-- Set up the editbox. Use an anonymous class and link it to this one directly.
+		PowaAuras.UI:AnonymousWidget("SettingsEditBox", {
+			Scripts = {
+				OnSettingChanged = true,
+				OnEnterPressed = true,
+			},
+			OnEditFocusLost = function(editbox)
+				editbox:HighlightText(0, 0);
+				-- Bugfix.
+				self.OnEditBoxSettingChanged(editbox, editbox:GetSetting());
+				editbox:ClearFocus();
+				editbox:UpdateColours();
+			end,
+			OnEnterPressed = self.OnEditBoxValueChanged,
+			OnSettingChanged = self.OnEditBoxSettingChanged,
+		}, self.Value, title, setting);
+		-- Set title of editbox to nothing.
+		self.Value:SetTitle("");
+		self.Value.Title:Hide();
+		-- Link slider to settings mixin.
+		PowaAuras.UI:Settings(self, setting);
 	end,
 	GetMaxValue = function(self)
 		return select(2, self:GetMinMaxValues());
 	end,
-	GetValue = function(self)
-		if(self.OnValueGet) then
-			return self:OnValueGet(self:__GetValue());
-		else
-			return self:__GetValue();
+	GetMinValue = function(self)
+		return select(1, self:GetMinMaxValues());
+	end,
+	GetUnit = function(self)
+		return self.Unit;
+	end,
+	OnEditBoxSettingChanged = function(self, value)
+		if(self:GetText() ~= tostring(value)) then
+			self:SetText(tostring(value));
+		end
+	end,
+	OnEditBoxValueChanged = function(self)
+		-- Store value.
+		if(self:GetSetting() ~= self:GetText()) then
+			self:SaveSetting(self:GetText());
+		end
+		-- Always clear ze focus.
+		self:ClearFocus();
+	end,
+	OnSettingChanged = function(self, value)
+		if(self:GetValue() ~= value) then
+			self:SetValue(value);
+		end
+	end,
+	OnValueChanged = function(self, value)
+		-- Store value.
+		if(self:GetSetting() ~= value) then
+			self:SaveSetting(value);
 		end
 	end,
 	SetMinMaxLabels = function(self, labelMin, labelMax)
@@ -47,11 +84,4 @@ PowaAuras.UI:Register("Slider", {
 		-- Update labels!
 		self:SetMinMaxLabels(self.MinLabel, self.MaxLabel);
 	end,
-	SetValue = function(self, value)
-		if(self.OnValueSet) then
-			return self:__SetValue(self:OnValueSet(value));
-		else
-			return self:__SetValue(value);
-		end		
-	end
 });
