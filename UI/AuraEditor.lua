@@ -19,7 +19,9 @@ PowaAuras.UI:Register("AuraEditor", {
 		class.Instance = frame;
 		return frame;
 	end,
-	Init = function(self)		
+	Init = function(self)
+		-- Hook browser scripts. Don't call SetScript as we don't want this overwritten.
+		PowaBrowser:HookScript("OnSelectedAuraChanged", function(browser, id) self:UpdateElements(id); end);
 		-- Close on escape key.
 --		tinsert(UISpecialFrames, self:GetName());
 	end,
@@ -38,18 +40,32 @@ PowaAuras.UI:Register("AuraEditor", {
 		PlaySound("igCharacterInfoTab");
 	end,
 	UpdateElements = function(self, auraID)
-		-- Get the aura.
+		-- Hide old aura if it exists.
+		if(self.AuraID and PowaAuras.Auras[self.AuraID]) then
+			PowaAuras:ToggleAuraDisplay(self.AuraID, false);
+		end
+		-- Get the aura, make sure it exists or bail.
 		auraID = auraID or 1;
 		local aura = PowaAuras.Auras[auraID];
 		if(not aura) then
 			self.AuraID = nil;
+			self:Hide();
 			return;
 		end
 		-- Update ID.
 		self.AuraID = auraID;
 		-- Update controls.
 		aura:UpdateTriggerTree(self.Tabs.Triggers.Tree);
-		-- Update some values.
+		-- Easy frame access.
+		local frame = self;
+--		-- Display tab.
+--		---- Aura tree.
+--		---- Timer tree.
+--		---- Stacks tree.
+--		-- Activation tab.
+--		---- Activation tree.
+--		---- Rules tree.
+		
 		-- Force aura showing.
 		PowaAuras:ToggleAuraDisplay(auraID, true);
 		-- Done.
@@ -268,16 +284,16 @@ local AuraEditor = {
 							},
 							Children = {
 								[1] = {
---									Type = "ScrollFrame",
---									Inherits = "PowaScrollFrameTemplate",
---									Points = {
---										[1] = { "TOPLEFT", 4, -4 },
---										[2] = { "BOTTOMRIGHT", -4, 4 },
---									},
---									Children = {
---										Child = {
+									Type = "ScrollFrame",
+									Inherits = "PowaScrollFrameTemplate",
+									Points = {
+										[1] = { "TOPLEFT", 4, -4 },
+										[2] = { "BOTTOMRIGHT", -4, 4 },
+									},
+									Children = {
+										Child = {
 											Inherits = "PowaTitledFrameTemplate",
---											Class = "EditorScrollChild",
+											Class = "EditorScrollChild",
 											Size = { 419, 1 },
 											Points = {
 												[1] = { "TOPLEFT", 0, 0 },
@@ -293,11 +309,12 @@ local AuraEditor = {
 													OnLoad = function(self)
 														-- Set localized title.
 														self:SetText("UI_Editor_Type");
-														-- Initialise as dropdown, no settings/non-standard stuff.
-														PowaAuras.UI:Dropdown(self);
+														-- Initialise as dropdown.
+														PowaAuras.UI:Dropdown(self, "Aura.bufftype");
 														-- Add all possible types.
 														for k, v in pairs(PowaAuras.BuffTypes) do
-															self:AddItem(v, PowaAuras.Text["AuraType"][v], k);
+															self:AddItem(v, PowaAuras.Text["AuraType"][v], 
+																PowaAuras.Text["AuraTypeDesc"][v]);
 														end
 														-- Sort.
 														self:SortItems();
@@ -309,13 +326,13 @@ local AuraEditor = {
 												self:SetTitle(PowaAuras.Text["UI_Editor_Activation"]);
 												self:SetDescription(PowaAuras.Text["UI_Editor_ActivationDesc"]);
 											end,
---										},
---									},
---									OnLoad = function(self)
---										-- Set scroll child.
---										self:SetScrollChild(self.Child);
---										PowaAuras.UI:ScrollFrame(self);
---									end,
+										},
+									},
+									OnLoad = function(self)
+										-- Set scroll child.
+										self:SetScrollChild(self.Child);
+										PowaAuras.UI:ScrollFrame(self);
+									end,
 								},
 								[2] = {
 									Type = "ScrollFrame",
