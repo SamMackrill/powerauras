@@ -1,6 +1,4 @@
--- Add a definition for the browser frame. We'll only ever make one, but I'm sick of a lot of functions 
--- inside that big one. Besides, I like this system, do you? It's more memory efficient...I think. 
--- Does defining the same closure repeatedly cost more memory, rather than referencing a single defined closure?
+-- Browser frame.
 PowaAuras.UI:Register("AuraBrowser", {
 	Scripts = {
 		OnShow = true,
@@ -14,6 +12,8 @@ PowaAuras.UI:Register("AuraBrowser", {
 		self.CopyAura = false;
 		-- Add OnSelectionChanged function to tree views.
 		self.Tabs.Auras.Tree.OnSelectionChanged = self.OnSelectionChanged;
+		-- Scripts mixin.
+		PowaAuras.UI:Scripts(self);
 		-- Check...
 		if(PowaAuras.VariablesLoaded) then self:OnVariablesLoaded(); end
 		-- Close on escape key.
@@ -51,9 +51,11 @@ PowaAuras.UI:Register("AuraBrowser", {
 		PowaAuras:ToggleAllAuras(false, false, false);
 		PowaAuras.DoCheck.All = true;
 	end,
-	OnSelectionChanged = function(self, key)
+	OnSelectionChanged = function(tree, key)
 		-- Save page.
 		PowaBrowser.SelectedPage = key;
+		-- Call script.
+		PowaBrowser:CallScript("OnSelectedPageChanged", key);
 		-- Deselect any and all auras. This will trigger a button update.
 		PowaBrowser:SetSelectedAura(nil);
 	end,
@@ -107,6 +109,7 @@ PowaAuras.UI:Register("AuraBrowser", {
 		self.Tabs.Auras.Page:SetLocked(false);
 		-- Button update.
 		self:TriageIcones();
+		self:SetSelectedAura(1);
 	end,
 	SavePageName = function(self, name)
 		-- Get the page.
@@ -126,10 +129,6 @@ PowaAuras.UI:Register("AuraBrowser", {
 	SetSelectedAura = function(self, id, isCreate)
 		-- Set it.
 		self.SelectedAura = id;
-		-- Update the editor.
-		if(PowaEditor:IsShown()) then
-			PowaEditor:Show();
-		end
 		-- Update our stuffs!
 		if(isCreate) then
 			-- Go to create move if we're not moving anything.
@@ -156,6 +155,10 @@ PowaAuras.UI:Register("AuraBrowser", {
 		else
 			self.Tabs.Auras:SetSelectedTab(1);
 		end
+		-- Call script.
+		self:CallScript("OnSelectedAuraChanged", self.SelectedAura);
+		-- Trigger aura settings update.
+		PowaAuras:FireAuraSettingCallbacks(self.SelectedAura);
 		-- Update buttons.
 		self:TriageIcones();
 		-- Display update.
@@ -180,10 +183,7 @@ PowaAuras.UI:Register("AuraBrowser", {
 		self.CopyAura = (doCopy and true or false);
 		self:TriageIcones();
 	end,
-	--- test doc for widget func.
-	-- @name AuraBrowserTriageIcones
 	TriageIcones = function(self)
-		print("|cFF527FCCDEBUG (AuraBrowser): |rUpdating aura buttons!");
 		-- Not strictly button related, but it prevents two function calls.
 		self.Tabs.Auras.Page.Title:SetText(self:GetPageName());
 		self.Tabs.Auras.Page.Title:ClearFocus();

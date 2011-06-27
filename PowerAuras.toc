@@ -44,7 +44,7 @@ PowerHelpers.lua
 # UI base code.
 PowerUI.lua
 
-# Do fonts now, any later and you get errors.
+# Do fonts now, any later and you get errors. Always inherit these fonts, not the GameFont ones.
 UI\Fonts.xml
 
 # Mixins

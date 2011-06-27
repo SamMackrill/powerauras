@@ -167,6 +167,12 @@ UI:Register("Dropdown", {
 		-- Save the setting.
 		self:SaveSetting(key);
 	end,
+	SetSelectedKey = function(self, key)
+		-- Set key.
+		UI.DropdownBase.SetSelectedKey(self, key);
+		-- Update text.
+		self:UpdateText(key);
+	end,
 	SetTitle = function(self, title)
 		if(self.Title) then
 			self.Title:SetText(title);
