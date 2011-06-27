@@ -77,80 +77,20 @@
 		</Layers>
 	</CheckButton>
 	
-	<Frame name="PowaBrowser" toplevel="true" movable="true" parent="UIParent" hidden="false" frameStrata="MEDIUM" enableMouse="true" enableKeyboard="true">
+	<Frame name="PowaBrowser" inherits="PowaGenericFrameTemplate" toplevel="true" movable="true" parent="UIParent" hidden="false" frameStrata="MEDIUM" enableMouse="true" enableKeyboard="true">
 		<Size>
-          <AbsDimension x="550" y="450" />
+          <AbsDimension x="550" y="456" />
         </Size>
         <Anchors>
-			<Anchor point="CENTER" relativeTo="UIParent" x="0" y="50" />
+			<Anchor point="CENTER" x="0" y="0" />
         </Anchors>
-		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
-			<BackgroundInsets>
-				<AbsInset left="11" right="12" top="12" bottom="11" />
-			</BackgroundInsets>
-			<TileSize>
-				<AbsValue val="32" />
-			</TileSize>
-			<EdgeSize>
-				<AbsValue val="32" />
-			</EdgeSize>
-		</Backdrop>	
 		<Scripts>
-			<OnMouseDown>
-				if(button == "LeftButton" and not self.isMoving) then
-					self:StartMoving();
-					self.isMoving = true;
-				end
-			</OnMouseDown>
-			<OnMouseUp>
-				if(button == "LeftButton" and self.isMoving) then
-					self:StopMovingOrSizing();
-					self.isMoving = false;
-				end
-			</OnMouseUp>
-			<OnHide>
-				if(self.isMoving) then
-					self:StopMovingOrSizing();
-					self.isMoving = false;
-				end
-			</OnHide>
 			<OnLoad>
 				self.Title:SetText(format("Power Auras %s", PowaAuras.Version));
 				PowaAuras.UI:AuraBrowser(self);
 			</OnLoad>
 		</Scripts>
-		<Layers>
-			<Layer level="ARTWORK">
-				<Texture file="Interface\DialogFrame\UI-DialogBox-Header">
-					<Size>
-						<AbsDimension x="300" y="68" />
-					</Size>
-					<Anchors>
-						<Anchor point="TOP" relativePoint="TOP" x="0" y="13" />
-					</Anchors>					
-				</Texture>
-				<FontString parentKey="Title" inherits="PowaFontNormal" text="Power Auras %s" justifyH="CENTER" justifyV="TOP">
-					<Size>
-						<AbsDimension x="300" y="68" />
-					</Size>
-					<Anchors>
-						<Anchor point="TOP" relativePoint="TOP" x="0" y="-2" />
-					</Anchors>
-				</FontString>
-				<Texture file="Interface\DialogFrame\UI-DialogBox-Corner">
-					<Size x="32" y="32" />	
-					<Anchors>
-						<Anchor point="TOPRIGHT" x="-4" y="-4" />	
-					</Anchors>
-				</Texture>
-			</Layer>
-		</Layers>
 		<Frames>
-			<Button inherits="UIPanelCloseButton">
-				<Anchors>
-					<Anchor point="TOPRIGHT" x="0" y="0" />
-				</Anchors>
-			</Button>
 			<Frame parentKey="Tabs" inherits="PowaBorderedFrameTemplate">
 				<Size>
 				  <AbsDimension y="260" />
@@ -168,7 +108,8 @@
 							<Anchor point="BOTTOMRIGHT" x="-4" y="5" />
 						</Anchors>
 						<Frames>
-							<Frame parentKey="Tree" inherits="PowaTreeViewTemplate">
+							<Frame parentKey="Tree" inherits="PowaBorderedFrameTemplate">
+								<Size x="172" y="1" />
 								<Anchors>
 									<Anchor point="TOPLEFT" x="2" y="-2" />
 									<Anchor point="BOTTOMLEFT" x="2" y="2" />
@@ -766,7 +707,8 @@
 							<Anchor point="BOTTOMRIGHT" x="-4" y="5" />
 						</Anchors>
 						<Frames>
-							<Frame parentKey="Tree" inherits="PowaTreeViewTemplate">
+							<Frame parentKey="Tree" inherits="PowaBorderedFrameTemplate">
+								<Size x="172" y="1" />
 								<Anchors>
 									<Anchor point="TOPLEFT" x="2" y="-2" />
 									<Anchor point="BOTTOMLEFT" x="2" y="2" />
@@ -777,11 +719,6 @@
 										self:AddItem(1, PowaAuras.Text["UI_ConfigTitle"]);
 										self:AddItem(2, PowaAuras.Text["UI_ConfigTitlePerf"], 1);
 										self:AddItem(3, PowaAuras.Text["UI_ConfigTitleCust"], 1);
-										self:SetSelectedKey(1);
-										-- Change tabs via tree.
-										self.OnSelectionChanged = function(self, key)
-											self:GetParent().Page:SetSelectedTab(key);
-										end
 									</OnLoad>
 								</Scripts>
 							</Frame>
@@ -999,13 +936,21 @@
 								</Frames>
 								<Scripts>
 									<OnLoad>
-										PowaAuras.UI:TabFrame(self, "TabButtonBase");
-										self:AddTab(self.Config, "");
-										self:AddTab(self.Perf, "");
-										self:AddTab(self.Cust, "");
-										self.Config.Title:SetText(PowaAuras.Text["UI_ConfigTitle"]);
-										self.Perf.Title:SetText(PowaAuras.Text["UI_ConfigTitlePerf"]);
-										self.Cust.Title:SetText(PowaAuras.Text["UI_ConfigTitleCust"]);
+										-- Additional parent keys.
+										self[1] = self.Config;
+										self[2] = self.Perf;
+										self[3] = self.Cust;
+										-- Auto controlled tab frame.
+										PowaAuras.UI:TreeControlledTabFrame(self, self:GetParent().Tree);
+										-- Add tabs.
+										self:AddTab(self[1]);
+										self:AddTab(self[2]);
+										self:AddTab(self[3]);
+										self:SetSelectedTab(1);
+										-- Titles.
+										self[1].Title:SetText(PowaAuras.Text["UI_ConfigTitle"]);
+										self[2].Title:SetText(PowaAuras.Text["UI_ConfigTitlePerf"]);
+										self[3].Title:SetText(PowaAuras.Text["UI_ConfigTitleCust"]);
 									</OnLoad>
 								</Scripts>
 							</Frame>
@@ -1017,7 +962,8 @@
 							<Anchor point="BOTTOMRIGHT" x="-4" y="5" />
 						</Anchors>
 						<Frames>
-							<Frame parentKey="Tree" inherits="PowaTreeViewTemplate">
+							<Frame parentKey="Tree" inherits="PowaBorderedFrameTemplate">
+								<Size x="172" y="1" />
 								<Anchors>
 									<Anchor point="TOPLEFT" x="2" y="-2" />
 									<Anchor point="BOTTOMLEFT" x="2" y="2" />

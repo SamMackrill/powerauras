@@ -11,6 +11,9 @@ PowaAuras.UI:Register("TabDialog", {
 		if(cancelFunc) then
 			self.OnTabDialogCancel = cancelFunc;
 		end
+		-- Fix buttons.
+		PowaAuras.UI:Button(self.AcceptButton);
+		PowaAuras.UI:Button(self.CancelButton);
 		-- Apply scripts.
 		self.AcceptButton:SetScript("OnClick", function()
 			self:OnTabDialogAccept();

@@ -10,8 +10,8 @@ PowaAuras.UI:Register("AuraBrowser", {
 		self.SelectedPage = 1;
 		self.MovingAura = nil;
 		self.CopyAura = false;
-		-- Add OnSelectionChanged function to tree views.
-		self.Tabs.Auras.Tree.OnSelectionChanged = self.OnSelectionChanged;
+		-- Add OnSelectedKeyChanged function to tree views.
+		self.Tabs.Auras.Tree:SetScript("OnSelectedKeyChanged", self.OnSelectedKeyChanged);
 		-- Scripts mixin.
 		PowaAuras.UI:Scripts(self);
 		-- Check...
@@ -50,8 +50,12 @@ PowaAuras.UI:Register("AuraBrowser", {
 		PowaAuras.ModTest = false;
 		PowaAuras:ToggleAllAuras(false, false, false);
 		PowaAuras.DoCheck.All = true;
+		if(self.isMoving) then
+			self:StopMovingOrSizing();
+			self.isMoving = false;
+		end
 	end,
-	OnSelectionChanged = function(tree, key)
+	OnSelectedKeyChanged = function(tree, key)
 		-- Save page.
 		PowaBrowser.SelectedPage = key;
 		-- Call script.
