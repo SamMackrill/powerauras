@@ -304,8 +304,8 @@ local AuraEditor = {
 													if(key ~= "Aura.bufftype") then
 														return;
 													end
-													-- Fix text.
-													self:UpdateText(value);
+													-- Fix selection.
+													self:SetSelectedKey(value);
 												end);
 												-- Register callback script.
 												self:SetScript("OnDropdownItemSelected", function(self, key)

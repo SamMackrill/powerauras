@@ -174,51 +174,49 @@ PowaAuras.UI:Register("TreeView", {
 		-- Change scroll boundaries. Invokes an update.
 		self:SetScrollRange(0, self:CountShownItems()-floor(self:GetHeight()/24));
 	end,
-	UpdateScrollList = function(self, items, level, offset, iteratedOffset, shouldShow)
+	UpdateScrollList = function(self, parent, level, visible, hidden, parentShowing)
 		-- Fix missing params.
 		if(not level) then level = 1; end
-		if(not items) then items = self.ItemsByOrder; end
-		if(level == 1) then shouldShow = true; end
-		local count, item, itemKey, offset, iteratedOffset, showChildren = #(items), nil, nil, (offset or 0), 
-			(iteratedOffset or 0), true;
+		if(not parent) then parent = self.ItemsByOrder; end
+		if(not visible) then visible = 0; end
+		if(not hidden) then hidden = 0; end
+		if(not parentShowing and level == 1) then parentShowing = true; end
+		-- Show all the items that we can fit.
+		local maxVisible, count = floor(self:GetHeight()/24), #(parent);
 		for i=1, count do
-			-- Update locals.
-			itemKey = items[i];
-			item = self.ItemsByKey[itemKey["Key"]];
-			-- Increment iteratedOffset.
-			iteratedOffset = iteratedOffset+1;
-			-- Should it show?
-			if(shouldShow and iteratedOffset > self:GetScrollOffset() 
-			and offset < floor(self:GetHeight()/24)) then
-				-- Increment offset.
-				offset = offset+1;
-				-- Show + position.
+			-- Get item.
+			local key = parent[i];
+			local item = self.ItemsByKey[key["Key"]];
+			-- Show if we're between the scroll range.
+			if(parentShowing and hidden >= self:GetScrollOffset() and visible < maxVisible) then
+				-- Increment visible counter.
+				visible = visible+1;
+				-- Show it.
+				item:SetPoint("TOPLEFT", 4, -4-((visible-1)*24));
+				item:SetPoint("TOPRIGHT", (self.ScrollBar:IsShown() and -20 or -4), -4-((visible-1)*24));
 				item:Show();
-				item:SetPoint("TOPLEFT", 4, -4-((offset-1)*24));
-				item:SetPoint("TOPRIGHT", (self.ScrollBar:IsShown() and -20 or -4), -4-((offset-1)*24));
 				-- Indent text (do NOT indent the entire item, it looks weird).
 				item.Text:SetPoint("LEFT", 4+((level-1)*10), 0);
 				-- Show or hide expand button.
-				if(#(itemKey) > 0) then
+				if(#(key) > 0) then
 					item.Expand:Show();
 				else
 					item.Expand:Hide();
 				end
 			else
-				-- Hide them.
+				-- Hide it.
 				item:Hide();
+				-- Only increment hidden counter if the parent element was showing.
+				hidden = (parentShowing and hidden+1 or hidden);
 			end
 			-- Selected?
-			item:SetSelected((self.SelectedKey == itemKey["Key"]));
-			-- Update children.
-			showChildren = (shouldShow == true and item:GetExpanded() or false);
-			offset, iteratedOffset = self:UpdateScrollList(itemKey, level+1, offset, iteratedOffset, showChildren);
+			item:SetSelected((self.SelectedKey == key["Key"]));
+			-- Iterate over element children.
+			visible, hidden = self:UpdateScrollList(key, level+1, visible, hidden, 
+				(parentShowing == true and item:GetExpanded() or false));
 		end
-		-- Check level.
-		if(level > 1) then
-			-- Return amount of shown we iterated over.
-			return offset, iteratedOffset;
-		end
+		-- Return counters of visible/hidden elements..
+		return visible, hidden;
 	end,
 });
 
