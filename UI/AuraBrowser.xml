@@ -485,7 +485,7 @@
 									</Button>
 								</Frames>
 							</Frame>
-							<Frame parentKey="Create" inherits="PowaBorderedFrameTemplate, PowaTabDialogTemplate">
+							<Frame parentKey="Create" inherits="PowaBorderedFrameTemplate">
 								<Anchors>
 									<Anchor point="TOPLEFT" x="177" y="-2" />
 									<Anchor point="BOTTOMRIGHT" x="-2" y="2" />
@@ -656,7 +656,6 @@
 													else
 														-- Tell user it failed.
 														self.Code.ErrorFailure:Show();
-														PowaAuras:ShowText("Import error: " .. tostring(result));
 													end
 												end
 											end
@@ -678,6 +677,10 @@
 										self:AddTab(self.Code);
 										self.Title:SetText(PowaAuras.Text["UI_CreateAura"]);
 									</OnLoad>
+									<OnShow>
+										-- Always set tab to the first one.
+										self:SetSelectedTab(1);
+									</OnShow>
 								</Scripts>
 							</Frame>
 						</Frames>
