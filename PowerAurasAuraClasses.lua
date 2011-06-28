@@ -367,7 +367,7 @@ function cPowaAura:CopyDecorators(newID)
 end
 
 function cPowaAura:CopyTriggers(newAura)
-	newAura.Triggers = self:CopyTable(self.Triggers);
+	newAura.Triggers = PowaAuras:CopyTable(self.Triggers);
 	local triggerIndex = 1;
 	while triggerIndex<=#self.Triggers do
 		local newTrigger = newAura.Triggers[triggerIndex];
@@ -377,7 +377,6 @@ function cPowaAura:CopyTriggers(newAura)
 			newTrigger.Actions[actionIndex].AuraId = newAura.id;
 			actionIndex = actionIndex + 1;
 		end
-		triggersTree:AddItem(triggerIndex.."_NEWACTION", "New Action ...", triggerIndex);
 		triggerIndex = triggerIndex + 1;
 	end
 end
@@ -815,7 +814,15 @@ function cPowaAura:CheckActive(shouldShow, ignoreCascade, testing)
 		--else
 		--	PowaAuras:ShowText(GetTime(),"=== Aura(", self.id, ") INACTIVE");	
 		--end
-
+		
+		if (self.Timer) then
+			if (self.Active) then
+				self.Timer.Start = GetTime();
+			else
+				self.Timer.Start = nil;
+			end
+		end
+		
 		if (not ignoreCascade and not testing) then PowaAuras:AddChildrenToCascade(self); end
 	end
 		
