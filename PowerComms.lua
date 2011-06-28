@@ -34,7 +34,7 @@ Registers the POWA header for addon communications. Note that this requires a pa
 --]]
 function PowaComms:Register()
 	-- Register prefix.
-	if(not RegisterAddonMessagePrefix) then return; end
+	if(not RegisterAddonMessagePrefix) then return false; end
 	RegisterAddonMessagePrefix("POWA");
 	-- Check to see if it's registered (RegisterAddonMessagePrefix may return true even if it fails, just playing safe!).
 	if(not IsAddonMessagePrefixRegistered("POWA")) then
@@ -326,5 +326,5 @@ Responds to a version request. Prints it out (send VERSION_REQUEST for debugging
 ------------------------------------------------------------------------------------------------------------------------
 --]]
 PowaComms:AddHandler("VERSION_RESPONSE", function(self, data, from)
-	PowaAuras:ShowText(from, " is using version ", data, ".");
+--	PowaAuras:ShowText(from, " is using version ", data, ".");
 end);

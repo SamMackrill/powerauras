@@ -2,8 +2,9 @@ PowaAuras = {
 	Version = GetAddOnMetadata("PowerAuras", "Version");
 	
 	VersionPattern = "(%d+)%.(%d+)";
+	VersionInt = 10000,
 	
-	WoWBuild = tonumber(select(4, GetBuildInfo()), 10);
+	WoWBuild = tonumber(select(2, GetBuildInfo()), 10);
 	
 	IconSource = "Interface\\Icons\\";
 	
@@ -16,9 +17,13 @@ PowaAuras = {
 	ExportMaxSize = 4000;
 	ExportWidth = 500;
 	TextureCount = 238;
+	MaxAuras = 480; -- Use this instead of hardcoding 360/480.
+	MaxAurasPerPage = 24;
+	MaxPages = 20;
 	
 	DebugEvents = false;
-	--DebugAura = 110;
+	DebugTriggers = false;
+	--DebugAura = 121;
 	
 	-- Internal counters
 	DebugTimer = 0;
@@ -68,6 +73,20 @@ PowaAuras = {
 	Cascade = {}; -- Dependant auras that need checking
 
 	UsedInMultis = {};
+	
+	ClassPremades =
+	{
+		PALADIN = {},
+		PRIEST = {},
+		SHAMAN = {},
+		WARRIOR = {},
+		DRUID = {},
+		MAGE = {},
+		WARLOCK = {},
+		ROGUE = {},
+		HUNTER = {},
+		DEATHKNIGHT = {},
+	};
 
 	PowaStance = {[0] = "Humanoid"};
 	
@@ -90,7 +109,6 @@ PowaAuras = {
 	MoveEffect = 0; -- 1 = copie / 2 = move
 	
 	Auras = {};
-	SecondaryAuras = {};
 	Frames = {};
 	SecondaryFrames = {};
 	Textures = {};
@@ -121,7 +139,7 @@ PowaAuras = {
 		INSPECT_TALENT_READY = true,	
 		PARTY_MEMBERS_CHANGED = true,	
 		PLAYER_ALIVE = true,
-		PLAYER_DEAD = true,	
+		PLAYER_DEAD = true,
 		PLAYER_REGEN_DISABLED = true,
 		PLAYER_REGEN_ENABLED = true,
 		PLAYER_TALENT_UPDATE = true,	
@@ -247,7 +265,7 @@ PowaAuras = {
 		UnitMatch = false,
 		PetStance = false,
 
-		-- true if any type should be checked
+		-- true if any aura types waiting to be checked
 		CheckIt = false,
 	};
 
@@ -332,6 +350,8 @@ PowaAuras = {
 	
 	-- index -> aura name
 	AurasByTypeList = {};
+	
+	OneShotAuras = {};
 	
 	DebuffCatType =
 	{
@@ -466,6 +486,88 @@ PowaAuras = {
 		[53] = "SPELLS\\Eyes",
 		[54] = "SPELLS\\Zap1b",
 	};
+	
+	AuraTexturesByGroup = {
+		Default = {}, -- Reserved.
+		WoW = {
+			[1] = "Spells\\AuraRune_B",
+			[2] = "Spells\\AuraRune256b",
+			[3] = "Spells\\Circle",
+			[4] = "Spells\\GENERICGLOW2B",
+			[5] = "Spells\\GenericGlow2b1",
+			[6] = "Spells\\ShockRingCrescent256",
+			[7] = "SPELLS\\AuraRune1",
+			[8] = "SPELLS\\AuraRune5Green",
+			[9] = "SPELLS\\AuraRune7",
+			[10] = "SPELLS\\AuraRune8",
+			[11] = "SPELLS\\AuraRune9",
+			[12] = "SPELLS\\AuraRune11",
+			[13] = "SPELLS\\AuraRune_A",
+			[14] = "SPELLS\\AuraRune_C",
+			[15] = "SPELLS\\AuraRune_D",
+			[16] = "SPELLS\\Holy_Rune1",
+			[17] = "SPELLS\\Rune1d_GLOWless",
+			[18] = "SPELLS\\Rune4blue",
+			[19] = "SPELLS\\RuneBC1",
+			[20] = "SPELLS\\RuneBC2",
+			[21] = "SPELLS\\RUNEFROST",
+			[22] = "Spells\\Holy_Rune_128",
+			[23] = "Spells\\Nature_Rune_128",
+			[24] = "SPELLS\\Death_Rune",
+			[25] = "SPELLS\\DemonRune6",
+			[26] = "SPELLS\\DemonRune7",
+			[27] = "Spells\\DemonRune5backup",
+			[28] = "Particles\\Intellect128_outline",
+			[29] = "Spells\\Intellect_128",
+			[30] = "SPELLS\\GHOST1",
+			[31] = "Spells\\Aspect_Beast",
+			[32] = "Spells\\Aspect_Hawk",
+			[33] = "Spells\\Aspect_Wolf",
+			[34] = "Spells\\Aspect_Snake",
+			[35] = "Spells\\Aspect_Cheetah",
+			[36] = "Spells\\Aspect_Monkey",
+			[37] = "Spells\\Blobs",
+			[38] = "Spells\\Blobs2",
+			[39] = "Spells\\GradientCrescent2",
+			[40] = "Spells\\InnerFire_Rune_128",
+			[41] = "Spells\\RapidFire_Rune_128",
+			[42] = "Spells\\Protect_128",
+			[43] = "Spells\\Reticle_128",
+			[44] = "Spells\\Star2A",
+			[45] = "Spells\\Star4",
+			[46] = "Spells\\Strength_128",
+			[47] = "Particles\\STUNWHIRL",
+			[48] = "SPELLS\\BloodSplash1",
+			[49] = "SPELLS\\DarkSummon",
+			[50] = "SPELLS\\EndlessRage",
+			[51] = "SPELLS\\Rampage",
+			[52] = "SPELLS\\Eye",
+			[53] = "SPELLS\\Eyes",
+			[54] = "SPELLS\\Zap1b",			
+		},
+		Custom = {}, -- Reserved.
+		Text = {
+			[1] = STANDARD_TEXT_FONT, --- "Fonts\\FRIZQT__.TTF"
+			[2] = "Fonts\\ARIALN.TTF",
+			[3] = "Fonts\\skurri.ttf",
+			[4] = "Fonts\\MORPHEUS.ttf",
+			[5] = "Interface\\Addons\\PowerAuras\\Fonts\\All_Star_Resort.ttf",
+			[6] = "Interface\\Addons\\PowerAuras\\Fonts\\Army.ttf",
+			[7] = "Interface\\Addons\\PowerAuras\\Fonts\\Army_Condensed.ttf",
+			[8] = "Interface\\Addons\\PowerAuras\\Fonts\\Army_Expanded.ttf",
+			[9] = "Interface\\Addons\\PowerAuras\\Fonts\\Blazed.ttf",
+			[10] = "Interface\\Addons\\PowerAuras\\Fonts\\Blox2.ttf",
+			[11] = "Interface\\Addons\\PowerAuras\\Fonts\\CloisterBlack.ttf",
+			[12] = "Interface\\Addons\\PowerAuras\\Fonts\\Moonstar.ttf",
+			[13] = "Interface\\Addons\\PowerAuras\\Fonts\\Neon.ttf",
+			[14] = "Interface\\Addons\\PowerAuras\\Fonts\\Pulse_virgin.ttf",
+			[15] = "Interface\\Addons\\PowerAuras\\Fonts\\Punk_s_not_dead.ttf",
+			[16] = "Interface\\Addons\\PowerAuras\\Fonts\\whoa!.ttf",
+			[17] = "Interface\\Addons\\PowerAuras\\Fonts\\Hexagon.ttf",
+			[18] = "Interface\\Addons\\PowerAuras\\Fonts\\Starcraft_Normal.ttf",
+		},
+		Icon = {}, -- Reserved, don't add anything.
+	};
 
 	Fonts = {
 		--- wow fonts
@@ -553,6 +655,21 @@ PowaAuras = {
 		"PowaDropDownGTFO",
 		"PowaDropDownPowerType",
 	};
+	
+	TriggerTypes = {
+		Timer        = 1,
+		Stacks       = 2,
+		AuraShow     = 3,
+		AuraHide     = 4,
+		TriggerStart = 5,
+		TriggerEnd   = 6,
+	};
+	
+	TriggerActions = {
+		AuraOpacity  = 1,
+		AuraColor    = 2,
+		AuraScale    = 3,
+	};
 
 	Backdrop = {
 		bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
@@ -561,9 +678,25 @@ PowaAuras = {
 	};
 };
 
-function PowaAuras:RegisterAuraType(auraType)
+-- VersionInt setting.
+PowaAuras.VersionInt = tonumber(PowaAuras.Version)*10000;
+
+-- Check for LibStub and LibSharedMedia for fonts.
+if(LibStub) then
+	-- Try LSM (pass true to prevent errors0
+	local LSM = LibStub("LibSharedMedia-3.0", true);
+	if(LSM) then
+		-- Get all fonts.
+		for _, font in pairs(LSM:HashTable(LSM.MediaType.FONT)) do
+			tinsert(PowaAuras.Fonts, font);
+		end
+	end
+end
+
+function PowaAuras:RegisterAuraType(auraType, oneShot)
 	self.AurasByType[auraType] = {};
 	table.insert(self.AurasByTypeList, auraType);
+	if (oneShot) then self.OneShotAuras[auraType] = true; end
 end
 
 PowaAuras:RegisterAuraType('Buffs');
@@ -641,12 +774,23 @@ PowaAuras:RegisterAuraType('Tracking');
 PowaAuras:RegisterAuraType('UnitMatch');
 PowaAuras:RegisterAuraType("PetStance");
 		
-PowaAuras:RegisterAuraType('GTFOHigh');
-PowaAuras:RegisterAuraType('GTFOLow');
-PowaAuras:RegisterAuraType('GTFOFail');
-PowaAuras:RegisterAuraType('GTFOFriendlyFire');
+PowaAuras:RegisterAuraType('GTFOHigh', true);
+PowaAuras:RegisterAuraType('GTFOLow', true);
+PowaAuras:RegisterAuraType('GTFOFail', true);
+PowaAuras:RegisterAuraType('GTFOFriendlyFire', true);
 
+function PowaAuras:RegisterAuraTextureGroup(group)
+	-- Cannot conflict, my pretties!
+	if(self.AuraTexturesByGroup[group]) then return false; end
+	self.AuraTexturesByGroup[group] = {};
+	return true;
+end
 
+function PowaAuras:RegisterAuraTexture(path, group)
+	if(not self.AuraTexturesByGroup[group]) then return false; end
+	tinsert(self.AuraTexturesByGroup[group], path);
+	return true;
+end
 
 -- Use these spells to detect GCD, ideally these should be spells classes have from the beginning
 PowaAuras.GCDSpells = {
@@ -904,7 +1048,18 @@ PowaAuras.DebuffTypeSpellIds={
 	[29703] = PowaAuras.DebuffCatType.Snare,	-- Dazed
 };
 
-PowaAuras.Text = {};
+-- Debugging assistance, if we access a non-existant locale key it'll display the key.
+-- In additition allow a format shorthand via PowaAuras.Text(key, arg1, ...);
+PowaAuras.Text = setmetatable({}, { 
+	__index = function(_, k)
+		if(not k or k == "") then return; end
+		PowaAuras:ShowText("|cFFCC5252Power Auras Classic: |rMissing Localization Key: \"", k, "\", Stack Trace: ", debugstack(2));
+		return k;
+	end,
+	__call = function(self, k, ...)
+		return format((self[k] or k), ...);
+	end,
+});
 
 function PowaAuras:UnitTestDebug(...)
 end
@@ -1047,7 +1202,7 @@ function PowaAuras:MergeTables(desTable, sourceTable)
 			if (type(v)~="table") then
 				desTable[i] = v;
 			else
-				if (not desTable[i] or type(desTable[i])~="table") then
+				if (not rawget(desTable, i) or type(desTable[i])~="table") then
 					desTable[i] = {};
 				end
 				self:MergeTables(desTable[i], v);

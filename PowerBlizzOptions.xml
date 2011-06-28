@@ -196,7 +196,6 @@
 				  <OnValueChanged>PowaAuras:PowaOptionsUpdateSliderChanged2(self);</OnValueChanged>
 				</Scripts>
 			</Slider>
-
 			<!-- Frequency timers are updated -->
 		  <Slider name="PowaOptionsTimerUpdateSlider2"
 				  inherits="PowaBarSliderTemplate">

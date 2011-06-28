@@ -582,7 +582,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
 				</OnLoad>
 				<OnEnterPressed>PowaAuras:CustomTextChanged() self:ClearFocus()</OnEnterPressed>
 				<OnEditFocusLost>PowaAuras:CustomTextChanged()</OnEditFocusLost>
-				<OnEscapePressed>PowaAuras:RedisplayAura(PowaAuras.CurrentAuraId); self:ClearFocus()</OnEscapePressed>
+				<OnEscapePressed>PowaAuras:RedisplayAura(PowaAuras.CurrentAuraId, false); self:ClearFocus()</OnEscapePressed>
            </Scripts>
           </EditBox>
 
@@ -883,7 +883,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               <OnLoad>self:SetMaxLetters(6)</OnLoad>
               <OnEnterPressed>self:ClearFocus() PowaAuras:TextCoordXChanged();</OnEnterPressed>
  				<OnEditFocusLost>PowaAuras:TextCoordXChanged()</OnEditFocusLost>
-				<OnEscapePressed>PowaAuras:RedisplayAura(PowaAuras.CurrentAuraId); self:ClearFocus()</OnEscapePressed>
+				<OnEscapePressed>PowaAuras:RedisplayAura(PowaAuras.CurrentAuraId, false); self:ClearFocus()</OnEscapePressed>
            </Scripts>
           </EditBox>
 		  
@@ -946,7 +946,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
               <OnLoad>self:SetMaxLetters(6)</OnLoad>
               <OnEnterPressed>self:ClearFocus() PowaAuras:TextCoordYChanged();</OnEnterPressed>
  				<OnEditFocusLost>PowaAuras:TextCoordYChanged()</OnEditFocusLost>
-				<OnEscapePressed>PowaAuras:RedisplayAura(PowaAuras.CurrentAuraId); self:ClearFocus()</OnEscapePressed>
+				<OnEscapePressed>PowaAuras:RedisplayAura(PowaAuras.CurrentAuraId, false); self:ClearFocus()</OnEscapePressed>
             </Scripts>
           </EditBox>
 		  
@@ -1639,8 +1639,8 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Anchors>
                 <Scripts>
                   <OnLoad>
-                  	self.tooltipText = PowaAuras.Text.aideExtra; 
-                  	getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomExtra); 
+<!--                  	self.tooltipText = PowaAuras.Text.aideExtra; -->
+<!--                  	getglobal(self:GetName().."Text"):SetText(PowaAuras.Text.nomExtra); -->
                   </OnLoad>
                   <OnClick>PowaAuras:SettingChecked(self, "Extra");</OnClick>
                 </Scripts>
@@ -3317,6 +3317,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
                 </Scripts>
               </CheckButton>
 			  
+
               <CheckButton name="PowaBuffTimerTransparentButton"
                            inherits="PowaCheckTemplate">
                 <Size>
