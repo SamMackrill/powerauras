@@ -146,7 +146,7 @@ function PowaAuras:CreateAura(page)
 	local i, page = self:GetNextFreeSlot(page);
 	if(not i or not page) then return false; end
 	-- Select it.
-	PowaBrowser:OnSelectionChanged(page); -- Update page if needed.
+	PowaBrowser:OnSelectedKeyChanged(page); -- Update page if needed.
 	PowaBrowser:SetSelectedAura(i);
 	-- Build a new aura.
 	local aura = self:AuraFactory(self.BuffTypes.Buff, i);
