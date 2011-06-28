@@ -60,7 +60,7 @@
 						<Anchor point="LEFT" x="10" y="0" />
 					</Anchors>
 				</Texture>
-				<FontString name="$parentTitle" parentKey="Title" font="PowaFontNormal" text="Create Blank Aura" justifyH="LEFT" justifyV="TOP">
+				<FontString parentKey="Title" font="PowaFontNormal" text="Create Blank Aura" justifyH="LEFT" justifyV="TOP">
 					<Size x="1" y="20" />
 					<Anchors>
 						<Anchor point="TOPLEFT" x="56" y="-4" />
@@ -393,7 +393,11 @@
 											</OnLoad>
 											<OnClick>
 												PlaySound("UChatScrollButton");
-												PowaBrowser:SetMovingAura(PowaBrowser:GetSelectedAura(), IsControlKeyDown());
+												if(PowaBrowser:GetMovingAura()) then
+													PowaBrowser:SetMovingAura(nil, false);
+												else
+													PowaBrowser:SetMovingAura(PowaBrowser:GetSelectedAura(), IsControlKeyDown());
+												end
 											</OnClick>
 											<OnEnter>
 												self:GetNormalTexture():SetAlpha(1);
@@ -480,21 +484,6 @@
 										</Scripts>
 									</Button>
 								</Frames>
-								<Scripts>
-									<OnLoad>
-										-- Init layout frame, lock layout to speed up load.
-										PowaAuras.UI:LayoutFrame(self, 0, 49, 2, true);
-										-- Add columns.
-										self:AddColumn(48, 48);
-										self:AddColumn(48, 48);
-										self:AddColumn(48, 48);
-										self:AddColumn(48, 48);
-										self:AddColumn(48, 48);
-										self:AddColumn(48, 48);
-										-- Unlock layout. This will trigger 1 update, as opposed to about 8 updates while initializing.
-										self:SetLocked(false);
-									</OnLoad>
-								</Scripts>
 							</Frame>
 							<Frame parentKey="Create" inherits="PowaBorderedFrameTemplate, PowaTabDialogTemplate">
 								<Anchors>
@@ -745,7 +734,7 @@
 											</Layer>
 										</Layers>
 										<Frames>
-											<CheckButton parentKey="Enable" text="UI_Config_Enable" inherits="PowaNormalCheckboxTemplate">
+											<CheckButton parentKey="Enable" text="UI_Config_Enable" inherits="PowaCheckboxTemplate">
 												<Size x="150" y="28" />
 												<Anchors>
 													<Anchor point="TOPLEFT" x="16" y="-40" />
@@ -757,7 +746,7 @@
 													</OnLoad>
 												</Scripts>
 											</CheckButton>
-											<CheckButton parentKey="Inspect" text="UI_Config_Inspect" inherits="PowaNormalCheckboxTemplate">
+											<CheckButton parentKey="Inspect" text="UI_Config_Inspect" inherits="PowaCheckboxTemplate">
 												<Size x="150" y="28" />
 												<Anchors>
 													<Anchor point="TOPLEFT" x="16" y="-72" />
@@ -769,7 +758,7 @@
 													</OnLoad>
 												</Scripts>
 											</CheckButton>
-											<CheckButton parentKey="RoundTimer" text="UI_Config_RoundTimer" inherits="PowaNormalCheckboxTemplate">
+											<CheckButton parentKey="RoundTimer" text="UI_Config_RoundTimer" inherits="PowaCheckboxTemplate">
 												<Size x="150" y="28" />
 												<Anchors>
 													<Anchor point="TOPLEFT" x="16" y="-104" />
@@ -781,7 +770,7 @@
 													</OnLoad>
 												</Scripts>
 											</CheckButton>
-											<CheckButton parentKey="BlockComms" text="UI_Config_BlockComms" inherits="PowaNormalCheckboxTemplate">
+											<CheckButton parentKey="BlockComms" text="UI_Config_BlockComms" inherits="PowaCheckboxTemplate">
 												<Size x="150" y="28" />
 												<Anchors>
 													<Anchor point="TOPLEFT" x="16" y="-136" />
@@ -793,7 +782,7 @@
 													</OnLoad>
 												</Scripts>
 											</CheckButton>
-											<CheckButton parentKey="FixExports" text="UI_Config_FixExports" inherits="PowaNormalCheckboxTemplate">
+											<CheckButton parentKey="FixExports" text="UI_Config_FixExports" inherits="PowaCheckboxTemplate">
 												<Size x="150" y="28" />
 												<Anchors>
 													<Anchor point="TOPLEFT" x="16" y="-168" />

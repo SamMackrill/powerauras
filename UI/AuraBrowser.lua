@@ -60,8 +60,8 @@ PowaAuras.UI:Register("AuraBrowser", {
 		PowaBrowser.SelectedPage = key;
 		-- Call script.
 		PowaBrowser:CallScript("OnSelectedPageChanged", key);
-		-- Deselect any and all auras. This will trigger a button update.
-		PowaBrowser:SetSelectedAura(nil);
+		-- Update.
+		PowaBrowser:TriageIcones();
 	end,
 	OnShow = function(self)
 		PlaySound("igCharacterInfoTab");
@@ -99,18 +99,17 @@ PowaAuras.UI:Register("AuraBrowser", {
 			self.Tabs.Auras.Tree:AddItem(i+playerPageCount+globalPageCount, PowaClassListe[class][i], "CLASS");
 		end
 		-- Add 24 beautiful buttons.
-		self.Tabs.Auras.Page:SetLocked(true);
+		local offset = (self.Tabs.Auras.Page:GetWidth()/2)-(6*24);
 		for i=1,24 do
 			-- Make button.
 			local button = PowaAuras.UI:AuraButton(self.Tabs.Auras.Page);
-			-- Save.
-			self.Tabs.Auras.Page:AddItem(button);
+			-- Position and save.
+			button:SetPoint("TOPLEFT", ceil(offset+((i-1)*48)-(floor((i-1)/6)*(6*48))), -49-ceil(floor((i-1)/6)*48));
+			button:SetSize(48, 48);
 			self.Tabs.Auras.Page["Aura" .. i] = button;
 		end
 		-- Select things.
 		self.Tabs.Auras.Tree:SetSelectedKey(1);
-		-- Unlock (we just prevented 24 loops!)
-		self.Tabs.Auras.Page:SetLocked(false);
 		-- Button update.
 		self:TriageIcones();
 		self:SetSelectedAura(1);
@@ -158,6 +157,10 @@ PowaAuras.UI:Register("AuraBrowser", {
 			end
 		else
 			self.Tabs.Auras:SetSelectedTab(1);
+			-- Clear move/copy state if you change aura.
+			if(self.MovingAura and self.MovingAura ~= id) then
+				self:SetMovingAura(nil, false);
+			end
 		end
 		-- Call script.
 		self:CallScript("OnSelectedAuraChanged", self.SelectedAura);
@@ -222,8 +225,6 @@ PowaAuras.UI:Register("AuraBrowser", {
 				button:TooltipRefresh();
 			end
 		end
-		-- Bugfix for buttons vanishing.
-		self.Tabs.Auras.Page:UpdateLayout();
 	end,
 });
 

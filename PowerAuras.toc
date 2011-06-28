@@ -52,10 +52,6 @@ UI\Mixins\Scripts.lua
 UI\Mixins\Settings.lua
 UI\Mixins\Tooltip.lua
 
-# Generic classes.
-UI\LayoutFrame.lua
-UI\TabFrame.lua
-
 # Generic elements.
 UI\BorderedFrame.xml
 UI\Button.xml
@@ -67,6 +63,7 @@ UI\FrameCategory.xml
 UI\RadioGroup.lua
 UI\Slider.xml
 UI\ScrollFrame.xml
+UI\TabFrame.lua
 UI\TabButton.xml
 UI\TabDialog.xml
 UI\TreeView.xml
