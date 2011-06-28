@@ -60,8 +60,13 @@ PowaAuras.UI:Register("AuraBrowser", {
 		PowaBrowser.SelectedPage = key;
 		-- Call script.
 		PowaBrowser:CallScript("OnSelectedPageChanged", key);
-		-- Update.
-		PowaBrowser:TriageIcones();
+		-- Deselect aura if we were creating something.
+		if(PowaBrowser.Tabs.Auras:GetSelectedTab() == 2) then
+			PowaBrowser:SetSelectedAura(nil, false);
+		else
+			-- Update.
+			PowaBrowser:TriageIcones();
+		end
 	end,
 	OnShow = function(self)
 		PlaySound("igCharacterInfoTab");

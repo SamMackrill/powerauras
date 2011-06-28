@@ -65,7 +65,7 @@ UI\Slider.xml
 UI\ScrollFrame.xml
 UI\TabFrame.lua
 UI\TabButton.xml
-UI\TabDialog.xml
+UI\TabDialog.lua
 UI\TreeView.xml
 
 # Actual frames!

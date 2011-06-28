@@ -11,9 +11,19 @@ PowaAuras.UI:Register("TabDialog", {
 		if(cancelFunc) then
 			self.OnTabDialogCancel = cancelFunc;
 		end
-		-- Fix buttons.
-		PowaAuras.UI:Button(self.AcceptButton);
-		PowaAuras.UI:Button(self.CancelButton);
+		-- Fix/make buttons.
+		if(not self.AcceptButton) then
+			self.AcceptButton = CreateFrame("Button", nil, self, "PowaButtonTemplate");
+			self.AcceptButton:SetSize(118, 22);
+			self.AcceptButton:SetPoint("BOTTOMRIGHT", -5, 5);
+			PowaAuras.UI:Button(self.AcceptButton);
+		end
+		if(not self.CancelButton) then
+			self.CancelButton = CreateFrame("Button", nil, self, "PowaButtonTemplate");
+			self.CancelButton:SetSize(118, 22);
+			self.CancelButton:SetPoint("BOTTOMRIGHT", -128, 5);
+			PowaAuras.UI:Button(self.CancelButton);
+		end
 		-- Apply scripts.
 		self.AcceptButton:SetScript("OnClick", function()
 			self:OnTabDialogAccept();
