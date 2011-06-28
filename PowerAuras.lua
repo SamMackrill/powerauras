@@ -1091,10 +1091,6 @@ function PowaAuras:DisplayAura(auraId)
 		self:ResetDragging(aura, frame);
 	end	
 	
-	if (aura.Timer) then
-		aura.Timer.Start = GetTime();
-	end
-	
 	aura:Show(self.ModTest);
 
 end
