@@ -3162,7 +3162,7 @@ function cPowaGTFO:CheckIfShouldShow(giveReason)
 end
 
 -- Totem Aura--
-cPowaTotems = PowaClass(cPowaAura, {AuraType = "Totems", CanHaveTimer=true});
+cPowaTotems = PowaClass(cPowaAura, {AuraType = "Totems", CanHaveTimer=true, CanHaveInvertTime=true, InvertTimeHides=true});
 cPowaTotems.OptionText={buffNameTooltip=PowaAuras.Text.aideTotems, 
                             exactTooltip=PowaAuras.Text.aideExact, 
                             typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.Totems], 
