@@ -2,12 +2,11 @@
 PowaAuras.UI:Register("FrameCategory", {
 	ReusableItems = {},
 	Scripts = {
-		OnDisable = "UpdateTextures",
-		OnEnable = "UpdateTextures",
+		OnClick = true,
 		OnEnter = "UpdateTextures",
 		OnLeave = "UpdateTextures",
-		OnMouseDown = true,
-		OnMouseUp = true,
+		OnMouseDown = "UpdateTextures",
+		OnMouseUp = "UpdateTextures",
 		OnShow = "UpdateTextures",
 		OnSizeChanged = true,
 	},
@@ -35,29 +34,18 @@ PowaAuras.UI:Register("FrameCategory", {
 	Init = function(self, title)
 		-- Update textures immediately.
 		self:UpdateTextures();
+		self:SetChecked(self:GetChecked());
 		-- Title?
 		self:SetTitle(title or "");
 	end,
 	GetTitle = function(self)
 		return self.Title:GetText();
 	end,
-	OnMouseDown = function(self)
-		-- Button state doesn't update in time.
-		if(self:IsEnabled()) then
-			self:SetButtonState("PUSHED");
-			self:UpdateTextures();
-		end
+	OnClick = function(self)
 		-- Sound effects are cool.
 		PlaySound("igMainMenuOptionCheckBoxOn");
-	end,
-	OnMouseUp = function(self)
-		-- Button state doesn't update in time.
-		if(self:IsEnabled()) then
-			self:SetButtonState("NORMAL");
-			self:UpdateTextures();
-		end
-		-- Invert checked status.
-		self:SetChecked(not self:GetChecked());
+		-- Invert checked status (this inverts automatically, no questions why).
+		self:SetChecked(self:GetChecked());
 	end,
 	OnSizeChanged = function(self, width, height)
 		-- Updates the insets.
@@ -93,11 +81,13 @@ PowaAuras.UI:Register("FrameCategory", {
 		if(checked) then
 			self:LockHighlight();
 			self:SetHeight(select(4, self:GetBoundsRect()));
-			self.Expand:SetTexCoord(0, 0.9375, 0.6875, 0);
+			self.Expand:SetTexCoord(0, 0, 0, 0.6875, 0.9375, 0, 0.9375, 0.6875);
+			self.Expand:SetSize(15, 11);
 		else
 			self:UnlockHighlight();
 			self:SetHeight(25);
-			self.Expand:SetTexCoord(0, 0.9375, 0, 0.6875);
+			self.Expand:SetTexCoord(1, 0, 0.0625, 0, 1, 0.6875, 0.0625, 0.6875);
+			self.Expand:SetSize(11, 15);
 		end
 		-- Layout parent if needed.
 		if(self:GetParent().UpdateLayout) then
@@ -112,16 +102,15 @@ PowaAuras.UI:Register("FrameCategory", {
 		self:SetChecked(self:GetChecked());
 	end,
 	UpdateTextures = function(self)
-		-- Get state.
-		local state = self:GetButtonState();
-		if(state == "NORMAL" or state == "DISABLED") then
-			self.NormalLeft:SetTexCoord(0.00195313, 0.12695313, 0.00781250, 0.20312500);
-			self.NormalMiddle:SetTexCoord(0.13085938, .63085938, 0.21875000, 0.41406250);
-			self.NormalRight:SetTexCoord(0.00195313, 0.12695313, 0.42968750, 0.62500000);
-		elseif(state == "PUSHED") then
+		-- Update.
+		if(self:IsMouseOver() and IsMouseButtonDown() or not self:IsEnabled()) then
 			self.NormalLeft:SetTexCoord(0.00195313, 0.12695313, 0.21875000, 0.41406250);
 			self.NormalMiddle:SetTexCoord(0.13085938, 0.63085938, 0.42968750, 0.62500000);
 			self.NormalRight:SetTexCoord(0.00195313, 0.12695313, 0.64062500, 0.83593750);
+		else
+			self.NormalLeft:SetTexCoord(0.00195313, 0.12695313, 0.00781250, 0.20312500);
+			self.NormalMiddle:SetTexCoord(0.13085938, 0.63085938, 0.21875000, 0.41406250);
+			self.NormalRight:SetTexCoord(0.00195313, 0.12695313, 0.42968750, 0.62500000);
 		end
 	end
 });

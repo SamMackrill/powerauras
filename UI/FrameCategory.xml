@@ -27,11 +27,11 @@
 			</Layer>
 			<Layer level="OVERLAY">
 				<Texture parentKey="Expand" file="Interface\Calendar\MoreArrow">
-					<Size x="15" y="11" />
+					<Size x="11" y="15" />
 					<Anchors>
-						<Anchor point="TOPLEFT" x="5" y="-7" />
+						<Anchor point="CENTER" relativePoint="TOPLEFT" x="12" y="-12" />
 					</Anchors>
-					<TexCoords left="0" right="0.9375" top="0" bottom="0.6875" />
+					<TexCoords ULx="1" ULy="0" LLx="0.0625" LLy="0" URx="1" URy="0.6875" LRx="0.0625" LRy="0.6875" />
 				</Texture>
 			</Layer>
 		</Layers>

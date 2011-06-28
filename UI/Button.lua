@@ -17,7 +17,6 @@ PowaAuras.UI:Register("Button", {
 		self:UpdateTextures();
 	end,
 	UpdateTextures = function(self)
-		local state = self:GetButtonState();
 		-- Priority: Disabled, Pushed, Up.
 		if(not self:IsEnabled() and self.DisabledTexture) then
 			-- Disabled.
