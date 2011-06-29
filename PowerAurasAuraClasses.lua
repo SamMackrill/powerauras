@@ -70,7 +70,7 @@ cPowaAura.ExportSettings = {
 	bufftype = PowaAuras.BuffTypes.Buff,
 	buffname = "???",
 	
-	texmode = 1,
+	texmode = 0,
 	wowtex = false,
 	customtex = false,
 	textaura = false,
@@ -4021,7 +4021,7 @@ function cPowaPetStance:CheckIfShouldShow(giveReason)
 		local name, _, _, isToken, isActive = GetPetActionInfo(i);
 		if(isToken and isActive) then
 			-- Check token.
-			if(name == "PET_MODE_ASSIST" or name == "PET_MODE_AGGRESSIVE") then
+			if(name == "PET_MODE_ASSIST") then
 				-- Active stance, store this for return text.
 				stance = name;
 				if(allowAssist) then
