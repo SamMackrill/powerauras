@@ -1,8 +1,14 @@
---[[
-=======cPowaTrigger========
-Base class for Trigger Types.
-===========================
---]]
+--- Triggers control when things happen on an Aura and fire the appropriate actions.
+-- Each Aura will have a list of Triggers specific to that aura (stored in aura.Triggers table).
+-- The triggers are polled in the code by calling aura:CheckTriggers(TYPE, ...).
+-- Where TYPE is a string defined in one of the derived trigger classes (see below).
+-- The trigger will then determine if it needs to activate based on the parameters passed to CheckTriggers.
+-- When a trigger activates it will fire its associated Actions in order.
+
+
+---Base class for Trigger Types.
+-- @name cPowaTrigger
+-- @class table
 cPowaTrigger = PowaClass(function(trigger, auraId, triggerId, parameters)
 	if(not auraId or not triggerId or not PowaAuras.Auras[auraId]) then return; end
 	if (PowaAuras.DebugTriggers) then
@@ -20,7 +26,7 @@ cPowaTrigger = PowaClass(function(trigger, auraId, triggerId, parameters)
 	trigger.NextActionId     = 1;
 end);
 
-
+--- Call Reset on all Actions, used by "Fire Once" Triggers
 function cPowaTrigger:ResetActions()
 	for i = 1, #self.Actions do
 		local action = self.Actions[i];
@@ -28,6 +34,9 @@ function cPowaTrigger:ResetActions()
 	end
 end
 
+--- Creates and adds an new Action
+-- @param actionClass Class of Action to add
+-- @param parameters Table of Action specific initialisation parameters
 function cPowaTrigger:AddAction(actionClass, parameters)
 	local action = actionClass(self, self.NextActionId, parameters);
 	self.NextActionId = self.NextActionId + 1;
@@ -38,6 +47,8 @@ function cPowaTrigger:AddAction(actionClass, parameters)
 	return action;	
 end
 
+--- Deletes Action
+-- @param action Action to delete
 function cPowaTrigger:DeleteAction(action)
 	if (not action) then return; end
 	for index, a in ipairs (self.Actions) do
@@ -48,6 +59,9 @@ function cPowaTrigger:DeleteAction(action)
 	end
 end
 
+--- Determine if Trigger needs to activate
+-- @param value Value used by trigger to see if it should activate
+-- @param qualifier Filter to check if this aura should be considered (use nil to ignore)
 function cPowaTrigger:Check(value, qualifier)
 	if (self.Timer) then
 		local aura = PowaAuras.Auras[self.AuraId];
@@ -84,11 +98,17 @@ function cPowaTrigger:Check(value, qualifier)
 	return self.Set;
 end
 
+-- Determine if the qualifier matches the one set for this trigger
+-- @param qualifier check qualifiers match
 function cPowaTrigger:CheckQulifier(qualifier)
 	if (self.Qualifier==nil) then return true; end
 	return (qualifier==self.Qualifier);
 end
 
+--- Compare two values based on various operators
+-- @param op Operator to use for comparison e.g. "="
+-- @param v1 LHS value for compare
+-- @param v2 RHS value for compare
 function cPowaTrigger:Compare(op, v1, v2)
 	--if (PowaAuras.DebugTriggers or self.Debug) then
 	--	PowaAuras:DisplayText("Compare: ", v1, " ", op, " ", v2);
@@ -106,11 +126,8 @@ end
 
 
 
---[[
-=====cPowaTimerTrigger=====
-Timer trigger type class.
-===========================
---]]
+-- Derived trigger classes
+
 cPowaAuraTimerTrigger = PowaClass(cPowaTrigger, { Type = "Timer", Once = true, Timer=true });
 cPowaAuraDurationTrigger = PowaClass(cPowaTrigger, { Type = "Duration", Once = true, Timer=true });
 cPowaAuraTimerRefreshTrigger = PowaClass(cPowaTrigger, { Type = "TimerRefresh", Timer=true });

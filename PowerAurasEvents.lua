@@ -1,6 +1,6 @@
---- Event servicing
--- servicing methods are named PowaAuras:XXXXX_YYYY(...)
--- Where XXXXX_YYYY matches the actual WoW event
+--- Event servicing.
+-- servicing methods are named PowaAuras:XXXXX_YYYY(...).
+-- Where XXXXX_YYYY matches the actual WoW event.
 
 ---
 function PowaAuras:VARIABLES_LOADED(...)
