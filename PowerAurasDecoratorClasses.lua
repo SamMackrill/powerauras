@@ -18,16 +18,15 @@ function cPowaDecorator:Show(aura, source)
 	if (self.Showing) then return; end
 	self:Update(aura, 0, PowaAuras.ModTest);
 	if (not self:ValidValue(aura, PowaAuras.ModTest)) then
-		if (aura.Debug) then
-			PowaAuras:ShowText(GetTime()," ", self.Type, " Show() Invalid value");
-		end
+		--if (aura.Debug) then
+			PowaAuras:ShowText(GetTime()," ", self.Type, " Show() Invalid value: ", self:GetDisplayValue(aura, 0));
+		--end
 		return;
 	end
 
 	self.Showing = true;
 	self.HideRequest = false;
 	
-	local aura = PowaAuras.Auras[self.id];
 	local frame1, frame2 = self:CreateFrameIfMissing(aura);
 
 	if (frame1 == nil) then
@@ -769,9 +768,14 @@ end
 
 -- This is used to dectect timer refreshes
 function cPowaTimer:SetDurationInfo(endtime)
-	if (self.DurationInfo == endtime) then return end;
+	if (endtime==nil) then return end;
+	if (self.DurationInfo~=nil and math.abs(self.DurationInfo - endtime) < 0.5) then return end;
 	self.DurationInfo = endtime;
+	PowaAuras:ShowText(self.id, " SetDurationInfo ",self.DurationInfo);
 	local aura = PowaAuras.Auras[self.id];
+	if (not self.Active) then
+		self:CheckActive(aura, PowaAuras.ModTest);
+	end
 	aura:CheckTriggers("TimerRefresh");
 end
 
