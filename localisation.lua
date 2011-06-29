@@ -230,13 +230,14 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideSlots = "Enter name of slot to track: Ammo, Back, Chest, Feet, Finger0, Finger1, Hands, Head, Legs, MainHand, Neck, Ranged, SecondaryHand, Shirt, Shoulder, Tabard, Trinket0, Trinket1, Waist, Wrist",
 	aideTracking = "Enter name of Tracking type e.g. fish",
 	aideUnitMatch = "Enter the names of the units that need to match, separated by a forward slash (/).\n\nYou can use unit ID's such as \"player\", \"pet\", \"boss1\", \"arena1\", as well as an asterisk (*) to see if the unit in question exists.\n\n|cFFEFEFEFExamples|r\nTarget is Ragnaros:\ntarget/Ragnaros\n\nPet target exists:\npettarget/*\n\nBoss targetting me:\nboss1target/player",
-	aidePetStance = "Enter the ID numbers of pet stances that need to be active in order for the aura to show. You can specify multiple stances to trigger an aura by separating them with a forward slash (/).\n\n|cFFEFEFEFStance ID Numbers|r\nAggressive/Assist = 1\nDefensive = 2\nPassive = 3\n\n|cFFFF0000Note: |rYou must have the three stances on your pet action bar for this to work.",
+	aidePetStance = "Enter the ID numbers of pet stances that need to be active in order for the aura to show. You can specify multiple stances to trigger an aura by separating them with a forward slash (/).\n\n|cFFEFEFEFStance ID Numbers|r\nAssist = 1\nDefensive = 2\nPassive = 3\n\n|cFFFF0000Note: |rYou must have the three stances on your pet action bar for this to work.",
 	
 	-- editor
 	aideCustomText = "Enter text to display (%t=target name, %f=focus name, %v=display value, %u=unit name, %str=str, %agl=agl, %sta=sta, %int=int, %spi=spi, %sp=spell power, %ap=attack power, %df=defence)",
 
 	nomSoundStarting = "Starting Sound:",
 	nomSound = "Sound to play",
+
 	nomSound2 = "More sounds to play",
 	aideSound = "Plays a sound at the beginning.",
 	aideSound2 = "Plays a sound at the beginning.",
