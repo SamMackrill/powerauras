@@ -1,0 +1,77 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+    ..\..\FrameXML\UI.xsd">
+	<Script file="Slider.lua" />
+	<Slider name="PowaSliderTemplate" virtual="true" minValue="1" maxValue="100" defaultValue="50" valueStep="1" orientation="HORIZONTAL" enableMouse="true">
+		<Size>
+			<AbsDimension x="150" y="15" />
+		</Size>
+		<HitRectInsets>
+			<AbsInset left="0" right="0" top="-14" bottom="-15" />
+		</HitRectInsets>
+		<Backdrop bgFile="Interface\Buttons\UI-SliderBar-Background" edgeFile="Interface\Buttons\UI-SliderBar-Border" tile="true">
+			<EdgeSize>
+				<AbsValue val="8" />
+			</EdgeSize>
+			<TileSize>
+				<AbsValue val="8" />
+			</TileSize>
+			<BackgroundInsets>
+				<AbsInset left="3" right="3" top="6" bottom="6" />
+			</BackgroundInsets>
+		</Backdrop>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Text" text="Text" inherits="PowaFontNormal">
+					<Size>
+						<AbsDimension y="14" />
+					</Size>
+					<Anchors>
+						<Anchor point="BOTTOM" relativePoint="TOP" />
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Low" text="Low" inherits="PowaFontHighlightSmall">
+					<Size>
+						<AbsDimension y="14" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" x="0" y="-1" />
+					</Anchors>
+				</FontString>
+				<FontString parentKey="High" text="High" inherits="PowaFontHighlightSmall">
+					<Size>
+						<AbsDimension y="14" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" x="0" y="-1" />
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<EditBox parentKey="Value" justifyH="CENTER" inherits="PowaLabelledEditBoxTemplate" font="PowaFontHighlightSmall">
+				<Size>
+					<AbsDimension x="70" y="14" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOP" relativePoint="BOTTOM" x="0" y="-1" />
+				</Anchors>
+				<HitRectInsets>
+					<AbsInset left="0" right="0" top="0" bottom="0" />
+				</HitRectInsets>
+				<Scripts>
+					<OnLoad>
+						-- Setting justifyH in the XML doesn't work.
+						self:SetJustifyH("CENTER");
+					</OnLoad>
+				</Scripts>
+			</EditBox>
+		</Frames>
+		<ThumbTexture file="Interface\Buttons\UI-SliderBar-Button-Horizontal">
+			<Size>
+				<AbsDimension x="32" y="32" />
+			</Size>
+		</ThumbTexture>
+	</Slider>
+</Ui>

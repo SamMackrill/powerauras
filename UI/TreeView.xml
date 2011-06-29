@@ -1,0 +1,48 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+    ..\..\FrameXML\UI.xsd">
+	<Script file="TreeView.lua" />
+	
+	<Button name="PowaTreeViewItemTemplate" virtual="true" >
+		<Size>
+			<AbsDimension x="172" y="24" />
+		</Size>
+		<NormalFont style="PowaFontNormalSmall" />
+		<HighlightFont style="PowaFontHighlightSmall" />
+		<DisabledFont style="PowaFontNormalSmall" />
+		<ButtonText parentKey="Text" justifyH="LEFT">
+			<Size>
+				<AbsDimension x="0" y="24" />
+			</Size>
+			<Anchors>
+				<Anchor point="LEFT" x="24" y="0" />
+				<Anchor point="RIGHT" x="-24" y="0" />
+			</Anchors>
+		</ButtonText>
+		<HighlightTexture file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar-Blue" alphaMode="ADD" />
+		<NormalTexture file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar-Blue" alphamode="ADD" />
+		<DisabledTexture />
+		<Frames>
+			<Button parentKey="Expand">
+				<Size>
+					<AbsDimension x="16" y="16" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-4" y="-4" />
+				</Anchors>
+				<NormalTexture file="Interface\Buttons\UI-MinusButton-Up" />
+				<HighlightTexture file="Interface\Buttons\UI-PlusButton-Hilight" alphamode="ADD" />
+				<DisabledTexture file="Interface\Buttons\UI-MinusButton-Disabled" />
+				<PushedTexture file="Interface\Buttons\UI-MinusButton-Down" />
+				<Scripts>
+					<OnClick>
+						-- Epicly long line of code right there.
+						self:GetParent():GetParent():ToggleElementChildren(self:GetParent():GetKey());
+						PlaySound("UChatScrollButton");
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+	</Button>
+</Ui>
