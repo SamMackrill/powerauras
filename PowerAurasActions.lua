@@ -159,6 +159,7 @@ function cPowaAuraAnimationAction:PlayNextAnimation()
 		frame:StopAnimating();
 		frame:Show();
 	end
+	if (not animation.AnimationGroup) then return;	end
 	animation.AnimationGroup:Play();
 end
 
