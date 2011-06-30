@@ -340,7 +340,7 @@ PowaAuras.UI:Register("AuraButton", {
 		-- Set back up.
 		if(self.State == self.Flags["NORMAL"] or self.State == self.Flags["MOVING"]) then
 			-- Display aura ID and type.
-			GameTooltip:SetText(PowaAuras.Text.AuraType[aura.bufftype]);
+			GameTooltip:SetText(PowaAuras.Text.AuraType[aura.Type]);
 			GameTooltip:AddLine(format("|cFFFFD100%s: |r%d", PowaAuras.Text["UI_ID"], self.AuraID), 1, 1, 1, true);
 			-- Allow the aura to add tooltip lines.
 			aura:DisplayAuraTooltip(GameTooltip);
@@ -414,7 +414,7 @@ PowaAuras.UI:Register("AuraButton", {
 			self.Icon:SetPoint("TOPLEFT", 5, -5);
 			self.Icon:SetPoint("BOTTOMRIGHT", -5, 5);
 			-- Is the aura off, showing or not on and not showing?
-			if(aura.off) then
+			if(aura.Disabled) then
 				SetDesaturation(self.Icon, true);
 				self:SetAlpha(0.5);
 				self.OffText:Show();
