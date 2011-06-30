@@ -1015,7 +1015,7 @@ function PowaAuras:InitialiseAuraFrame(aura, frame, texture, alpha)
 	if (aura.ColorRandom) then
 		texture:SetVertexColor(random(20,100)/100,random(20,100)/100,random(20,100)/100);	
 	else
-		texture:SetVertexColor(aura.r,aura.g,aura.b);
+		texture:SetVertexColor(unpack(aura.Color));
 	end
   
 	if (aura.Glow == 1) then
