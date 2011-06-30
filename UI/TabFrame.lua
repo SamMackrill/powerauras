@@ -96,10 +96,10 @@ PowaAuras.UI:Register("TreeControlledTabFrame", {
 			return;
 		end
 		-- Replace tree view update func.
-		tree.OnSelectionChanged = function(tree, key)
+		tree:SetScript("OnSelectedKeyChanged", function(tree, key)
 			-- Update selected tab.
 			self:SetSelectedTab(key);
-		end
+		end);
 		-- Store tree.
 		self.Tree = tree;
 	end,

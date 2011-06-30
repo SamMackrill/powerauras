@@ -113,10 +113,6 @@
 	</li>
 
 	<li>
-		<a href="../files/UI/BrowserFrame.html">UI/BrowserFrame.lua</a>
-	</li>
-
-	<li>
 		<a href="../files/UI/Button.html">UI/Button.lua</a>
 	</li>
 
@@ -133,11 +129,7 @@
 	</li>
 
 	<li>
-		<a href="../files/UI/FrameSeparator.html">UI/FrameSeparator.lua</a>
-	</li>
-
-	<li>
-		<a href="../files/UI/LayoutFrame.html">UI/LayoutFrame.lua</a>
+		<a href="../files/UI/FrameCategory.html">UI/FrameCategory.lua</a>
 	</li>
 
 	<li>
@@ -174,10 +166,6 @@
 
 	<li>
 		<a href="../files/UI/TabFrame.html">UI/TabFrame.lua</a>
-	</li>
-
-	<li>
-		<a href="../files/UI/Tooltip.html">UI/Tooltip.lua</a>
 	</li>
 
 	<li>
@@ -234,10 +222,62 @@
 <h1>File <code>PowerAurasBase.lua</code></h1>
 
 
+<p>Contains the main Power Auras table and a few basic support methods</p>
 
 
 
 
+
+
+<h2>Functions</h2>
+<table class="function_list">
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:DisplayTable">PowaAuras:DisplayTable</a>&nbsp;(t, indent)</td>
+	<td class="summary">Dump out a table to the chat frame </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:DisplayText">PowaAuras:DisplayText</a>&nbsp;(...)</td>
+	<td class="summary">Display a message in the chat frame, comma seperate arguments rather than use string concatination as this will do nil protection Use this for real messages instead of ShowText </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:Error">PowaAuras:Error</a>&nbsp;(msg, holdtime)</td>
+	<td class="summary">Print a Message to the GUI screen (not the chat window) then fade.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:IsNumeric">PowaAuras:IsNumeric</a>&nbsp;(a)</td>
+	<td class="summary">Check if parameter is a number </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:Message">PowaAuras:Message</a>&nbsp;(...)</td>
+	<td class="summary">Display a message in the chat frame, comma seperate arguments rather than use string concatination as this will do nil protection </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:ReverseTable">PowaAuras:ReverseTable</a>&nbsp;(t)</td>
+	<td class="summary">Reverse the order of the elements in a table </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:ShowText">PowaAuras:ShowText</a>&nbsp;(...)</td>
+	<td class="summary">Display a message in the chat frame, comma seperate arguments rather than use string concatination as this will do nil protection Use this for temp debug messages </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:TableEmpty">PowaAuras:TableEmpty</a>&nbsp;(t)</td>
+	<td class="summary">Check if table is empty </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:TableSize">PowaAuras:TableSize</a>&nbsp;(t)</td>
+	<td class="summary">Get number of element in table, does not require indicies to be sequencial like #t </td>
+	</tr>
+
+</table>
 
 
 
@@ -246,8 +286,33 @@
 <table class="table_list">
 
 	<tr>
+	<td class="name" nowrap><a href="#PowaAuras">PowaAuras</a></td>
+	<td class="summary">This is the main Power Auras table, contains all the settings and many of the methods.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras.AlwaysEvents">PowaAuras.AlwaysEvents</a></td>
+	<td class="summary">Events that must always be registered </td>
+	</tr>
+
+	<tr>
 	<td class="name" nowrap><a href="#PowaAuras.Cascade">PowaAuras.Cascade</a></td>
 	<td class="summary">Dependant auras that need checking </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras.ClassPremades">PowaAuras.ClassPremades</a></td>
+	<td class="summary">Premade auras available by class </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras.DebuffTypeSpellIds">PowaAuras.DebuffTypeSpellIds</a></td>
+	<td class="summary">Spell IDs for detecting debuff types </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras.Events">PowaAuras.Events</a></td>
+	<td class="summary">Events we are interested in, this will change dynamically based on what the auras require </td>
 	</tr>
 
 	<tr>
@@ -266,13 +331,18 @@
 	</tr>
 
 	<tr>
-	<td class="name" nowrap><a href="#PowaAuras.UsedInMultis">PowaAuras.UsedInMultis</a></td>
-	<td class="summary">Premade auras available by class </td>
+	<td class="name" nowrap><a href="#PowaAuras.PowerTypeIcon">PowaAuras.PowerTypeIcon</a></td>
+	<td class="summary">Icons to use for different power types.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras.TalentChangeSpells">PowaAuras.TalentChangeSpells</a></td>
+	<td class="summary">Spells used to detect talent changes.</td>
 	</tr>
 
 	<tr>
 	<td class="name" nowrap><a href="#PowaAuras.UsedInMultis">PowaAuras.UsedInMultis</a></td>
-	<td class="summary">Premade auras available by class </td>
+	<td class="summary">All auras that are actively used in a multi-aura chain </td>
 	</tr>
 
 	<tr>
@@ -290,14 +360,313 @@
 
 
 
+<h2><a name="functions"></a>Functions</h2>
+<dl class="function">
+
+
+
+<dt><a name="PowaAuras:DisplayTable"></a><strong>PowaAuras:DisplayTable</strong>&nbsp;(t, indent)</dt>
+<dd>
+Dump out a table to the chat frame
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  t: 
+	</li>
+	
+	<li>
+	  indent: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:DisplayText"></a><strong>PowaAuras:DisplayText</strong>&nbsp;(...)</dt>
+<dd>
+Display a message in the chat frame, comma seperate arguments rather than use string concatination as this will do nil protection Use this for real messages instead of ShowText
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  ...: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:Error"></a><strong>PowaAuras:Error</strong>&nbsp;(msg, holdtime)</dt>
+<dd>
+Print a Message to the GUI screen (not the chat window) then fade.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  msg: Message to print
+	</li>
+	
+	<li>
+	  holdtime: Time before message fades
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:IsNumeric"></a><strong>PowaAuras:IsNumeric</strong>&nbsp;(a)</dt>
+<dd>
+Check if parameter is a number
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  a: Variable to check
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+true/false
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:Message"></a><strong>PowaAuras:Message</strong>&nbsp;(...)</dt>
+<dd>
+Display a message in the chat frame, comma seperate arguments rather than use string concatination as this will do nil protection
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  ...: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:ReverseTable"></a><strong>PowaAuras:ReverseTable</strong>&nbsp;(t)</dt>
+<dd>
+Reverse the order of the elements in a table
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  t: Table to reverse
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+New table with elements reversed
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:ShowText"></a><strong>PowaAuras:ShowText</strong>&nbsp;(...)</dt>
+<dd>
+Display a message in the chat frame, comma seperate arguments rather than use string concatination as this will do nil protection Use this for temp debug messages
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  ...: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:TableEmpty"></a><strong>PowaAuras:TableEmpty</strong>&nbsp;(t)</dt>
+<dd>
+Check if table is empty
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  t: Table to check
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+true/false
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:TableSize"></a><strong>PowaAuras:TableSize</strong>&nbsp;(t)</dt>
+<dd>
+Get number of element in table, does not require indicies to be sequencial like #t
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  t: Table to count
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+integer count or nil if not a table
+
+
+
+</dd>
+
+
+</dl>
+
 
 
 
 <h2><a name="tables"></a>Tables</h2>
 <dl class="table">
 
+<dt><a name="PowaAuras"></a><strong>PowaAuras</strong></dt>
+<dd>This is the main Power Auras table, contains all the settings and many of the methods.
+
+
+
+</dd>
+
+
+<dt><a name="PowaAuras.AlwaysEvents"></a><strong>PowaAuras.AlwaysEvents</strong></dt>
+<dd>Events that must always be registered
+
+
+
+</dd>
+
+
 <dt><a name="PowaAuras.Cascade"></a><strong>PowaAuras.Cascade</strong></dt>
 <dd>Dependant auras that need checking
+
+
+
+</dd>
+
+
+<dt><a name="PowaAuras.ClassPremades"></a><strong>PowaAuras.ClassPremades</strong></dt>
+<dd>Premade auras available by class
+
+
+
+</dd>
+
+
+<dt><a name="PowaAuras.DebuffTypeSpellIds"></a><strong>PowaAuras.DebuffTypeSpellIds</strong></dt>
+<dd>Spell IDs for detecting debuff types
+
+
+
+</dd>
+
+
+<dt><a name="PowaAuras.Events"></a><strong>PowaAuras.Events</strong></dt>
+<dd>Events we are interested in, this will change dynamically based on what the auras require
 
 
 
@@ -328,8 +697,16 @@
 </dd>
 
 
-<dt><a name="PowaAuras.UsedInMultis"></a><strong>PowaAuras.UsedInMultis</strong></dt>
-<dd>Premade auras available by class
+<dt><a name="PowaAuras.PowerTypeIcon"></a><strong>PowaAuras.PowerTypeIcon</strong></dt>
+<dd>Icons to use for different power types.
+
+
+
+</dd>
+
+
+<dt><a name="PowaAuras.TalentChangeSpells"></a><strong>PowaAuras.TalentChangeSpells</strong></dt>
+<dd>Spells used to detect talent changes.
 
 
 
@@ -337,7 +714,7 @@
 
 
 <dt><a name="PowaAuras.UsedInMultis"></a><strong>PowaAuras.UsedInMultis</strong></dt>
-<dd>Premade auras available by class
+<dd>All auras that are actively used in a multi-aura chain
 
 
 

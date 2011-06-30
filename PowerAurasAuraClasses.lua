@@ -313,6 +313,21 @@ cPowaAura.ExportSettings = {
 	-- },
 -- };
 
+-- Editor UI definitions.
+cPowaAura.UI = {
+	Activation = {
+		Children = {
+			[1] = {
+				Type = "Texture",
+				Points = true,
+				OnLoad = function(self)
+					self:SetTexture(1, 0, 0);
+				end,
+			},
+		},
+	},
+};
+
 --- Aura Initialisation call, 
 -- Will get called at the end of aura creation, 
 -- Can be overridden
@@ -350,8 +365,27 @@ function cPowaAura:CopyDecorators(newID)
 	if(self.Stacks) then
 		newAura.Stacks = cPowaStacks(newAura, self.Stacks);
 	end
-	-- TODO: Copy triggers from current aura to new one.
+	
+	self:CopyTriggers(newAura);
 end
+
+--- Copy the Triggers from another Aura, any existing triggers will be lost
+-- @param newAura Auara to copy Triggers from
+function cPowaAura:CopyTriggers(newAura)
+	newAura.Triggers = PowaAuras:CopyTable(self.Triggers);
+	local triggerIndex = 1;
+	while triggerIndex<=#self.Triggers do
+		local newTrigger = newAura.Triggers[triggerIndex];
+		newTrigger.AuraId = newAura.id;
+		local actionIndex = 1;
+		while actionIndex<=#newTrigger.Actions do
+			newTrigger.Actions[actionIndex].AuraId = newAura.id;
+			actionIndex = actionIndex + 1;
+		end
+		triggerIndex = triggerIndex + 1;
+	end
+end
+
 
 --- Displays additional lines of information about the aura when the tooltip is made visible in the aura browser.
 -- You should call AddLine from within this function and it will append lines after the ID number of the aura, and
@@ -362,6 +396,23 @@ function cPowaAura:DisplayAuraTooltip(tooltip)
 	tooltip:AddLine(tostring((self.buffname or "???")), 1, 1, 1, true);
 end
 
+--- Returns the elements to be added to the editor for the Activation tab. The elements should be generated on request,
+-- as opposed to generated in advance at load.
+-- @param parent The parent of the activation UI frame.
+function cPowaAura:GetActivationUI(parent)
+	-- Is the UI a frame or table?
+	if(not self.UI.Activation.GetObjectType) then
+		-- Table, build frame.
+		self.UI.Activation = PowaAuras.UI:BuildFrameFromDefinition(self.UI.Activation, parent);
+	end
+	-- Return frame.
+	return self.UI.Activation;
+end
+
+--- Sets an internal named state for this aura
+-- Used by the triggers for complex operations
+-- @param name Name of the state to set, this is actually an entry in the Aura table so be careful with the name!
+-- @param value Value to set the state to
 function cPowaAura:SetState(name, value)
 	if (not value or value==self[name]) then return; end
 	self[name] = value;
@@ -373,7 +424,7 @@ end
 function cPowaAura:SetFixedIcon()
 end
 
---- Cleans-up aura resouces, 
+--- Cleans-up aura resouces
 function cPowaAura:Dispose()
 	--PowaAuras:ShowText("Aura ", self.id, " Dispose");
 	self:Hide("Dispose");
@@ -381,13 +432,13 @@ function cPowaAura:Dispose()
 	PowaAuras:Dispose("Textures", self.id);
 	PowaAuras:Dispose("SecondaryFrames", self.id);
 	PowaAuras:Dispose("SecondaryTextures", self.id);
---	-- Dispose child elements. [[UNTESTED]]
---	if(self.Timer) then
---		self.Timer:Dispose();
---	end
---	if(self.Stacks) then
---		self.Stacks:Dispose();
---	end
+	-- Dispose child elements. [[UNTESTED]]
+	if(self.Timer) then
+		self.Timer:Dispose();
+	end
+	if(self.Stacks) then
+		self.Stacks:Dispose();
+	end
 end
 
 --- Allows aura to set any custom events, 
@@ -432,9 +483,9 @@ end
 
 function cPowaAura:UpdateTriggerTree(triggersTree)
 
-	triggersTree.OnSelectionChanged = function(self, key)
+	triggersTree:SetScript("OnSelectedKeyChanged", function(self, key)
 		PowaAuras:ShowText("Trigger Selection changed: ", (key or "nil"), " auraId=", PowaBrowser:GetSelectedAura());
-	end
+	end);
 	
 	triggersTree:ClearItems();
 	local triggerIndex = 1;
@@ -457,8 +508,8 @@ function cPowaAura:CreateDefaultTriggers()
 	--PowaAuras:ShowText("CreateDefaultTriggers");
 	self:ClearDefaultTriggers();
 	if (self.off) then return; end
-	local frame, texture, frame2, texture2 = self:CreateFrames();
-
+	self:CreateFrames();
+	
 	-- =====================
 	-- Start/Main Animations
 	-- =====================
@@ -471,13 +522,13 @@ function cPowaAura:CreateDefaultTriggers()
 	if (self.textaura ~= true) then
 		--trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Show Aura"});
 		if (self.begin>0) then
-			table.insert(AnimationChain, {Name="PA_ShowAnim", Frame=frame, HideFrame=frame2, Animation=self.begin, Speed=self.speed, Alpha=self.alpha, BeginSpin=self.beginSpin});
+			table.insert(AnimationChain, {Name="PA_ShowAnim", FrameSource="Frames", HideFrameSource="SecondaryFrames", Animation=self.begin, Speed=self.speed, Alpha=self.alpha, BeginSpin=self.beginSpin});
 		end
 
 		if (self.anim1>1 or self.anim2>0) then
 			--PowaAuras:ShowText("Main animation trigger, anim1=", self.anim1, " anim2=", self.anim2);
 			if (self.anim1>0) then
-				table.insert(AnimationChain, {Name="PA_Main1", Frame=frame, Animation=self.anim1, Speed=self.speed, Alpha=self.alpha, Loop=true});
+				table.insert(AnimationChain, {Name="PA_Main1", FrameSource="Frames", Animation=self.anim1, Speed=self.speed, Alpha=self.alpha, Loop=true});
 			end
 			if (self.anim2>0) then
 				local speed;
@@ -486,7 +537,7 @@ function cPowaAura:CreateDefaultTriggers()
 				else
 					speed = self.speed / 2;
 				end
-				table.insert(AnimationChain, {Name="PA_Main2", Frame=frame2, Animation=self.anim2, Speed=speed, Alpha=self.alpha * 0.5, Loop=true, Secondary=true});
+				table.insert(AnimationChain, {Name="PA_Main2", FrameSource="SecondaryFrames", Animation=self.anim2, Speed=speed, Alpha=self.alpha * 0.5, Loop=true, Secondary=true});
 			end
 		end	
 		if (#AnimationChain>0) then
@@ -506,7 +557,7 @@ function cPowaAura:CreateDefaultTriggers()
 	trigger=self:CreateTrigger(cPowaAuraHideTrigger, {Name="PA_AuraHide", Debug=false});
 	--trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Hide Aura"});
 	if (self.finish>0 and (self.textaura ~= true)) then
-		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_HideAnim", AnimationChain={{Name="PA_HideAnim", Frame=frame, HideFrame=frame2, Animation=self.finish + 100, Speed=self.speed, Alpha=self.alpha, Hide=self}}});
+		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_HideAnim", AnimationChain={{Name="PA_HideAnim", FrameSource="Frames", HideFrameSource="SecondaryFrames", Animation=self.finish + 100, Speed=self.speed, Alpha=self.alpha, Hide=self}}});
 	else
 		trigger:AddAction(cPowaAuraHideAction, {Name="PA_Hide", Aura=true});
 	end
@@ -522,10 +573,11 @@ function cPowaAura:CreateDefaultTriggers()
 	-- =====		
 	if (self.Timer) then
 		if (self.Timer.enabled) then
-			local frame1, frame2 = self.Timer:CreateFrameIfMissing(self)
+
+			self.Timer:CreateFrameIfMissing(self);
 			if (self.Timer.UpdatePing) then
 				trigger=self:CreateTrigger(cPowaAuraTimerRefreshTrigger, {Name="PA_TimerPing"});
-				if (frame1) then trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_TimerPing1", AnimationChain={{Name="PA_TimerPing1", Frame=frame1, Animation=1000, Alpha=self.alpha, Speed=1}}}); end
+				trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_TimerPing1", AnimationChain={{Name="PA_TimerPing1", FrameSource="TimerFrame", Frame=1, Animation=1000, Alpha=self.alpha, Speed=1}}});
 				--if (frame2) then trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_TimerPing2", Frame=frame2, Animation=1000, Alpha=self.alpha, Speed=1}); end
 			end
 			--trigger=self:CreateTrigger(cPowaAuraTimerTrigger, 12, nil, "<");
@@ -564,9 +616,9 @@ function cPowaAura:CreateDefaultTriggers()
 	-- Stacks
 	-- ======		
 	if (self.Stacks and self.Stacks.UpdatePing and self.Stacks.enabled) then
-		local frame = self.Stacks:CreateFrameIfMissing(self)
+		self.Stacks:CreateFrameIfMissing(self);
 		trigger=self:CreateTrigger(cPowaStacksTrigger, {Name="PA_StacksPing"});
-		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_StacksPing", AnimationChain={{Name="PA_StacksPing", Frame=frame, Animation=1000, Alpha=self.alpha, Speed=1}}});
+		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_StacksPing", AnimationChain={{Name="PA_StacksPing", FrameSource="StacksFrame", Animation=1000, Alpha=self.alpha, Speed=1}}});
 		
 		trigger=self:CreateTrigger(cPowaAuraStacksHideTrigger, {Name="PA_StacksHide", Debug=false});
 		trigger:AddAction(cPowaAuraHideAction, {Name="PA_StacksHide", Stacks=true});
@@ -776,10 +828,20 @@ function cPowaAura:CheckActive(shouldShow, ignoreCascade, testing)
 		--else
 		--	PowaAuras:ShowText(GetTime(),"=== Aura(", self.id, ") INACTIVE");	
 		--end
-
+		
+		if (self.Timer) then
+			if (self.Active) then
+				self.Timer.Start = GetTime();
+			else
+				self.Timer.Start = nil;
+			end
+			PowaAuras:ShowText("Setting Timer.Start to ", self.Timer.Start, " aura=", self.id);	
+		end
+		
 		if (not ignoreCascade and not testing) then PowaAuras:AddChildrenToCascade(self); end
 	end
 		
+
 	if (self.Timer) then self.Timer:CheckActive(self, testing); end
 	if (self.Stacks) then self.Stacks:CheckActive(self, testing); end
 	
@@ -1433,6 +1495,7 @@ function cPowaAura:MatchSpell(spellName, spellTexture, spellId, matchString)
 	end
 	if (matchString=="*") then
 		return true;
+
 	end
 	if (self.Debug) then
 		PowaAuras:Message("--MatchSpell--"); --OK
@@ -3750,7 +3813,7 @@ function cPowaGTFO:CheckIfShouldShow(giveReason, ignoreGCD)
 end
 
 -- Totem Aura--
-cPowaTotems = PowaClass(cPowaAura, {AuraType = "Totems", CanHaveTimer=true});
+cPowaTotems = PowaClass(cPowaAura, {AuraType = "Totems", CanHaveTimer=true, CanHaveInvertTime=true, InvertTimeHides=true});
 cPowaTotems.OptionText={buffNameTooltip=PowaAuras.Text.aideTotems, 
                             exactTooltip=PowaAuras.Text.aideExact, 
                             typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.Totems], 
@@ -4501,7 +4564,7 @@ function cPowaStatic:SetFixedIcon()
 	self:SetIcon("Interface\\icons\\Spell_frost_frozencore");
 end
 
--- Unit Match Aura--
+-- Unit Match Aura
 cPowaUnitMatch= PowaClass(cPowaAura, { AuraType = "UnitMatch", ValueName = "Unit Check" });
 cPowaUnitMatch.OptionText = {
 	typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.UnitMatch],
@@ -4514,13 +4577,26 @@ cPowaUnitMatch.TooltipOptions = {
 };
 cPowaUnitMatch.CheckBoxes={
 	["PowaInverseButton"]=1,
-	["PowaIngoreCaseButton"]=1,
-	["PowaOwntexButton"]=1,
 	["PowaRoleTankButton"]=1,
 	["PowaRoleHealerButton"]=1,
 	["PowaRoleMeleDpsButton"]=1,
 	["PowaRoleRangeDpsButton"]=1,
 }
+
+-- Editor UI definitions.
+cPowaUnitMatch.UI = {
+	Activation = {
+		Children = {
+			[1] = {
+				Type = "Texture",
+				Points = true,
+				OnLoad = function(self)
+					self:SetTexture(0, 1, 0);
+				end,
+			},
+		},
+	},
+};
 
 function cPowaUnitMatch:AddEffectAndEvents()
 	table.insert(PowaAuras.AurasByType[self.AuraType], self.id);
@@ -4562,6 +4638,81 @@ function cPowaUnitMatch:SetFixedIcon()
 	self:SetIcon("Interface\\Icons\\Spell_Misc_EmotionAngry");
 end
 
+-- Pet Stance Aura
+cPowaPetStance= PowaClass(cPowaAura, { AuraType = "PetStance", ValueName = "Pet Stance" });
+cPowaPetStance.OptionText = {
+	typeText=PowaAuras.Text.AuraType[PowaAuras.BuffTypes.PetStance],
+	buffNameTooltip=PowaAuras.Text.aidePetStance,
+};
+cPowaPetStance.TooltipOptions = {
+	r=0.8, 
+	g=0.6, 
+	b=0.4
+};
+cPowaPetStance.CheckBoxes={
+	["PowaInverseButton"]=1,
+}
+
+function cPowaPetStance:AddEffectAndEvents()
+	table.insert(PowaAuras.AurasByType[self.AuraType], self.id);
+	PowaAuras.Events.PET_BAR_UPDATE = true;
+end
+
+function cPowaPetStance:CheckIfShouldShow(giveReason)
+	-- Pet needed.
+	if(not UnitExists("pet") or not HasPetSpells()) then
+		return false, PowaAuras.Text.nomReasonNoPet;
+	end
+	-- Determine what stances are allowed.
+	local allowAssist, allowDefensive, allowPassive, stance = false, false, false, "";
+	for pword in string.gmatch(self.buffname, "[^/]+") do
+		if(pword == "1") then
+			allowAssist = true;
+		elseif(pword == "2") then
+			allowDefensive = true;
+		elseif(pword == "3") then
+			allowPassive = true;
+		end
+	end
+	-- Check all indexes on the pet action bar, you can move them around so...
+	for i=1, NUM_PET_ACTION_SLOTS do
+		-- Check the name and token state.
+		local name, _, _, isToken, isActive = GetPetActionInfo(i);
+		if(isToken and isActive) then
+			-- Check token.
+			if(name == "PET_MODE_ASSIST" or name == "PET_MODE_AGGRESSIVE") then
+				-- Active stance, store this for return text.
+				stance = name;
+				if(allowAssist) then
+					-- Done.
+					return true, (giveReason and PowaAuras:InsertText(PowaAuras.Text.nomReasonPetStance, _G[stance]) or "");
+				end
+			elseif(name == "PET_MODE_DEFENSIVE") then
+				-- Active stance, store this for return text.
+				stance = name;
+				if(allowDefensive) then
+					-- Done.
+					return true, (giveReason and PowaAuras:InsertText(PowaAuras.Text.nomReasonPetStance, _G[stance]) or "");
+				end
+			elseif(name == "PET_MODE_PASSIVE") then
+				-- Active stance, store this for return text.
+				stance = name;
+				if(allowPassive) then
+					-- Done.
+					return true, (giveReason and PowaAuras:InsertText(PowaAuras.Text.nomReasonPetStance, _G[stance]) or "");
+				end
+			end
+		end
+	end
+	-- If we got here, the stances we're looking for are clearly not active.
+	return false, (giveReason and PowaAuras:InsertText(PowaAuras.Text.nomReasonPetStance, _G[stance]) or "");
+end
+
+function cPowaPetStance:SetFixedIcon()
+	self.icon = nil;
+	self:SetIcon("Interface\\Icons\\ABILITY_HUNTER_SICKEM");
+end
+
 -- Concrete Classes
 PowaAuras.AuraClasses = {
 	[PowaAuras.BuffTypes.Buff]=cPowaBuff,
@@ -4591,6 +4742,7 @@ PowaAuras.AuraClasses = {
 	[PowaAuras.BuffTypes.TypeBuff]=cPowaTypeBuff,
 	[PowaAuras.BuffTypes.Static]=cPowaStatic,
 	[PowaAuras.BuffTypes.UnitMatch]=cPowaUnitMatch,
+	[PowaAuras.BuffTypes.PetStance]=cPowaPetStance,
 }
 
 -- Instance concrete class based on type

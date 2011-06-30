@@ -1,10 +1,13 @@
 -- UI upvalue.
 local UI = PowaAuras.UI;
 -- Create definition.
-UI:Register("CheckboxBase", {
+UI:Register("Checkbox", {
 	Scripts = {
 		OnClick = true,
 		OnSettingChanged = true,
+	},
+	Hooks = {
+		"SetChecked",
 	},
 	Init = function(self, property, invert)
 		-- Update text to the localized variant.
@@ -16,6 +19,8 @@ UI:Register("CheckboxBase", {
 		UI:Settings(self, property);
 		-- Add tooltip.
 		UI:Tooltip(self, localeKey, (localeKey .. "Desc"));
+		-- Update colours...
+		self:UpdateColors();
 	end,
 	OnClick = function(self)
 		self:SaveSetting(self:GetChecked());
@@ -35,19 +40,6 @@ UI:Register("CheckboxBase", {
 		else
 			PowaAuras:SaveSetting(self.SettingKey, (self:GetChecked() and true or false));
 		end
-	end,
-});
-
-UI:Register("Checkbox", {
-	Base = "CheckboxBase",
-	Hooks = {
-		"SetChecked",
-	},
-	Init = function(self, property, invert)
-		-- Call parent func.
-		UI.CheckboxBase.Init(self, property, invert);
-		-- Update colours...
-		self:UpdateColors();
 	end,
 	SetChecked = function(self, checked)
 		-- Update.

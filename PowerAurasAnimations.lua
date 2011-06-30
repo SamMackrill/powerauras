@@ -137,8 +137,8 @@ function PowaAuras:AddLoopingAnimation(aura, action, frame, animation, group, sp
 		self:AddScale(animationGroup, 1.2, 1.2, duration * 3, 1);
 		self:AddAlpha(animationGroup, -math.min(alpha,0.99), duration * 3, 1);
 	elseif (animation==PowaAuras.AnimationTypes.Pulse) then
-		self:AddScale(animationGroup, 1.1, 1.1, duration, 1);
-		self:AddScale(animationGroup, 0.9/1.1, 0.9/1.1, duration, 2);
+		self:AddScale(animationGroup, 1.08, 1.08, duration, 1);
+		self:AddScale(animationGroup, 0.9259, 0.9259, duration, 2);
 	elseif (animation==PowaAuras.AnimationTypes.Shrinking) then
 		self:AddAlpha(animationGroup, -math.min(alpha,0.99), duration, 1);
 		self:AddScale(animationGroup, 1.3, 1.3, 0, 2);
@@ -278,6 +278,7 @@ function PowaAuras:AddScale(animationGroup, xscaleTo, yscaleTo, duration, order)
 	scale:SetOrder(order);
 	scale:SetDuration(duration);
 	scale:SetScale(xscaleTo, yscaleTo);
+	scale:SetSmoothing("IN_OUT");
 end
 
 function PowaAuras:AddAlpha(animationGroup, alphaTo, duration, order)

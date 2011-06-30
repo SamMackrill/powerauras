@@ -1,6 +1,4 @@
--- Add a definition for the browser frame. We'll only ever make one, but I'm sick of a lot of functions 
--- inside that big one. Besides, I like this system, do you? It's more memory efficient...I think. 
--- Does defining the same closure repeatedly cost more memory, rather than referencing a single defined closure?
+-- Browser frame.
 PowaAuras.UI:Register("AuraBrowser", {
 	Scripts = {
 		OnShow = true,
@@ -12,8 +10,10 @@ PowaAuras.UI:Register("AuraBrowser", {
 		self.SelectedPage = 1;
 		self.MovingAura = nil;
 		self.CopyAura = false;
-		-- Add OnSelectionChanged function to tree views.
-		self.Tabs.Auras.Tree.OnSelectionChanged = self.OnSelectionChanged;
+		-- Add OnSelectedKeyChanged function to tree views.
+		self.Tabs.Auras.Tree:SetScript("OnSelectedKeyChanged", self.OnSelectedKeyChanged);
+		-- Scripts mixin.
+		PowaAuras.UI:Scripts(self);
 		-- Check...
 		if(PowaAuras.VariablesLoaded) then self:OnVariablesLoaded(); end
 		-- Close on escape key.
@@ -50,12 +50,23 @@ PowaAuras.UI:Register("AuraBrowser", {
 		PowaAuras.ModTest = false;
 		PowaAuras:ToggleAllAuras(false, false, false);
 		PowaAuras.DoCheck.All = true;
+		if(self.isMoving) then
+			self:StopMovingOrSizing();
+			self.isMoving = false;
+		end
 	end,
-	OnSelectionChanged = function(self, key)
+	OnSelectedKeyChanged = function(tree, key)
 		-- Save page.
 		PowaBrowser.SelectedPage = key;
-		-- Deselect any and all auras. This will trigger a button update.
-		PowaBrowser:SetSelectedAura(nil);
+		-- Call script.
+		PowaBrowser:CallScript("OnSelectedPageChanged", key);
+		-- Deselect aura if we were creating something.
+		if(PowaBrowser.Tabs.Auras:GetSelectedTab() == 2) then
+			PowaBrowser:SetSelectedAura(nil, false);
+		else
+			-- Update.
+			PowaBrowser:TriageIcones();
+		end
 	end,
 	OnShow = function(self)
 		PlaySound("igCharacterInfoTab");
@@ -93,20 +104,20 @@ PowaAuras.UI:Register("AuraBrowser", {
 			self.Tabs.Auras.Tree:AddItem(i+playerPageCount+globalPageCount, PowaClassListe[class][i], "CLASS");
 		end
 		-- Add 24 beautiful buttons.
-		self.Tabs.Auras.Page:SetLocked(true);
+		local offset = (self.Tabs.Auras.Page:GetWidth()/2)-(6*24);
 		for i=1,24 do
 			-- Make button.
 			local button = PowaAuras.UI:AuraButton(self.Tabs.Auras.Page);
-			-- Save.
-			self.Tabs.Auras.Page:AddItem(button);
+			-- Position and save.
+			button:SetPoint("TOPLEFT", ceil(offset+((i-1)*48)-(floor((i-1)/6)*(6*48))), -49-ceil(floor((i-1)/6)*48));
+			button:SetSize(48, 48);
 			self.Tabs.Auras.Page["Aura" .. i] = button;
 		end
 		-- Select things.
 		self.Tabs.Auras.Tree:SetSelectedKey(1);
-		-- Unlock (we just prevented 24 loops!)
-		self.Tabs.Auras.Page:SetLocked(false);
 		-- Button update.
 		self:TriageIcones();
+		self:SetSelectedAura(1);
 	end,
 	SavePageName = function(self, name)
 		-- Get the page.
@@ -126,10 +137,6 @@ PowaAuras.UI:Register("AuraBrowser", {
 	SetSelectedAura = function(self, id, isCreate)
 		-- Set it.
 		self.SelectedAura = id;
-		-- Update the editor.
-		if(PowaEditor:IsShown()) then
-			PowaEditor:Show();
-		end
 		-- Update our stuffs!
 		if(isCreate) then
 			-- Go to create move if we're not moving anything.
@@ -155,7 +162,15 @@ PowaAuras.UI:Register("AuraBrowser", {
 			end
 		else
 			self.Tabs.Auras:SetSelectedTab(1);
+			-- Clear move/copy state if you change aura.
+			if(self.MovingAura and self.MovingAura ~= id) then
+				self:SetMovingAura(nil, false);
+			end
 		end
+		-- Call script.
+		self:CallScript("OnSelectedAuraChanged", self.SelectedAura);
+		-- Trigger aura settings update.
+		PowaAuras:FireAuraSettingCallbacks(self.SelectedAura);
 		-- Update buttons.
 		self:TriageIcones();
 		-- Display update.
@@ -180,10 +195,7 @@ PowaAuras.UI:Register("AuraBrowser", {
 		self.CopyAura = (doCopy and true or false);
 		self:TriageIcones();
 	end,
-	--- test doc for widget func.
-	-- @name AuraBrowserTriageIcones
 	TriageIcones = function(self)
-		print("|cFF527FCCDEBUG (AuraBrowser): |rUpdating aura buttons!");
 		-- Not strictly button related, but it prevents two function calls.
 		self.Tabs.Auras.Page.Title:SetText(self:GetPageName());
 		self.Tabs.Auras.Page.Title:ClearFocus();
@@ -214,12 +226,10 @@ PowaAuras.UI:Register("AuraBrowser", {
 				hasDisplayedEmpty = true;
 			end
 			-- Tooltip update.
-			if(button:IsMouseOver()) then
+			if(button:IsMouseOver() and button:IsVisible()) then
 				button:TooltipRefresh();
 			end
 		end
-		-- Bugfix for buttons vanishing.
-		self.Tabs.Auras.Page:UpdateLayout();
 	end,
 });
 
