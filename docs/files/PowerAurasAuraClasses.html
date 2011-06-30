@@ -236,13 +236,38 @@
 	</tr>
 
 	<tr>
+	<td class="name" nowrap><a href="#cPowaAura:CopyTriggers">cPowaAura:CopyTriggers</a>&nbsp;(newAura)</td>
+	<td class="summary">Copy the Triggers from another Aura, any existing triggers will be lost </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#cPowaAura:CustomEvents">cPowaAura:CustomEvents</a>&nbsp;()</td>
+	<td class="summary">Allows aura to set any custom events, virtual, does nothing by default </td>
+	</tr>
+
+	<tr>
 	<td class="name" nowrap><a href="#cPowaAura:DisplayAuraTooltip">cPowaAura:DisplayAuraTooltip</a>&nbsp;(tooltip)</td>
 	<td class="summary">Displays additional lines of information about the aura when the tooltip is made visible in the aura browser.</td>
 	</tr>
 
 	<tr>
+	<td class="name" nowrap><a href="#cPowaAura:Dispose">cPowaAura:Dispose</a>&nbsp;()</td>
+	<td class="summary">Cleans-up aura resouces </td>
+	</tr>
+
+	<tr>
 	<td class="name" nowrap><a href="#cPowaAura:GetActivationUI">cPowaAura:GetActivationUI</a>&nbsp;(parent)</td>
 	<td class="summary">Returns the elements to be added to the editor for the Activation tab.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#cPowaAura:Init">cPowaAura:Init</a>&nbsp;()</td>
+	<td class="summary">Aura Initialisation call, Will get called at the end of aura creation, Can be overridden </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#cPowaAura:SetFixedIcon">cPowaAura:SetFixedIcon</a>&nbsp;()</td>
+	<td class="summary">Allows aura to set its fixed icon, virtual, does nothing by default </td>
 	</tr>
 
 	<tr>
@@ -304,6 +329,49 @@ Copies the Triggers, Timers and Stacks displays to a new aura by cloning their o
 
 
 
+<dt><a name="cPowaAura:CopyTriggers"></a><strong>cPowaAura:CopyTriggers</strong>&nbsp;(newAura)</dt>
+<dd>
+Copy the Triggers from another Aura, any existing triggers will be lost
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  newAura: Auara to copy Triggers from
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="cPowaAura:CustomEvents"></a><strong>cPowaAura:CustomEvents</strong>&nbsp;()</dt>
+<dd>
+Allows aura to set any custom events, virtual, does nothing by default
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
 <dt><a name="cPowaAura:DisplayAuraTooltip"></a><strong>cPowaAura:DisplayAuraTooltip</strong>&nbsp;(tooltip)</dt>
 <dd>
 Displays additional lines of information about the aura when the tooltip is made visible in the aura browser. You should call AddLine from within this function and it will append lines after the ID number of the aura, and before the additional instructions are added. Displays the aura buff name by default.
@@ -330,6 +398,23 @@ Displays additional lines of information about the aura when the tooltip is made
 
 
 
+<dt><a name="cPowaAura:Dispose"></a><strong>cPowaAura:Dispose</strong>&nbsp;()</dt>
+<dd>
+Cleans-up aura resouces
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
 <dt><a name="cPowaAura:GetActivationUI"></a><strong>cPowaAura:GetActivationUI</strong>&nbsp;(parent)</dt>
 <dd>
 Returns the elements to be added to the editor for the Activation tab. The elements should be generated on request, as opposed to generated in advance at load.
@@ -343,6 +428,40 @@ Returns the elements to be added to the editor for the Activation tab. The eleme
 	</li>
 	
 </ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="cPowaAura:Init"></a><strong>cPowaAura:Init</strong>&nbsp;()</dt>
+<dd>
+Aura Initialisation call, Will get called at the end of aura creation, Can be overridden
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="cPowaAura:SetFixedIcon"></a><strong>cPowaAura:SetFixedIcon</strong>&nbsp;()</dt>
+<dd>
+Allows aura to set its fixed icon, virtual, does nothing by default
+
 
 
 
