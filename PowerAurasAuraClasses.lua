@@ -825,6 +825,7 @@ function cPowaAura:CheckActive(shouldShow, ignoreCascade, testing)
 			else
 				self.Timer.Start = nil;
 			end
+			PowaAuras:ShowText("Setting Timer.Start to ", self.Timer.Start, " aura=", self.id);	
 		end
 		
 		if (not ignoreCascade and not testing) then PowaAuras:AddChildrenToCascade(self); end
