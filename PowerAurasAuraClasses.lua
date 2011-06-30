@@ -5,17 +5,29 @@ local strsplit = strsplit;
 
 cPowaAura = PowaClass(function(aura, id, base)
 	--PowaAuras:ShowText("cPowaAura constructor id=", id, " base=", base);
-
-	for k, v in pairs(cPowaAura.ExportSettings) do
-		if (base and base[k] ~= nil) then
-			aura[k] = base[k];
-		else
-			aura[k] = v;
+	
+	if(not base or (base.Version and base.Version >= 50000)) then
+		-- Work like normal for auras made after/during 5.0.
+		for k, v in pairs(cPowaAura.ExportSettings) do
+			if (base and base[k] ~= nil) then
+				aura[k] = base[k];
+			else
+				aura[k] = v;
+			end
+			-- PowaAuras:ShowText(k," =", aura[k]);
 		end
-		-- PowaAuras:ShowText(k," =", aura[k]);
+	else
+		-- For auras before it, use the old exports table.
+		for k, v in pairs(PowaAuras.OldExportSettings) do
+			if (base and base[k] ~= nil) then
+				aura[k] = base[k];
+			else
+				aura[k] = v;
+			end
+		end
 	end
 	
-	-- Update my aura!
+	-- Update aura if needed.
 	PowaAuras:UpdateAura(aura, id);
 	
 	if (base) then
@@ -194,8 +206,7 @@ end);
 --]]
 cPowaAura.ExportSettings = {
 	Disabled = false,    -- On/Off.
-	Version = PowaAuras.VersionInt,
-
+	
 	Type = 1,
 	Subtype = 0,        -- Mode = Stance/PowerType/GTFO.
 	ValueCheck = "???",
