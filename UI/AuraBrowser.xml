@@ -656,6 +656,9 @@
 													else
 														-- Tell user it failed.
 														self.Code.ErrorFailure:Show();
+														if(IsControlKeyDown()) then
+															PowaAuras:ShowText("|cFFFF0000Import Error: |r" .. result);
+														end
 													end
 												end
 											end

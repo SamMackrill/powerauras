@@ -60,7 +60,7 @@ cPowaAura = PowaClass(function(aura, id, base)
 	--PowaAuras:ShowText("base ", base);
 
 	if (base) then
-		local tempForSettings = PowaAuras.AuraClasses[base.bufftype];
+		local tempForSettings = PowaAuras.AuraClasses[base.Type];
 		--PowaAuras:ShowText("base.Timer ", base.Timer);
 		if (base.Timer) then
 			aura.Timer = cPowaTimer(aura, base.Timer);
@@ -79,70 +79,183 @@ end);
 -- Be very careful if you change this as it may break many old exports
 -- Stings must always be set as at least an empty string
 -- Numbers and booleans can be set interchangably (e.g. for tri-states)
+--cPowaAura.ExportSettings = {
+--	off = false,
+--	
+--	bufftype = PowaAuras.BuffTypes.Buff,
+--	buffname = "???",
+--	
+--	texmode = 1,
+--	wowtex = false,
+--	customtex = false,
+--	textaura = false,
+--	owntex = false,
+--	texture = 1,
+--	customname = "",
+--	aurastext = "",
+--	aurastextfont = 1,
+--	icon = "",
+--	strata = "LOW",
+
+--	timerduration = 0,
+--	
+--	-- Sound Settings
+--	sound = 0,
+--	customsound = "",	
+--	soundend = 0,
+--	customsoundend = "",	
+--	
+--	-- Animation Settings
+--	begin = 0,
+--	anim1 = 1,
+--	anim2 = 0,
+--	speed = 1.00,
+--	finish = 1,
+--	beginSpin = false,
+
+--	duration = 0,
+--	
+--	-- Appearance Settings
+--	alpha = 0.75,
+--	size = 0.75,
+--	torsion = 1,
+--	symetrie = 0,
+--	x = 0,
+--	y = -30,
+--	randomcolor = false,
+--	r = 1.0,
+--	g = 1.0,
+--	b = 1.0,
+--	
+--	inverse = false,
+--	ignoremaj = true,
+--	exact = false,
+--	Extra = false,
+--	
+--	InvertAuraBelow = 0,
+
+--	stacks = 0,
+--	stacksLower = 0,
+--	stacksOperator = PowaAuras.DefaultOperator,
+
+--	threshold = 50,
+--	thresholdinvert = false,
+
+--	mine = false,
+
+--	focus = false,
+--	target = false,
+--	targetfriend = false,
+--	raid = false,
+--	groupOrSelf = false,
+--	party = false,
+
+--	groupany = true,
+--	optunitn = false,
+--	unitn = "",
+
+--	inRaid = 0,
+--	inParty = 0,
+--	ismounted = false,
+--	isResting = 0,
+--	inVehicle = false,	
+--	combat = 0,
+--	isAlive = true,
+--	PvP = 0,
+--	
+--	Instance5Man = 0,
+--	Instance5ManHeroic = 0,
+--	Instance10Man = 0,
+--	Instance10ManHeroic = 0,
+--	Instance25Man = 0,
+--	Instance25ManHeroic = 0,
+--	InstanceBg = 0,
+--	InstanceArena = 0,
+--	
+--	RoleTank     = 0,
+--	RoleHealer   = 0,
+--	RoleMeleDps  = 0,
+--	RoleRangeDps = 0,
+--	
+--	spec1 = true,
+--	spec2 = true,
+--	gcd = false,
+--	stance = 10,
+--	GTFO = 0,
+--	PowerType = -1,
+--	multiids = "",
+--	tooltipCheck = "",
+--	UseOldAnimations = false,
+--}
+
+--[[
+	Possible new settings list. Would need to remain backwards compatible.
+	Anything not in here may have been removed, renamed or just hasn't been added yet.
+--]]
 cPowaAura.ExportSettings = {
-	off = false,
+	Disabled = false,    -- On/Off.
+	Version = PowaAuras.VersionInt,
+
+	Type = 1,
+	Subtype = 0,        -- Mode = Stance/PowerType/GTFO.
+	ValueCheck = "???",
+	Invert = false,
+	InvertAuraBelow = 0,
+	IgnoreCase = true,
+	ExactMatch = false,
+	TooltipCheck = "",
+	MultiCheck = "",
+	StacksMatch = 0,         -- Threshold = Stacks.
+	StacksLowerBound = 0,
+	StacksOperator = PowaAuras.DefaultOperator,
+	ThresholdInvert = false,
+	TimerDuration = 0,
+
+	Glow = false,
 	
-	bufftype = PowaAuras.BuffTypes.Buff,
-	buffname = "???",
-	
-	texmode = 1,
 	wowtex = false,
 	customtex = false,
 	textaura = false,
 	owntex = false,
 	texture = 1,
 	customname = "",
-	aurastext = "",
 	aurastextfont = 1,
-	icon = "",
-	strata = "LOW",
+--	Source = 1,         -- Represents the aura texture group.
+--	SourceKey = 1,      -- Texture or font number. Represents the index. Not used by Custom or Icon auras.
+--	SourcePath = "",    -- Texture or font path. Replaces icon path too.
 
-	timerduration = 0,
-	
-	-- Sound Settings
-	sound = 0,
-	customsound = "",	
-	soundend = 0,
-	customsoundend = "",	
-	
-	-- Animation Settings
-	begin = 0,
-	anim1 = 1,
-	anim2 = 0,
-	speed = 1.00,
-	finish = 1,
-	beginSpin = false,
-
-	duration = 0,
-	
-	-- Appearance Settings
-	alpha = 0.75,
-	size = 0.75,
-	torsion = 1,
-	symetrie = 0,
-	x = 0,
-	y = -30,
-	randomcolor = false,
+	TextDisplay = "",   -- Text being displayed.
+	Strata = "LOW",     -- Was strata ever implemented? Could do it now.
+	Rotate = 0,         -- Rotation.
+	Opacity = 0.75,
+	Scale = 0.75,
+	Deform = 1,
+	Flip = 0,
+	SizeX = 256,        -- Custom sizing? Would be REALLY nice - especially considering we've got auras that are 128x256px and so on.
+	SizeY = 256,
+	PosX = 0,
+	PosY = 0,
+	ColorRandom = false,
 	r = 1.0,
 	g = 1.0,
 	b = 1.0,
+--	Color = {           -- Can just unpack() this into a setvertexcolor call.
+--		r = 1,
+--		g = 1,
+--		b = 1,
+--		a = 1,
+--	},
+
+	IsMine = false,
+	InRaid = 0,
+	InParty = 0,
+	IsMounted = false,
+	IsResting = 0,
+	InVehicle = false,
+	InCombat = 0,
+	IsAlive = true,
+	IsPvP = 0,
 	
-	inverse = false,
-	ignoremaj = true,
-	exact = false,
-	Extra = false,
-	
-	InvertAuraBelow = 0,
-
-	stacks = 0,
-	stacksLower = 0,
-	stacksOperator = PowaAuras.DefaultOperator,
-
-	threshold = 50,
-	thresholdinvert = false,
-
-	mine = false,
-
 	focus = false,
 	target = false,
 	targetfriend = false,
@@ -153,15 +266,6 @@ cPowaAura.ExportSettings = {
 	groupany = true,
 	optunitn = false,
 	unitn = "",
-
-	inRaid = 0,
-	inParty = 0,
-	ismounted = false,
-	isResting = 0,
-	inVehicle = false,	
-	combat = 0,
-	isAlive = true,
-	PvP = 0,
 	
 	Instance5Man = 0,
 	Instance5ManHeroic = 0,
@@ -176,142 +280,89 @@ cPowaAura.ExportSettings = {
 	RoleHealer   = 0,
 	RoleMeleDps  = 0,
 	RoleRangeDps = 0,
-	
-	spec1 = true,
-	spec2 = true,
-	gcd = false,
-	stance = 10,
-	GTFO = 0,
-	PowerType = -1,
-	multiids = "",
-	tooltipCheck = "",
-	UseOldAnimations = false,
-}
 
--- --[[
-	-- Possible new settings list. Would need to remain backwards compatible.
-	-- Anything not in here may have been removed, renamed or just hasn't been added yet.
--- --]]
--- cPowaAura.ExportSettings = {
-	-- Disabled = false,    -- On/Off.
-	-- Version = PowaAuras.VersionInt,
-	
-	-- Type = 1,
-	-- Data = "???",
-	
-	-- Glow = 1,
-	-- Source = 1,         -- Represents the aura texture group.
-	-- SourceKey = 1,      -- Texture or font number. Represents the index. Not used by Custom or Icon auras.
-	-- SourcePath = "",    -- Texture or font path. Replaces icon path too.
-	-- Text = "",          -- Text being displayed.
-	-- Strata = "LOW",     -- Was strata ever implemented? Could do it now.
-	-- Rotate = 0,         -- Rotation.
-	-- Opacity = 0.75,
-	-- Size = 0.75,
-	-- Deform = 1,
-	-- Flip = 0,
-	-- SizeX = 256,        -- Custom sizing? Would be REALLY nice - especially considering we've got auras that are 128x256px and so on.
-	-- SizeY = 256,
-	-- PosX = 0,
-	-- PosY = 0,
-	-- ColorRandom = false,
-	-- Color = {           -- Can just unpack() this into a setvertexcolor call.
-		-- r = 1,
-		-- g = 1,
-		-- b = 1,
-	-- },
-	
-	-- Inverse = false,
-	-- InvertAuraBelow = 0,
-	-- IgnoreCase = true,
-	-- ExactMatch = false,
-	-- TooltipCheck = "",
-	-- MultiCheck = "",
-	
-	-- Mine = false,
-	-- InRaid = 0,
-	-- InParty = 0,
-	-- IsMounted = false,
-	-- IsResting = 0,
-	-- InVehicle = false,
-	-- InCombat = 0,
-	-- IsAlive = true,
-	-- IsPvP = 0,
+--	Units = {
+--		Focus = false,
+--		FocusFlags = 0x3,
+--		FocusFlagsInverse = 0x0,
+--		Target = false,
+--		TargetFlags = 0x3,
+--		TargetFlagsInverse = 0x0,
+--		Raid = false,
+--		Party = false,
+--		RaidPartySelf = false,
+--		RaidPartyAny = true,
+--		Arena = false, -- Scans arena1 through arena5.
+--		Pet = false, -- Stops people commenting about lack of pet support.
+--		Custom = "",
+--		CustomFlags = 0x3,
+--		CustomFlagsInverse = 0x0,
+--	},
 
-	-- Stacks = 0,
-	-- StacksLower = 0,
-	-- StacksOperator = PowaAuras.DefaultOperator,
-	-- Threshold = 0,      -- Merge with stacks? They do the same thing basically.
-	-- ThresholdInvert = false,
-	-- Stance = 10,
-	-- GTFO = 0,
-	-- PowerType = -1,
-	
-	-- Units = {
-		-- Focus = false,
-		-- FocusFlags = 0x3,
-		-- FocusFlagsInverse = 0x0,
-		-- Target = false,
-		-- TargetFlags = 0x3,
-		-- TargetFlagsInverse = 0x0,
-		-- Raid = false,
-		-- GroupOrSelf = 0, -- Tristate replacing groupAny, 0 = off, false = yes and check any, true = yes and check all.
-		-- Party = false,
-		-- Arena = false, -- Scans arena1 through arena5.
-		-- Pet = false, -- Stops people commenting about lack of pet support.
-		-- CustomUnit = "",
-		-- CustomUnitFlags = 0x3,
-		-- CustomUnitFlagsInverse = 0x0,
-	-- },
-	-- --[[
-		-- This table shouldn't be in the exports obviously, it's temporarily here.
-	-- --]]
-	-- UnitFlags = {
-		-- REACTION_HOSTILE = 0x1,
-		-- REACTION_FRIENDLY = 0x2,
-		-- CLASSIFICATION_NORMAL = 0x4,
-		-- CLASSIFICATION_ELITE = 0x8,
-		-- CLASSIFICATION_RARE = 0x10,
-		-- CLASSIFICATION_BOSS = 0x20,
-		-- CLASS_DEATHKNIGHT = 0x40,
-		-- CLASS_DRUID = 0x80,
-		-- CLASS_HUNTER = 0x100,
-		-- CLASS_MAGE = 0x200,
-		-- CLASS_PALADIN = 0x400,
-		-- CLASS_PRIEST = 0x800,
-		-- CLASS_ROGUE = 0x1000,
-		-- CLASS_SHAMAN = 0x2000,
-		-- CLASS_WARLOCK = 0x4000,
-		-- CLASS_WARRIOR = 0x8000,
-		-- IS_PLAYER = 0x10000,
-	-- },
-	
-	-- Instance = {
-		-- Dungeon5Man = 0,
-		-- Dungeon5ManHeroic = 0,
-		-- Raid10Man = 0,
-		-- Raid10ManHeroic = 0,
-		-- Raid25Man = 0,
-		-- Raid25ManHeroic = 0,
-		-- Battleground = 0, -- Add battleground sizes? Rated battleground?
-		-- Arena = 0, -- Add arena sizes?
-	-- },
-	
-	-- Role = {
-		-- Tank = 0,
-		-- Healer = 0,
-		-- DPSMelee = 0,
-		-- DPSRanged = 0,
-	-- },
-	
-	-- Spec1 = 0x0,
-	-- Spec2 = 0x0,
-	-- SpecFlags = {
-		-- TREE_FIRST = 0x1, -- First talent tree, eg. Holy.
-		-- TREE_SECOND = 0x2, -- Second tree, eg. Protection.
-		-- TREE_THIRD = 0x4, -- Choose all 3 if you don't care what tree your first/second spec is.
-	-- },
--- };
+--	Instance = {
+--		Dungeon = 0,
+--		DungeonHeroic = 0,
+--		Raid10 = 0,
+--		Raid10Heroic = 0,
+--		Raid25 = 0,
+--		Raid25Heroic = 0,
+--		Battleground = 0, -- Add battleground sizes? Rated battleground?
+--		Arena = 0, -- Add arena sizes?
+--	},
+--	Role = {
+--		Tank = 0,
+--		Healer = 0,
+--		DPSMelee = 0,
+--		DPSRanged = 0,
+--	},
+
+	Spec1 = 0x0,
+	Spec2 = 0x0,
+
+	-- Sound Settings
+	sound = 0,
+	customsound = "",
+	soundend = 0,
+	customsoundend = "",
+	-- Animation Settings
+	begin = 0,
+	anim1 = 1,
+	anim2 = 0,
+	speed = 1.00,
+	finish = 1,
+	beginSpin = false,
+	duration = 0,
+	-- Extra setting (to be removed).
+	Extra = false,
+};
+
+-- Unit flags.
+cPowaAura.UnitFlags = {
+	REACTION_HOSTILE = 0x1,
+	REACTION_FRIENDLY = 0x2,
+	CLASSIFICATION_NORMAL = 0x4,
+	CLASSIFICATION_ELITE = 0x8,
+	CLASSIFICATION_RARE = 0x10,
+	CLASSIFICATION_BOSS = 0x20,
+	CLASS_DEATHKNIGHT = 0x40,
+	CLASS_DRUID = 0x80,
+	CLASS_HUNTER = 0x100,
+	CLASS_MAGE = 0x200,
+	CLASS_PALADIN = 0x400,
+	CLASS_PRIEST = 0x800,
+	CLASS_ROGUE = 0x1000,
+	CLASS_SHAMAN = 0x2000,
+	CLASS_WARLOCK = 0x4000,
+	CLASS_WARRIOR = 0x8000,
+	IS_PLAYER = 0x10000,
+};
+
+-- Spec flags.
+cPowaAura.SpecFlags = {
+	TREE_FIRST = 0x1, -- First talent tree, eg. Holy.
+	TREE_SECOND = 0x2, -- Second tree, eg. Protection.
+	TREE_THIRD = 0x4, -- Choose all 3 if you don't care what tree your first/second spec is.
+};
 
 -- Editor UI definitions.
 cPowaAura.UI = {
@@ -346,6 +397,7 @@ function cPowaAura:UpdateAuraID(id)
 		v.AuraId = id;
 	end
 end
+
 
 --- Copies the Triggers, Timers and Stacks displays to a new aura by cloning their objects.
 -- @param newID The new aura ID to assign the object.
@@ -388,7 +440,7 @@ end
 -- @param tooltip The tooltip object to modify. This is generally GameTooltip but you shouldn't rely on this.
 function cPowaAura:DisplayAuraTooltip(tooltip)
 	-- Add buff name.
-	tooltip:AddLine(tostring((self.buffname or "???")), 1, 1, 1, true);
+	tooltip:AddLine(tostring((self.ValueCheck or "???")), 1, 1, 1, true);
 end
 
 --- Returns the elements to be added to the editor for the Activation tab. The elements should be generated on request,
@@ -433,12 +485,12 @@ function cPowaAura:CustomEvents()
 end
 
 function cPowaAura:FullTimerAllowed()
-	--PowaAuras:ShowText("TimerAllowed CanHaveTimer", self.CanHaveTimer, " inverse ", self.inverse, " CanHaveTimerOnInverse ", self.CanHaveTimerOnInverse);
-	return (self.CanHaveTimer and not self.inverse) or (self.CanHaveTimerOnInverse and self.inverse);
+	--PowaAuras:ShowText("TimerAllowed CanHaveTimer", self.CanHaveTimer, " inverse ", self.Invert, " CanHaveTimerOnInverse ", self.CanHaveTimerOnInverse);
+	return (self.CanHaveTimer and not self.Invert) or (self.CanHaveTimerOnInverse and self.Invert);
 end
 
 function cPowaAura:StacksAllowed()
-	return (self.CanHaveStacks and not self.inverse);
+	return (self.CanHaveStacks and not self.Invert);
 end
 
 function cPowaAura:ClearDefaultTriggers()
@@ -493,7 +545,7 @@ end
 function cPowaAura:CreateDefaultTriggers()
 	--PowaAuras:ShowText("CreateDefaultTriggers");
 	self:ClearDefaultTriggers();
-	if (self.off) then return; end
+	if (self.Disabled) then return; end
 	self:CreateFrames();
 	
 	-- =====================
@@ -508,13 +560,13 @@ function cPowaAura:CreateDefaultTriggers()
 	if (self.textaura ~= true) then
 		--trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Show Aura"});
 		if (self.begin>0) then
-			table.insert(AnimationChain, {Name="PA_ShowAnim", FrameSource="Frames", HideFrameSource="SecondaryFrames", Animation=self.begin, Speed=self.speed, Alpha=self.alpha, BeginSpin=self.beginSpin});
+			table.insert(AnimationChain, {Name="PA_ShowAnim", FrameSource="Frames", HideFrameSource="SecondaryFrames", Animation=self.begin, Speed=self.speed, Alpha=self.Opacity, BeginSpin=self.beginSpin});
 		end
 
 		if (self.anim1>1 or self.anim2>0) then
 			--PowaAuras:ShowText("Main animation trigger, anim1=", self.anim1, " anim2=", self.anim2);
 			if (self.anim1>0) then
-				table.insert(AnimationChain, {Name="PA_Main1", FrameSource="Frames", Animation=self.anim1, Speed=self.speed, Alpha=self.alpha, Loop=true});
+				table.insert(AnimationChain, {Name="PA_Main1", FrameSource="Frames", Animation=self.anim1, Speed=self.speed, Alpha=self.Opacity, Loop=true});
 			end
 			if (self.anim2>0) then
 				local speed;
@@ -523,7 +575,7 @@ function cPowaAura:CreateDefaultTriggers()
 				else
 					speed = self.speed / 2;
 				end
-				table.insert(AnimationChain, {Name="PA_Main2", FrameSource="SecondaryFrames", Animation=self.anim2, Speed=speed, Alpha=self.alpha * 0.5, Loop=true, Secondary=true});
+				table.insert(AnimationChain, {Name="PA_Main2", FrameSource="SecondaryFrames", Animation=self.anim2, Speed=speed, Alpha=self.Opacity * 0.5, Loop=true, Secondary=true});
 			end
 		end	
 		if (#AnimationChain>0) then
@@ -543,7 +595,7 @@ function cPowaAura:CreateDefaultTriggers()
 	trigger=self:CreateTrigger(cPowaAuraHideTrigger, {Name="PA_AuraHide", Debug=false});
 	--trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Hide Aura"});
 	if (self.finish>0 and (self.textaura ~= true)) then
-		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_HideAnim", AnimationChain={{Name="PA_HideAnim", FrameSource="Frames", HideFrameSource="SecondaryFrames", Animation=self.finish + 100, Speed=self.speed, Alpha=self.alpha, Hide=self}}});
+		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_HideAnim", AnimationChain={{Name="PA_HideAnim", FrameSource="Frames", HideFrameSource="SecondaryFrames", Animation=self.finish + 100, Speed=self.speed, Alpha=self.Opacity, Hide=self}}});
 	else
 		trigger:AddAction(cPowaAuraHideAction, {Name="PA_Hide", Aura=true});
 	end
@@ -563,8 +615,8 @@ function cPowaAura:CreateDefaultTriggers()
 			self.Timer:CreateFrameIfMissing(self);
 			if (self.Timer.UpdatePing) then
 				trigger=self:CreateTrigger(cPowaAuraTimerRefreshTrigger, {Name="PA_TimerPing"});
-				trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_TimerPing1", AnimationChain={{Name="PA_TimerPing1", FrameSource="TimerFrame", Frame=1, Animation=1000, Alpha=self.alpha, Speed=1}}});
-				--if (frame2) then trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_TimerPing2", Frame=frame2, Animation=1000, Alpha=self.alpha, Speed=1}); end
+				trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_TimerPing1", AnimationChain={{Name="PA_TimerPing1", FrameSource="TimerFrame", Frame=1, Animation=1000, Alpha=self.Opacity, Speed=1}}});
+				--if (frame2) then trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_TimerPing2", Frame=frame2, Animation=1000, Alpha=self.Opacity, Speed=1}); end
 			end
 			--trigger=self:CreateTrigger(cPowaAuraTimerTrigger, 12, nil, "<");
 			--if (frame1 and frame1.texture) then trigger:AddAction(cPowaAuraColourAction, {Texture=frame1.texture, R=255, G=0, B=0, Revert=true}); end
@@ -576,8 +628,8 @@ function cPowaAura:CreateDefaultTriggers()
 			
 		end
 		
-		if (self.timerduration>0) then	
-			trigger=self:CreateTrigger(cPowaAuraDurationTrigger,  {Name="PA_HideAfterDuration", Value=self.timerduration, Compare=">"});
+		if (self.TimerDuration>0) then	
+			trigger=self:CreateTrigger(cPowaAuraDurationTrigger,  {Name="PA_HideAfterDuration", Value=self.TimerDuration, Compare=">"});
 			trigger:AddAction(cPowaAuraHideAction, {Name="PA_Invert", All=true});
 		end
 		
@@ -604,7 +656,7 @@ function cPowaAura:CreateDefaultTriggers()
 	if (self.Stacks and self.Stacks.UpdatePing and self.Stacks.enabled) then
 		self.Stacks:CreateFrameIfMissing(self);
 		trigger=self:CreateTrigger(cPowaStacksTrigger, {Name="PA_StacksPing"});
-		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_StacksPing", AnimationChain={{Name="PA_StacksPing", FrameSource="StacksFrame", Animation=1000, Alpha=self.alpha, Speed=1}}});
+		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_StacksPing", AnimationChain={{Name="PA_StacksPing", FrameSource="StacksFrame", Animation=1000, Alpha=self.Opacity, Speed=1}}});
 		
 		trigger=self:CreateTrigger(cPowaAuraStacksHideTrigger, {Name="PA_StacksHide", Debug=false});
 		trigger:AddAction(cPowaAuraHideAction, {Name="PA_StacksHide", Stacks=true});
@@ -796,8 +848,8 @@ end
 	
 function cPowaAura:CheckActive(shouldShow, ignoreCascade, testing)
 
-	--PowaAuras:ShowText(GetTime(), " off=", self.off, " Children=", self.Children);
-	if (self.off and not self.Children) then 
+	--PowaAuras:ShowText(GetTime(), " off=", self.Disabled, " Children=", self.Children);
+	if (self.Disabled and not self.Children) then 
 		return;
 	end
 
@@ -855,7 +907,7 @@ function cPowaAura:UpdateAura(testing)
 	--	PowaAuras:Message("UpdateAura ", self.id);
 	--end
 	
-	if (self.off) then
+	if (self.Disabled) then
 		if (self.Showing) then
 			self:SetHideRequest("UpdateAura off and showing", true, testing);
 		end
@@ -898,20 +950,20 @@ end
 cPowaAura.TooltipOptions = {r=1.0, g=1.0, b=1.0};
 function cPowaAura:AddExtraTooltipInfo(tooltip)
 	tooltip:SetText("|cffFFFFFF["..self.id.."] |r"..self:DisplayType(), self.TooltipOptions.r, self.TooltipOptions.g, self.TooltipOptions.b, 1);
-	if (self.TooltipOptions.showBuffName and self.buffname ~= "???") then
-		tooltip:AddLine(self.buffname, nil, nil, nil, nil, 1);
+	if (self.TooltipOptions.showBuffName and self.ValueCheck ~= "???") then
+		tooltip:AddLine(self.ValueCheck, nil, nil, nil, nil, 1);
 	end
 	if (self.TooltipOptions.stacksColour) then
-		tooltip:AddLine(PowaAuras.Text.nomStacks..self.stacksOperator..self.stacks, self.TooltipOptions.stacksColour.r, self.TooltipOptions.stacksColour.g, self.TooltipOptions.stacksColour.b, 1);
+		tooltip:AddLine(PowaAuras.Text.nomStacks..self.StacksOperator..self.StacksMatch, self.TooltipOptions.stacksColour.r, self.TooltipOptions.stacksColour.g, self.TooltipOptions.stacksColour.b, 1);
 	end
 	if (self.TooltipOptions.showThreshold) then
-		tooltip:AddLine(self.threshold..self.RangeType, self.TooltipOptions.r, self.TooltipOptions.g, self.TooltipOptions.b, 1);
+		tooltip:AddLine(self.Stacks..self.RangeType, self.TooltipOptions.r, self.TooltipOptions.g, self.TooltipOptions.b, 1);
 	end
 	if (self.TooltipOptions.showStance) then
-		tooltip:AddLine(PowaAuras.PowaStance[self.stance], self.TooltipOptions.r, self.TooltipOptions.g, self.TooltipOptions.b, 1);
+		tooltip:AddLine(PowaAuras.PowaStance[self.Subtype], self.TooltipOptions.r, self.TooltipOptions.g, self.TooltipOptions.b, 1);
 	end
 	if (self.TooltipOptions.showGTFO) then
-		tooltip:AddLine(PowaAuras.PowaGTFO[self.GTFO], self.TooltipOptions.r, self.TooltipOptions.g, self.TooltipOptions.b, 1);
+		tooltip:AddLine(PowaAuras.PowaGTFO[self.Subtype], self.TooltipOptions.r, self.TooltipOptions.g, self.TooltipOptions.b, 1);
 	end
 end
 
@@ -930,7 +982,7 @@ function cPowaAura:GetSingleFrame(secondary)
 		frame = CreateFrame("Frame", nil, UIParent);
 		self:SetFrame(frame, secondary);
 		
-		frame:SetFrameStrata(self.strata);
+		frame:SetFrameStrata(self.Strata);
 		frame:Hide();  
 		
 		frame.baseL = 256;
@@ -1023,8 +1075,8 @@ function cPowaAura:UpdateText(texture)
 end
 
 function cPowaAura:GetAuraText()
-	if (not string.find(self.aurastext, "%%")) then return self.aurastext; end
-	local text = self:SubstituteInText(self.aurastext, "%%t", function() return UnitName("target") end, PowaAuras.Text.Unknown);
+	if (not string.find(self.TextDisplay, "%%")) then return self.TextDisplay; end
+	local text = self:SubstituteInText(self.TextDisplay, "%%t", function() return UnitName("target") end, PowaAuras.Text.Unknown);
 	text = self:SubstituteInText(text , "%%f", function() return UnitName("focus") end, PowaAuras.Text.Unknown);
 	text = self:SubstituteInText(text , "%%n", function() return UnitName("focus") end, PowaAuras.Text.Unknown);
 	text = self:SubstituteInText(text , "%%v", function() return self.DisplayValue end, PowaAuras.Text.Unknown);
@@ -1121,7 +1173,7 @@ end
 function cPowaAura:CheckState(giveReason)
 	
 	--- player aura but player is dead
-	if (self:IsPlayerAura() and ((PowaAuras.WeAreAlive == true and self.isAlive == false) or (PowaAuras.WeAreAlive == false and self.isAlive == true))) then
+	if (self:IsPlayerAura() and ((PowaAuras.WeAreAlive == true and self.IsAlive == false) or (PowaAuras.WeAreAlive == false and self.IsAlive == true))) then
 		if (not giveReason) then return false; end
 		if (PowaAuras.WeAreAlive == false) then
 			return false, PowaAuras.Text.nomReasonPlayerDead;
@@ -1131,10 +1183,10 @@ function cPowaAura:CheckState(giveReason)
 	end
 	
 	-- It's not dead it's restin'
-	--PowaAuras:ShowText(self.Id, " self.isResting=", self.isResting, "  IsResting()=", IsResting(), " PowaAuras.WeAreInCombat=", PowaAuras.WeAreInCombat);
-	if ((self.isResting==false and IsResting()==1 and not PowaAuras.WeAreInCombat) or (self.isResting==true and (IsResting()~=1))) then	
+	--PowaAuras:ShowText(self.Id, " self.IsResting=", self.IsResting, "  IsResting()=", IsResting(), " PowaAuras.WeAreInCombat=", PowaAuras.WeAreInCombat);
+	if ((self.IsResting==false and IsResting()==1 and not PowaAuras.WeAreInCombat) or (self.IsResting==true and (IsResting()~=1))) then	
 		if (not giveReason) then return false; end
-		if (self.isResting == true) then
+		if (self.IsResting == true) then
 			return false, PowaAuras.Text.nomReasonNotResting;
 		end
 		return false, PowaAuras.Text.nomReasonResting;		
@@ -1153,7 +1205,7 @@ function cPowaAura:CheckState(giveReason)
 				return false, PowaAuras.Text.nomReasonTargetPlayer;
 			end		
 			local targetIsDead = UnitIsDead("target");
-			if ((targetIsDead and self.isAlive == true) or (not PowaAuras.targetIsDead and self.isAlive == false)) then
+			if ((targetIsDead and self.IsAlive == true) or (not PowaAuras.targetIsDead and self.IsAlive == false)) then
 				if (not giveReason) then return false; end
 				if (targetIsDead) then
 					return false, PowaAuras.Text.nomReasonTargetDead;
@@ -1175,7 +1227,7 @@ function cPowaAura:CheckState(giveReason)
 		end
 	end
 	
-	if (self.bufftype==PowaAuras.BuffTypes.SpellCooldown and self.targetfriend and not UnitExists("pet")) then
+	if (self.Type==PowaAuras.BuffTypes.SpellCooldown and self.targetfriend and not UnitExists("pet")) then
 		if (not giveReason) then return false; end
 		return false, PowaAuras.Text.nomReasonNoPet;
 	end
@@ -1208,55 +1260,55 @@ function cPowaAura:CheckState(giveReason)
 	end
 
 	--- dual spec check
-	if ((not self.spec2 and PowaAuras.ActiveTalentGroup == 2) or (not self.spec1 and PowaAuras.ActiveTalentGroup == 1)) then
+	if ((not self.Spec2 and PowaAuras.ActiveTalentGroup == 2) or (not self.Spec1 and PowaAuras.ActiveTalentGroup == 1)) then
 		if (not giveReason) then return false; end
 		return false, PowaAuras.Text.nomReasonNotForTalentSpec;
     end
 	
 	--- mode combat
-	if ((PowaAuras.WeAreInCombat == true and self.combat == false) or (PowaAuras.WeAreInCombat == false and self.combat == true)) then
+	if ((PowaAuras.WeAreInCombat == true and self.InCombat == false) or (PowaAuras.WeAreInCombat == false and self.InCombat == true)) then
 		if (not giveReason) then return false; end
-		if (self.combat == true) then
+		if (self.InCombat == true) then
 			return false, PowaAuras.Text.nomReasonNotInCombat;
 		end
 		return false, PowaAuras.Text.nomReasonInCombat;		
 	end
 	
-	if ((PowaAuras.PvPFlagSet == 1 and self.PvP == false) or (PowaAuras.PvPFlagSet ~= 1 and self.PvP == true)) then
+	if ((PowaAuras.PvPFlagSet == 1 and self.IsPvP == false) or (PowaAuras.PvPFlagSet ~= 1 and self.IsPvP == true)) then
 		if (not giveReason) then return false; end
-		if (self.PvP == true) then
+		if (self.IsPvP == true) then
 			return false, PowaAuras.Text.nomReasonPvPFlagNotSet;
 		end
 		return false, PowaAuras.Text.nomReasonPvPFlagSet;		
 	end
 		
-	if ((PowaAuras.WeAreInRaid == true and self.inRaid == false) or (PowaAuras.WeAreInRaid == false and self.inRaid == true)) then
+	if ((PowaAuras.WeAreInRaid == true and self.InRaid == false) or (PowaAuras.WeAreInRaid == false and self.InRaid == true)) then
 		if (not giveReason) then return false; end
-		if (self.inRaid == true) then
+		if (self.InRaid == true) then
 			return false, PowaAuras.Text.nomReasonNotInRaid;
 		end
 		return false, PowaAuras.Text.nomReasonInRaid;		
 	end
 		
-	if ((PowaAuras.WeAreInParty == true and self.inParty == false) or (PowaAuras.WeAreInParty == false and self.inParty == true)) then
+	if ((PowaAuras.WeAreInParty == true and self.InParty == false) or (PowaAuras.WeAreInParty == false and self.InParty == true)) then
 		if (not giveReason) then return false; end
-		if (self.inParty == true) then
+		if (self.InParty == true) then
 			return false, PowaAuras.Text.nomReasonNotInParty;
 		end
 		return false, PowaAuras.Text.nomReasonInParty;		
 	end
 		
-	if ((PowaAuras.WeAreMounted == true and self.ismounted == false) or (PowaAuras.WeAreMounted == false and self.ismounted == true)) then
+	if ((PowaAuras.WeAreMounted == true and self.IsMounted == false) or (PowaAuras.WeAreMounted == false and self.IsMounted == true)) then
 		if (not giveReason) then return false; end
-		if (self.ismounted == true) then
+		if (self.IsMounted == true) then
 			return false, PowaAuras.Text.nomReasonNotMounted;
 		end
 		return false, PowaAuras.Text.nomReasonMounted;		
 	end
 		
-	if ((PowaAuras.WeAreInVehicle == true and self.inVehicle == false) or (PowaAuras.WeAreInVehicle == false and self.inVehicle == true)) then
+	if ((PowaAuras.WeAreInVehicle == true and self.InVehicle == false) or (PowaAuras.WeAreInVehicle == false and self.InVehicle == true)) then
 		if (not giveReason) then return false; end
-		if (self.inVehicle == true) then
+		if (self.InVehicle == true) then
 			return false, PowaAuras.Text.nomReasonNotInVehicle;
 		end
 		return false, PowaAuras.Text.nomReasonInVehicle;		
@@ -1377,13 +1429,13 @@ function cPowaAura:ShouldShow(giveReason, reverse, ignoreGCD)
 	self.InactiveDueToState = false;
 	local result, reason = self:CheckIfShouldShow(giveReason, ignoreGCD);
 	if (self.Debug) then
-		PowaAuras:DisplayText("ShouldShow result=",result, " inv=", self.inverse, " rev=", reverse);
+		PowaAuras:DisplayText("ShouldShow result=",result, " inv=", self.Invert, " rev=", reverse);
 		PowaAuras:DisplayText("           reason=",reason);
 	end
 	if (result==-1) then
 		return result, reason;
 	end
-	if (result~=nil and (self.inverse or reverse) and not (self.inverse and reverse)) then
+	if (result~=nil and (self.Invert or reverse) and not (self.Invert and reverse)) then
 		result = not result;
 		if (giveReason) then
 			reason = PowaAuras:InsertText(PowaAuras.Text.nomReasonInverted, reason);
@@ -1449,25 +1501,26 @@ function cPowaAura:SetStacks(text)
 	local stacks = tonumber(curStacks);
 	PowaAuras:Debug(stacks);
 		
-	if (stacks ~= self.stacks) then
+	if (stacks ~= self.StacksMatch) then
 		if (stacks < 0) then stacks = 0; end
-		self.stacks = stacks or 0;
+		self.StacksMatch = stacks or 0;
 	end
 	
 	if (curStacksLower == nil or curStacksLower == "") then curStacksLower = "0"; end
 	local stacksLower = tonumber(curStacksLower);
 	PowaAuras:Debug(stacksLower);
 	
-	if (stacksLower ~= self.stacksLower) then
+	if (stacksLower ~= self.StacksLowerBound) then
 		if (stacksLower < 0) or (stacksLower > stacks) then stacksLower = 0; end
-		self.stacksLower = stacksLower or 0;
+		self.StacksLowerBound = stacksLower or 0;
 	end
 	
-	if (curOperator ~= self.stacksOperator) then
+	if (curOperator ~= self.StacksOperator) then
 		if (not PowaAuras.allowedOperators[curOperator]) then
 			curOperator = PowaAuras.DefaultOperator;
 		end	
-		self.stacksOperator = curOperator;
+
+		self.StacksOperator = curOperator;
 	end	
 end
 
@@ -1519,7 +1572,7 @@ function cPowaAura:MatchSpell(spellName, spellTexture, spellId, matchString)
 				--PowaAuras:ShowText("textureMatch=", textureMatch);
 				if (matchName and (not textureMatch or textureMatch==spellTexture)) then
 					if (textToSearch) then
-						if (self.ignoremaj) then
+						if (self.IgnoreCase) then
 							textToSearch = string.upper(textToSearch)
 							matchName = string.upper(matchName);
 						end
@@ -1527,7 +1580,7 @@ function cPowaAura:MatchSpell(spellName, spellTexture, spellId, matchString)
 							PowaAuras:Message("matchName="..tostring(matchName).."<<");
 							PowaAuras:Message("search="..tostring(textToSearch).."<<");
 						end
-						if (self.exact) then
+						if (self.ExactMatch) then
 							if (self.Debug) then
 								PowaAuras:Message("exact=", (textToSearch == matchName)); --OK
 							end
@@ -1562,18 +1615,18 @@ function cPowaAura:MatchText(textToSearch, textToFind)
 	if (self.Debug) then
 		PowaAuras:Message("MatchText textToSearch=",textToSearch," textToFind=",textToFind); --OK
 	end
-	if (self.ignoremaj) then
+	if (self.IgnoreCase) then
 		textToFind = string.upper(textToFind);
 		textToSearch = string.upper(textToSearch);
 	end
 	if (self.Debug) then
-		PowaAuras:Message("MatchText textToSearch=",textToSearch," textToFind=",textToFind, " ignoremaj=", self.ignoremaj, " exact=", self.exact); --OK
+		PowaAuras:Message("MatchText textToSearch=",textToSearch," textToFind=",textToFind, " ignoremaj=", self.IgnoreCase, " exact=", self.ExactMatch); --OK
 	end
 	for pword in string.gmatch(textToFind, "[^/]+") do	
 		if (self.Debug) then
 			PowaAuras:Message("pword=", pword," find=",string.find(textToSearch, pword, 1, true)); --OK
 		end
-		if (self.exact and textToSearch == textToFind) then
+		if (self.ExactMatch and textToSearch == textToFind) then
 			return true;
 		elseif (string.find(textToSearch, pword, 1, true)) then
 			return true;
@@ -1670,7 +1723,7 @@ function cPowaAura:CheckAllUnits(giveReason)
 				result = self:CheckUnit(groupUnit);
 				if result then
 					if (not giveReason) then return true; end
-					return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, groupUnit, self.buffname, self:DisplayType());
+					return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, groupUnit, self.ValueCheck, self:DisplayType());
 				end
 			end
 		elseif unit == "raid" then
@@ -1679,7 +1732,7 @@ function cPowaAura:CheckAllUnits(giveReason)
 				result = self:CheckUnit(groupUnit);
 				if result then
 					if (not giveReason) then return true; end
-					return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, groupUnit, self.buffname, self:DisplayType());
+					return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, groupUnit, self.ValueCheck, self:DisplayType());
 				end
 			end
 		elseif unit == "groupOrSelf" then
@@ -1689,7 +1742,7 @@ function cPowaAura:CheckAllUnits(giveReason)
 					result = self:CheckUnit(groupUnit);
 					if result then
 						if (not giveReason) then return true; end
-						return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, groupUnit, self.buffname, self:DisplayType());
+						return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, groupUnit, self.ValueCheck, self:DisplayType());
 					end
 				end
 			elseif (numpm>0) then
@@ -1698,7 +1751,7 @@ function cPowaAura:CheckAllUnits(giveReason)
 					result = self:CheckUnit(groupUnit);
 					if result then
 						if (not giveReason) then return true; end
-						return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, groupUnit, self.buffname, self:DisplayType());
+						return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, groupUnit, self.ValueCheck, self:DisplayType());
 					end
 				end
 				local playerUnit = postfix;
@@ -1706,7 +1759,7 @@ function cPowaAura:CheckAllUnits(giveReason)
 				result = self:CheckUnit(playerUnit);
 				if result then
 					if (not giveReason) then return true; end
-					return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, playerUnit, self.buffname, self:DisplayType());
+					return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, playerUnit, self.ValueCheck, self:DisplayType());
 				end
 			else
 				local playerUnit = postfix;
@@ -1714,7 +1767,7 @@ function cPowaAura:CheckAllUnits(giveReason)
 				result = self:CheckUnit(playerUnit);
 				if result then
 					if (not giveReason) then return true; end
-					return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, playerUnit, self.buffname, self:DisplayType());
+					return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, playerUnit, self.ValueCheck, self:DisplayType());
 				end	
 			end
 		end
@@ -1723,7 +1776,7 @@ function cPowaAura:CheckAllUnits(giveReason)
 				result = self:CheckUnit(unit);
 				if result then
 					if (not giveReason) then return true; end
-					return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, unit, self.buffname, self:DisplayType());
+					return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, unit, self.ValueCheck, self:DisplayType());
 				end
 			end
 		end
@@ -1731,21 +1784,21 @@ function cPowaAura:CheckAllUnits(giveReason)
 		result = self:CheckUnit(unit..postfix);
 		if result then
 			if (not giveReason) then return true; end
-			return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, unit..postfix, self.buffname, self:DisplayType());
+			return true, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].MatchReason, unit..postfix, self.ValueCheck, self:DisplayType());
 		end
 	end
 
 	if (not giveReason) then return false; end
 	if (result==nil and PowaAuras.Text.ReasonStat[self.ValueName].NilReason) then
-		return false, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].NilReason, unit..postfix, self.buffname, self:DisplayType());
+		return false, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].NilReason, unit..postfix, self.ValueCheck, self:DisplayType());
 	end
-	return false, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].NoMatchReason, unit..postfix, self.buffname, self:DisplayType());
+	return false, PowaAuras:InsertText(PowaAuras.Text.ReasonStat[self.ValueName].NoMatchReason, unit..postfix, self.ValueCheck, self:DisplayType());
 end
 
 function cPowaAura:CheckStacks(count)
-	local operator = self.stacksOperator or PowaAuras.DefaultOperator;
-	local stacks = self.stacks or 0;
-	local stacksLower = self.stacksLower or 0;
+	local operator = self.StacksOperator or PowaAuras.DefaultOperator;
+	local stacks = self.StacksMatch or 0;
+	local stacksLower = self.StacksLowerBound or 0;
 	PowaAuras:Debug("Stack op=",operator," stacks=",stacks,"Stack Count=",count);
 	return    ((operator == "="  and stacks == 0)
 			or (operator == ">=" and count >= stacks)
@@ -1758,9 +1811,9 @@ function cPowaAura:CheckStacks(count)
 end
 
 function cPowaAura:StacksText()
-	local stacksText = self.stacksOperator..tostring(self.stacks);
-	if (self.stacksOperator=="-") then
-		stacksText =  tostring(self.stacksLower)..stacksText;
+	local stacksText = self.StacksOperator..tostring(self.StacksMatch);
+	if (self.StacksOperator=="-") then
+		stacksText =  tostring(self.StacksLowerBound)..stacksText;
 	end
 	return stacksText;
 end
@@ -1874,7 +1927,7 @@ function cPowaBuffBase:IsPresent(unit, s, giveReason, textToCheck)
 	end
 
 	local auraName, auraTexture, count, expirationTime, caster, auraId;
-	if (self.exact) then
+	if (self.ExactMatch) then
 		-- TODO - exact check should be moved to CheckAllAuraSlots()
 		auraName, _, auraTexture, count, _, _, expirationTime, caster, _, _, auraId = UnitAura(unit, textToCheck, nil, self.buffAuraType);
 	else
@@ -1902,7 +1955,7 @@ function cPowaBuffBase:IsPresent(unit, s, giveReason, textToCheck)
 	end
 	
 	local isMine = (caster~=nil) and UnitExists(caster) and UnitIsUnit("player", caster);
-	local bemine = self.mine;
+	local bemine = self.IsMine;
 	--PowaAuras:ShowText("Bemine=",bemine," isMine=",isMine);
 	if (bemine and not isMine) then
 		if (not giveReason) then return nil; end
@@ -1975,7 +2028,7 @@ function cPowaBuffBase:CompareAura(target, z, auraName, auraTexture, auraId, tex
 
 	if self:MatchSpell(auraName, auraTexture, auraId, textToCheck) then
 		--PowaAuras:UnitTestDebug("Aura match found! ", self.id);
-		if (not self:CheckTooltip(self.tooltipCheck, target, z)) then
+		if (not self:CheckTooltip(self.TooltipCheck, target, z)) then
 			--PowaAuras:UnitTestDebug("Tooltip no match found!");
 			return false;
 		end
@@ -2015,14 +2068,14 @@ function cPowaBuffBase:CheckAllAuraSlots(target, giveReason)
 		if (present) then
 			--PowaAuras:ShowText("Found again ", self.CurrentSlot);
 			if (not giveReason) then return true; end
-			return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonBuffPresent, target, self.OptionText.typeText, self.buffname);
+			return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonBuffPresent, target, self.OptionText.typeText, self.ValueCheck);
 		end	
 		startFrom = self.CurrentSlot;
 		self.CurrentSlot = nil;
 		self.CurrentMatch = nil;
 	end
 	if (not startFrom) then startFrom = 1; end
-	for pword in string.gmatch(self.buffname, "[^/]+") do
+	for pword in string.gmatch(self.ValueCheck, "[^/]+") do
 		if (self.Debug) then
 			PowaAuras:DisplayText("Check Auras for >>", pword,"<<");
 		end
@@ -2039,7 +2092,7 @@ function cPowaBuffBase:CheckAllAuraSlots(target, giveReason)
 				self.CurrentSlot = i;
 				self.CurrentMatch = pword;
 				if (not giveReason) then return true; end
-				return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonBuffPresent, target, self.OptionText.typeText, self.buffname);
+				return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonBuffPresent, target, self.OptionText.typeText, self.ValueCheck);
 			end	
 		end
 		for i = startFrom, 40 do
@@ -2058,19 +2111,19 @@ function cPowaBuffBase:CheckAllAuraSlots(target, giveReason)
 				self.CurrentSlot = i;
 				self.CurrentMatch = pword;
 				if (not giveReason) then return true; end
-				return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonBuffPresent, target, self.OptionText.typeText, self.buffname);
+				return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonBuffPresent, target, self.OptionText.typeText, self.ValueCheck);
 			end	
 		end
 	end
 	if (present==nil) then
 		if (not giveReason) then return false; end
 		if (reason) then
-			return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonBuffFoundButIncomplete, target, self.OptionText.typeText, self.buffname, reason);
+			return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonBuffFoundButIncomplete, target, self.OptionText.typeText, self.ValueCheck, reason);
 		end
-		return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonBuffMissing, target, self.OptionText.typeText, self.buffname);
+		return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonBuffMissing, target, self.OptionText.typeText, self.ValueCheck);
 	end
 	if (not giveReason) then return false; end
-	return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonBuffMissing, target, self.OptionText.typeText, self.buffname);
+	return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonBuffMissing, target, self.OptionText.typeText, self.ValueCheck);
 end
 
 function cPowaBuffBase:CheckSingleUnit(group, unit, giveReason)
@@ -2087,12 +2140,12 @@ function cPowaBuffBase:CheckSingleUnit(group, unit, giveReason)
 				PowaAuras:DisplayText("CheckSingleUnit ", unit, " Present!");
 			end
 			if (not giveReason) then return true; end
-			return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonOneInGroupHasBuff, unit, self.OptionText.typeText, self.buffname);
+			return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonOneInGroupHasBuff, unit, self.OptionText.typeText, self.ValueCheck);
 		end
 	elseif (self.groupany==false) then
 		--PowaAuras:ShowText("CheckSingleUnit ", unit," Missing!");
 		if (not giveReason) then return false; end
-		return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonNotAllInGroupHaveBuff, group, self.OptionText.typeText, self.buffname);
+		return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonNotAllInGroupHaveBuff, group, self.OptionText.typeText, self.ValueCheck);
 	end
 end
 
@@ -2135,11 +2188,11 @@ function cPowaBuffBase:CheckGroup(group, count, giveReason)
 	if (self.groupany==false) then
 		--PowaAuras:ShowText("CheckGroup("..group..") All Present!");
 		if (not giveReason) then return true; end
-		return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonAllInGroupHaveBuff, group, self.OptionText.typeText, self.buffname);
+		return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonAllInGroupHaveBuff, group, self.OptionText.typeText, self.ValueCheck);
 	end
 	--PowaAuras:ShowText("CheckGroup("..group..") No one has!");
 	if (not giveReason) then return false; end
-	return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonNoOneInGroupHasBuff, group, self.OptionText.typeText, self.buffname);
+	return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonNoOneInGroupHasBuff, group, self.OptionText.typeText, self.ValueCheck);
 end
 
 function cPowaBuffBase:CheckIfShouldShow(giveReason, ignoreGCD)
@@ -2164,6 +2217,7 @@ function cPowaBuffBase:CheckIfShouldShow(giveReason, ignoreGCD)
 		--PowaAuras:UnitTestDebug("on focus");
 		return self:CheckAllAuraSlots("focus", giveReason);
 	end		
+
 	--- unit buff    
 	if self.optunitn then
 		if (self.Debug) then
@@ -2302,7 +2356,7 @@ cPowaTypeDebuff.TooltipOptions = {r=0.8, g=1.0, b=0.8, showBuffName=true};
 
 function cPowaTypeDebuff:IsPresent(target, z)
 	local removeable;
-	if (self.mine) then
+	if (self.IsMine) then
 		removeable = 1;
 	end
 	local name, _, texture, count, typeDebuff, _, expirationTime = UnitDebuff(target, z, removeable);
@@ -2313,7 +2367,7 @@ function cPowaTypeDebuff:IsPresent(target, z)
 		PowaAuras:Message("TypeDebuff ", name, " IsPresent on ",target,"  buffid ",z,"  removeable ",removeable);
 	end
 	self.DisplayUnit = target;
-	if (self.mine and typeDebuff==nil) then
+	if (self.IsMine and typeDebuff==nil) then
 		self.DisplayValue = name;
 		return false;
 	end
@@ -2339,13 +2393,13 @@ function cPowaTypeDebuff:IsPresent(target, z)
 
 	--PowaAuras:UnitTestDebug("typeDebuffName ",typeDebuffName);
 	--PowaAuras:UnitTestDebug("typeDebuffCatName ",typeDebuffCatName);
-	--PowaAuras:UnitTestDebug("self.buffname ",self.buffname);
+	--PowaAuras:UnitTestDebug("self.ValueCheck ",self.ValueCheck);
 	if (self.Debug) then
-		PowaAuras:Message("typeDebuffName ", typeDebuffName, " typeDebuffCatName ",typeDebuffCatName,"  self.buffname ",self.buffname);
+		PowaAuras:Message("typeDebuffName ", typeDebuffName, " typeDebuffCatName ",typeDebuffCatName,"  self.ValueCheck ",self.ValueCheck);
 	end
 
-	if self:MatchText(typeDebuffName, self.buffname)
-	or self:MatchText(typeDebuffCatName, self.buffname) then
+	if self:MatchText(typeDebuffName, self.ValueCheck)
+	or self:MatchText(typeDebuffCatName, self.ValueCheck) then
 		self.DisplayValue = name;
 		if (self.Stacks) then
 			self.Stacks:SetStackCount(count);
@@ -2360,7 +2414,7 @@ function cPowaTypeDebuff:IsPresent(target, z)
 		return true;
 	end
 
-	self.DisplayValue = self.buffname;
+	self.DisplayValue = self.ValueCheck;
 	return false;
 end
 
@@ -2390,7 +2444,7 @@ cPowaTypeBuff.TooltipOptions = {r=0.8, g=1.0, b=0.8, showBuffName=true};
 
 function cPowaTypeBuff:IsPresent(target, z)
 	local removeable;
-	if (self.mine) then
+	if (self.IsMine) then
 		removeable = 1;
 	end
 	local name, _, texture, count, typeBuff, _, expirationTime = UnitBuff(target, z, removeable);
@@ -2401,7 +2455,7 @@ function cPowaTypeBuff:IsPresent(target, z)
 		PowaAuras:Message("TypeBuff ", name, " IsPresent on ",target,"  buffid ",z,"  removeable ",removeable);
 	end
 	self.DisplayUnit = target;
-	if (self.mine and typeBuff==nil) then
+	if (self.IsMine and typeBuff==nil) then
 		self.DisplayValue = name;
 		return false;
 	end
@@ -2427,13 +2481,13 @@ function cPowaTypeBuff:IsPresent(target, z)
 
 	--PowaAuras:UnitTestDebug("typeBuffName ",typeBuffName);
 	--PowaAuras:UnitTestDebug("typeBuffCatName ",typeBuffCatName);
-	--PowaAuras:UnitTestDebug("self.buffname ",self.buffname);
+	--PowaAuras:UnitTestDebug("self.ValueCheck ",self.ValueCheck);
 	if (self.Debug) then
-		PowaAuras:Message("typeBuffName ", typeBuffName, " typeBuffCatName ",typeBuffCatName,"  self.buffname ",self.buffname);
+		PowaAuras:Message("typeBuffName ", typeBuffName, " typeBuffCatName ",typeBuffCatName,"  self.ValueCheck ",self.ValueCheck);
 	end
 
-	if self:MatchText(typeBuffName, self.buffname)
-	or self:MatchText(typeBuffCatName, self.buffname) then
+	if self:MatchText(typeBuffName, self.ValueCheck)
+	or self:MatchText(typeBuffCatName, self.ValueCheck) then
 		self.DisplayValue = name;
 		if (self.Stacks) then
 			self.Stacks:SetStackCount(count);
@@ -2448,7 +2502,7 @@ function cPowaTypeBuff:IsPresent(target, z)
 		return true;
 	end
 
-	self.DisplayValue = self.buffname;
+	self.DisplayValue = self.ValueCheck;
 	return false;
 end
 
@@ -2464,24 +2518,24 @@ cPowaSpecialSpellBase.CheckBoxes={
 							};
 
 function cPowaSpecialSpellBase:CheckIfShouldShow(giveReason, ignoreGCD)
-	PowaAuras:Debug("Check if target/focus for ", self.buffname);
+	PowaAuras:Debug("Check if target/focus for ", self.ValueCheck);
 	if (self.Debug) then
-		PowaAuras:DisplayText("CheckIfShouldShow buffname=",self.buffname, " target=", self.target, " focus=", self.focus);
+		PowaAuras:DisplayText("CheckIfShouldShow buffname=",self.ValueCheck, " target=", self.target, " focus=", self.focus);
 	end
 	if self.target or self.focus then
 		-- Check self target/focus first
 		if (self.target and self:CheckUnit("target", "player")) then
 			if (not giveReason) then return true; end
-			return true, PowaAuras:InsertText(PowaAuras.Text["nomReason"..self.AuraType.."Present"], PowaAuras.Text.nomCheckTarget, self.buffname);
+			return true, PowaAuras:InsertText(PowaAuras.Text["nomReason"..self.AuraType.."Present"], PowaAuras.Text.nomCheckTarget, self.ValueCheck);
 		end
 		
 		if (self.focus and self:CheckUnit("focus", "player")) then
 			if (not giveReason) then return true; end
-			return true, PowaAuras:InsertText(PowaAuras.Text["nomReason"..self.AuraType.."Present"], PowaAuras.Text.nomCheckFocus, self.buffname);
+			return true, PowaAuras:InsertText(PowaAuras.Text["nomReason"..self.AuraType.."Present"], PowaAuras.Text.nomCheckFocus, self.ValueCheck);
 		end
 	
 		if (not giveReason) then return false; end
-		return false, PowaAuras:InsertText(PowaAuras.Text["nomReasonNo"..self.AuraType.."Present"], self.buffname);
+		return false, PowaAuras:InsertText(PowaAuras.Text["nomReasonNo"..self.AuraType.."Present"], self.ValueCheck);
 	end
 	
 	if (#PowaAuras.ChangedUnits.Targets>0) then
@@ -2491,7 +2545,7 @@ function cPowaSpecialSpellBase:CheckIfShouldShow(giveReason, ignoreGCD)
 		for unit, targetOf in pairs (PowaAuras.ChangedUnits.Targets) do
 			if (self:CheckUnit(unit, targetOf)) then
 				if (not giveReason) then return true; end
-				return true, PowaAuras:InsertText(PowaAuras.Text["nomReason"..self.AuraType.."Present"], unit, self.buffname);
+				return true, PowaAuras:InsertText(PowaAuras.Text["nomReason"..self.AuraType.."Present"], unit, self.ValueCheck);
 			end
 		end
 		return nil;
@@ -2503,13 +2557,13 @@ function cPowaSpecialSpellBase:CheckIfShouldShow(giveReason, ignoreGCD)
 		for i=1, numrm do
 			if (self:CheckUnit("raid"..i.."target", "raid"..i)) then
 				if (not giveReason) then return true; end
-				return true, PowaAuras:InsertText(PowaAuras.Text["nomReasonRaidTarget"..self.AuraType.."Present"], i, self.buffname);
+				return true, PowaAuras:InsertText(PowaAuras.Text["nomReasonRaidTarget"..self.AuraType.."Present"], i, self.ValueCheck);
 			end
 		end
 	else
 		if (self:CheckUnit("target", "player")) then
 			if (not giveReason) then return true; end
-			return true, PowaAuras:InsertText(PowaAuras.Text["nomReason"..self.AuraType.."Present"], PowaAuras.Text.nomCheckTarget, self.buffname);
+			return true, PowaAuras:InsertText(PowaAuras.Text["nomReason"..self.AuraType.."Present"], PowaAuras.Text.nomCheckTarget, self.ValueCheck);
 		end
 
 	    -- Scan party targets
@@ -2518,13 +2572,13 @@ function cPowaSpecialSpellBase:CheckIfShouldShow(giveReason, ignoreGCD)
 			for i=1, numpm do
 				if (self:CheckUnit("party"..i.."target", "party"..i)) then
 					if (not giveReason) then return true; end
-					return true, PowaAuras:InsertText(PowaAuras.Text["nomReasonPartyTarget"..self.AuraType.."Present"], i, self.buffname);
+					return true, PowaAuras:InsertText(PowaAuras.Text["nomReasonPartyTarget"..self.AuraType.."Present"], i, self.ValueCheck);
 				end
 			end
 		end
 	end
 	if (not giveReason) then return false; end
-	return false, PowaAuras:InsertText(PowaAuras.Text["nomReasonNo"..self.AuraType.."Present"], self.buffname);
+	return false, PowaAuras:InsertText(PowaAuras.Text["nomReasonNo"..self.AuraType.."Present"], self.ValueCheck);
 end
 
 function cPowaSpecialSpellBase:AddEffectAndEvents()
@@ -2560,7 +2614,7 @@ function cPowaStealableSpell:CheckUnit(unit, targetOf)
 	
 	self.DisplayUnit = unit;
 	
-	for pword in string.gmatch(self.buffname, "[^/]+") do
+	for pword in string.gmatch(self.ValueCheck, "[^/]+") do
 
 		if (self.Debug) then
 			PowaAuras:Message("Match=", pword );
@@ -2597,7 +2651,7 @@ function cPowaStealableSpell:CheckUnit(unit, targetOf)
 	end
 	
 	--PowaAuras:UnitTestDebug(unit, "  has stealable spell ", spellname, " no match");
-	self.DisplayValue = self.buffname;
+	self.DisplayValue = self.ValueCheck;
 	self:UpdateText();
 	return false;
 end	
@@ -2622,7 +2676,7 @@ function cPowaPurgeableSpell:CheckUnit(unit, targetOf)
 
 	self.DisplayUnit = unit;
 	
-	for pword in string.gmatch(self.buffname, "[^/]+") do
+	for pword in string.gmatch(self.ValueCheck, "[^/]+") do
 
 		if (self.Debug) then
 			PowaAuras:Message("Match=", pword );
@@ -2691,7 +2745,7 @@ function cPowaAoE:CheckIfShouldShow(giveReason, ignoreGCD)
 
 	for spellId, spell in pairs (PowaAuras.AoeAuraAdded) do
 		--PowaAuras:ShowText("checking AoE "..spell.." ("..spellId..")");
-		if self:MatchSpell(spell, PowaAuras.AoeAuraTexture[spellId], spellId, self.buffname) then
+		if self:MatchSpell(spell, PowaAuras.AoeAuraTexture[spellId], spellId, self.ValueCheck) then
 			--PowaAuras:ShowText("Found! Showing=", self.Showing, " Active=", self.Active);
 			if (self.duration>0) then
 				self.TimeToHide = GetTime() + self.duration;
@@ -2702,7 +2756,7 @@ function cPowaAoE:CheckIfShouldShow(giveReason, ignoreGCD)
 	end
 	
 	if (not giveReason) then return false; end
-	return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonAoENoTrigger, self.buffname);
+	return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonAoENoTrigger, self.ValueCheck);
 end
 
 cPowaEnchant = PowaClass(cPowaAura, {AuraType = "Enchants", CanHaveTimer=true, CanHaveTimerOnInverse=true, CanHaveStacks=true, CanHaveInvertTime=true, InvertTimeHides=true});
@@ -2754,7 +2808,7 @@ function cPowaEnchant:CheckforEnchant(slot, enchantText, textToFind)
 end
 				
 function cPowaEnchant:SetForEnchant(loc, slot, charges, index)
-	PowaAuras:Debug(loc,":found ",self.buffname," in the tooltip!");
+	PowaAuras:Debug(loc,":found ",self.ValueCheck," in the tooltip!");
 	if (self:CheckStacks(charges)) then
 		if (self:IconIsRequired()) then
 			self:SetIcon(GetInventoryItemTexture("player", slot));
@@ -2775,7 +2829,7 @@ function cPowaEnchant:CheckIfShouldShow(giveReason, ignoreGCD)
 
 	local checkMain = true;
 	local checkOff = true;
-	for pword in string.gmatch(self.buffname, "[^/]+") do
+	for pword in string.gmatch(self.ValueCheck, "[^/]+") do
 		if (pword==PowaAuras.Text.mainHand) then
 			checkMain = true;
 			checkOff = false;
@@ -2794,11 +2848,11 @@ function cPowaEnchant:CheckIfShouldShow(giveReason, ignoreGCD)
 							self.Timer:SetDurationInfo(PowaAuras.Pending[self.id]);
 							if (self.ForceTimeInvert) then
 								if (not giveReason) then return false; end
-								return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonEnchantMainInvert, self.buffname);
+								return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonEnchantMainInvert, self.ValueCheck);
 							end
 						end
 						if (not giveReason) then return true; end
-						return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonEnchantMain, self.buffname);
+						return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonEnchantMain, self.ValueCheck);
 					end
 				end
 			end
@@ -2813,18 +2867,18 @@ function cPowaEnchant:CheckIfShouldShow(giveReason, ignoreGCD)
 							self.Timer:SetDurationInfo(PowaAuras.Pending[self.id]);
 							if (self.ForceTimeInvert) then
 								if (not giveReason) then return false; end
-								return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonEnchantOffInvert, self.buffname);
+								return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonEnchantOffInvert, self.ValueCheck);
 							end
 						end		
 						if (not giveReason) then return true; end
-						return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonEnchantOff, self.buffname);
+						return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonEnchantOff, self.ValueCheck);
 					end
 				end	
 			end
 		end
 	end
 	if (not giveReason) then return false; end
-	return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonNoEnchant, self.buffname);
+	return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonNoEnchant, self.ValueCheck);
 end
 
 cPowaCombo = PowaClass(cPowaAura,
@@ -2865,16 +2919,16 @@ function cPowaCombo:CheckIfShouldShow(giveReason, ignoreGCD)
 	PowaAuras:Debug("Check Combos");
 	local nCombo = GetComboPoints("player");
 	local combo = tostring(nCombo);
-	--PowaAuras:UnitTestDebug("nCombo=", nCombo, " self.buffname=", self.buffname);
-	if self:MatchText(combo, self.buffname) then
+	--PowaAuras:UnitTestDebug("nCombo=", nCombo, " self.ValueCheck=", self.ValueCheck);
+	if self:MatchText(combo, self.ValueCheck) then
 		if (self.Stacks) then
 			self.Stacks:SetStackCount(nCombo);
 		end			
 		if (not giveReason) then return true; end
-		return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonComboMatch, combo, self.buffname);
+		return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonComboMatch, combo, self.ValueCheck);
 	end
 	if (not giveReason) then return false; end
-	return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonNoComboMatch, combo, self.buffname);
+	return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonNoComboMatch, combo, self.ValueCheck);
 end
 
 ---=== ACTION READY ===--
@@ -2922,8 +2976,8 @@ function cPowaActionReady:CheckIfShouldShow(giveReason, ignoreGCD)
 		return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonActionlNotEnabled, spellName);
 	end
 
-	-- PowaAuras:ShowText("self.mine= ",self.mine," usable= ",IsUsableSpell(self.buffname));
-	if (not self.mine) then
+	-- PowaAuras:ShowText("self.IsMine= ",self.IsMine," usable= ",IsUsableSpell(self.ValueCheck));
+	if (not self.IsMine) then
 		local usable, noMana = IsUsableAction(self.slot);
 		if (not usable) then
 			--PowaAuras:ShowText("HIDE!!");
@@ -3014,17 +3068,17 @@ function cPowaSpellCooldown:SkipTargetChecks()
 end
 
 function cPowaSpellCooldown:CheckIfShouldShow(giveReason, ignoreGCD)
-	--PowaAuras:UnitTestDebug("Check Spell:", self.buffname);
+	--PowaAuras:UnitTestDebug("Check Spell:", self.ValueCheck);
 	if (self.Debug) then
 		PowaAuras:Message("====SPELL COOLDOWN====");
-		PowaAuras:Message("Spell=", self.buffname);
+		PowaAuras:Message("Spell=", self.ValueCheck);
 		PowaAuras:Message("ignoreGCD=", ignoreGCD);
 	end
-	for pword in string.gmatch(self.buffname, "[^/]+") do
+	for pword in string.gmatch(self.ValueCheck, "[^/]+") do
 		local spellName, spellIcon, spellId = self:GetSpellFromMatch(pword);
 		if(not spellName) then
 			-- No spell name = Don't continue.
-			return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonSpellNotFound, self.buffname);
+			return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonSpellNotFound, self.ValueCheck);
 		end
 		if (self.Debug) then
 			PowaAuras:Message("spellName=",spellName," spellId=",spellId);
@@ -3052,6 +3106,7 @@ function cPowaSpellCooldown:CheckIfShouldShow(giveReason, ignoreGCD)
 
 		if (not ignoreGCD) then
 			local globalCD = not self.CooldownOver and (cdduration > 0.2 and cdduration < 1.7) and PowaAuras.InGCD==true;
+
 			--PowaAuras:UnitTestDebug("globalCD= ", globalCD);
 			if (self.Debug) then
 				PowaAuras:Message("globalCD=",globalCD);
@@ -3079,7 +3134,7 @@ function cPowaSpellCooldown:CheckIfShouldShow(giveReason, ignoreGCD)
 		--PowaAuras:ShowText("Set Pending= ",PowaAuras.Pending[self.id]);
 
 		if (giveReason) then
-			local reason = PowaAuras:InsertText(PowaAuras.Text.nomReasonSpellNotFound, self.buffname);
+			local reason = PowaAuras:InsertText(PowaAuras.Text.nomReasonSpellNotFound, self.ValueCheck);
 		end
 		if (self.Timer) then
 			self.Timer:SetDurationInfo(PowaAuras.Pending[self.id]);
@@ -3163,9 +3218,9 @@ end
 
 function cPowaAuraStats:Init()
 	self:SetFixedIcon();
-	if (not self.PowerType) then return; end
-	self.MaxRange = PowaAuras.PowerRanges[self.PowerType];
-	self.RangeType = PowaAuras.RangeType[self.PowerType];
+	if (not self.Subtype) then return; end
+	self.MaxRange = PowaAuras.PowerRanges[self.Subtype];
+	self.RangeType = PowaAuras.RangeType[self.Subtype];
 end
 
 --- Displays additional lines of information about the aura when the tooltip is made visible in the aura browser.
@@ -3174,8 +3229,8 @@ end
 -- @param tooltip The tooltip object to modify. This is generally GameTooltip but you shouldn't rely on this.
 function cPowaAuraStats:DisplayAuraTooltip(tooltip)
 	-- Add buff name.
-	tooltip:AddLine((self.thresholdinvert and ">= " .. tostring(self.threshold) .. "%" 
-		or "<= " .. tostring(self.threshold) .. "%"), 1, 1, 1, true);
+	tooltip:AddLine((self.ThresholdInvert and ">= " .. tostring(self.StacksMatch) .. "%" 
+		or "<= " .. tostring(self.StacksMatch) .. "%"), 1, 1, 1, true);
 end
 
 function cPowaAuraStats:CheckUnit(unit)
@@ -3212,13 +3267,13 @@ function cPowaAuraStats:CheckUnit(unit)
 	end	
 				
 	if (self.Debug) then
-		PowaAuras:DisplayText(curValue..self.RangeType, " threshold=",self.threshold);
+		PowaAuras:DisplayText(curValue..self.RangeType, " threshold=",self.StacksMatch);
 	end
 
-	if self.thresholdinvert then 
-		thresholdvalidate = (curValue >= self.threshold);
+	if self.ThresholdInvert then 
+		thresholdvalidate = (curValue >= self.StacksMatch);
 	else
-		thresholdvalidate = (curValue <= self.threshold);
+		thresholdvalidate = (curValue <= self.StacksMatch);
 	end
 
 	
@@ -3285,8 +3340,8 @@ cPowaPowerType.ShowOptions={
 
 function cPowaPowerType:Init()
 	-- Fix for happiness auras.
-	if(self.PowerType == 4 or self.PowerType == -1) then
-		self.PowerType = SPELL_POWER_RAGE;
+	if(self.Subtype == 4 or self.Subtype == -1) then
+		self.Subtype = SPELL_POWER_RAGE;
 	end
 	-- Set the ranges properly.
 	self._base.Init(self);
@@ -3295,30 +3350,30 @@ end
 
 function cPowaPowerType:SetFixedIcon()
 	self.icon = nil;
-	self:SetIcon("Interface\\icons\\"..PowaAuras.PowerTypeIcon[self.PowerType]);
+	self:SetIcon("Interface\\icons\\"..PowaAuras.PowerTypeIcon[self.Subtype or -1]);
 end
 
 function cPowaPowerType:DisplayType()
-	if (self.PowerType==-1) then
+	if (self.Subtype==-1) then
 		return self.OptionText.typeText;
 	end
-	return PowaAuras.Text.PowerType[self.PowerType];
+	return PowaAuras.Text.PowerType[self.Subtype];
 end
 
 function cPowaPowerType:UnitValue(unit)
-	PowaAuras:Debug("UnitValue for ", unit, " type=",self.PowerType);
+	PowaAuras:Debug("UnitValue for ", unit, " type=",self.Subtype);
 	if (self.Debug) then
-		PowaAuras:DisplayText("UnitValue for ", unit, " type=",self.PowerType);
+		PowaAuras:DisplayText("UnitValue for ", unit, " type=",self.Subtype);
 	end
 	local power;
-	if (not self.PowerType or self.PowerType==-1) then
+	if (not self.Subtype or self.Subtype==-1) then
 		power = UnitPower(unit);
-	elseif (self.PowerType==SPELL_POWER_LUNAR_ECLIPSE) then
+	elseif (self.Subtype==SPELL_POWER_LUNAR_ECLIPSE) then
 		power = math.max(-UnitPower(unit, SPELL_POWER_ECLIPSE), 0);
-	elseif (self.PowerType==SPELL_POWER_SOLAR_ECLIPSE) then
+	elseif (self.Subtype==SPELL_POWER_SOLAR_ECLIPSE) then
 		power = math.max(UnitPower(unit, SPELL_POWER_ECLIPSE));
 	else
-		power = UnitPower(unit, self.PowerType);
+		power = UnitPower(unit, self.Subtype);
 	end
 	if (self.Debug) then
 		PowaAuras:DisplayText("power=", power);
@@ -3329,15 +3384,15 @@ end
 function cPowaPowerType:UnitValueMax(unit)
 	PowaAuras:Debug("UnitValueMax for ", unit);
 	if (self.Debug) then
-		PowaAuras:DisplayText("UnitValueMax for ", unit, " type=",self.PowerType);
+		PowaAuras:DisplayText("UnitValueMax for ", unit, " type=",self.Subtype);
 	end
 	local power;
-	if (not self.PowerType or self.PowerType==-1) then
+	if (not self.Subtype or self.Subtype==-1) then
 		maxpower = UnitPowerMax(unit);
-	elseif (self.PowerType==SPELL_POWER_LUNAR_ECLIPSE or self.PowerType==SPELL_POWER_SOLAR_ECLIPSE) then
+	elseif (self.Subtype==SPELL_POWER_LUNAR_ECLIPSE or self.Subtype==SPELL_POWER_SOLAR_ECLIPSE) then
 		maxpower = 100;
 	else
-		maxpower = UnitPowerMax(unit, self.PowerType);
+		maxpower = UnitPowerMax(unit, self.Subtype);
 	end
 	if (self.Debug) then
 		PowaAuras:DisplayText("maxpower=", maxpower);
@@ -3347,22 +3402,22 @@ end
 
 function cPowaPowerType:IsCorrectPowerType(unit)
 	-- Check for correct secondary resource
-	if (self.PowerType==SPELL_POWER_HOLY_POWER  and PowaAuras.playerclass == "PALADIN")
-	or (self.PowerType==SPELL_POWER_RUNIC_POWER and PowaAuras.playerclass == "DEATHKNIGHT") 
-	or (self.PowerType==SPELL_POWER_SOUL_SHARDS and PowaAuras.playerclass == "WARLOCK") 
-	or ((self.PowerType==SPELL_POWER_LUNAR_ECLIPSE or self.PowerType==SPELL_POWER_SOLAR_ECLIPSE)     and PowaAuras.playerclass == "DRUID") then return true; end
+	if (self.Subtype==SPELL_POWER_HOLY_POWER  and PowaAuras.playerclass == "PALADIN")
+	or (self.Subtype==SPELL_POWER_RUNIC_POWER and PowaAuras.playerclass == "DEATHKNIGHT") 
+	or (self.Subtype==SPELL_POWER_SOUL_SHARDS and PowaAuras.playerclass == "WARLOCK") 
+	or ((self.Subtype==SPELL_POWER_LUNAR_ECLIPSE or self.Subtype==SPELL_POWER_SOLAR_ECLIPSE)     and PowaAuras.playerclass == "DRUID") then return true; end
 	
 	local unitPowerType = UnitPowerType(unit);
 	if (self.Debug) then
-		PowaAuras:DisplayText("cPowaPowerType IsCorrectPowerType powerType=", unitPowerType, " expected=", self.PowerType);
+		PowaAuras:DisplayText("cPowaPowerType IsCorrectPowerType powerType=", unitPowerType, " expected=", self.Subtype);
 	end
 	if (not unitPowerType) then
 		return false;
 	end
-	if (not self.PowerType or self.PowerType==-1) then
+	if (not self.Subtype or self.Subtype==-1) then
 		return (unitPowerType > 0);
 	end
-	return (unitPowerType==self.PowerType);
+	return (unitPowerType==self.Subtype);
 end
 
 cPowaAggro = PowaClass(cPowaAura, {ValueName = "Aggro"});
@@ -3557,7 +3612,7 @@ end
 
 function cPowaSpellAlert:CheckSpellName(unit, spellname, spellicon, endtime, spellId)	
 	
-	if self:MatchSpell(spellname, spellicon, spellId, self.buffname, true) then
+	if self:MatchSpell(spellname, spellicon, spellId, self.ValueCheck, true) then
 		if (self.Timer and endtime~=nil) then
 			self.Timer:SetDurationInfo(GetTime() + endtime/1000);
 			if (self.ForceTimeInvert) then
@@ -3636,10 +3691,10 @@ function cPowaSpellAlert:CheckUnit(unit)
 	
 	if (self.Debug) then
 		PowaAuras:DisplayText(unit, " is casting ", spellname);
-		PowaAuras:DisplayText(" mine= ", self.mine, " notInterruptible =", notInterruptible );
+		PowaAuras:DisplayText(" mine= ", self.IsMine, " notInterruptible =", notInterruptible );
 	end
 	
-	if (self.mine and (notInterruptible or endtime==nil)) then
+	if (self.IsMine and (notInterruptible or endtime==nil)) then
 		if (self.Debug) then
 			PowaAuras:DisplayText(unit, " is casting ", spellname, " but can't interrupt it");
 		end
@@ -3650,9 +3705,9 @@ function cPowaSpellAlert:CheckUnit(unit)
 end
 
 function cPowaSpellAlert:CheckIfShouldShow(giveReason, ignoreGCD)
-	--PowaAuras:UnitTestDebug("Check for spell being cast ", self.buffname, self.target, self.focus, self.targetfriend, self.Extra);
+	--PowaAuras:UnitTestDebug("Check for spell being cast ", self.ValueCheck, self.target, self.focus, self.targetfriend, self.Extra);
 	if (self.Debug) then
-		PowaAuras:DisplayText("Check for spell being cast ", self.buffname);
+		PowaAuras:DisplayText("Check for spell being cast ", self.ValueCheck);
 		PowaAuras:DisplayText("Active=", self.Active, " Pending=", PowaAuras.Pending[self.id]);
 	end
 	if (self.Active and PowaAuras.Pending[self.id] and PowaAuras.Pending[self.id] > GetTime()) then
@@ -3729,17 +3784,17 @@ end
 function cPowaStance:CheckIfShouldShow(giveReason, ignoreGCD)
 	PowaAuras:Debug("Check Stance");
 	local nStance = GetShapeshiftForm(false);
-	--PowaAuras:UnitTestDebug("nStance = "..tostring(nStance).." / self.stance = "..tostring(self.stance));
-	--PowaAuras:ShowText("nStance = "..tostring(nStance).." / self.stance = "..tostring(self.stance));
-	if (nStance == self.stance)then
+	--PowaAuras:UnitTestDebug("nStance = "..tostring(nStance).." / self.Subtype = "..tostring(self.Subtype));
+	--PowaAuras:ShowText("nStance = "..tostring(nStance).." / self.Subtype = "..tostring(self.Subtype));
+	if (nStance == self.Subtype)then
 		if (nStance>0 and self:IconIsRequired()) then
 			self:SetIcon(GetShapeshiftFormInfo(nStance));
 		end
 		if (not giveReason) then return true; end
-		return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonStance, nStance, self.stance);
+		return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonStance, nStance, self.Subtype);
 	end
 	if (not giveReason) then return false; end
-	return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonNoStance, nStance, self.stance);
+	return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonNoStance, nStance, self.Subtype);
 end
 
 
@@ -3750,24 +3805,24 @@ cPowaGTFO.TooltipOptions = {r=1.0, g=0.4, b=0.2, showGTFO=true};
 cPowaGTFO.ShowOptions={["PowaDropDownGTFO"]=1};
 
 function cPowaGTFO:AddEffectAndEvents()
-	if (self.GTFO == 0) then
+	if (self.Subtype == 0) then
 		table.insert(PowaAuras.AurasByType.GTFOHigh, self.id);
-	elseif (self.GTFO == 1) then
+	elseif (self.Subtype == 1) then
 		table.insert(PowaAuras.AurasByType.GTFOLow, self.id);
-	elseif (self.GTFO == 2) then
+	elseif (self.Subtype == 2) then
 		table.insert(PowaAuras.AurasByType.GTFOFail, self.id);
-    elseif (self.GTFO == 3) then
+    elseif (self.Subtype == 3) then
         table.insert(PowaAuras.AurasByType.GTFOFriendlyFire, self.id);
 	end
 end
 
 function cPowaGTFO:SetFixedIcon()
 	self.icon = nil;
-	if (self.GTFO == 1) then
+	if (self.Subtype == 1) then
 		self:SetIcon("Interface\\icons\\spell_fire_bluefire");
-	elseif (self.GTFO == 2) then
+	elseif (self.Subtype == 2) then
 		self:SetIcon("Interface\\icons\\ability_suffocate");
-	elseif (self.GTFO == 3) then
+	elseif (self.Subtype == 3) then
 		self:SetIcon("Interface\\icons\\spell_fire_felflamering");
 	else
 		self:SetIcon("Interface\\icons\\spell_fire_fire");
@@ -3777,7 +3832,7 @@ end
 function cPowaGTFO:CheckIfShouldShow(giveReason, ignoreGCD)
 	PowaAuras:Debug("GTFO alert");
 	if (self.Debug) then
-		PowaAuras:Message("GTFO CheckIfShouldShow Type=", self.GTFO);
+		PowaAuras:Message("GTFO CheckIfShouldShow Type=", self.Subtype);
 	end
 	if (GTFO) then
 		if (self.Debug) then
@@ -3820,7 +3875,7 @@ function cPowaTotems:CheckIfShouldShow(giveReason)
 	if (self.Debug) then
 		PowaAuras:Message("Totem Aura CheckIfShouldShow");
 	end
-	for pword in string.gmatch(self.buffname, "[^/]+") do
+	for pword in string.gmatch(self.ValueCheck, "[^/]+") do
 		if (self.Debug) then
 			PowaAuras:Message("  pword=",pword);
 		end
@@ -3951,7 +4006,7 @@ function cPowaPet:CheckIfShouldShow(giveReason, ignoreGCD)
 			end
 		end
 	
-		if (self.Timer and self.inverse) then
+		if (self.Timer and self.Invert) then
 			local startTime, duration, enabled = GetSpellCooldown(46584);
 			if (not enabled) then
 				if (not giveReason) then return false; end
@@ -3966,7 +4021,7 @@ function cPowaPet:CheckIfShouldShow(giveReason, ignoreGCD)
 			end
 		end
 	elseif (PowaAuras.playerclass == "MAGE") then
-		if (self.Timer and self.inverse) then
+		if (self.Timer and self.Invert) then
 			local startTime, duration, enabled = GetSpellCooldown(31687);
 			if (not enabled) then
 				if (not giveReason) then return false; end
@@ -4066,8 +4121,8 @@ function cPowaRunes:CheckIfShouldShow(giveReason, ignoreGCD)
 end
 
 function cPowaRunes:RunesPresent(giveReason)	
-	local match = self.buffname;
-	if (self.ignoremaj) then
+	local match = self.ValueCheck;
+	if (self.IgnoreCase) then
 		match = string.upper(match);
 	end
 	
@@ -4079,7 +4134,7 @@ function cPowaRunes:RunesPresent(giveReason)
 
 		local deathRunesAvailable, deathRunesRequired;
 		
-		if (self.ignoremaj) then
+		if (self.IgnoreCase) then
 			local deathRunes = select(2, string.gsub(pword, "D", "D"));
 			self.runesMissingPlusDeath[1] = math.max(select(2, string.gsub(pword, "B", "B")) - self.runes[1], 0);
 			self.runesMissingPlusDeath[2] = math.max(select(2, string.gsub(pword, "U", "U")) - self.runes[2], 0);
@@ -4135,9 +4190,9 @@ function cPowaRunes:RunesPresent(giveReason)
 		end
 			
 		if (self.Debug) then
-			PowaAuras:Message("  self.Timer=",self.Timer, "  self.inverse=",self.inverse);
+			PowaAuras:Message("  self.Timer=",self.Timer, "  self.Invert=",self.Invert);
 		end
-		if (self.Timer and self.inverse) then		
+		if (self.Timer and self.Invert) then		
 			local maxTime = 0;
 			wipe(self.timeList);
 			if (self.runesMissingIgnoreDeath[1]>0 or self.runesMissingIgnoreDeath[2]>0 or self.runesMissingIgnoreDeath[3]>0) then
@@ -4226,9 +4281,9 @@ end
 
 function cPowaSlots:CheckIfShouldShow(giveReason, ignoreGCD)
 	if (self.Debug) then
-		PowaAuras:Message("Slots Aura CheckIfShouldShow buffname=",self.buffname); --OK
+		PowaAuras:Message("Slots Aura CheckIfShouldShow buffname=",self.ValueCheck); --OK
 	end
-	for pword in string.gmatch(self.buffname, "[^/]+") do
+	for pword in string.gmatch(self.ValueCheck, "[^/]+") do
 		pword = self:Trim(pword);
 		if (string.len(pword)>0) then
 			local slotId, emptyTexture = GetInventorySlotInfo(pword.."Slot");
@@ -4358,9 +4413,9 @@ end
 
 function cPowaItems:CheckIfShouldShow(giveReason, ignoreGCD)
 	if (self.Debug) then
-		PowaAuras:Message("Items Aura CheckIfShouldShow buffname=",self.buffname); --OK
+		PowaAuras:Message("Items Aura CheckIfShouldShow buffname=",self.ValueCheck); --OK
 	end
-	for pword in string.gmatch(self.buffname, "[^/]+") do
+	for pword in string.gmatch(self.ValueCheck, "[^/]+") do
 		pword = self:Trim(pword);
 		if (string.len(pword)>0) then
 			local item;
@@ -4403,8 +4458,8 @@ function cPowaItems:CheckIfShouldShow(giveReason, ignoreGCD)
 					self.Stacks:SetStackCount(itemStackCount);
 				end
 					
-				if (self.mine or self.Extra) then
-					if (self.mine) then
+				if (self.IsMine or self.Extra) then
+					if (self.IsMine) then
 						if (isEquipped) then
 							if (not giveReason) then return true; end
 							return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonItemEquipped, itemName);
@@ -4419,7 +4474,7 @@ function cPowaItems:CheckIfShouldShow(giveReason, ignoreGCD)
 						return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonItemInBags, itemName);
 					end
 					if (not giveReason) then return false; end
-					if (not self.mine) then
+					if (not self.IsMine) then
 						return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonItemNotInBags, itemName);
 					end
 					return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonItemNotOnPlayer, itemName);
@@ -4513,21 +4568,21 @@ function cPowaTracking:CheckIfShouldShow(giveReason, ignoreGCD)
 			name, texture, active = GetTrackingInfo(i);
 		end
 		--PowaAuras:Message("name= ",name," texture= ",texture," active= ",active);
-		if self:MatchText(name, self.buffname) then
+		if self:MatchText(name, self.ValueCheck) then
 			self:SetIcon(texture);	
 			break; 
 		end
-		if (active and not self.inverse) then break; end
+		if (active and not self.Invert) then break; end
 	end
 	if (active) then
-		if self:MatchText(name, self.buffname) then
+		if self:MatchText(name, self.ValueCheck) then
 			if (not giveReason) then return true; end
 			return true, PowaAuras:InsertText(PowaAuras.Text.nomTrackingSet, name);
 		end
 	end
 	
 	if (not giveReason) then return false; end
-	return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonTrackingMissing, self.buffname);
+	return false, PowaAuras:InsertText(PowaAuras.Text.nomReasonTrackingMissing, self.ValueCheck);
 end
 
 -- Static Aura--
@@ -4595,7 +4650,7 @@ end
 
 function cPowaUnitMatch:CheckIfShouldShow(giveReason)
 	-- Check to see if the two units match.
-	local unit1, unit2 = strsplit("/", self.buffname);
+	local unit1, unit2 = strsplit("/", self.ValueCheck);
 	-- If one doesn't exist, replace with player.
 	if(not unit1 or unit1 == "") then unit1 = "player"; end
 	if(not unit2 or unit2 == "") then unit2 = "player"; end
@@ -4651,7 +4706,7 @@ function cPowaPetStance:CheckIfShouldShow(giveReason)
 	end
 	-- Determine what stances are allowed.
 	local allowAssist, allowDefensive, allowPassive, stance = false, false, false, "";
-	for pword in string.gmatch(self.buffname, "[^/]+") do
+	for pword in string.gmatch(self.ValueCheck, "[^/]+") do
 		if(pword == "1") then
 			allowAssist = true;
 		elseif(pword == "2") then
@@ -4709,7 +4764,7 @@ PowaAuras.AuraClasses = {
 	[PowaAuras.BuffTypes.Combo]=cPowaCombo,
 	[PowaAuras.BuffTypes.ActionReady]=cPowaActionReady,
 	[PowaAuras.BuffTypes.Health]=cPowaHealth,
-	[PowaAuras.BuffTypes.Mana]=cPowaMana,
+	[PowaAuras.BuffTypes.Mana]=cPowaMana, -- TODO Merge Mana + EnergyRagePower.
 	[PowaAuras.BuffTypes.EnergyRagePower]=cPowaPowerType,
 	[PowaAuras.BuffTypes.Aggro]=cPowaAggro,
 	[PowaAuras.BuffTypes.PvP]=cPowaPvP,
@@ -4739,7 +4794,7 @@ function PowaAuras:AuraFactory(auraType, id, base)
 		if (base == nil) then
 			base = {};
 		end
-		base.bufftype = auraType;
+		base.Type = auraType;
 		base.Debug = nil;
 		return class(id, base);
 	end
