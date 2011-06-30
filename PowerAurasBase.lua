@@ -1,3 +1,8 @@
+--- Contains the main Power Auras table and a few basic support methods
+
+--- This is the main Power Auras table, contains all the settings and many of the methods.
+-- @name PowaAuras
+-- @class table
 PowaAuras = {
 	Version = GetAddOnMetadata("PowerAuras", "Version");
 	
@@ -131,7 +136,14 @@ PowaAuras = {
 
 	playerclass = "unknown";
 	
+	--- Events we are interested in, this will change dynamically based on what the auras require
+	-- @name PowaAuras.Events
+	-- @class table
 	Events = {};
+	
+	--- Events that must always be registered
+	-- @name PowaAuras.AlwaysEvents
+	-- @class table
 	AlwaysEvents = 
 	{
 		ACTIVE_TALENT_GROUP_CHANGED = true,	
@@ -839,7 +851,9 @@ PowaAuras.RangeType = {
 	[SPELL_POWER_HOLY_POWER] = "",
 };
 
-
+--- Icons to use for different power types.
+-- @name PowaAuras.PowerTypeIcon
+-- @class table
 PowaAuras.PowerTypeIcon = {
 	[-1] = "inv_battery_02",
 	[SPELL_POWER_MANA] = "inv_elemental_primal_mana",
@@ -855,6 +869,9 @@ PowaAuras.PowerTypeIcon = {
 };
 
 
+--- Spells used to detect talent changes.
+-- @name PowaAuras.TalentChangeSpells
+-- @class table
 PowaAuras.TalentChangeSpells = {
 	[PowaAuras.Spells.ACTIVATE_FIRST_TALENT]  = true,
 	[PowaAuras.Spells.ACTIVATE_SECOND_TALENT] = true,
@@ -863,7 +880,10 @@ PowaAuras.TalentChangeSpells = {
 	[PowaAuras.Spells.BUFF_UNHOLY_PRESENCE]   = true,
 };
 
-	
+
+--- Spell IDs for detecting debuff types
+-- @name PowaAuras.DebuffTypeSpellIds
+-- @class table
 PowaAuras.DebuffTypeSpellIds={
 	-- Death Knight
 	[47481] = PowaAuras.DebuffCatType.Stun,		-- Gnaw (Ghoul)
@@ -874,8 +894,8 @@ PowaAuras.DebuffTypeSpellIds={
 	[50434] = PowaAuras.DebuffCatType.Snare,	-- Chillblains - I
 	[50435] = PowaAuras.DebuffCatType.Snare,	-- Chillblains - II
 	[96294] = PowaAuras.DebuffCatType.Root,     -- Chains of Ice (Root effect caused by Chillblains talent, guessed spell ID!)
-	[91797] = PowaAuras.DebuffCatType.Stun,    -- Monstrous Blow (for unholy DK ghouls under Dark Transformation)
-	[91802] = PowaAuras.DebuffCatType.Root,	-- Shambling Rush (for unholy DK ghouls under Dark Transformation)
+	[91797] = PowaAuras.DebuffCatType.Stun,		-- Monstrous Blow (for unholy DK ghouls under Dark Transformation)
+	[91802] = PowaAuras.DebuffCatType.Root,		-- Shambling Rush (for unholy DK ghouls under Dark Transformation)
 	-- Druid
 	[5211]  = PowaAuras.DebuffCatType.Stun,		-- Bash (also Shaman Spirit Wolf ability)
 	[33786] = PowaAuras.DebuffCatType.CC,		-- Cyclone
@@ -1074,6 +1094,7 @@ function PowaAuras:Debug(...)
 	--self:UnitTestDebug(...);
 end
 
+--- Display a message in the chat frame, comma seperate arguments rather than use string concatination as this will do nil protection
 function PowaAuras:Message(...)
 	args={...};
 	if (args==nil or #args==0) then
@@ -1086,16 +1107,19 @@ function PowaAuras:Message(...)
 	DEFAULT_CHAT_FRAME:AddMessage(Message);
 end
 
+--- Display a message in the chat frame, comma seperate arguments rather than use string concatination as this will do nil protection
 -- Use this for temp debug messages
 function PowaAuras:ShowText(...)
 	self:Message(...); -- OK
 end
 
+--- Display a message in the chat frame, comma seperate arguments rather than use string concatination as this will do nil protection
 -- Use this for real messages instead of ShowText
 function PowaAuras:DisplayText(...)
 	self:Message(...);
 end
 
+--- Dump out a table to the chat frame
 function PowaAuras:DisplayTable(t, indent)
 	if (not t or type(t)~="table") then
 		return "No table";
@@ -1119,9 +1143,10 @@ function PowaAuras:DisplayTable(t, indent)
 	end
 
 end
--->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
--- This function will print a Message to the GUI screen (not the chat window) then fade.
--->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+--- Print a Message to the GUI screen (not the chat window) then fade.
+-- @param msg Message to print
+-- @param holdtime Time before message fades
 function PowaAuras:Error( msg, holdtime )
 	if (holdtime==nil) then
 		holdtime = UIERRORS_HOLD_TIME;
@@ -1129,10 +1154,16 @@ function PowaAuras:Error( msg, holdtime )
 	UIErrorsFrame:AddMessage(msg, 0.75, 0.75, 1.0, 1.0, holdtime);
 end
 
+--- Check if parameter is a number
+-- @param a Variable to check
+-- @return true/false
 function PowaAuras:IsNumeric(a)
     return type(tonumber(a)) == "number";
 end
 
+--- Reverse the order of the elements in a table
+-- @param t Table to reverse
+-- @return New table with elements reversed
 function PowaAuras:ReverseTable(t)
 	if (type(t)~="table") then return nil; end
 	local newTable = {};
@@ -1142,6 +1173,9 @@ function PowaAuras:ReverseTable(t)
 	return newTable;
 end
 
+--- Check if table is empty
+-- @param t Table to check
+-- @return true/false
 function PowaAuras:TableEmpty(t)
 	if (type(t)~="table") then return nil; end
 	for k in pairs(t) do
@@ -1150,6 +1184,9 @@ function PowaAuras:TableEmpty(t)
 	return true;
 end
 
+--- Get number of element in table, does not require indicies to be sequencial like #t
+-- @param t Table to count
+-- @return integer count or nil if not a table
 function PowaAuras:TableSize(t)
 	if (type(t)~="table") then return nil; end
 	local size = 0;

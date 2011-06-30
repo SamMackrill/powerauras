@@ -453,6 +453,10 @@ function cPowaAura:GetActivationUI(parent)
 	return self.UI.Activation;
 end
 
+--- Sets an internal named state for this aura
+-- Used by the triggers for complex operations
+-- @param name Name of the state to set, this is actually an entry in the Aura table so be careful with the name!
+-- @param value Value to set the state to
 function cPowaAura:SetState(name, value)
 	if (not value or value==self[name]) then return; end
 	self[name] = value;
