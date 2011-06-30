@@ -113,10 +113,6 @@
 	</li>
 
 	<li>
-		<a href="../files/UI/BrowserFrame.html">UI/BrowserFrame.lua</a>
-	</li>
-
-	<li>
 		<a href="../files/UI/Button.html">UI/Button.lua</a>
 	</li>
 
@@ -133,11 +129,7 @@
 	</li>
 
 	<li>
-		<a href="../files/UI/FrameSeparator.html">UI/FrameSeparator.lua</a>
-	</li>
-
-	<li>
-		<a href="../files/UI/LayoutFrame.html">UI/LayoutFrame.lua</a>
+		<a href="../files/UI/FrameCategory.html">UI/FrameCategory.lua</a>
 	</li>
 
 	<li>
@@ -174,10 +166,6 @@
 
 	<li>
 		<a href="../files/UI/TabFrame.html">UI/TabFrame.lua</a>
-	</li>
-
-	<li>
-		<a href="../files/UI/Tooltip.html">UI/Tooltip.lua</a>
 	</li>
 
 	<li>
@@ -248,6 +236,11 @@
 	</tr>
 
 	<tr>
+	<td class="name" nowrap><a href="#cPowaAura:CopyTriggers">cPowaAura:CopyTriggers</a>&nbsp;(newAura)</td>
+	<td class="summary">Copy the Triggers from another Aura, any existing triggers will be lost </td>
+	</tr>
+
+	<tr>
 	<td class="name" nowrap><a href="#cPowaAura:CustomEvents">cPowaAura:CustomEvents</a>&nbsp;()</td>
 	<td class="summary">Allows aura to set any custom events, virtual, does nothing by default </td>
 	</tr>
@@ -259,7 +252,12 @@
 
 	<tr>
 	<td class="name" nowrap><a href="#cPowaAura:Dispose">cPowaAura:Dispose</a>&nbsp;()</td>
-	<td class="summary">Cleans-up aura resouces, </td>
+	<td class="summary">Cleans-up aura resouces </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#cPowaAura:GetActivationUI">cPowaAura:GetActivationUI</a>&nbsp;(parent)</td>
+	<td class="summary">Returns the elements to be added to the editor for the Activation tab.</td>
 	</tr>
 
 	<tr>
@@ -270,6 +268,11 @@
 	<tr>
 	<td class="name" nowrap><a href="#cPowaAura:SetFixedIcon">cPowaAura:SetFixedIcon</a>&nbsp;()</td>
 	<td class="summary">Allows aura to set its fixed icon, virtual, does nothing by default </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#cPowaAura:SetState">cPowaAura:SetState</a>&nbsp;(name, value)</td>
+	<td class="summary">Sets an internal named state for this aura Used by the triggers for complex operations </td>
 	</tr>
 
 	<tr>
@@ -310,6 +313,32 @@ Copies the Triggers, Timers and Stacks displays to a new aura by cloning their o
 	
 	<li>
 	  newID: The new aura ID to assign the object.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="cPowaAura:CopyTriggers"></a><strong>cPowaAura:CopyTriggers</strong>&nbsp;(newAura)</dt>
+<dd>
+Copy the Triggers from another Aura, any existing triggers will be lost
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  newAura: Auara to copy Triggers from
 	</li>
 	
 </ul>
@@ -371,8 +400,34 @@ Displays additional lines of information about the aura when the tooltip is made
 
 <dt><a name="cPowaAura:Dispose"></a><strong>cPowaAura:Dispose</strong>&nbsp;()</dt>
 <dd>
-Cleans-up aura resouces,
+Cleans-up aura resouces
 
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="cPowaAura:GetActivationUI"></a><strong>cPowaAura:GetActivationUI</strong>&nbsp;(parent)</dt>
+<dd>
+Returns the elements to be added to the editor for the Activation tab. The elements should be generated on request, as opposed to generated in advance at load.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  parent: The parent of the activation UI frame.
+	</li>
+	
+</ul>
 
 
 
@@ -407,6 +462,36 @@ Aura Initialisation call, Will get called at the end of aura creation, Can be ov
 <dd>
 Allows aura to set its fixed icon, virtual, does nothing by default
 
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="cPowaAura:SetState"></a><strong>cPowaAura:SetState</strong>&nbsp;(name, value)</dt>
+<dd>
+Sets an internal named state for this aura Used by the triggers for complex operations
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  name: Name of the state to set, this is actually an entry in the Aura table so be careful with the name!
+	</li>
+	
+	<li>
+	  value: Value to set the state to
+	</li>
+	
+</ul>
 
 
 

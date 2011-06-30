@@ -1,4 +1,4 @@
-﻿## Interface: 40100
+﻿## Interface: 40200
 ## Title: Power Auras Classic
 ## Author: Smacker & Meorawr 'lolcat',Driizt 'classic',Garstiger 'continued',Sinsthar 'base'
 ## Version: 5.0
@@ -44,7 +44,7 @@ PowerHelpers.lua
 # UI base code.
 PowerUI.lua
 
-# Do fonts now, any later and you get errors.
+# Do fonts now, any later and you get errors. Always inherit these fonts, not the GameFont ones.
 UI\Fonts.xml
 
 # Mixins
@@ -52,28 +52,22 @@ UI\Mixins\Scripts.lua
 UI\Mixins\Settings.lua
 UI\Mixins\Tooltip.lua
 
-# Generic classes.
-UI\LayoutFrame.lua
-UI\TabFrame.lua
-
 # Generic elements.
 UI\BorderedFrame.xml
 UI\Button.xml
 UI\Checkbox.xml
 UI\ColorWidget.xml
+UI\Dropdown.xml
 UI\EditBox.xml
-UI\FrameSeparator.xml
-UI\RadioGroup.xml
+UI\FrameCategory.xml
+UI\RadioGroup.lua
 UI\Slider.xml
 UI\ScrollFrame.xml
+UI\TabFrame.lua
 UI\TabButton.xml
-UI\TabDialog.xml
-
-# Elements with dependencies.
-UI\BrowserFrame.xml
-UI\Dropdown.xml
+UI\TabDialog.lua
 UI\TreeView.xml
 
 # Actual frames!
 UI\AuraBrowser.xml
-UI\AuraEditor.xml
+UI\AuraEditor.lua

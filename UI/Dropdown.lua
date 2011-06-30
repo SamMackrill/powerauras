@@ -18,13 +18,13 @@ UI:Register("DropdownBase", {
 		-- Selected key for this dropdown.
 		self.SelectedKey = nil;
 	end,
-	AddItem = function(self, key, text)
+	AddItem = function(self, key, text, tooltip)
 		-- Make sure key is unique.
 		for _, data in ipairs(self.Items) do
 			if(data.Key == key) then return; end
 		end
 		-- Add.
-		tinsert(self.Items, { Key = key, Value = text });
+		tinsert(self.Items, { Key = key, Value = text, Tooltip = tooltip });
 		-- Fully update the menu if we add/remove any items.
 		if(self.Menu:IsOwned(self)) then
 			self.Menu:UpdateItems();
@@ -57,12 +57,13 @@ UI:Register("DropdownBase", {
 			self:RemoveItem(data.Key);
 		end
 	end,
-	UpdateItem = function(self, key, text)
+	UpdateItem = function(self, key, text, tooltip)
 		-- Update.
 		for i, data in pairs(self.Items) do
 			if(data.Key == key) then
 				-- Update.
 				self.Items[i].Value = text;
+				self.Items[i].Tooltip = tooltip;
 				-- Fully update the menu if we changed anything.
 				if(self.Menu:IsOwned(self)) then
 					self.Menu:UpdateItems();
@@ -80,12 +81,10 @@ UI:Register("DropdownBase", {
 		self.Menu:Toggle(self, self.SelectedKey, self.AllowSelection);
 		PlaySound("UChatScrollButton");
 	end,
-	OnDropdownMenuPosition = function(self, count)
+	OnDropdownMenuPosition = function(self)
 		-- Update the sizing/positioning of the dropdown.
 		self.Menu:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, 0);
 		self.Menu:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, 0);
-		self.Menu:SetHeight(math.min(168, 8+(count*20)));
-		self.Menu.Child:SetSize(168, (count*20)-1);
 	end,
 	OnDropdownMenuSelectionUpdated = function(self, key)
 		-- Update selected key.	
@@ -101,6 +100,17 @@ UI:Register("DropdownBase", {
 		-- Hide the menu if we own it.
 		if(self.Menu:IsOwned(self)) then
 			self.Menu:Hide(self);
+		end
+	end,
+	SortCallback = function(a, b)
+		return (a.Value < b.Value);
+	end,
+	SortItems = function(self, callback)
+		-- Sort the items out.
+		sort(self.Items, callback or self.SortCallback);
+		-- Fully update the menu.
+		if(self.Menu:IsOwned(self)) then
+			self.Menu:UpdateItems();
 		end
 	end,
 	SetSelectedKey = function(self, key)
@@ -137,6 +147,11 @@ UI:Register("Dropdown", {
 		-- Settings mixin please.
 		UI:Settings(self, setting);
 	end,
+	GetTitle = function(self)
+		if(self.Title) then
+			return self.Title:GetText();
+		end
+	end,
 	OnSettingChanged = function(self, key)
 		-- Update text.
 		self:UpdateText(key);
@@ -151,6 +166,17 @@ UI:Register("Dropdown", {
 		self:UpdateText(key);
 		-- Save the setting.
 		self:SaveSetting(key);
+	end,
+	SetSelectedKey = function(self, key)
+		-- Set key.
+		UI.DropdownBase.SetSelectedKey(self, key);
+		-- Update text.
+		self:UpdateText(key);
+	end,
+	SetTitle = function(self, title)
+		if(self.Title) then
+			self.Title:SetText(title);
+		end
 	end,
 	UpdateText = function(self, key)
 		-- Find key, change text.
@@ -210,20 +236,12 @@ UI:Register("DropdownList", {
 			-- Make the list frame.
 			local frame = CreateFrame("Frame", nil, UIParent, "PowaBorderedFrameTemplate");
 			-- Some other things need setting up too.
-			frame:SetFrameStrata("FULLSCREEN_DIALOG");
+			frame:SetFrameStrata("DIALOG");
 			frame:SetToplevel(true);
 			frame:SetClampedToScreen(true);
 			frame:SetBackdropColor(0, 0, 0, 1);
-			-- Add a scrollframe...
-			frame.Scroll = CreateFrame("ScrollFrame", nil, frame, "PowaScrollFrameTemplate");
-			frame.Scroll:SetPoint("TOPLEFT", 4, -4);
-			frame.Scroll:SetPoint("BOTTOMRIGHT", -4, 4);
-			-- Add a child frame to the scrollframe.
-			frame.Child = CreateFrame("Frame", nil, frame.Scroll);
-			frame.Child:SetPoint("TOPLEFT", 0, 0);
-			frame.Scroll:SetScrollChild(frame.Child);
-			-- Register as scrollframe widget.
-			ui:ScrollFrame(frame.Scroll);
+			-- Register as scrollable.
+			ui:ScrollableItemsFrame(frame);
 			-- Construct as normal.
 			class.Menu = ui.Construct(class, ui, frame);
 		end
@@ -271,6 +289,8 @@ UI:Register("DropdownList", {
 		self:UpdateItems();
 		-- Show.
 		self:__Show();
+		-- Fix strata.
+		self:SetFrameStrata("DIALOG");
 	end,
 	Toggle = function(self, owner, ...)
 		-- Show or hide?
@@ -281,6 +301,19 @@ UI:Register("DropdownList", {
 		end
 	end,
 	UpdateItems = function(self)
+		-- Fix the scroll range, this will in turn invoke an update.
+		local max = (self.Owner and #(self.Owner:GetItems()) or 0);
+		-- Manually set scroll offset to the position of the selected item.
+		for i=1, max do
+			if(self.Owner:GetItems()[i].Key == self.SelectedKey) then
+				self.ScrollOffset = i-1;
+				break;
+			end
+		end
+		-- Set the top limit to max-8, which compensates for the height of the dropdown (8 items max onscreen).
+		self:SetScrollRange(0, max-8);
+	end,
+	UpdateScrollList = function(self)
 		-- Recycle all items, then clear the table.
 		for _, item in ipairs(self.Items) do
 			item:Recycle();
@@ -288,11 +321,15 @@ UI:Register("DropdownList", {
 		wipe(self.Items);
 		-- Make sure we have an owner before continuing.
 		if(not self.Owner) then return; end
-		-- Get the items the dropdown has.
-		local count = 0;
-		for _, data in pairs(self.Owner:GetItems()) do
+		-- Get items.
+		local items, count = self.Owner:GetItems(), 0;
+		-- Add child items.
+		for i=self.ScrollOffset+1, self.ScrollOffset+8 do
+			-- Get item data.
+			local data = items[i];
+			if(not data) then break; end
 			-- Get item.
-			local item = UI:DropdownItem(self.Child, self, (count*20), data.Key, data.Value);
+			local item = UI:DropdownItem(self, 4+(count*20), data.Key, data.Value, data.Tooltip);
 			-- Select if needed.
 			if(self.AllowSelection and self.SelectedKey and data.Key == self.SelectedKey) then
 				item:SetChecked(true);
@@ -301,12 +338,14 @@ UI:Register("DropdownList", {
 			end
 			-- Insert into storage.
 			tinsert(self.Items, item);
-			-- Increment counter.
-			count = count+1;
+			-- Increment count.
+			count=count+1;
 		end
+		-- Size it.
+		self:SetSize(168, math.min(168, 8+(count*20)));
 		-- Position dropdown.
 		self:SetParent(self.Owner);
-		self.Owner:CallScript("OnDropdownMenuPosition", count);
+		self.Owner:CallScript("OnDropdownMenuPosition");
 	end,
 });
 
@@ -322,6 +361,8 @@ UI:Register("DropdownItem", {
 		if(not item) then
 			-- Make one.
 			item = CreateFrame("CheckButton", nil, parent, "PowaDropdownItemTemplate");
+			-- Implements a tooltip.
+			ui:Tooltip(item);
 			-- Normal ctor.
 			item = ui.Construct(class, ui, item, parent, ...);
 		else
@@ -332,13 +373,21 @@ UI:Register("DropdownItem", {
 		-- Done.
 		return item;
 	end,
-	Init = function(self, parent, menu, offsetY, key, text)
-		self:SetParent(parent);
+	Init = function(self, menu, offsetY, key, text, tooltip)
+		self:SetParent(menu);
+		self:ClearAllPoints();
 		self:SetPoint("TOPLEFT", 0, -offsetY);
-		self:SetPoint("TOPRIGHT", 0, -offsetY);
+		self:SetPoint("TOPRIGHT", (menu.ScrollBar:IsShown() and -20 or 0), -offsetY);
 		self.Value:SetText(text);
 		self.Key = key;
 		self.Menu = menu;
+		if(tooltip) then
+			self.TooltipText = tooltip;
+			self.TooltipTitle = text;
+		else
+			self.TooltipText = nil;
+			self.TooltipTitle = nil;
+		end
 		self:Show();
 	end,
 	OnClick = function(self)

@@ -1,11 +1,15 @@
+--- Setup and Control
 -->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 --      << Power Auras >>
 -->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 --
+
 -- Use this regex to find debug spam before a release!
 -- ^\s*[^-\s][^-\s].*:ShowText\(.*$
 
--- Set default settings up.
+--- Store default local settings
+-- @name PowaAuras.PowaMiscDefault
+-- @class table
 PowaAuras.PowaMiscDefault = {
 	Disabled = false,
 	debug = false,
@@ -23,13 +27,14 @@ PowaAuras.PowaMiscDefault = {
 	SoundChannel = "Master",
 };
 
+--- Store default global settings
+-- @name PowaAuras.PowaGlobalMiscDefault
+-- @class table
 PowaAuras.PowaGlobalMiscDefault = {
 	PathToSounds = "Interface\\AddOns\\PowerAuras\\Sounds\\",
 	PathToAuras = "Interface\\Addons\\PowerAuras\\Custom\\",
 	BlockIncomingAuras = false,
 	FixExports = false,
-	CustomTextures = {}, -- DEPRECATED: Don't remove yet though, it'll break the editor.
-	EditorCategoryState = {},
 	LastVersion = 10000,
 	FirstRun = true,
 };
@@ -558,6 +563,7 @@ do
 		self:MarkAuras(select(2, ...));
 	end
 end
+
 function PowaAuras:OnUpdate(elapsed)
 	--self:UnitTestInfo("OnUpdate", elapsed);
 	if (self.NextDebugCheck>0 and self.DebugTimer > self.NextDebugCheck) then
@@ -1089,14 +1095,37 @@ function PowaAuras:DisplayAura(auraId)
 		self:SetForDragging(aura, frame);
 	else
 		self:ResetDragging(aura, frame);
-	end	
-	
-	if (aura.Timer) then
-		aura.Timer.Start = GetTime();
 	end
-	
-	aura:Show(PowaAuras.ModTest);
 
+	aura:Show(self.ModTest);
+
+end
+
+function PowaAuras:GetFrame(auraId, frameSource, frame)
+	if (not auraId) then 
+		--self:ShowText("GetFrame auraId nil");
+		return nil;
+	end
+	if (not frameSource) then
+		--self:ShowText("GetFrame invalid frameSource=", frameSource);
+		return nil;
+	end
+	if (not self[frameSource]) then
+		--self:ShowText("GetFrame invalid self[", frameSource, "]=", self[frameSource]);
+		return nil;
+	end
+	if (not self[frameSource][auraId]) then
+		--self:ShowText("GetFrame invalid self[", frameSource, "][", auraId, "]=", self[frameSource][auraId]);
+		return nil;
+	end
+	if (frame) then
+		if (not self[frameSource][auraId][frame]) then
+			--self:ShowText("GetFrame invalid self[", frameSource, "][", auraId, "][", frame, "]=", self[frameSource][auraId][frame]);
+			return nil;
+		end
+		return self[frameSource][auraId][frame];
+	end
+	return self[frameSource][auraId];
 end
 
 function PowaAuras:InitialiseAuraFrame(aura, frame, texture, alpha)

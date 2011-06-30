@@ -12,32 +12,39 @@ function cPowaDecorator:Show(aura, source)
 		end
 		return;
 	end
-	--PowaAuras:ShowText(GetTime()," ", self.Type, " Show() Showing=", self.Showing, " source=", source);
+	if (aura.Debug) then
+		PowaAuras:ShowText(GetTime()," ", self.Type, " Show() Showing=", self.Showing, " source=", source);
+	end
 	if (self.Showing) then return; end
+	self:Update(aura, 0, PowaAuras.ModTest);
 	if (not self:ValidValue(aura, PowaAuras.ModTest)) then
-		--PowaAuras:ShowText(GetTime()," ", self.Type, " Show() Invalid value");
+		--if (aura.Debug) then
+			PowaAuras:ShowText(GetTime()," ", self.Type, " Show() Invalid value: ", self:GetDisplayValue(aura, 0));
+		--end
 		return;
 	end
 
 	self.Showing = true;
 	self.HideRequest = false;
 	
-	local aura = PowaAuras.Auras[self.id];
 	local frame1, frame2 = self:CreateFrameIfMissing(aura);
-	self:Update(aura, 0, PowaAuras.ModTest);
 
 	if (frame1 == nil) then
-		--PowaAuras:ShowText(GetTime()," ", self.Type, " Show() frame1 nil!");
+		if (aura.Debug) then
+			PowaAuras:ShowText(GetTime()," ", self.Type, " Show() frame1 nil!");
+		end
 		return;
 	end
 
-	if (self.Debug) then
+	if (aura.Debug) then
 		PowaAuras:Message(GetTime()," ", self.Type, " Show() ", self.id, " frame1:Show() ", frame1);
 	end		
 	frame1:Show();
 	
 	if (frame2) then 
-		--PowaAuras:ShowText(GetTime()," ", self.Type, " Show() ", self.id, " frame2:Show() ", frame2);
+		if (aura.Debug) then
+			PowaAuras:ShowText(GetTime()," ", self.Type, " Show() ", self.id, " frame2:Show() ", frame2);
+		end
 		frame2:Show();
 	end
 	
@@ -49,7 +56,9 @@ end
 function cPowaDecorator:ValidValue(aura, testing)
 	if (testing) then return true; end
 	local displayValue = self:GetDisplayValue(aura, 0);
-	--PowaAuras:ShowText(GetTime()," ", self.Type, " ValidValue()=", displayValue);
+	if (aura.Debug) then
+		PowaAuras:ShowText(GetTime()," ", self.Type, " ValidValue()=", displayValue);
+	end
 	return (displayValue and displayValue>0);
 end
 
@@ -71,31 +80,39 @@ function cPowaDecorator:CheckActive(aura, testing)
 			self.Active = (aura.Active and not self.ShowOnAuraHide) or (not aura.Active and self.ShowOnAuraHide);
 		end
 	end
-	--PowaAuras:ShowText(GetTime()," ", aura.id, " CheckActive: ", self.Type, " AuraActive=", aura.Active, " ShowOnAuraHide=", self.ShowOnAuraHide);
-
+	
+	if (aura.Debug) then
+		PowaAuras:ShowText(GetTime()," ", aura.id, " CheckActive: ", self.Type, " AuraActive=", aura.Active, " ShowOnAuraHide=", self.ShowOnAuraHide);
+	end
+	
 	local stateChanged = (oldActive~=self.Active);
-	if (not stateChanged) then return; end
+	if (stateChanged) then
+
+		if (aura.Debug) then	
+			if (self.Active) then
+				PowaAuras:ShowText(GetTime(),"=== ", self.Type, " ACTIVE ", auraId);
+			else
+				PowaAuras:ShowText(GetTime(),"=== ", self.Type, " INACTIVE ", auraId);
+			end
+		end
 		
-	--if (self.Active) then
-	--	PowaAuras:ShowText(GetTime(),"=== ", self.Type, " ACTIVE ", auraId);
-	--else
-	--	PowaAuras:ShowText(GetTime(),"=== ", self.Type, " INACTIVE ", auraId);
-	--end
-	
-	self.InvertCount = 0;
-	
-	if (not testing) then
-		self:CheckDecoratorTriggers(aura, true);
-		if (self.Active) then
-			aura:CheckTriggers(self.Type.."Active");
-		else
-			aura:CheckTriggers(self.Type.."Inactive");
+		self.InvertCount = 0;
+		
+		if (not testing) then
+			self:CheckDecoratorTriggers(aura, true);
+			if (self.Active) then
+				aura:CheckTriggers(self.Type.."Active");
+			else
+				aura:CheckTriggers(self.Type.."Inactive");
+			end
 		end
 	end
 	
 	local inverted = ((self.InvertCount or 0)>0) and not testing;
 	local show = (self.Active and not inverted) or (not self.Active and inverted);
-	--PowaAuras:ShowText(GetTime()," show=", show, " inverted=", inverted);
+	if (aura.Debug) then	
+		PowaAuras:ShowText(GetTime()," show=", show, " inverted=", inverted);
+	end
 	if (show and not self.Showing) then
 		self:Show(aura, "Active");
 	elseif (not show and self.Showing) then
@@ -751,9 +768,14 @@ end
 
 -- This is used to dectect timer refreshes
 function cPowaTimer:SetDurationInfo(endtime)
-	if (self.DurationInfo == endtime) then return end;
+	if (endtime==nil) then return end;
+	if (self.DurationInfo~=nil and math.abs(self.DurationInfo - endtime) < 0.5) then return end;
 	self.DurationInfo = endtime;
+	PowaAuras:ShowText(self.id, " SetDurationInfo ",self.DurationInfo);
 	local aura = PowaAuras.Auras[self.id];
+	if (not self.Active) then
+		self:CheckActive(aura, PowaAuras.ModTest);
+	end
 	aura:CheckTriggers("TimerRefresh");
 end
 

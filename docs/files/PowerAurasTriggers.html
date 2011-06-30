@@ -113,10 +113,6 @@
 	</li>
 
 	<li>
-		<a href="../files/UI/BrowserFrame.html">UI/BrowserFrame.lua</a>
-	</li>
-
-	<li>
 		<a href="../files/UI/Button.html">UI/Button.lua</a>
 	</li>
 
@@ -133,11 +129,7 @@
 	</li>
 
 	<li>
-		<a href="../files/UI/FrameSeparator.html">UI/FrameSeparator.lua</a>
-	</li>
-
-	<li>
-		<a href="../files/UI/LayoutFrame.html">UI/LayoutFrame.lua</a>
+		<a href="../files/UI/FrameCategory.html">UI/FrameCategory.lua</a>
 	</li>
 
 	<li>
@@ -174,10 +166,6 @@
 
 	<li>
 		<a href="../files/UI/TabFrame.html">UI/TabFrame.lua</a>
-	</li>
-
-	<li>
-		<a href="../files/UI/Tooltip.html">UI/Tooltip.lua</a>
 	</li>
 
 	<li>
@@ -234,13 +222,55 @@
 <h1>File <code>PowerAurasTriggers.lua</code></h1>
 
 
+<p>Triggers control when things happen on an Aura and fire the appropriate actions. Each Aura will have a list of Triggers specific to that aura (stored in aura.Triggers table). The triggers are polled in the code by calling aura:CheckTriggers(TYPE, ...). Where TYPE is a string defined in one of the derived trigger classes (see below). The trigger will then determine if it needs to activate based on the parameters passed to CheckTriggers. When a trigger activates it will fire its associated Actions in order.</p>
 
 
 
 
 
 
+<h2>Functions</h2>
+<table class="function_list">
 
+	<tr>
+	<td class="name" nowrap><a href="#cPowaTrigger:AddAction">cPowaTrigger:AddAction</a>&nbsp;(actionClass, parameters)</td>
+	<td class="summary">Creates and adds an new Action </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#cPowaTrigger:Check">cPowaTrigger:Check</a>&nbsp;(value, qualifier)</td>
+	<td class="summary">Determine if Trigger needs to activate </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#cPowaTrigger:Compare">cPowaTrigger:Compare</a>&nbsp;(op, v1, v2)</td>
+	<td class="summary">Compare two values based on various operators </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#cPowaTrigger:DeleteAction">cPowaTrigger:DeleteAction</a>&nbsp;(action)</td>
+	<td class="summary">Deletes Action </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#cPowaTrigger:ResetActions">cPowaTrigger:ResetActions</a>&nbsp;()</td>
+	<td class="summary">Call Reset on all Actions, used by "Fire Once" Triggers </td>
+	</tr>
+
+</table>
+
+
+
+
+<h2>Tables</h2>
+<table class="table_list">
+
+	<tr>
+	<td class="name" nowrap><a href="#cPowaTrigger">cPowaTrigger</a></td>
+	<td class="summary">Base class for Trigger Types.</td>
+	</tr>
+
+</table>
 
 
 
@@ -250,8 +280,163 @@
 
 
 
+<h2><a name="functions"></a>Functions</h2>
+<dl class="function">
 
 
+
+<dt><a name="cPowaTrigger:AddAction"></a><strong>cPowaTrigger:AddAction</strong>&nbsp;(actionClass, parameters)</dt>
+<dd>
+Creates and adds an new Action
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  actionClass: Class of Action to add
+	</li>
+	
+	<li>
+	  parameters: Table of Action specific initialisation parameters
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="cPowaTrigger:Check"></a><strong>cPowaTrigger:Check</strong>&nbsp;(value, qualifier)</dt>
+<dd>
+Determine if Trigger needs to activate
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  value: Value used by trigger to see if it should activate
+	</li>
+	
+	<li>
+	  qualifier: Filter to check if this aura should be considered (use nil to ignore)
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="cPowaTrigger:Compare"></a><strong>cPowaTrigger:Compare</strong>&nbsp;(op, v1, v2)</dt>
+<dd>
+Compare two values based on various operators
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  op: Operator to use for comparison e.g. "="
+	</li>
+	
+	<li>
+	  v1: LHS value for compare
+	</li>
+	
+	<li>
+	  v2: RHS value for compare
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="cPowaTrigger:DeleteAction"></a><strong>cPowaTrigger:DeleteAction</strong>&nbsp;(action)</dt>
+<dd>
+Deletes Action
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  action: Action to delete
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="cPowaTrigger:ResetActions"></a><strong>cPowaTrigger:ResetActions</strong>&nbsp;()</dt>
+<dd>
+Call Reset on all Actions, used by "Fire Once" Triggers
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+</dl>
+
+
+
+
+<h2><a name="tables"></a>Tables</h2>
+<dl class="table">
+
+<dt><a name="cPowaTrigger"></a><strong>cPowaTrigger</strong></dt>
+<dd>Base class for Trigger Types.
+
+
+
+</dd>
+
+
+</dl>
 
 
 

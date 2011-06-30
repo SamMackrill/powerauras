@@ -1,6 +1,8 @@
 -- Create definition.
 PowaAuras.UI:Register("Scripts", {
 	Construct = function(class, _, frame)
+		-- Prevent multiple instantiations clearing handlers list.
+		if(frame.__ScriptHandlers) then return; end
 		-- Store custom scripts in this.
 		frame.__ScriptHandlers = {};
 		-- Hook these functions.

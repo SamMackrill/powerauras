@@ -113,10 +113,6 @@
 	</li>
 
 	<li>
-		<a href="../files/UI/BrowserFrame.html">UI/BrowserFrame.lua</a>
-	</li>
-
-	<li>
 		<a href="../files/UI/Button.html">UI/Button.lua</a>
 	</li>
 
@@ -133,11 +129,7 @@
 	</li>
 
 	<li>
-		<a href="../files/UI/FrameSeparator.html">UI/FrameSeparator.lua</a>
-	</li>
-
-	<li>
-		<a href="../files/UI/LayoutFrame.html">UI/LayoutFrame.lua</a>
+		<a href="../files/UI/FrameCategory.html">UI/FrameCategory.lua</a>
 	</li>
 
 	<li>
@@ -174,10 +166,6 @@
 
 	<li>
 		<a href="../files/UI/TabFrame.html">UI/TabFrame.lua</a>
-	</li>
-
-	<li>
-		<a href="../files/UI/Tooltip.html">UI/Tooltip.lua</a>
 	</li>
 
 	<li>
@@ -234,6 +222,8 @@
 <h1>File <code>PowerHelpers.lua</code></h1>
 
 
+<p>Contains a large amount of helper functions for use with auras, settings and saved variable management.</p>
+
 
 
 
@@ -241,6 +231,11 @@
 
 <h2>Functions</h2>
 <table class="function_list">
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:ChangeAuraType">PowaAuras:ChangeAuraType</a>&nbsp;(id, new)</td>
+	<td class="summary">Attempts to change the type of the aura with the given ID.</td>
+	</tr>
 
 	<tr>
 	<td class="name" nowrap><a href="#PowaAuras:CreateAura">PowaAuras:CreateAura</a>&nbsp;(page)</td>
@@ -258,6 +253,11 @@
 	</tr>
 
 	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:FireAuraSettingCallbacks">PowaAuras:FireAuraSettingCallbacks</a>&nbsp;(id)</td>
+	<td class="summary">Calls UpdateSetting for all Aura related setting keys if the passed aura ID exists.</td>
+	</tr>
+
+	<tr>
 	<td class="name" nowrap><a href="#PowaAuras:GetAuraPage">PowaAuras:GetAuraPage</a>&nbsp;(auraID)</td>
 	<td class="summary">Determines what page number the given aura ID belongs to.</td>
 	</tr>
@@ -268,7 +268,7 @@
 	</tr>
 
 	<tr>
-	<td class="name" nowrap><a href="#PowaAuras:GetSetting">PowaAuras:GetSetting</a>&nbsp;(key)</td>
+	<td class="name" nowrap><a href="#PowaAuras:GetSetting">PowaAuras:GetSetting</a>&nbsp;(key, id)</td>
 	<td class="summary">Retrieves a setting with the associated key.</td>
 	</tr>
 
@@ -293,8 +293,13 @@
 	</tr>
 
 	<tr>
-	<td class="name" nowrap><a href="#PowaAuras:SaveSetting">PowaAuras:SaveSetting</a>&nbsp;(key, value)</td>
+	<td class="name" nowrap><a href="#PowaAuras:SaveSetting">PowaAuras:SaveSetting</a>&nbsp;(key, value, id)</td>
 	<td class="summary">Saves the given value into a specific setting, and fires any callbacks associated with the setting in the process.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:SettingExists">PowaAuras:SettingExists</a>&nbsp;(key)</td>
+	<td class="summary">Checks if the setting with the given key exists.</td>
 	</tr>
 
 	<tr>
@@ -357,6 +362,36 @@
 
 <h2><a name="functions"></a>Functions</h2>
 <dl class="function">
+
+
+
+<dt><a name="PowaAuras:ChangeAuraType"></a><strong>PowaAuras:ChangeAuraType</strong>&nbsp;(id, new)</dt>
+<dd>
+Attempts to change the type of the aura with the given ID.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  id: The iD of the aura to change type.
+	</li>
+	
+	<li>
+	  new: The new type of aura.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
 
 
 
@@ -445,6 +480,32 @@ Attempts to delete the aura with the given ID. This will in turn invoke an aura 
 
 
 
+<dt><a name="PowaAuras:FireAuraSettingCallbacks"></a><strong>PowaAuras:FireAuraSettingCallbacks</strong>&nbsp;(id)</dt>
+<dd>
+Calls UpdateSetting for all Aura related setting keys if the passed aura ID exists.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  id: The ID of the aura to use.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
 <dt><a name="PowaAuras:GetAuraPage"></a><strong>PowaAuras:GetAuraPage</strong>&nbsp;(auraID)</dt>
 <dd>
 Determines what page number the given aura ID belongs to.
@@ -509,7 +570,7 @@ Determines the next free aura slot on the given page. If no page is specified th
 
 
 
-<dt><a name="PowaAuras:GetSetting"></a><strong>PowaAuras:GetSetting</strong>&nbsp;(key)</dt>
+<dt><a name="PowaAuras:GetSetting"></a><strong>PowaAuras:GetSetting</strong>&nbsp;(key, id)</dt>
 <dd>
 Retrieves a setting with the associated key.
 
@@ -519,6 +580,10 @@ Retrieves a setting with the associated key.
 	
 	<li>
 	  key: The setting to be retrieved.
+	</li>
+	
+	<li>
+	  id: The ID of the aura to retrieve settings for, if the key represents an aura setting.
 	</li>
 	
 </ul>
@@ -665,7 +730,7 @@ Reindexes auras both internally and on the AuraBrowser interface, with an option
 
 
 
-<dt><a name="PowaAuras:SaveSetting"></a><strong>PowaAuras:SaveSetting</strong>&nbsp;(key, value)</dt>
+<dt><a name="PowaAuras:SaveSetting"></a><strong>PowaAuras:SaveSetting</strong>&nbsp;(key, value, id)</dt>
 <dd>
 Saves the given value into a specific setting, and fires any callbacks associated with the setting in the process.
 
@@ -681,6 +746,10 @@ Saves the given value into a specific setting, and fires any callbacks associate
 	  value: The value to be stored.
 	</li>
 	
+	<li>
+	  id: The ID of the aura to set settings for, if the key represents an aura setting.
+	</li>
+	
 </ul>
 
 
@@ -690,6 +759,35 @@ Saves the given value into a specific setting, and fires any callbacks associate
 
 <h3>Return value:</h3>
 Returns true if the saving is successful, false otherwise.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:SettingExists"></a><strong>PowaAuras:SettingExists</strong>&nbsp;(key)</dt>
+<dd>
+Checks if the setting with the given key exists.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  key: The settings key to check for.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+Returns true if the setting exists, false otherwise.
 
 
 

@@ -1,4 +1,6 @@
-﻿--if (GetLocale() == "enEN") then
+﻿--- English localisations
+
+--if (GetLocale() == "enEN") then
 
 PowaAuras.Anim[0] = "[Invisible]";
 PowaAuras.Anim[1] = "Static";
@@ -125,6 +127,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		[PowaAuras.BuffTypes.Tracking] = "Tracking",
 		[PowaAuras.BuffTypes.TypeBuff] = "Buff type",
 		[PowaAuras.BuffTypes.UnitMatch] = "Unit Match",
+		[PowaAuras.BuffTypes.PetStance] = "Pet Stance",
 		[PowaAuras.BuffTypes.GTFO] = "GTFO Alert",
 	},
 	
@@ -229,8 +232,9 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideItems = "Enter full name of Item or [xxx] for Id",
 	aideSlots = "Enter name of slot to track: Ammo, Back, Chest, Feet, Finger0, Finger1, Hands, Head, Legs, MainHand, Neck, Ranged, SecondaryHand, Shirt, Shoulder, Tabard, Trinket0, Trinket1, Waist, Wrist",
 	aideTracking = "Enter name of Tracking type e.g. fish",
-	aideUnitMatch = "Enter the names of the units that need to match, separated by a forward slash (/).\n\nYou can use unit ID's such as \"player\", \"pet\", \"boss1\", \"arena1\", as well as an asterisk (*) to see if the unit in question exists.\n\n|cFFCCCCCCExamples|r\nTarget is Ragnaros:\ntarget/Ragnaros\n\nPet target exists:\npettarget/*\n\nBoss targetting me:\nboss1target/player",
-
+	aideUnitMatch = "Enter the names of the units that need to match, separated by a forward slash (/).\n\nYou can use unit ID's such as \"player\", \"pet\", \"boss1\", \"arena1\", as well as an asterisk (*) to see if the unit in question exists.\n\n|cFFEFEFEFExamples|r\nTarget is Ragnaros:\ntarget/Ragnaros\n\nPet target exists:\npettarget/*\n\nBoss targetting me:\nboss1target/player",
+	aidePetStance = "Enter the ID numbers of pet stances that need to be active in order for the aura to show. You can specify multiple stances to trigger an aura by separating them with a forward slash (/).\n\n|cFFEFEFEFStance ID Numbers|r\nAggressive/Assist = 1\nDefensive = 2\nPassive = 3\n\n|cFFFF0000Note: |rYou must have the three stances on your pet action bar for this to work.",
+	
 	-- editor
 	aideCustomText = "Enter text to display (%t=target name, %f=focus name, %v=display value, %u=unit name, %str=str, %agl=agl, %sta=sta, %int=int, %spi=spi, %sp=spell power, %ap=attack power, %df=defence)",
 
@@ -722,6 +726,8 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	nomReasonUnitMatch = "Unit $1 matches unit $2.",
 	nomReasonNoUnitMatch = "Unit $1 does not match unit $2.",
 	
+	nomReasonPetStance = "Pet is in $1 stance.",
+	
 	nomReasonUnknownName = "Unit name unknown",
 	nomReasonRoleUnknown = "Role unknown",
 	nomReasonRoleNoMatch = "No matching Role",
@@ -774,6 +780,36 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	aideFixExports = "Check this when aura exports are not functioning correctly and leave you with a blank textbox.",
 	nomFixExports = "Alternative Exports",
 	aideAnimationsAreBrokenSorry = "If your animations appear to skip or increase in size randomly, you should enable Old Animations.",
+	
+	AuraTypeDesc = {
+		[PowaAuras.BuffTypes.Buff] = "Sets up an aura to act whenever a unit gains or loses a buff.",
+		[PowaAuras.BuffTypes.Debuff] = "Sets up an aura to act whenever a unit gains or loses a debuff.",
+		[PowaAuras.BuffTypes.AoE] = "AOE Debuff",
+		[PowaAuras.BuffTypes.TypeDebuff] = "Debuff type",
+		[PowaAuras.BuffTypes.Enchant] = "Weapon Enchant",
+		[PowaAuras.BuffTypes.Combo] = "Combo Points",
+		[PowaAuras.BuffTypes.ActionReady] = "Action Usable",
+		[PowaAuras.BuffTypes.Health] = "Health",
+		[PowaAuras.BuffTypes.Mana] = "Mana",
+		[PowaAuras.BuffTypes.EnergyRagePower] = "Rage/Energy/Power",
+		[PowaAuras.BuffTypes.Aggro] = "Aggro",
+		[PowaAuras.BuffTypes.PvP] = "PvP",
+		[PowaAuras.BuffTypes.Stance] = "Stance",
+		[PowaAuras.BuffTypes.SpellAlert] = "Spell Alert", 
+		[PowaAuras.BuffTypes.SpellCooldown] = "Spell Cooldown", 
+		[PowaAuras.BuffTypes.StealableSpell] = "Stealable Spell",
+		[PowaAuras.BuffTypes.PurgeableSpell] = "Purgeable Spell",
+		[PowaAuras.BuffTypes.Static] = "Static Aura",
+		[PowaAuras.BuffTypes.Totems] = "Totems",
+		[PowaAuras.BuffTypes.Pet] = "Pet",
+		[PowaAuras.BuffTypes.Runes] = "Runes",
+		[PowaAuras.BuffTypes.Slots] = "Equipment Slots",
+		[PowaAuras.BuffTypes.Items] = "Named Items",
+		[PowaAuras.BuffTypes.Tracking] = "Tracking",
+		[PowaAuras.BuffTypes.TypeBuff] = "Buff type",
+		[PowaAuras.BuffTypes.UnitMatch] = "Unit Match",
+		[PowaAuras.BuffTypes.GTFO] = "GTFO Alert",
+	},
 	
 	-- New UI strings.
 	UI_Cancel                  = "Cancel",
@@ -876,7 +912,6 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	UI_Aura_SrcIcon            = "Ability Icon",
 	
 	UI_Aura_TexErr             = "There was an error loading the texture:\n%s",
-	UI_Aura_TexErrCust         = "You have not assigned a custom texture to this page yet.\n\nCustom textures are loaded from:\n%s",
 	
 --	UI_Aura_TexClick           = "Click the aura to change it.",
 --	UI_Aura_Separator1         = "Style",
@@ -909,10 +944,23 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	UI_Editor_TabAnim          = "Animations",
 	UI_Editor_TabTriggers      = "Triggers",
 	UI_Editor_TabSound         = "Sounds",
+	UI_Editor_CatSuffix        = "%s Select a category below to display the options available.",
 	
-	UI_Editor_Aura             = "Aura",
+	UI_Editor_Aura             = "Aura", -- Duplicate string.
+	UI_Editor_AuraDesc         = "Configures the display settings of the aura texture.",
+	UI_Editor_Aura_CatTexture  = "Texture Source",
+	UI_Editor_Aura_CatStyle    = "Style",
+	UI_Editor_Aura_CatSize     = "Size and Positioning",
 	UI_Editor_Timer            = "Timer",
+	UI_Editor_TimerDesc        = "Configures the settings of the timer display.",
 	UI_Editor_Stacks           = "Stacks",
+	UI_Editor_StacksDesc       = "Configures the settings of the stacks display.",
+	UI_Editor_Activation       = "Activation", -- Duplicate string, will fix later.
+	UI_Editor_ActivationDesc   = "Configures the main activation criteria that must be met for this aura to show, these change based on the type of aura being used.",
+	UI_Editor_Type             = "Activation Type",
+	UI_Editor_TypeDesc         = "Changes the type of activation class to use for this aura, which controls what the aura responds to such as Buffs, Health and Spells.",
+	UI_Editor_Rules            = "Rules",
+	UI_Editor_RulesDesc        = "Configures additional criteria that must be met for the aura to show, such as being in or out of combat.",
 	
 	
 	UI_TriggerAdd              = "Add",

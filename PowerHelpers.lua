@@ -1,3 +1,5 @@
+--- Contains a large amount of helper functions for use with auras, settings and saved variable management.
+
 --- Stores all of the registered settings by their associated keys.
 -- @name PowaAuras.SettingsByKey
 -- @class table
@@ -13,6 +15,8 @@ PowaAuras.SettingLocations = {
 	Aura = 0x1,
 	Global = 0x2,
 	Char = 0x4, -- As in PowaMisc.
+	AuraTimer = 0x8,
+	AuraStacks = 0x10,
 };
 --- Registers a saved variable as a setting, assigning it a key and allowing callbacks to be assigned to the setting.
 -- The key should be different from the actual variable name to prevent conflicts.
@@ -41,41 +45,52 @@ function PowaAuras:RegisterSettingCallback(func)
 	tinsert(self.SettingCallbacks, func);
 	return true;
 end
+--- Checks if the setting with the given key exists.
+-- @param key The settings key to check for.
+-- @return Returns true if the setting exists, false otherwise.
+function PowaAuras:SettingExists(key)
+	return self.SettingsByKey[key] and true or false;
+end
 --- Retrieves a setting with the associated key.
 -- @param key The setting to be retrieved.
+-- @param id The ID of the aura to retrieve settings for, if the key represents an aura setting.
 -- @return Returns the value associated with the specified setting, or false if the setting does not exist.
-function PowaAuras:GetSetting(key)
+function PowaAuras:GetSetting(key, id)
 	-- Make sure setting exists.
-	if(not self.SettingsByKey[key]) then return false; end
-	if(self.SettingsByKey[key].Location == self.SettingLocations.Aura and PowaBrowser.SelectedAura) then
+	local setting = self.SettingsByKey[key];
+	if(not setting) then return false; end
+	if(setting.Location == self.SettingLocations.Aura and self.Auras[(id or PowaBrowser:GetSelectedAura())]) then
 		-- Aura value.
-		return;
-	elseif(self.SettingsByKey[key].Location == self.SettingLocations.Global) then
+		return self.Auras[(id or PowaBrowser:GetSelectedAura())][setting.Name];
+	elseif(setting.Location == self.SettingLocations.Global) then
 		-- Global value.
-		return PowaGlobalMisc[self.SettingsByKey[key].Name];
-	elseif(self.SettingsByKey[key].Location == self.SettingLocations.Char) then
+		return PowaGlobalMisc[setting.Name];
+	elseif(setting.Location == self.SettingLocations.Char) then
 		-- Per-char value.
-		return PowaMisc[self.SettingsByKey[key].Name];
+		return PowaMisc[setting.Name];
 	end
 end
 --- Saves the given value into a specific setting, and fires any callbacks associated with the setting in the process.
 -- @param key The key of the setting to modify.
 -- @param value The value to be stored.
+-- @param id The ID of the aura to set settings for, if the key represents an aura setting.
 -- @return Returns true if the saving is successful, false otherwise.
-function PowaAuras:SaveSetting(key, value)
+function PowaAuras:SaveSetting(key, value, id)
 	-- Make sure setting exists.
-	if(not self.SettingsByKey[key]) then return false; end
-	local ret = false;
-	if(self.SettingsByKey[key].Location == self.SettingLocations.Aura and PowaBrowser.SelectedAura) then
+	local setting, ret = self.SettingsByKey[key], false;
+	if(not setting) then return false; end
+	-- Act based on location.
+	if(setting.Location == self.SettingLocations.Aura and self.Auras[(id or PowaBrowser:GetSelectedAura())]) then
 		-- Save value to aura.
+		self.Auras[(id or PowaBrowser:GetSelectedAura())][setting.Name] = value;
 		ret = true;
-	elseif(self.SettingsByKey[key].Location == self.SettingLocations.Global) then
+	elseif(setting.Location == self.SettingLocations.Global) then
 		-- Save to global options table.
-		PowaGlobalMisc[self.SettingsByKey[key].Name] = value;
+		PowaGlobalMisc[setting.Name] = value;
 		ret = true;
-	elseif(self.SettingsByKey[key].Location == self.SettingLocations.Char) then
+	elseif(setting.Location == self.SettingLocations.Char) then
 		-- Save to per-char options table.
-		PowaMisc[self.SettingsByKey[key].Name] = value;
+		PowaMisc[setting.Name] = value;
 		ret = true;
 	end
 	-- Call OnUpdate func. Pass new value.
@@ -94,6 +109,18 @@ function PowaAuras:UpdateSetting(key, value)
 	-- Run update funcs.
 	for _, func in ipairs(self.SettingCallbacks) do
 		func(key, value);
+	end
+end
+--- Calls UpdateSetting for all Aura related setting keys if the passed aura ID exists.
+-- @param id The ID of the aura to use.
+function PowaAuras:FireAuraSettingCallbacks(id)
+	-- Make sure aura exists.
+	if(not self.Auras[id]) then return; end
+	-- Go over registered settings.
+	for key, data in pairs(self.SettingsByKey) do
+		if(data.Location == self.SettingLocations.Aura) then
+			self:UpdateSetting(key, self:GetSetting(key, id));
+		end
 	end
 end
 --- Determines the next free aura slot on the given page. If no page is specified then the selected page in the aura
@@ -119,7 +146,7 @@ function PowaAuras:CreateAura(page)
 	local i, page = self:GetNextFreeSlot(page);
 	if(not i or not page) then return false; end
 	-- Select it.
-	PowaBrowser:OnSelectionChanged(page); -- Update page if needed.
+	PowaBrowser:OnSelectedKeyChanged(page); -- Update page if needed.
 	PowaBrowser:SetSelectedAura(i);
 	-- Build a new aura.
 	local aura = self:AuraFactory(self.BuffTypes.Buff, i);
@@ -151,6 +178,29 @@ function PowaAuras:DeleteAura(id, quickDelete)
 	if(not quickDelete) then
 		self:ReindexAuras(true);
 	end
+end
+--- Attempts to change the type of the aura with the given ID.
+-- @param id The iD of the aura to change type.
+-- @param new The new type of aura.
+function PowaAuras:ChangeAuraType(id, new)
+	-- Get the old aura.
+	local aura, oldAura = nil, self.Auras[id];
+	if(not oldAura) then
+		return;
+	end
+	-- Dispose of old aura.
+	oldAura:Dispose();
+	-- Clear icon on old aura.
+	oldAura.icon = "";
+	-- Build the new aura.
+	aura = self:AuraFactory(new, id, oldAura);
+	-- Initialise it.
+	aura:Init();
+	self.Auras[id] = aura;
+	-- Save to appropriate config table.
+	self:UpdateAuraTables(id);
+	-- Fix other things.
+	self:ReindexAuras(false);	
 end
 --- Toggles the displays of all auras. Can optionally force a specific display state, force a refresh or only update
 -- auras that are already actively displaying.
@@ -422,6 +472,15 @@ for k, _ in pairs(PowaGlobalMisc) do
 end
 for k, _ in pairs(PowaMisc) do
 	PowaAuras:RegisterSetting(k, k, PowaAuras.SettingLocations.Char);
+end
+for k, _ in pairs(cPowaAura.ExportSettings) do
+	PowaAuras:RegisterSetting("Aura." .. k, k, PowaAuras.SettingLocations.Aura);
+end
+for k, _ in pairs(cPowaTimer.ExportSettings) do
+	PowaAuras:RegisterSetting("Aura.Timer." .. k, k, PowaAuras.SettingLocations.AuraTimer);
+end
+for k, _ in pairs(cPowaStacks.ExportSettings) do
+	PowaAuras:RegisterSetting("Aura.Stacks." .. k, k, PowaAuras.SettingLocations.AuraStacks);
 end
 
 -- Add a general update function for when these settings change.

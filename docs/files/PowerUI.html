@@ -113,10 +113,6 @@
 	</li>
 
 	<li>
-		<a href="../files/UI/BrowserFrame.html">UI/BrowserFrame.lua</a>
-	</li>
-
-	<li>
 		<a href="../files/UI/Button.html">UI/Button.lua</a>
 	</li>
 
@@ -133,11 +129,7 @@
 	</li>
 
 	<li>
-		<a href="../files/UI/FrameSeparator.html">UI/FrameSeparator.lua</a>
-	</li>
-
-	<li>
-		<a href="../files/UI/LayoutFrame.html">UI/LayoutFrame.lua</a>
+		<a href="../files/UI/FrameCategory.html">UI/FrameCategory.lua</a>
 	</li>
 
 	<li>
@@ -174,10 +166,6 @@
 
 	<li>
 		<a href="../files/UI/TabFrame.html">UI/TabFrame.lua</a>
-	</li>
-
-	<li>
-		<a href="../files/UI/Tooltip.html">UI/Tooltip.lua</a>
 	</li>
 
 	<li>
@@ -234,10 +222,37 @@
 <h1>File <code>PowerUI.lua</code></h1>
 
 
+<p>Contains functions for registering UI widgets and initialising them to work with frames.</p>
 
 
 
 
+
+
+<h2>Functions</h2>
+<table class="function_list">
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras.UI:AnonymousWidget">PowaAuras.UI:AnonymousWidget</a>&nbsp;(class, data, ...)</td>
+	<td class="summary">Initialises a frame with an anonymous widget class, which extends a class on the fly to create a class tailored to specific needs at runtime.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras.UI:BuildFrameFromDefinition">PowaAuras.UI:BuildFrameFromDefinition</a>&nbsp;(def, parent)</td>
+	<td class="summary">Builds a frame from a table based definition.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras.UI:Construct">PowaAuras.UI:Construct</a>&nbsp;(ui, widget, ...)</td>
+	<td class="summary">Generic constructor function for all UI widgets.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras.UI:Register">PowaAuras.UI:Register</a>&nbsp;(name, data, isAnonymous)</td>
+	<td class="summary">Turns a widget definition table into metatables with constructor-like functionality.</td>
+	</tr>
+
+</table>
 
 
 
@@ -249,6 +264,143 @@
 
 
 
+
+<h2><a name="functions"></a>Functions</h2>
+<dl class="function">
+
+
+
+<dt><a name="PowaAuras.UI:AnonymousWidget"></a><strong>PowaAuras.UI:AnonymousWidget</strong>&nbsp;(class, data, ...)</dt>
+<dd>
+Initialises a frame with an anonymous widget class, which extends a class on the fly to create a class tailored to specific needs at runtime. The class is then immediately constructed afterwards.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  class: The name of the class to extend.
+	</li>
+	
+	<li>
+	  data: The data table of the class to merge in.
+	</li>
+	
+	<li>
+	  ...: Any arguments to pass to the constructor and init functions.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras.UI:BuildFrameFromDefinition"></a><strong>PowaAuras.UI:BuildFrameFromDefinition</strong>&nbsp;(def, parent)</dt>
+<dd>
+Builds a frame from a table based definition. This allows you to bypass using XML for frame creation while also handling all of the boring SetPoint/SetSize calls that are otherwise present.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  def: The definition to load.
+	</li>
+	
+	<li>
+	  parent: The parent frame of the frame.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras.UI:Construct"></a><strong>PowaAuras.UI:Construct</strong>&nbsp;(ui, widget, ...)</dt>
+<dd>
+Generic constructor function for all UI widgets. Performs the mundane functions of copying the Hooks and values from the class definitions, registering scripts and initialising the widget.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  ui: The PowaAuras.UI table.
+	</li>
+	
+	<li>
+	  widget: The frame to be constructed with a class.
+	</li>
+	
+	<li>
+	  ...: Arguments to be passed to the Init function of the class, if it exists.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras.UI:Register"></a><strong>PowaAuras.UI:Register</strong>&nbsp;(name, data, isAnonymous)</dt>
+<dd>
+Turns a widget definition table into metatables with constructor-like functionality.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  name: The name of the widget class to define.
+	</li>
+	
+	<li>
+	  data: The table of data to use when defining the class.
+	</li>
+	
+	<li>
+	  isAnonymous: Defaults to false, if set to true then the name of the class is not checked and it will not be registered with the UI table.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+</dl>
 
 
 
