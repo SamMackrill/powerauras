@@ -191,7 +191,7 @@ function PowaAuras:ChangeAuraType(id, new)
 	-- Dispose of old aura.
 	oldAura:Dispose();
 	-- Clear icon on old aura.
-	oldAura.icon = "";
+	oldAura.IconPath = "";
 	-- Build the new aura.
 	aura = self:AuraFactory(new, id, oldAura);
 	-- Initialise it.

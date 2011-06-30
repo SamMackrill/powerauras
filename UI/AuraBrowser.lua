@@ -403,10 +403,10 @@ PowaAuras.UI:Register("AuraButton", {
 			self.OffText:Hide();
 		elseif(state == self.Flags["NORMAL"] or state == self.Flags["MOVING"]) then		
 			-- Icons.
-			if(not aura.icon or aura.icon == "") then
+			if(not aura.IconPath or aura.IconPath == "") then
 				self.Icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");
 			else
-				self.Icon:SetTexture(aura.icon);
+				self.Icon:SetTexture(aura.IconPath);
 			end
 			-- Restore texcoords.
 			self.Icon:SetTexCoord(0.07, 0.93, 0.07, 0.93);

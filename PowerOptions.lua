@@ -34,13 +34,13 @@ function PowaAuras:UpdateMainOption()
 			icon:SetText("");
 			icon:SetAlpha(0.33);
 		else
-			--self:Message("buffname ", aura.ValueCheck, "icon", aura.icon);
+			--self:Message("buffname ", aura.ValueCheck, "icon", aura.IconPath);
 			if (aura.ValueCheck == "" or aura.ValueCheck == " ") then -- pas de nom -> desactive
 				icon:SetNormalTexture("Interface\\PaperDoll\\UI-Backpack-EmptySlot");
-			elseif (aura.icon == "") then -- active mais pas d'icone
+			elseif (aura.IconPath == "") then -- active mais pas d'icone
 				icon:SetNormalTexture("Interface\\Icons\\Inv_Misc_QuestionMark");
 			else
-				icon:SetNormalTexture(aura.icon);	
+				icon:SetNormalTexture(aura.IconPath);	
 			end	
 			if (aura.ValueCheck ~= "" and aura.ValueCheck ~= " " and aura.Disabled) then
 				icon:SetText("OFF");
@@ -537,6 +537,7 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 					hasTimerSettings = true;
 				end
 			elseif (string.sub(key,1,7) == "stacks.") then
+
 
 
 				key = string.sub(key,8);
@@ -1670,15 +1671,15 @@ function PowaAuras:InitPage(aura)
 		self:DisableTextfield("PowaBarUnitn");
 	end
 	
-	if (aura.icon==nil or aura.icon == "") then
+	if (aura.IconPath==nil or aura.IconPath == "") then
 		PowaIconTexture:SetTexture("Interface\\Icons\\Inv_Misc_QuestionMark");
 	else
-		PowaIconTexture:SetTexture(aura.icon);
+		PowaIconTexture:SetTexture(aura.IconPath);
 	end
 
 	local checkTexture = 0;
 	if (aura.owntex) then
-		--self:ShowText("owntex tex=", aura.icon);	
+		--self:ShowText("owntex tex=", aura.IconPath);	
 		checkTexture = AuraTexture:SetTexture(PowaIconTexture:GetTexture());
 		PowaBarAuraTextureSlider:Hide();
 		PowaBarCustomTexName:Hide();
@@ -1798,7 +1799,7 @@ function PowaAuras:BarAuraTextureSliderChanged()
 	local auraId = self.CurrentAuraId;
 	
 	if (self.Auras[auraId].owntex == true) then
-		checkTexture = AuraTexture:SetTexture(self.Auras[auraId].icon);
+		checkTexture = AuraTexture:SetTexture(self.Auras[auraId].IconPath);
 
 	elseif (self.Auras[auraId].wowtex == true) then
 		checkTexture = AuraTexture:SetTexture(self.WowTextures[SliderValue]);
@@ -2008,7 +2009,7 @@ function PowaAuras:TextChanged()
 
 	if (oldText ~= self.Auras[auraId].ValueCheck) then
 		self.Auras[auraId].ValueCheck = PowaBarBuffName:GetText();
-		self.Auras[auraId].icon = "";
+		self.Auras[auraId].IconPath = "";
 		PowaIconTexture:SetTexture("Interface\\Icons\\Inv_Misc_QuestionMark");
 	end
 end
@@ -2570,7 +2571,7 @@ function PowaAuras:ChangeAuraType(id, newType)
 	
 	local aura = self:AuraFactory(newType, id, oldAura);
 		
-	aura.icon= "";
+	aura.IconPath= "";
 	aura.Showing = showing;
 	aura:Init();
 	
@@ -2701,7 +2702,7 @@ function PowaAuras.DropDownMenu_OnClickStance(self)
 
 	if (PowaAuras.Auras[auraId].Subtype ~= self.value) then
 		PowaAuras.Auras[auraId].Subtype = self.value;
-		PowaAuras.Auras[auraId].icon = "";
+		PowaAuras.Auras[auraId].IconPath = "";
 	end
 	PowaAuras:InitPage();
 end
@@ -2712,7 +2713,7 @@ function PowaAuras.DropDownMenu_OnClickGTFO(self)
 
 	if (aura.Subtype ~= self.value) then
 		aura.Subtype = self.value;
-		aura.icon = "";
+		aura.IconPath = "";
 	end
 	PowaAuras:InitPage(aura);
 end
@@ -2724,7 +2725,7 @@ function PowaAuras.DropDownMenu_OnClickPowerType(self)
 	if (aura.Subtype ~= self.value) then
 		--PowaAuras:ShowText("PowerType changed to ", self.value);
 		aura.Subtype = self.value;
-		aura.icon = "";
+		aura.IconPath = "";
 		aura:Init();
 		--PowaAuras:ShowText("MaxRange=", aura.MaxRange);
 		--PowaAuras:ShowText("RangeType=", aura.RangeType);
