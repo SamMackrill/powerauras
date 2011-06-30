@@ -283,7 +283,7 @@ function PowaAuras:ReindexAura(oldID, newID, doCopy)
 	-- Copying or moving? We could pretend we're copying but it'll be slower.
 	if(doCopy) then
 		-- Right, slow mode.
-		self.Auras[newID] = self:AuraFactory(oldAura.bufftype, newID, oldAura);
+		self.Auras[newID] = self:AuraFactory(oldAura.Type, newID, oldAura);
 		newAura = self.Auras[newID];
 		-- Copy the decorators to the new aura.
 		oldAura:CopyDecorators(newID);
@@ -301,12 +301,12 @@ function PowaAuras:ReindexAura(oldID, newID, doCopy)
 		for i=1, self.MaxAuras do
 			local aura = self.Auras[i];
 			-- Does aura exist, and have ID's?
-			if(aura and aura.multiids and aura.multiids:trim() ~= "") then
+			if(aura and aura.MultiCheck and aura.MultiCheck:trim() ~= "") then
 				-- Wipe temp table.
 				wipe(reindexTable);
 				reindexCount = 0;
 				-- Go over ID's.
-				for id in aura.multiids:trim():gmatch("[^/]+") do
+				for id in aura.MultiCheck:trim():gmatch("[^/]+") do
 					-- Inc. counter.
 					reindexCount = reindexCount+1;
 					-- Trim id.
@@ -323,7 +323,7 @@ function PowaAuras:ReindexAura(oldID, newID, doCopy)
 					end
 				end
 				-- Replace ID's.
-				aura.multiids = strjoin("/", unpack(reindexTable));
+				aura.MultiCheck = strjoin("/", unpack(reindexTable));
 			end
 		end
 	end
