@@ -136,6 +136,7 @@ function PowaAuras:LoadAuras()
 		--self:UnitTestDebug("PowaGlobalSet",k,v.ValueCheck);
 		if (k~=0 and v.is_a == nil or not v:is_a(cPowaAura)) then
 			--self:UnitTestDebug(k,v.ValueCheck);
+			self:UpdateAura(v, k);
 			self.Auras[k] = self:AuraFactory(v.Type, k, v);
 		end
 	end
@@ -146,6 +147,7 @@ function PowaAuras:LoadAuras()
 			--self:UnitTestDebug("is_a=",v.is_a);
 			if (v.is_a == nil or not v:is_a(cPowaAura)) then
 				--self:ShowText("load aura ", k, " bufftype=",v.Type);
+				self:UpdateAura(v, k);
 				self.Auras[k] = self:AuraFactory(v.Type, k, v);
 				--self:UnitTestDebug("Out=",self.Auras[k].ValueCheck);
 			end
@@ -161,6 +163,7 @@ function PowaAuras:LoadAuras()
 			--self:UnitTestDebug("is_a=",v.is_a);
 			if (v.is_a == nil or not v:is_a(cPowaAura)) then
 				--self:ShowText("load aura ", k, " bufftype=",v.Type);
+				self:UpdateAura(v, k);
 				self.Auras[k] = self:AuraFactory(v.Type, k, v);
 				--self:UnitTestDebug("Out=",self.Auras[k].ValueCheck);
 			end
@@ -377,12 +380,12 @@ function PowaAuras:MemorizeActions(actionIndex)
 							if (actionAura.owntex == true) then
 								PowaIconTexture:SetTexture(GetActionTexture(i));
 								tempicon = PowaIconTexture:GetTexture();
-								if (actionAura.icon ~= tempicon) then
-									actionAura.icon = tempicon;
+								if (actionAura.IconPath ~= tempicon) then
+									actionAura.IconPath = tempicon;
 								end
-							elseif (actionAura.icon == "") then
+							elseif (actionAura.IconPath == "") then
 								PowaIconTexture:SetTexture(GetActionTexture(i));
-								actionAura.icon = PowaIconTexture:GetTexture();
+								actionAura.IconPath = PowaIconTexture:GetTexture();
 							end
 						end
 					end
@@ -540,6 +543,7 @@ function PowaAuras:OnUpdate(elapsed)
 			end
 		end
 	
+
 		--self:UnitTestInfo("DoCheck update");
 		if (self.DoCheck.CheckIt or self.DoCheck.All) then
 			self:CheckAllMarkedAuras();
@@ -987,10 +991,10 @@ end
 
 function PowaAuras:InitialiseAuraFrame(aura, frame, texture, alpha)
 	if (aura.owntex == true) then
-		if (aura.icon=="") then
+		if (aura.IconPath=="") then
 			texture:SetTexture("Interface\\Icons\\Inv_Misc_QuestionMark");
 		else
-			texture:SetTexture(aura.icon);
+			texture:SetTexture(aura.IconPath);
 		end
 	elseif (aura.wowtex == true) then
 		texture:SetTexture(self.WowTextures[aura.texture]);

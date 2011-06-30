@@ -29,6 +29,7 @@ PowaAuras.UpdateFunctions = {
 			stacksOperator = "StacksOperator",
 			thresholdinvert = "ThresholdInvert",
 			mine = "IsMine",
+			icon = "IconPath",
 --			focus = "Units.Focus",
 --			raid = "Units.Raid",
 --			groupOrSelf = "Units.RaidPartySelf",
@@ -85,7 +86,7 @@ PowaAuras.UpdateFunctions = {
 					print(aura[old], " --> ", parent[replace], " (", old, " --> ", replace, ")");
 				end
 				-- Clear old one.
---				aura[old] = nil;
+				aura[old] = nil;
 			end
 			-- Convert outstanding keys.
 			-- Aura source location.
@@ -104,7 +105,7 @@ PowaAuras.UpdateFunctions = {
 --			elseif(aura["owntex"]) then
 --				aura["Source"] = "Icon";
 --				aura["SourceKey"] = 1;
---				aura["SourcePath"] = aura["icon"];
+--				aura["SourcePath"] = "";
 --			else
 --				aura["Source"] = "Normal";
 --				aura["SourceKey"] = aura["texture"];
@@ -126,6 +127,11 @@ PowaAuras.UpdateFunctions = {
 			else
 				aura["Subtype"] = 0;
 			end
+			-- Clear old subtypes.
+			aura["PowerType"] = nil;
+			aura["threshold"] = nil;
+			aura["stance"] = nil;
+			aura["GTFO"] = nil;
 			-- Handle spec things.
 			for i=1, 2 do
 				if(aura["spec" .. i]) then
@@ -133,7 +139,9 @@ PowaAuras.UpdateFunctions = {
 						cPowaAura.SpecFlags.TREE_THIRD);
 				else
 					aura["Spec" .. i] = 0;
-				end			
+				end
+				-- Remove old key.
+				aura["spec" .. i] = nil;	
 			end
 --			-- Friendly/Hostile targets.
 --			if(aura["target"] and not aura["targetfriend"]) then

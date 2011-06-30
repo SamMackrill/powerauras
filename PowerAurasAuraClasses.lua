@@ -6,29 +6,14 @@ local strsplit = strsplit;
 cPowaAura = PowaClass(function(aura, id, base)
 	--PowaAuras:ShowText("cPowaAura constructor id=", id, " base=", base);
 	
-	if(not base or (base.Version and base.Version >= 50000)) then
-		-- Work like normal for auras made after/during 5.0.
-		for k, v in pairs(cPowaAura.ExportSettings) do
-			if (base and base[k] ~= nil) then
-				aura[k] = base[k];
-			else
-				aura[k] = v;
-			end
-			-- PowaAuras:ShowText(k," =", aura[k]);
+	for k, v in pairs(cPowaAura.ExportSettings) do
+		if (base and base[k] ~= nil) then
+			aura[k] = base[k];
+		else
+			aura[k] = v;
 		end
-	else
-		-- For auras before it, use the old exports table.
-		for k, v in pairs(PowaAuras.OldExportSettings) do
-			if (base and base[k] ~= nil) then
-				aura[k] = base[k];
-			else
-				aura[k] = v;
-			end
-		end
+		-- PowaAuras:ShowText(k," =", aura[k]);
 	end
-	
-	-- Update aura if needed.
-	PowaAuras:UpdateAura(aura, id);
 	
 	if (base) then
 		if (base.ShowOptions == nil) then
@@ -233,7 +218,8 @@ cPowaAura.ExportSettings = {
 	aurastextfont = 1,
 --	Source = 1,         -- Represents the aura texture group.
 --	SourceKey = 1,      -- Texture or font number. Represents the index. Not used by Custom or Icon auras.
---	SourcePath = "",    -- Texture or font path. Replaces icon path too.
+--	SourcePath = "",    -- Texture or font path. Does not replace icon path.
+	IconPath = "",
 
 	TextDisplay = "",   -- Text being displayed.
 	Strata = "LOW",     -- Was strata ever implemented? Could do it now.
@@ -1149,8 +1135,8 @@ function cPowaAura:ShowTimerDurationSlider()
 end
 
 function cPowaAura:IconIsRequired()
-	--PowaAuras:Message("  owntex=",self.owntex, " .icon=",self.icon, " ForceIconCheck=",self.ForceIconCheck);
-	return (self.owntex == true or self.icon == "" or self.icon == nil or self.ForceIconCheck);
+	--PowaAuras:Message("  owntex=",self.owntex, " .IconPath=",self.IconPath, " ForceIconCheck=",self.ForceIconCheck);
+	return (self.owntex == true or self.IconPath == "" or self.IconPath == nil or self.ForceIconCheck);
 end
 
 function cPowaAura:SetIcon(texturePath)
@@ -1161,9 +1147,9 @@ function cPowaAura:SetIcon(texturePath)
 		return;
 	end
 	if (self.Debug) then
-		PowaAuras:Message("self.icon=", self.icon);
+		PowaAuras:Message("self.IconPath=", self.IconPath);
 	end
-	if (texturePath ~= self.icon) then
+	if (texturePath ~= self.IconPath) then
 		if (self.owntex) then
 			local texture = self:GetTexture();
 			if (texture and texture.SetTexture) then
@@ -1173,7 +1159,7 @@ function cPowaAura:SetIcon(texturePath)
 		if (self.Debug) then
 			PowaAuras:Message("Setting icon to ", texturePath);
 		end
-		self.icon = texturePath;
+		self.IconPath = texturePath;
 	end
 end
 
@@ -2747,7 +2733,7 @@ function cPowaAoE:AddEffectAndEvents()
 end
 
 function cPowaAoE:SetFixedIcon()
-	self.icon = nil;
+	self.IconPath = nil;
 	self:SetIcon("Interface\\icons\\Spell_fire_meteorstorm");
 end
 
@@ -2914,7 +2900,7 @@ function cPowaCombo:AddEffectAndEvents()
 end						  
 
 function cPowaCombo:SetFixedIcon()
-	self.icon = nil;
+	self.IconPath = nil;
 	self:SetIcon("Interface\\icons\\inv_sword_48");
 end
 
@@ -3313,7 +3299,7 @@ function cPowaHealth:UnitValueMax(unit)
 	return UnitHealthMax(unit);
 end
 function cPowaHealth:SetFixedIcon()
-	self.icon = nil;
+	self.IconPath = nil;
 	self:SetIcon("Interface\\icons\\inv_alchemy_elixir_05");
 end
 
@@ -3335,7 +3321,7 @@ function cPowaMana:UnitValueMax(unit)
 	return UnitPowerMax(unit, 0);
 end
 function cPowaMana:SetFixedIcon()
-	self.icon = nil;
+	self.IconPath = nil;
 	self:SetIcon("Interface\\icons\\inv_alchemy_elixir_02");
 end
 
@@ -3360,7 +3346,7 @@ function cPowaPowerType:Init()
 end
 
 function cPowaPowerType:SetFixedIcon()
-	self.icon = nil;
+	self.IconPath = nil;
 	self:SetIcon("Interface\\icons\\"..PowaAuras.PowerTypeIcon[self.Subtype or -1]);
 end
 
@@ -3464,7 +3450,7 @@ function cPowaAggro:CheckUnit(unit)
 end	
 
 function cPowaAggro:SetFixedIcon()
-	self.icon = nil;
+	self.IconPath = nil;
 	self:SetIcon("Interface\\icons\\Ability_Warrior_EndlessRage");
 end
 
@@ -3509,7 +3495,7 @@ function cPowaPvP:AddEffectAndEvents()
 end
 
 function cPowaPvP:SetFixedIcon()
-	self.icon = nil;
+	self.IconPath = nil;
 	self:SetIcon("Interface\\icons\\achievement_arena_2v2_7");
 end
 
@@ -3828,7 +3814,7 @@ function cPowaGTFO:AddEffectAndEvents()
 end
 
 function cPowaGTFO:SetFixedIcon()
-	self.icon = nil;
+	self.IconPath = nil;
 	if (self.Subtype == 1) then
 		self:SetIcon("Interface\\icons\\spell_fire_bluefire");
 	elseif (self.Subtype == 2) then
@@ -3979,7 +3965,7 @@ function cPowaPet:AddEffectAndEvents()
 end
 
 function cPowaPet:SetFixedIcon()
-	self.icon = nil;
+	self.IconPath = nil;
 	if (PowaAuras.playerclass == "WARLOCK") then
 		self:SetIcon("Interface\\icons\\Spell_shadow_summonimp");
 	elseif (PowaAuras.playerclass == "MAGE") then
@@ -4120,7 +4106,7 @@ function cPowaRunes:AddRuneTimeLeft(slot, count)
 end
 
 function cPowaRunes:SetFixedIcon()
-	self.icon = nil;
+	self.IconPath = nil;
 	self:SetIcon("Interface\\icons\\spell_arcane_arcane01");
 end
 		
@@ -4227,6 +4213,7 @@ function cPowaRunes:RunesPresent(giveReason)
 			local missing = deathRunesRequired - deathRunesAvailable;
 			if (missing>0) then
 				gaps = 0;
+
 				for runeType = 1, 3 do
 					gaps = gaps + self:AddRuneTimeLeft(runeType * 2 - 1, self.runesMissingPlusDeath[runeType]);
 				end
@@ -4286,7 +4273,7 @@ function cPowaSlots:AddEffectAndEvents()
 end
 
 function cPowaSlots:SetFixedIcon()
-	self.icon = nil;
+	self.IconPath = nil;
 	self:SetIcon("Interface\\icons\\inv_throwingaxepvp330_08");
 end
 
@@ -4612,7 +4599,7 @@ function cPowaStatic:CheckIfShouldShow(giveReason, ignoreGCD)
 end
 
 function cPowaStatic:SetFixedIcon()
-	self.icon = nil;
+	self.IconPath = nil;
 	self:SetIcon("Interface\\icons\\Spell_frost_frozencore");
 end
 
@@ -4686,7 +4673,7 @@ function cPowaUnitMatch:CheckIfShouldShow(giveReason)
 end
 
 function cPowaUnitMatch:SetFixedIcon()
-	self.icon = nil;
+	self.IconPath = nil;
 	self:SetIcon("Interface\\Icons\\Spell_Misc_EmotionAngry");
 end
 
@@ -4761,7 +4748,7 @@ function cPowaPetStance:CheckIfShouldShow(giveReason)
 end
 
 function cPowaPetStance:SetFixedIcon()
-	self.icon = nil;
+	self.IconPath = nil;
 	self:SetIcon("Interface\\Icons\\ABILITY_HUNTER_SICKEM");
 end
 
