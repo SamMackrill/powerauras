@@ -666,6 +666,7 @@ PowaAuras = {
 		"PowaDropDownStance",
 		"PowaDropDownGTFO",
 		"PowaDropDownPowerType",
+
 	};
 	
 	TriggerTypes = {
@@ -904,6 +905,7 @@ PowaAuras.DebuffTypeSpellIds={
 	[9005]  = PowaAuras.DebuffCatType.Stun,		-- Pounce
 	[19679] = PowaAuras.DebuffCatType.Root,	    -- Feral Charge Effect Bear. Immobilize.
 	[49376] = PowaAuras.DebuffCatType.Snare,	-- Feral Charge Effect Cat. Daze.	
+
 	[78675] = PowaAuras.DebuffCatType.Silence,	-- Solar Beam (no duration unless glyphed, but the glyph mods the original spell)
 	[339]   = PowaAuras.DebuffCatType.Root,		-- Entangling Roots
 	[58179] = PowaAuras.DebuffCatType.Snare,	-- Infected Wounds - I
@@ -1247,6 +1249,31 @@ function PowaAuras:MergeTables(desTable, sourceTable)
 		end
 	end
 
+end
+
+--- Merges the contents of many tables, with tables specified later in the argument chain taking precendence over ones
+-- earlier in the chain.
+function PowaAuras:MergeManyTables(key, ...)
+	-- I need a new table.
+	local newTable, count = self:CopyTable(key), select("#", ...);
+	-- Now go over the other tables.
+	for i=1, count do
+		-- Merge table in.
+		local table = select(i, ...);
+		for k, v in pairs(table) do
+			-- Replace if we're allowed to.
+			if(newTable[k] ~= nil) then
+				if(type(v) ~= "table") then
+					newTable[k] = v;
+				elseif(type(v) == "table") then
+					-- It's a table, merge!
+					newTable[k] = self:MergeManyTables(newTable[k], v);
+				end
+			end
+		end
+	end
+	-- Done.
+	return newTable;
 end
 
 function PowaAuras:InsertText(text, ...)

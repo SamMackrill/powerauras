@@ -18,9 +18,9 @@ PowaAuras.UpdateFunctions = {
 			x = "PosX",
 			y = "PosY",
 			randomcolor = "ColorRandom",
---			r = "Color.r",
---			g = "Color.g",
---			b = "Color.b",
+			r = "Color.1",
+			g = "Color.2",
+			b = "Color.3",
 			inverse = "Invert",
 			ignoremaj = "IgnoreCase",
 			exact = "ExactMatch",
@@ -30,11 +30,9 @@ PowaAuras.UpdateFunctions = {
 			thresholdinvert = "ThresholdInvert",
 			mine = "IsMine",
 			icon = "IconPath",
---			focus = "Units.Focus",
 --			raid = "Units.Raid",
 --			groupOrSelf = "Units.RaidPartySelf",
 --			party = "Units.Party",
---			groupany = "Units.RaidPartyAny",
 --			optunitn = false,
 --			unitn = "Units.Custom",
 			inRaid = "InRaid",
@@ -57,7 +55,7 @@ PowaAuras.UpdateFunctions = {
 --			RoleHealer   = "Role.Healer",
 --			RoleMeleDps  = "Role.DPSMelee",
 --			RoleRangeDps = "Role.DPSRanged",
---			gcd = false,
+			gcd = false,
 			multiids = "MultiCheck",
 			tooltipCheck = "TooltipCheck",
 		},
@@ -79,6 +77,8 @@ PowaAuras.UpdateFunctions = {
 					-- And get!
 					parent = aura[parentKey];
 					replace = replace:sub(splitPos+1);
+					-- If we can number it, do so.
+					replace = tonumber(replace) or replace;
 				end
 				-- Write value.
 				if(replace and aura[old] ~= nil) then
@@ -145,17 +145,20 @@ PowaAuras.UpdateFunctions = {
 			end
 --			-- Friendly/Hostile targets.
 --			if(aura["target"] and not aura["targetfriend"]) then
---				aura["Units"]["Target"] = true;
---				aura["Units"]["TargetFlags"] = cPowaAura.UnitFlags.REACTION_HOSTILE;
+--				aura["Units"]["Target"] = bit.bor(cPowaAura.UnitFlags.EXISTS, cPowaAura.UnitFlags.REACTION_HOSTILE);
 --			elseif(not aura["target"] and aura["targetfriend"]) then
---				aura["Units"]["Target"] = true;
---				aura["Units"]["TargetFlags"] = cPowaAura.UnitFlags.REACTION_FRIENDLY;
+--				aura["Units"]["Target"] = bit.bor(cPowaAura.UnitFlags.EXISTS, cPowaAura.UnitFlags.REACTION_FRIENDLY);
 --			elseif(aura["target"] and aura["targetfriend"]) then
---				aura["Units"]["Target"] = true;
---				aura["Units"]["TargetFlags"] = bit.bor(cPowaAura.UnitFlags.REACTION_HOSTILE, cPowaAura.UnitFlags.REACTION_FRIENDLY);
+--				aura["Units"]["Target"] = bit.bor(cPowaAura.UnitFlags.EXISTS, cPowaAura.UnitFlags.REACTION_HOSTILE, 
+--					cPowaAura.UnitFlags.REACTION_FRIENDLY);
 --			else
---				aura["Units"]["Target"] = false;
---				aura["Units"]["TargetFlags"] = bit.bor(cPowaAura.UnitFlags.REACTION_HOSTILE, cPowaAura.UnitFlags.REACTION_FRIENDLY);
+--				aura["Units"]["Target"] = 0;
+--			end
+--			-- Focus target.
+--			if(aura["focus"]) then
+--				aura["Units"]["Focus"] = cPowaAura.UnitFlags.EXISTS;
+--			else
+--				aura["Units"]["Focus"] = 0;
 --			end
 		end,
 	},

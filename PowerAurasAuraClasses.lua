@@ -6,14 +6,8 @@ local strsplit = strsplit;
 cPowaAura = PowaClass(function(aura, id, base)
 	--PowaAuras:ShowText("cPowaAura constructor id=", id, " base=", base);
 	
-	for k, v in pairs(cPowaAura.ExportSettings) do
-		if (base and base[k] ~= nil) then
-			aura[k] = base[k];
-		else
-			aura[k] = v;
-		end
-		-- PowaAuras:ShowText(k," =", aura[k]);
-	end
+	-- Merge in export settings.
+	aura:MergeExportSettings(base, id);
 	
 	if (base) then
 		if (base.ShowOptions == nil) then
@@ -71,6 +65,34 @@ cPowaAura = PowaClass(function(aura, id, base)
 	aura:Init();
 	
 end);
+
+function cPowaAura:MergeExportSettings(base, id)
+	-- Merge tables.
+	local merge = PowaAuras:MergeManyTables(self.ExportSettings, (base or nil));
+--	if(id < 5) then
+--		print("EXPORT MERGE BEGIN");
+--		self:DebugExportMerge(merge, base);
+--	end
+	for k, v in pairs(merge) do
+		self[k] = v;
+	end
+end
+
+function cPowaAura:DebugExportMerge(table, base, export, depth)
+	if(not depth) then depth = 0; end
+	if(not export) then export = self.ExportSettings; end
+	for k, v in pairs(table) do
+		if(type(v) == "table") then
+			print(strrep("    ", depth), k, "= {");
+			self:DebugExportMerge(v, base[k] or {}, export[k] or {}, depth+1);
+			print(strrep("    ", depth), "}");
+		else
+			print(strrep("    ", depth), k, "=", "|cFFFFFF00" .. tostring(v) .. "|r", 
+				(v == export[k] and v ~= base[k] and "|cFF00FF00" .. tostring(export[k]) .. "|r" or "|cFFFF0000" .. tostring(export[k]) .. "|r"), 
+				base and (v == base[k] and "|cFF00FF00" .. tostring(base[k]) .. "|r" or "|cFFFF0000" .. tostring(base[k]) .. "|r") or nil);
+		end
+	end
+end
 
 -- This is the set of values that will be exported with their default values
 -- Be very careful if you change this as it may break many old exports
@@ -233,15 +255,11 @@ cPowaAura.ExportSettings = {
 	PosX = 0,
 	PosY = 0,
 	ColorRandom = false,
-	r = 1.0,
-	g = 1.0,
-	b = 1.0,
---	Color = {           -- Can just unpack() this into a setvertexcolor call.
---		r = 1,
---		g = 1,
---		b = 1,
---		a = 1,
---	},
+	Color = {           -- Can just unpack() this into a setvertexcolor call.
+		[1] = 1,
+		[2] = 1,
+		[3] = 1,
+	},
 
 	IsMine = false,
 	InRaid = 0,
@@ -279,21 +297,16 @@ cPowaAura.ExportSettings = {
 	RoleRangeDps = 0,
 
 --	Units = {
---		Focus = false,
---		FocusFlags = 0x3,
---		FocusFlagsInverse = 0x0,
---		Target = false,
---		TargetFlags = 0x3,
---		TargetFlagsInverse = 0x0,
+--		Focus = 0x0,
+--		Target = 0x0,
 --		Raid = false,
 --		Party = false,
---		RaidPartySelf = false,
---		RaidPartyAny = true,
+--		RaidPartySelf = false, -- Tristate, false = off, 1 = Yes, check any, true = Yes, check all.
+--		RaidPartyAny = true, -- Removed, treat 1 in RaidPartySelf as this.
 --		Arena = false, -- Scans arena1 through arena5.
 --		Pet = false, -- Stops people commenting about lack of pet support.
 --		Custom = "",
 --		CustomFlags = 0x3,
---		CustomFlagsInverse = 0x0,
 --	},
 
 --	Instance = {
@@ -306,6 +319,7 @@ cPowaAura.ExportSettings = {
 --		Battleground = 0, -- Add battleground sizes? Rated battleground?
 --		Arena = 0, -- Add arena sizes?
 --	},
+
 --	Role = {
 --		Tank = 0,
 --		Healer = 0,
@@ -335,23 +349,25 @@ cPowaAura.ExportSettings = {
 
 -- Unit flags.
 cPowaAura.UnitFlags = {
-	REACTION_HOSTILE = 0x1,
-	REACTION_FRIENDLY = 0x2,
-	CLASSIFICATION_NORMAL = 0x4,
-	CLASSIFICATION_ELITE = 0x8,
-	CLASSIFICATION_RARE = 0x10,
-	CLASSIFICATION_BOSS = 0x20,
-	CLASS_DEATHKNIGHT = 0x40,
-	CLASS_DRUID = 0x80,
-	CLASS_HUNTER = 0x100,
-	CLASS_MAGE = 0x200,
-	CLASS_PALADIN = 0x400,
-	CLASS_PRIEST = 0x800,
-	CLASS_ROGUE = 0x1000,
-	CLASS_SHAMAN = 0x2000,
-	CLASS_WARLOCK = 0x4000,
-	CLASS_WARRIOR = 0x8000,
-	IS_PLAYER = 0x10000,
+	EXISTS = 0x1, -- Exists flag must be set if you want the unit to be checked.
+	REACTION_HOSTILE = 0x2,
+	REACTION_FRIENDLY = 0x4,
+	CLASSIFICATION_NORMAL = 0x8,
+	CLASSIFICATION_ELITE = 0x10,
+	CLASSIFICATION_RARE = 0x20,
+	CLASSIFICATION_BOSS = 0x40,
+	CLASS_DEATHKNIGHT = 0x80,
+	CLASS_DRUID = 0x100,
+	CLASS_HUNTER = 0x200,
+	CLASS_MAGE = 0x400,
+	CLASS_PALADIN = 0x800,
+	CLASS_PRIEST = 0x1000,
+	CLASS_ROGUE = 0x2000,
+	CLASS_SHAMAN = 0x4000,
+	CLASS_WARLOCK = 0x8000,
+	CLASS_WARRIOR = 0x10000,
+	IS_PLAYER = 0x20000,
+	IS_NPC = 0x40000,
 };
 
 -- Spec flags.
@@ -1005,7 +1021,7 @@ function cPowaAura:GetSingleTexture(frame, secondary)
 			texture:ClearAllPoints();
 			texture:SetPoint("CENTER",frame);
 			texture:SetFont(STANDARD_TEXT_FONT, 20);
-			texture:SetTextColor(self.r,self.g,self.b);
+			texture:SetTextColor(unpack(self.Color));
 			texture:SetJustifyH("CENTER");
 		else
 			texture = frame:CreateTexture(nil,"BACKGROUND");
@@ -1023,7 +1039,7 @@ function cPowaAura:GetSingleTexture(frame, secondary)
 				texture:ClearAllPoints();
 				texture:SetPoint("CENTER",frame);
 				texture:SetFont(STANDARD_TEXT_FONT, 20);
-				texture:SetTextColor(self.r,self.g,self.b);
+				texture:SetTextColor(unpack(self.Color));
 				texture:SetJustifyH("CENTER");
 			end
 		else
@@ -1058,6 +1074,7 @@ function cPowaAura:UpdateText(texture)
 	if (not self.textaura) then return; end
 	local newText = self:GetAuraText();
 	if (self.Debug) then
+
 		PowaAuras:Message("CurrentText=", self.CurrentText);
 		PowaAuras:Message("newText    =", newText);
 	end
@@ -3073,6 +3090,7 @@ function cPowaSpellCooldown:CheckIfShouldShow(giveReason, ignoreGCD)
 	if (self.Debug) then
 		PowaAuras:Message("====SPELL COOLDOWN====");
 		PowaAuras:Message("Spell=", self.ValueCheck);
+
 		PowaAuras:Message("ignoreGCD=", ignoreGCD);
 	end
 	for pword in string.gmatch(self.ValueCheck, "[^/]+") do
