@@ -537,15 +537,17 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 					hasTimerSettings = true;
 				end
 			elseif (string.sub(key,1,7) == "stacks.") then
+
+
 				key = string.sub(key,8);
 				if (cPowaStacks.ExportSettings[key]~=nil) then
 					importStacksSettings[key] = self:ExtractImportValue(type(cPowaStacks.ExportSettings[key]), var);
 					hasStacksSettings = true;
 				end
 			else
-				--self:Message("cPowaAura.ExportSettings[",key,"]=", cPowaAura.ExportSettings[key]);
-				if (cPowaAura.ExportSettings[key]~= nil) then
-					importAuraSettings[key] = self:ExtractImportValue(type(cPowaAura.ExportSettings[key]), var);
+--				self:Message("PowaAuras.OldExportSettings[",key,"]=", PowaAuras.OldExportSettings[key]);
+				if (PowaAuras.OldExportSettings[key]~= nil) then
+					importAuraSettings[key] = self:ExtractImportValue(type(PowaAuras.OldExportSettings[key]), var);
 				end
 			end
 		end	
