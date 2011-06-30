@@ -3,10 +3,13 @@
 --      << Power Auras >>
 -->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 --
+
 -- Use this regex to find debug spam before a release!
 -- ^\s*[^-\s][^-\s].*:ShowText\(.*$
 
--- Set default settings up.
+--- Store default local settings
+-- @name PowaAuras.PowaMiscDefault
+-- @class table
 PowaAuras.PowaMiscDefault = {
 	Disabled = false,
 	debug = false,
@@ -24,6 +27,9 @@ PowaAuras.PowaMiscDefault = {
 	SoundChannel = "Master",
 };
 
+--- Store default global settings
+-- @name PowaAuras.PowaGlobalMiscDefault
+-- @class table
 PowaAuras.PowaGlobalMiscDefault = {
 	PathToSounds = "Interface\\AddOns\\PowerAuras\\Sounds\\",
 	PathToAuras = "Interface\\Addons\\PowerAuras\\Custom\\",
