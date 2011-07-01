@@ -314,7 +314,7 @@ Revert PowaBarSliderTemplate to inherit from OptionsSliderTemplate if it's fixed
       <OnLoad>self:SetBackdropBorderColor(0.9, 1.0, 0.95); self:SetBackdropColor(0.6, 0.6, 0.6);</OnLoad>
       <OnMouseDown>PowaAuras:Bar_MouseDown(self, button, "PowaBarConfigFrame" );</OnMouseDown>
       <OnMouseUp>PowaAuras:Bar_MouseUp(self, button, "PowaBarConfigFrame" );</OnMouseUp>
-	  <OnShow>if (PowaAuras.Auras[PowaAuras.CurrentAuraId].Type==PowaAuras.BuffTypes.Slots) then PowaEquipmentSlotsFrame:Show(); end</OnShow>
+	  <OnShow>if (PowaAuras.Auras[PowaAuras.CurrentAuraId].bufftype==PowaAuras.BuffTypes.Slots) then PowaEquipmentSlotsFrame:Show(); end</OnShow>
 	  <OnHide>if (PowaEquipmentSlotsFrame:IsVisible()) then PowaEquipmentSlotsFrame:Hide(); end</OnHide>
     </Scripts>
     <Layers>
