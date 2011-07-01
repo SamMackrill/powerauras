@@ -22,19 +22,26 @@ function PowaAuras.UI:BuildFrameFromDefinition(def, parent)
 	-- Classes.
 	if(type(def.Class) == "string") then
 		if(def.Type == "Class") then
-			frame = self[def.Class](self, parent, 
-				(def.ClassArgs and 
-				(type(def.ClassArgs) == "table" and unpack(def.ClassArgs) or tostring(def.ClassArgs)) or nil));
+			if(def.ClassArgs and type(def.ClassArgs) == "table") then
+				frame = self[def.Class](self, parent, unpack(def.ClassArgs));
+			else
+				frame = self[def.Class](self, parent, (def.ClassArgs and tostring(def.ClassArgs) or nil));
+			end
 		else
-			self[def.Class](self, frame, 
-				(def.ClassArgs and 
-				(type(def.ClassArgs) == "table" and unpack(def.ClassArgs) or tostring(def.ClassArgs)) or nil));
+			-- Need to handle unpack like this.
+			if(def.ClassArgs and type(def.ClassArgs) == "table") then
+				self[def.Class](self, frame, unpack(def.ClassArgs));
+			else
+				self[def.Class](self, frame, (def.ClassArgs and tostring(def.ClassArgs) or nil));
+			end
 		end
 	elseif(type(def.Class) == "table") then
 		for _, class in ipairs(def.Class) do
-			self[class](self, frame, 
-				(def.ClassArgs and 
-				(type(def.ClassArgs) == "table" and unpack(def.ClassArgs) or tostring(def.ClassArgs)) or nil));
+			if(def.ClassArgs and type(def.ClassArgs) == "table") then
+				self[class](self, frame, unpack(def.ClassArgs));
+			else
+				self[class](self, frame, (def.ClassArgs and tostring(def.ClassArgs) or nil));
+			end
 		end
 	end
 	-- Additional values.

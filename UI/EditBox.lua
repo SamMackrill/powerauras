@@ -106,3 +106,47 @@ PowaAuras.UI:Register("SettingsEditBox", {
 		self:ClearFocus();
 	end,
 });
+
+-- Numeric version of the settings editbox.
+PowaAuras.UI:Register("NumericSettingsEditBox", {
+	Base = "SettingsEditBox",
+	Items = {},
+	Hooks = {
+		"SetText",
+	},
+	Scripts = {
+		OnSettingChanged = "SetText",
+	},
+	Init = function(self, title, setting, decimals)
+		-- Call main init func.
+		self.Decimals = decimals or 0;
+		-- Fix meh!
+		PowaAuras.UI.SettingsEditBox.Init(self, title, setting);
+	end,
+	GetDecimals = function(self)
+		return self.Decimals;
+	end,
+	OnEnterPressed = function(self)
+		-- Save setting.
+		local val = tonumber(self:GetText());
+		if(val) then
+			self:SaveSetting(self:Round(tonumber(self:GetText())));
+		else
+			self:SetText(self:GetSetting() or 0);
+		end
+		self:ClearFocus();
+	end,
+	Round = function(self, src)
+		return floor(src*(10^self.Decimals)+0.5)/(10^self.Decimals);
+	end,
+	SetDecimals = function(self, deci)
+		self.Decimals = deci;
+		if(not self:HasFocus()) then
+			self:OnEscapePressed();
+		end
+	end,
+	SetText = function(self, text)
+		-- Fix the value.
+		self:__SetText((tonumber(text) and self:Round(tonumber(text)) or text or 0));
+	end,
+});

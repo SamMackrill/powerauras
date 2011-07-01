@@ -94,7 +94,7 @@ function PowaAuras:SaveSetting(key, value, id)
 		ret = true;
 	end
 	-- Call OnUpdate func. Pass new value.
-	self:UpdateSetting(key, value);
+	self:UpdateSetting(key, value, setting.Location);
 	-- Done.
 	return ret;
 end
@@ -103,12 +103,12 @@ end
 -- @param key The key of the setting which has been updated.
 -- @param value The value to be passed to the callback functions.
 -- @return Returns false if the setting does not exist.
-function PowaAuras:UpdateSetting(key, value)
+function PowaAuras:UpdateSetting(key, value, location)
 	-- Make sure setting exists.
 	if(not self.SettingsByKey[key]) then return false; end
 	-- Run update funcs.
 	for _, func in ipairs(self.SettingCallbacks) do
-		func(key, value);
+		func(key, value, location);
 	end
 end
 --- Calls UpdateSetting for all Aura related setting keys if the passed aura ID exists.
@@ -119,7 +119,7 @@ function PowaAuras:FireAuraSettingCallbacks(id)
 	-- Go over registered settings.
 	for key, data in pairs(self.SettingsByKey) do
 		if(data.Location == self.SettingLocations.Aura) then
-			self:UpdateSetting(key, self:GetSetting(key, id));
+			self:UpdateSetting(key, self:GetSetting(key, id), data.Location);
 		end
 	end
 end
@@ -484,8 +484,18 @@ for k, _ in pairs(cPowaStacks.ExportSettings) do
 end
 
 -- Add a general update function for when these settings change.
-PowaAuras:RegisterSettingCallback(function(key, value)
-	if(PowaAuras.ModTest and PowaGlobalMisc[key] ~= nil or PowaMisc[key] ~= nil) then
-		PowaAuras:ToggleAllAuras(true, true);
-	end
-end);
+do
+	local lastUpdate = 0;
+	PowaAuras:RegisterSettingCallback(function(key, value, location)
+		-- Redisplay auras if testing mode is on.
+		if(PowaAuras.ModTest and lastUpdate < time()) then
+			-- Get the selected aura.
+			local aura = PowaBrowser:GetSelectedAura() or -1;
+			-- Call twice in no-update mode.
+			PowaAuras:ToggleAuraDisplay(aura, false, true);
+			PowaAuras:ToggleAuraDisplay(aura, true, true);
+			-- Throttle mass updates to one per sec.
+			lastUpdate = time();
+		end
+	end);
+end
