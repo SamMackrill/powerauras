@@ -126,6 +126,8 @@ cPowaAura.ExportSettings = {
 	r = 1.0,
 	g = 1.0,
 	b = 1.0,
+	SizeX = 256,
+	SizeY = 256,
 	
 	inverse = false,
 	ignoremaj = true,
@@ -868,8 +870,8 @@ function cPowaAura:GetSingleFrame(secondary)
 		frame:SetFrameStrata(self.strata);
 		frame:Hide();  
 		
-		frame.baseL = 256;
-		frame.baseH = 256;
+		frame.baseL = self.SizeX;
+		frame.baseH = self.SizeY;
 		
 		frame.aura = self;
 	end
@@ -3971,6 +3973,7 @@ function cPowaRunes:AddRuneTimeLeft(slot, count)
 	if (count==0 or (self.runeEnd[slot]==0 and self.runeEnd[slot+1]==0)) then return gaps; end
 	if (count==1) then 
 		if (self.runeEnd[slot]~=0 or self.runeEnd[slot+1]~=0) then gaps = gaps + 1; end
+
 		if (self.runeEnd[slot]==0) then
 			table.insert(self.timeList, self.runeEnd[slot+1]);
 			return gaps;
