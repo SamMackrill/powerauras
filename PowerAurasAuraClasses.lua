@@ -188,130 +188,50 @@ cPowaAura.ExportSettings = {
 	UseOldAnimations = false,
 }
 
--- --[[
-	-- Possible new settings list. Would need to remain backwards compatible.
-	-- Anything not in here may have been removed, renamed or just hasn't been added yet.
--- --]]
--- cPowaAura.ExportSettings = {
-	-- Disabled = false,    -- On/Off.
-	-- Version = PowaAuras.VersionInt,
 	
-	-- Type = 1,
-	-- Data = "???",
-	
-	-- Glow = 1,
-	-- Source = 1,         -- Represents the aura texture group.
-	-- SourceKey = 1,      -- Texture or font number. Represents the index. Not used by Custom or Icon auras.
-	-- SourcePath = "",    -- Texture or font path. Replaces icon path too.
-	-- Text = "",          -- Text being displayed.
-	-- Strata = "LOW",     -- Was strata ever implemented? Could do it now.
-	-- Rotate = 0,         -- Rotation.
-	-- Opacity = 0.75,
-	-- Size = 0.75,
-	-- Deform = 1,
-	-- Flip = 0,
-	-- SizeX = 256,        -- Custom sizing? Would be REALLY nice - especially considering we've got auras that are 128x256px and so on.
-	-- SizeY = 256,
-	-- PosX = 0,
-	-- PosY = 0,
-	-- ColorRandom = false,
-	-- Color = {           -- Can just unpack() this into a setvertexcolor call.
-		-- r = 1,
-		-- g = 1,
-		-- b = 1,
-	-- },
-	
-	-- Inverse = false,
-	-- InvertAuraBelow = 0,
-	-- IgnoreCase = true,
-	-- ExactMatch = false,
-	-- TooltipCheck = "",
-	-- MultiCheck = "",
-	
-	-- Mine = false,
-	-- InRaid = 0,
-	-- InParty = 0,
-	-- IsMounted = false,
-	-- IsResting = 0,
-	-- InVehicle = false,
-	-- InCombat = 0,
-	-- IsAlive = true,
-	-- IsPvP = 0,
+--	Units = {
+--		Focus = 0x0,
+--		Target = 0x0,
+--		Raid = false,
+--		Party = false,
+--		RaidPartySelf = false, -- Tristate, false = off, 1 = Yes, check any, true = Yes, check all.
+--		RaidPartyAny = true, -- Removed, treat 1 in RaidPartySelf as this.
+--		Arena = false, -- Scans arena1 through arena5.
+--		Pet = false, -- Stops people commenting about lack of pet support.
+--		Custom = "",
+--		CustomFlags = 0x3,
+--	},
 
-	-- Stacks = 0,
-	-- StacksLower = 0,
-	-- StacksOperator = PowaAuras.DefaultOperator,
-	-- Threshold = 0,      -- Merge with stacks? They do the same thing basically.
-	-- ThresholdInvert = false,
-	-- Stance = 10,
-	-- GTFO = 0,
-	-- PowerType = -1,
+---- Unit flags.
+--cPowaAura.UnitFlags = {
+--	EXISTS = 0x1, -- Exists flag must be set if you want the unit to be checked.
+--	REACTION_HOSTILE = 0x2,
+--	REACTION_FRIENDLY = 0x4,
+--	CLASSIFICATION_NORMAL = 0x8,
+--	CLASSIFICATION_ELITE = 0x10,
+--	CLASSIFICATION_RARE = 0x20,
+--	CLASSIFICATION_BOSS = 0x40,
+--	CLASS_DEATHKNIGHT = 0x80,
+--	CLASS_DRUID = 0x100,
+--	CLASS_HUNTER = 0x200,
+--	CLASS_MAGE = 0x400,
+--	CLASS_PALADIN = 0x800,
+--	CLASS_PRIEST = 0x1000,
+--	CLASS_ROGUE = 0x2000,
+--	CLASS_SHAMAN = 0x4000,
+--	CLASS_WARLOCK = 0x8000,
+--	CLASS_WARRIOR = 0x10000,
+--	IS_PLAYER = 0x20000,
+--	IS_NPC = 0x40000,
+--};
 	
-	-- Units = {
-		-- Focus = false,
-		-- FocusFlags = 0x3,
-		-- FocusFlagsInverse = 0x0,
-		-- Target = false,
-		-- TargetFlags = 0x3,
-		-- TargetFlagsInverse = 0x0,
-		-- Raid = false,
-		-- GroupOrSelf = 0, -- Tristate replacing groupAny, 0 = off, false = yes and check any, true = yes and check all.
-		-- Party = false,
-		-- Arena = false, -- Scans arena1 through arena5.
-		-- Pet = false, -- Stops people commenting about lack of pet support.
-		-- CustomUnit = "",
-		-- CustomUnitFlags = 0x3,
-		-- CustomUnitFlagsInverse = 0x0,
-	-- },
-	-- --[[
-		-- This table shouldn't be in the exports obviously, it's temporarily here.
-	-- --]]
-	-- UnitFlags = {
-		-- REACTION_HOSTILE = 0x1,
-		-- REACTION_FRIENDLY = 0x2,
-		-- CLASSIFICATION_NORMAL = 0x4,
-		-- CLASSIFICATION_ELITE = 0x8,
-		-- CLASSIFICATION_RARE = 0x10,
-		-- CLASSIFICATION_BOSS = 0x20,
-		-- CLASS_DEATHKNIGHT = 0x40,
-		-- CLASS_DRUID = 0x80,
-		-- CLASS_HUNTER = 0x100,
-		-- CLASS_MAGE = 0x200,
-		-- CLASS_PALADIN = 0x400,
-		-- CLASS_PRIEST = 0x800,
-		-- CLASS_ROGUE = 0x1000,
-		-- CLASS_SHAMAN = 0x2000,
-		-- CLASS_WARLOCK = 0x4000,
-		-- CLASS_WARRIOR = 0x8000,
-		-- IS_PLAYER = 0x10000,
-	-- },
-	
-	-- Instance = {
-		-- Dungeon5Man = 0,
-		-- Dungeon5ManHeroic = 0,
-		-- Raid10Man = 0,
-		-- Raid10ManHeroic = 0,
-		-- Raid25Man = 0,
-		-- Raid25ManHeroic = 0,
-		-- Battleground = 0, -- Add battleground sizes? Rated battleground?
-		-- Arena = 0, -- Add arena sizes?
-	-- },
-	
-	-- Role = {
-		-- Tank = 0,
-		-- Healer = 0,
-		-- DPSMelee = 0,
-		-- DPSRanged = 0,
-	-- },
-	
-	-- Spec1 = 0x0,
-	-- Spec2 = 0x0,
-	-- SpecFlags = {
-		-- TREE_FIRST = 0x1, -- First talent tree, eg. Holy.
-		-- TREE_SECOND = 0x2, -- Second tree, eg. Protection.
-		-- TREE_THIRD = 0x4, -- Choose all 3 if you don't care what tree your first/second spec is.
-	-- },
--- };
+-- Spec1 = 0x0,
+-- Spec2 = 0x0,
+-- SpecFlags = {
+	-- TREE_FIRST = 0x1, -- First talent tree, eg. Holy.
+	-- TREE_SECOND = 0x2, -- Second tree, eg. Protection.
+	-- TREE_THIRD = 0x4, -- Choose all 3 if you don't care what tree your first/second spec is.
+-- },
 
 -- Editor UI definitions.
 cPowaAura.UI = {
@@ -2156,6 +2076,7 @@ function cPowaBuffBase:CheckIfShouldShow(giveReason, ignoreGCD)
 		--PowaAuras:UnitTestDebug("on focus");
 		return self:CheckAllAuraSlots("focus", giveReason);
 	end		
+
 	--- unit buff    
 	if self.optunitn then
 		if (self.Debug) then
