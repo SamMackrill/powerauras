@@ -1350,6 +1350,13 @@ function PowaAuras:GetSettingForExport(prefix, k, v, default)
 	return setting.."; ";
 end
 
+--- Caps a number between a specific range.
+function PowaAuras:Range(num, min, max)
+	-- Need number.
+	if(not num or not min or not max) then return; end
+	return math.min(math.max(num, min), max);
+end
+
 -- PowaAura Classes
 -- Compatible with Lua 5.1 (not 5.0).
 function PowaClass(base,ctor)

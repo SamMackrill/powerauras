@@ -846,9 +846,17 @@
 																self:SetText(tostring(100-200*value));
 															end,
 															OnEditBoxValueChanged = function(self)
-																if(tonumber(self:GetText()) 
-																and self:GetSetting() ~= ((100-tonumber(self:GetText()))/200)) then
-																	self:SaveSetting(((100-tonumber(self:GetText()))/200));
+																-- Cap number.
+																local num = PowaAuras:Range(
+																	tonumber(self:GetText()), 0, 100);
+																if(not num) then
+																	self:SetText(100-200*tonumber(self:GetSetting()));
+																	self:ClearFocus();
+																	return;
+																end
+																-- Set!
+																if(self:GetSetting() ~= ((100-num)/200)) then
+																	self:SaveSetting(((100-num)/200));
 																end
 																self:ClearFocus();
 															end,
@@ -883,9 +891,17 @@
 																self:SetText(tostring((100-1000*value)));
 															end,
 															OnEditBoxValueChanged = function(self)
-																if(tonumber(self:GetText()) 
-																and self:GetSetting() ~= ((100-tonumber(self:GetText()))/1000)) then
-																	self:SaveSetting(((100-tonumber(self:GetText()))/1000));
+																-- Cap number.
+																local num = PowaAuras:Range(
+																	tonumber(self:GetText()), 0, 100);
+																if(not num) then
+																	self:SetText(100-1000*tonumber(self:GetSetting()));
+																	self:ClearFocus();
+																	return;
+																end
+																-- Set!
+																if(self:GetSetting() ~= ((100-num)/1000)) then
+																	self:SaveSetting(((100-num)/1000));
 																end
 																self:ClearFocus();
 															end,
