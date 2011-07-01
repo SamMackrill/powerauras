@@ -8,6 +8,10 @@ PowaAuras.UI:Register("Slider", {
 		OnValueChanged = true,
 	},
 	Init = function(self, title, setting)
+		-- Vars.
+		self.Format = nil;
+		self.MinLabel = nil;
+		self.MaxLabel = nil;
 		-- Set the title....
 		self:SetTitle(title or "");
 		-- Add tooltips to the slider, background frame and editbox.
@@ -36,6 +40,9 @@ PowaAuras.UI:Register("Slider", {
 		-- Update min/max labels.
 		self:SetMinMaxLabels();
 	end,
+	GetFormat = function(self)
+		return self.Format;
+	end,
 	GetMaxValue = function(self)
 		return (select(2, self:GetMinMaxValues()));
 	end,
@@ -47,7 +54,8 @@ PowaAuras.UI:Register("Slider", {
 	end,
 	OnEditBoxSettingChanged = function(self, value)
 		if(self:GetText() ~= tostring(value)) then
-			self:SetText(tostring(value));
+			self:SetText((self:GetParent().Format and tonumber(value) 
+				and format(self:GetParent().Format, tonumber(value)) or tostring(value)));
 		end
 	end,
 	OnEditBoxValueChanged = function(self)
@@ -55,9 +63,11 @@ PowaAuras.UI:Register("Slider", {
 		local num = tonumber(self:GetText());
 		if(self:GetSetting() ~= self:GetText() and num) then
 			self:SaveSetting(PowaAuras:Range(num, self:GetParent():GetMinValue(), self:GetParent():GetMaxValue()));
-		else
-			self:SetText(self:GetSetting());
 		end
+		-- Update/format.
+		local value = self:GetSetting();
+		self:SetText((self:GetParent().Format and tonumber(value) 
+			and format(self:GetParent().Format, tonumber(value)) or tostring(value)));
 		-- Always clear ze focus.
 		self:ClearFocus();
 	end,
@@ -72,16 +82,28 @@ PowaAuras.UI:Register("Slider", {
 			self:SaveSetting(value);
 		end
 	end,
+	SetFormat = function(self, format)
+		self.Format = format;
+		self:SetMinMaxLabels(self.MinLabel, self.MaxLabel);
+		self.OnEditBoxSettingChanged(self.Value, self:GetSetting());
+	end,
 	SetMinMaxLabels = function(self, labelMin, labelMax)
 		-- Use min/max if no labels are defined.
-		if(not labelMin) then labelMin = self:GetMinValue(); end
-		if(not labelMax) then labelMax = self:GetMaxValue(); end
+		if(not labelMin) then
+			labelMin = (self.Format and format(self.Format, self:GetMinValue()) or self:GetMinValue());
+			self.MinLabel = nil;
+		else
+			self.MinLabel = labelMin;
+		end
+		if(not labelMax) then
+			labelMax = (self.Format and format(self.Format, self:GetMaxValue()) or self:GetMaxValue());
+			self.MaxLabel = nil;
+		else
+			self.MaxLabel = labelMax;
+		end
 		-- Set.
 		self.Low:SetText(labelMin .. (self.Unit or ""));
 		self.High:SetText(labelMax .. (self.Unit or ""));
-		-- Store so SetUnit can be called later on.
-		self.MinLabel = labelMin;
-		self.MaxLabel = labelMax;
 	end,
 	SetMinMaxValues = function(self, min, max)
 		-- Normal func.

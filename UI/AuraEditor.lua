@@ -164,10 +164,9 @@ local AuraEditor = {
 															ParentKey = "SizeX",
 															Type = "Slider",
 															Inherits = "PowaSliderTemplate",
-															RelativeAnchor = true,
+															Size = { 158, 15 },
 															Points = {
 																[1] = { "TOPLEFT", 4, -48 },
-																[2] = { "TOPRIGHT", "TOP", -4, -48 },
 															},
 															OnLoad = function(self)
 																-- Set min/max.
@@ -177,6 +176,66 @@ local AuraEditor = {
 																PowaAuras.UI:Slider(self, "UI_Editor_Aura_SizeX", 
 																	"Aura.SizeX");
 															end,
+														},
+														[2] = {
+															ParentKey = "SizeY",
+															Type = "Slider",
+															Inherits = "PowaSliderTemplate",
+															Size = { 158, 15 },
+															Points = {
+																[1] = { "TOP", 0, -48 },
+															},
+															OnLoad = function(self)
+																-- Set min/max.
+																self:SetMinMaxValues(16, 512);
+																self:SetValueStep(1);
+																-- Slider, go!
+																PowaAuras.UI:Slider(self, "UI_Editor_Aura_SizeY", 
+																	"Aura.SizeY");
+															end,
+														},
+														[3] = {
+															ParentKey = "Scale",
+															Type = "Slider",
+															Inherits = "PowaSliderTemplate",
+															Size = { 158, 15 },
+															Points = {
+																[1] = { "TOPRIGHT", -4, -48 },
+															},
+															OnLoad = function(self)
+																-- Set min/max.
+																self:SetMinMaxValues(0.01, 5);
+																self:SetValueStep(0.01);
+																-- Slider, go!
+																PowaAuras.UI:Slider(self, "UI_Editor_Aura_Scale", 
+																	"Aura.size");
+																-- Helper method to make this easier.
+																self:SetFormat("%.2f");
+															end,
+														},
+														[4] = {
+															ParentKey = "PosX",
+															Type = "EditBox",
+															Inherits = "PowaLabelledEditBoxTemplate",
+															Class = "NumericSettingsEditBox",
+															ClassArgs = { "UI_Editor_Aura_PosX", "Aura.x", 0 },
+															RelativeAnchor = "SizeX",
+															Points = {
+																[1] = { "TOPLEFT", 0, -64 },
+																[2] = { "TOPRIGHT", 0, -64 },
+															},
+														},
+														[5] = {
+															ParentKey = "PosY",
+															Type = "EditBox",
+															Inherits = "PowaLabelledEditBoxTemplate",
+															Class = "NumericSettingsEditBox",
+															ClassArgs = { "UI_Editor_Aura_PosY", "Aura.y", 0 },
+															RelativeAnchor = "SizeY",
+															Points = {
+																[1] = { "TOPLEFT", 0, -64 },
+																[2] = { "TOPRIGHT", 0, -64 },
+															},
 														},
 													},
 													OnLoad = "UpdateChildren",
