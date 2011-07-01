@@ -248,6 +248,9 @@ cPowaAura.UI = {
 	},
 };
 
+--- Aura Initialisation call, 
+-- Will get called at the end of aura creation, 
+-- Can be overridden
 function cPowaAura:Init()
 	self:SetFixedIcon();
 end
@@ -286,8 +289,10 @@ function cPowaAura:CopyDecorators(newID)
 	self:CopyTriggers(newAura);
 end
 
+--- Copy the Triggers from another Aura, any existing triggers will be lost
+-- @param newAura Auara to copy Triggers from
 function cPowaAura:CopyTriggers(newAura)
-	newAura.Triggers = self:CopyTable(self.Triggers);
+	newAura.Triggers = PowaAuras:CopyTable(self.Triggers);
 	local triggerIndex = 1;
 	while triggerIndex<=#self.Triggers do
 		local newTrigger = newAura.Triggers[triggerIndex];
@@ -297,7 +302,6 @@ function cPowaAura:CopyTriggers(newAura)
 			newTrigger.Actions[actionIndex].AuraId = newAura.id;
 			actionIndex = actionIndex + 1;
 		end
-		triggersTree:AddItem(triggerIndex.."_NEWACTION", "New Action ...", triggerIndex);
 		triggerIndex = triggerIndex + 1;
 	end
 end
@@ -325,15 +329,23 @@ function cPowaAura:GetActivationUI(parent)
 	return self.UI.Activation;
 end
 
+--- Sets an internal named state for this aura
+-- Used by the triggers for complex operations
+-- @param name Name of the state to set, this is actually an entry in the Aura table so be careful with the name!
+-- @param value Value to set the state to
 function cPowaAura:SetState(name, value)
 	if (not value or value==self[name]) then return; end
 	self[name] = value;
 	self:CheckTriggers("State", value, name);
 end
 
+
+--- Allows aura to set its fixed icon, 
+-- virtual, does nothing by default
 function cPowaAura:SetFixedIcon()
 end
 
+--- Cleans-up aura resouces
 function cPowaAura:Dispose()
 	--PowaAuras:ShowText("Aura ", self.id, " Dispose");
 	self:Hide("Dispose");
@@ -350,6 +362,8 @@ function cPowaAura:Dispose()
 	end
 end
 
+--- Allows aura to set any custom events, 
+-- virtual, does nothing by default
 function cPowaAura:CustomEvents()
 end
 
@@ -733,9 +747,18 @@ function cPowaAura:CheckActive(shouldShow, ignoreCascade, testing)
 		--if (self.Active) then
 		--	PowaAuras:ShowText(GetTime(),"=== Aura(", self.id, ") ACTIVE");
 		--else
-		--	PowaAuras:ShowText(GetTime(),"=== Aura(", self.id, ") INACTIVE");	
+		--	PowaAuras:ShowText(GetTime(),"=== Aura(", self.id, ") INACTIVE");
 		--end
-
+		
+		if (self.Timer) then
+			if (self.Active) then
+				self.Timer.Start = GetTime();
+			else
+				self.Timer.Start = nil;
+			end
+			PowaAuras:ShowText("Setting Timer.Start to ", self.Timer.Start, " aura=", self.id);	
+		end
+		
 		if (not ignoreCascade and not testing) then PowaAuras:AddChildrenToCascade(self); end
 	end
 		
