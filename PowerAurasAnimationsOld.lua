@@ -535,8 +535,8 @@ function cPowaAnimationOrbit:Initialise()
 	self.Y = self.TargetY;
 	self.MaxWidth  = math.max(self.TargetX, -self.TargetX, 5) * 1.0;
 	self.MaxHeight = self.MaxWidth * (1.6 - self.Aura.torsion);
-	--PowaAuras:ShowText("MaxWidth ", self.MaxWidth);
-	--PowaAuras:ShowText("MaxHeight ", self.MaxHeight);
+	--PowaAuras:TraceInfo("MaxWidth ", self.MaxWidth);
+	--PowaAuras:TraceInfo("MaxHeight ", self.MaxHeight);
 	self.Width     = self.TargetWidth / self.Aura.torsion;
 	self.Height    = self.TargetHeight / (2-self.Aura.torsion);
 	self.Angle = 0;
@@ -647,7 +647,7 @@ function PowaAuras:AnimationEndFactory(animationType, aura, frame, base)
 end
 
 function PowaAuras:AnimationMainFactory(animationType, aura, frame, base)
-	--self:ShowText("AnimationMainFactory type="..tostring(animationType).." aura.id="..tostring(aura.id).." frame="..tostring(frame));
+	--self:TraceInfo("AnimationMainFactory type="..tostring(animationType).." aura.id="..tostring(aura.id).." frame="..tostring(frame));
 	if (animationType==PowaAuras.AnimationTypes.Invisible) then
 		return nil;
 	end
@@ -661,7 +661,7 @@ function PowaAuras:AnimationFactory(animationType, classList, aura, frame, base)
 	end
 	local class = classList[animationType];
 	if (class) then
-		--self:ShowText("AnimationFactory type="..tostring(animationType).." aura.id="..tostring(aura.id).." class="..tostring(class).." frame="..tostring(frame));
+		--self:TraceInfo("AnimationFactory type="..tostring(animationType).." aura.id="..tostring(aura.id).." class="..tostring(class).." frame="..tostring(frame));
 		if (not base) then
 			base = {};
 		end
@@ -672,6 +672,6 @@ function PowaAuras:AnimationFactory(animationType, classList, aura, frame, base)
 		end
 		return animation;
 	end
-	--self:ShowText("AnimationFactory Unknown "..tostring(animationType).." auraId="..tostring(aura.id)); --OK
+	--self:TraceInfo("AnimationFactory Unknown "..tostring(animationType).." auraId="..tostring(aura.id)); --OK
 	return nil;
 end

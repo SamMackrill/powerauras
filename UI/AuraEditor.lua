@@ -62,7 +62,7 @@ PowaAuras.UI:Register("AuraEditor", {
 		return true;
 	end,
 	AddNewTrigger = function(self)
-		PowaAuras:ShowText("Add New Trigger auraId=", PowaBrowser:GetSelectedAura());
+		PowaAuras:TraceInfo("Add New Trigger auraId=", PowaBrowser:GetSelectedAura());
 	end,
 });
 
