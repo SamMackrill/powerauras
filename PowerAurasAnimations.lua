@@ -181,15 +181,15 @@ function PowaAuras:AddLoopingAnimation(aura, action, frame, animation, group, sp
 		self:AddScale(animationGroup, decrease, increase, duration/3, 3);
 		self:AddScale(animationGroup, 1/decrease,  1/increase, duration/3, 4);
 	elseif (animation==PowaAuras.AnimationTypes.Orbit) then
-		local maxWidth  = math.max(aura.PosX, -aura.PosX, 5);
-		local maxHeight = maxWidth * (1.6 - aura.Deform);
+		local maxWidth  = math.max(aura.x, -aura.x, 5);
+		local maxHeight = maxWidth * (1.6 - aura.torsion);
 		local i = 1;
-		local x = aura.PosX;
+		local x = aura.x;
 		if (isSecondary) then
-			x = -PowaAuras.Auras[aura.id].PosX;
-			frame:SetPoint("Center", x,  PowaAuras.Auras[aura.id].PosY);
+			x = -PowaAuras.Auras[aura.id].x;
+			frame:SetPoint("Center", x,  PowaAuras.Auras[aura.id].y);
 		end
-		local y = aura.PosY;
+		local y = aura.y;
 		local step = 9;
 		local angleOffset = 190;
 		if (x>0) then
@@ -198,7 +198,7 @@ function PowaAuras:AddLoopingAnimation(aura, action, frame, animation, group, sp
 
 		for angle = 0, 360-step, step do
 			local newx = maxWidth * cos(angle + angleOffset);
-			local newy = aura.PosY + maxHeight * sin(angle + angleOffset);
+			local newy = aura.y + maxHeight * sin(angle + angleOffset);
 			--self:ShowText("Orbit ", i, " angle=", angle, " x=", string.format("%.2f", x), " y=", string.format("%.2f", y));
 			self:AddTranslation(animationGroup, newx-x, newy-y, duration * step / 30, i);
 			i = i + 1;

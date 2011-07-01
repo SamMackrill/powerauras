@@ -250,7 +250,7 @@ function cPowaStacks:CreateFrameIfMissing(aura)
 		frame = CreateFrame("Frame", nil, UIParent);
 		PowaAuras.StacksFrames[self.id] = frame;
 		
-		frame:SetFrameStrata(aura.Strata);
+		frame:SetFrameStrata(aura.strata);
 		frame:Hide(); 	
 		frame.texture = frame:CreateTexture(nil, "BACKGROUND");
 		frame.texture:SetBlendMode("ADD");
@@ -325,7 +325,7 @@ function cPowaStacks:ShowValue(aura, newvalue)
 			texcount = texcount+1;
 		end
 		-- Update blending modes.
-		if (aura.Glow == 1) then
+		if (aura.texmode == 1) then
 			frame.textures[i]:SetBlendMode("ADD");
 		else
 			frame.textures[i]:SetBlendMode("DISABLE");
@@ -519,16 +519,16 @@ end
 function cPowaTimer:SetShowOnAuraHide(aura)
 	--PowaAuras:Message("CTR Timer id=", aura.id);
 	--PowaAuras:Message("CooldownAura=", aura.CooldownAura);
-	--PowaAuras:Message("inverse=", aura.Invert);
+	--PowaAuras:Message("inverse=", aura.inverse);
 	--PowaAuras:Message("CanHaveTimer=", aura.CanHaveTimer);
 	--PowaAuras:Message("CanHaveTimerOnInverse=", aura.CanHaveTimerOnInverse);
 	--PowaAuras:Message("ShowActivation=", self.ShowActivation);
-	self.ShowOnAuraHide = self.ShowActivation~=true and ((aura.CooldownAura and (not aura.Invert and aura.CanHaveTimer)) or (not aura.CooldownAura and (aura.Invert and aura.CanHaveTimerOnInverse)));
+	self.ShowOnAuraHide = self.ShowActivation~=true and ((aura.CooldownAura and (not aura.inverse and aura.CanHaveTimer)) or (not aura.CooldownAura and (aura.inverse and aura.CanHaveTimerOnInverse)));
 	--PowaAuras:Message("ShowOnAuraHide=", self.ShowOnAuraHide);
 end
 
 function cPowaTimer:InitFrame(aura, frame)
-	if (aura.Glow == 1) then
+	if (aura.texmode == 1) then
 		frame.texture:SetBlendMode("ADD");
 	else
 		frame.texture:SetBlendMode("DISABLE");
@@ -595,7 +595,7 @@ function cPowaTimer:CreateFrame(aura, index)
 	local frame = CreateFrame("Frame", nil, UIParent);
 	PowaAuras.TimerFrame[self.id][index] = frame;
 	
-	frame:SetFrameStrata(aura.Strata);
+	frame:SetFrameStrata(aura.strata);
 	frame:Hide(); 
 
 	frame.texture = frame:CreateTexture(nil,"BACKGROUND");
@@ -620,7 +620,7 @@ function cPowaTimer:GetTexture()
 end
 
 function cPowaTimer:HasDependants(aura)
-	return (aura.InvertAuraBelow > 0) or (aura.TimerDuration > 0);
+	return (aura.InvertAuraBelow > 0) or (aura.timerduration > 0);
 end
 
 --- Determine the value to display in the timer
@@ -632,9 +632,9 @@ function cPowaTimer:GetDisplayValue(aura, elapsed)
 	elseif (self.ShowActivation and self.Start~=nil) then
 		newvalue = self.Duration;
 	
-	elseif (aura.TimerDuration and aura.TimerDuration > 0) then--- if a user defined timer is active for the aura override the rest
+	elseif (aura.timerduration and aura.timerduration > 0) then--- if a user defined timer is active for the aura override the rest
 		if (((aura.target or aura.targetfriend) and (PowaAuras.ResetTargetTimers == true)) or not self.CustomDuration) then
-			self.CustomDuration = aura.TimerDuration;
+			self.CustomDuration = aura.timerduration;
 		else
 			self.CustomDuration = math.max(self.CustomDuration - elapsed, 0);
 		end	
