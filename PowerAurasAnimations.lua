@@ -17,7 +17,7 @@ function PowaAuras:AddAnimation(action, frame, animation, group, speed, alpha, b
 	end
 	animationGroup:SetScript("OnFinished",
 	function(self, forced)
-		--PowaAuras:ShowText("EndAnimation OnFinished ", self:GetName(), " Action=", self.Action.Id);
+		--PowaAuras:TraceInfo("EndAnimation OnFinished ", self:GetName(), " Action=", self.Action.Id);
 		if (self.Action) then
 			self.Action:PlayNextAnimation();
 		end
@@ -25,7 +25,7 @@ function PowaAuras:AddAnimation(action, frame, animation, group, speed, alpha, b
 	
 	local duration, duration2 = self:CalculateDurations(speed);
 	
-	--PowaAuras:ShowText("AddAnimation duration=", duration, " speed=", speed);
+	--PowaAuras:TraceInfo("AddAnimation duration=", duration, " speed=", speed);
 	if (animation<100 and animation~=PowaAuras.AnimationBeginTypes.Bounce) then
 		self:AddJumpAlphaAndReturn(animationGroup, -math.min(alpha,0.99), duration, 1);
 	end
@@ -79,27 +79,27 @@ function PowaAuras:AddAnimation(action, frame, animation, group, speed, alpha, b
 		for i = 1, steps do
 			ds[i] = (u*dt+a*dt*dt/2) / height;
 			u = u + a*dt;
-			--self:ShowText(i, " ", ds[i]);
+			--self:TraceInfo(i, " ", ds[i]);
 		end
-		--self:ShowText("========");
+		--self:TraceInfo("========");
 		local order = animationGroup:GetMaxOrder()+1;
 		while (height>2) do
 			if (height<100) then
-				--self:ShowText("=UP=");
+				--self:TraceInfo("=UP=");
 				for i = 1, steps do
-					--self:ShowText(order, " ", i, " ", ds[steps-i+1] * height);
+					--self:TraceInfo(order, " ", i, " ", ds[steps-i+1] * height);
 					self:AddTranslation(animationGroup, 0, ds[steps-i+1] * height, dt, order);
 					order = order + 1;
 				end
 			end
-			--self:ShowText("=DOWN=");
+			--self:TraceInfo("=DOWN=");
 			for i = 1, steps do
-				--self:ShowText(order, " ", i, " ", -ds[i] * height);
+				--self:TraceInfo(order, " ", i, " ", -ds[i] * height);
 				self:AddTranslation(animationGroup, 0, -ds[i] * height, dt, order);
 				order = order + 1;
 			end
 			height = height * efficiency;
-			--self:ShowText("\nHeight=", height);
+			--self:TraceInfo("\nHeight=", height);
 		end
 	elseif (animation==1000) then -- Ping
 		self:AddJumpScaleAndReturn(animationGroup, 1.5, 0.3, 1)
@@ -155,7 +155,7 @@ function PowaAuras:AddLoopingAnimation(aura, action, frame, animation, group, sp
 		animationGroup:SetScript("OnPlay",
 		function(self)
 			self.Trigger = (random( 210 - self.speed * 100 ) < 4);
-			--PowaAuras:ShowText("Electric OnPlay Trigger=", self.Trigger);
+			--PowaAuras:TraceInfo("Electric OnPlay Trigger=", self.Trigger);
 		end);
 		self:AddMoveRandomLocation(animationGroup, 0, 10, -5, 0, 10, -5, 0.05, true, speed, 1);
 		self:AddAlphaOnTrigger(animationGroup, 2, 0.05, 1);
@@ -199,7 +199,7 @@ function PowaAuras:AddLoopingAnimation(aura, action, frame, animation, group, sp
 		for angle = 0, 360-step, step do
 			local newx = maxWidth * cos(angle + angleOffset);
 			local newy = aura.y + maxHeight * sin(angle + angleOffset);
-			--self:ShowText("Orbit ", i, " angle=", angle, " x=", string.format("%.2f", x), " y=", string.format("%.2f", y));
+			--self:TraceInfo("Orbit ", i, " angle=", angle, " x=", string.format("%.2f", x), " y=", string.format("%.2f", y));
 			self:AddTranslation(animationGroup, newx-x, newy-y, duration * step / 30, i);
 			i = i + 1;
 			x = newx;

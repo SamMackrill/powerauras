@@ -16,9 +16,9 @@ function PowaAuras:Dump()
 
 	if (not Status) then
 		self:Message(Err); -- OK
-		self:DisplayText(self.Colors.Red, "Error in dump protected call: ", Err);
+		self:Message(self.Colors.Red, "Error in dump protected call: ", Err);
 	else
-		self:DisplayText(self.Colors.Green, "Dump OK");	
+		self:Message(self.Colors.Green, "Dump OK");	
 	end
 end
 
@@ -158,23 +158,23 @@ function PowaAuras:Dump_Safe()
 	end
 	-- Debuff Spells
 	PowaState.DebuffSpellInfo = {}
-	--self:DisplayText("Debuff Spells");	
+	--self:Message("Debuff Spells");	
 	for k in pairs(PowaAuras.DebuffTypeSpellIds) do
-		--self:DisplayText(k, " ", v);	
+		--self:Message(k, " ", v);	
 		local name, rank, icon, cost, isFunnel, powerType, castTime, minRange, maxRange = GetSpellInfo(k);
 		if name then
 			PowaState.DebuffSpellInfo[k] = {Name=name, Rank=rank, Icon=icon, Cost=cost, IsFunnel=isFunnel, PowerType=powerType, CastTime=castTime, MinRange=minRange, MaxRange=maxRange};
 		end
 	end
 	-- SpellIds used in auras
-	--self:DisplayText("Aura Spells");	
+	--self:Message("Aura Spells");	
 	PowaState.SpellInfo = {}
 	for id, aura in pairs(PowaAuras.Auras) do
 		for pword in string.gmatch(aura.buffname, "[^/]+") do
 			local _, _,spellId = string.find(pword, "%[(%d+)%]")
 			if (spellId) then		
-				--self:DisplayText(id, " ", aura);	
-				--self:DisplayText(" ", pword, "  ", spellId);	
+				--self:Message(id, " ", aura);	
+				--self:Message(" ", pword, "  ", spellId);	
 				local name, rank, icon, cost, isFunnel, powerType, castTime, minRange, maxRange = GetSpellInfo(tonumber(spellId));
 				if name then
 					PowaState.SpellInfo[tonumber(spellId)] = {Name=name, Rank=rank, Icon=icon, Cost=cost, IsFunnel=isFunnel, PowerType=powerType, CastTime=castTime, MinRange=minRange, MaxRange=maxRange};

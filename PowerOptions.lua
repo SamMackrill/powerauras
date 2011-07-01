@@ -200,7 +200,7 @@ function PowaAuras:MainListClick(owner)
 		end
 		
 		for i = min, max do
-			--self:ShowText("Toggle aura ", i);
+			--self:TraceInfo("Toggle aura ", i);
 			local aura = self.Auras[i];
 			if (aura) then
 				local auraIcon = getglobal("PowaIcone"..(i - min + 1));
@@ -228,7 +228,7 @@ function PowaAuras:MainListClick(owner)
 
 	-- set text for rename
 	--local pageButton = "PowaOptionsList"..self.CurrentAuraPage;
-	--self:ShowText(pageButton, getglobal(pageButton));
+	--self:TraceInfo(pageButton, getglobal(pageButton));
 	local currentText = getglobal("PowaOptionsList"..self.CurrentAuraPage):GetText();
 	if (currentText==nil) then currentText = "" end;
 	PowaOptionsRenameEditBox:SetText( currentText );
@@ -442,7 +442,7 @@ function PowaAuras:OptionNewEffect()
 		PowaBarConfigFrame:Show();
 		PlaySound("TalentScreenOpen", PowaMisc.SoundChannel);
 	end
-	--self:Debug("New aura ", i);
+	--self:GlobalDebug("New aura ", i);
 	--aura:Display();
 
 end
@@ -679,17 +679,17 @@ function PowaAuras:CreateNewAuraSetFromImport(importString)
 	local offset;
 	local setName;
 	for k, v in string.gmatch(importString, "([^\n=@]+)=([^@]+)@") do
-		--self:ShowText("k=", k, " len=", string.len(v));
+		--self:TraceInfo("k=", k, " len=", string.len(v));
 		if (k=="Set") then
 			setName = v;		
 		else
 			if (not offset) then
 				local _, _, oldAuraId = string.find(k, "(%d+)");
-				--self:ShowText("oldAuraId=", oldAuraId);
+				--self:TraceInfo("oldAuraId=", oldAuraId);
 				if (self:IsNumeric(oldAuraId)) then
 					offset = min - oldAuraId;
 				end
-				--self:ShowText(" offset=", offset);
+				--self:TraceInfo(" offset=", offset);
 			end
 			self.Auras[auraId] = self:ImportAura(v, auraId, offset);
 			if (auraId > 120) then
@@ -751,10 +751,10 @@ function PowaAuras:CreateAuraSetString()
 	local max = min + 23;
 
 	for i = min, max do
-		--self:ShowText(i);
+		--self:TraceInfo(i);
 		if (self.Auras[i] ~= nil and self.Auras[i].buffname ~= "" and self.Auras[i].buffname ~= " ") then	
 			setString = setString .. "\nAura[" .. tostring(i) .. "]=" .. self.Auras[i]:CreateAuraString(true).."@";
-			--self:ShowText("Aura[" .. tostring(i) .. "]");
+			--self:TraceInfo("Aura[" .. tostring(i) .. "]");
 		end
 	end
 	return setString;
@@ -949,7 +949,7 @@ function PowaAuras:ExportDialogInit(self)
 	PowaComms:AddHandler("EXPORT_REJECT", function(_, data, from)
 		-- Were we sending to this person?
 		if(PowaAuraExportDialog.sendTo == from) then
-			if(PowaMisc.debug) then PowaAuras:DisplayText("Comms: EXPORT_REJECT from " .. from); end
+			if(PowaMisc.debug) then PowaAuras:Message("Comms: EXPORT_REJECT from " .. from); end
 			PowaAuraExportDialog.sendTo = nil;
 			PowaAuraExportDialog.errorReason = tonumber((data or 1), 10);
 			PowaAuraExportDialog:SetStatus(3);
@@ -960,7 +960,7 @@ function PowaAuras:ExportDialogInit(self)
 	PowaComms:AddHandler("EXPORT_ACCEPT", function(_, _, from)
 		-- Were we sending to this person?
 		if(PowaAuraExportDialog.sendTo == from) then
-			if(PowaMisc.debug) then PowaAuras:DisplayText("Comms: EXPORT_ACCEPT from " .. from); end
+			if(PowaMisc.debug) then PowaAuras:Message("Comms: EXPORT_ACCEPT from " .. from); end
 			PowaAuraExportDialog:SetStatus(4);
 			-- Let's get busy!
 			PowaComms:SendAddonMessage("EXPORT_DATA", PowaAuraExportDialog.sendString, from);
@@ -1121,17 +1121,17 @@ function PowaAuras:PlayerImportDialogInit(self)
 	PowaComms:AddHandler("EXPORT_REQUEST", function(_, data, from)
 		-- If we're busy, reject. If we're in combat, reject. If we're autoblocking, reject.
 		if(PowaAuraPlayerImportDialog.receiveFrom) then
-			if(PowaMisc.debug) then PowaAuras:DisplayText("Comms: Rejected EXPORT_REQUEST - Busy."); end
+			if(PowaMisc.debug) then PowaAuras:Message("Comms: Rejected EXPORT_REQUEST - Busy."); end
 			PowaComms:SendAddonMessage("EXPORT_REJECT", 4, from);
 			return;
 		end
 		if(InCombatLockdown()) then
-			if(PowaMisc.debug) then PowaAuras:DisplayText("Comms: Rejected EXPORT_REQUEST - In combat."); end
+			if(PowaMisc.debug) then PowaAuras:Message("Comms: Rejected EXPORT_REQUEST - In combat."); end
 			PowaComms:SendAddonMessage("EXPORT_REJECT", 1, from);
 			return;
 		end
 		if(PowaGlobalMisc.BlockIncomingAuras == true) then
-			if(PowaMisc.debug) then PowaAuras:DisplayText("Comms: Rejected EXPORT_REQUEST - BlockIncomingAuras = true."); end
+			if(PowaMisc.debug) then PowaAuras:Message("Comms: Rejected EXPORT_REQUEST - BlockIncomingAuras = true."); end
 			PowaComms:SendAddonMessage("EXPORT_REJECT", 2, from);
 			return;
 		end
@@ -1147,7 +1147,7 @@ function PowaAuras:PlayerImportDialogInit(self)
 	PowaComms:AddHandler("EXPORT_DATA", function(_, data, from)
 		-- Were we receiving from this person?
 		if(PowaAuraPlayerImportDialog.receiveFrom == from) then
-			if(PowaMisc.debug) then PowaAuras:DisplayText("Comms: Receiving EXPORT_DATA"); end
+			if(PowaMisc.debug) then PowaAuras:Message("Comms: Receiving EXPORT_DATA"); end
 			-- Status code 4 - we are pro.
 			PowaAuraPlayerImportDialog:SetStatus(4);
 			-- Store the data.
@@ -1273,7 +1273,7 @@ function PowaAuras:DoCopyEffect(idFrom, idTo, isMove)
 end
 
 function PowaAuras:MainOptionShow()
-	--self:ShowText("MainOptionShow");
+	--self:TraceInfo("MainOptionShow");
 	if (PowaOptionsFrame:IsVisible()) then
 		self:MainOptionClose();
 	else
@@ -1283,13 +1283,13 @@ function PowaAuras:MainOptionShow()
 		PowaOptionsFrame:Show();
 		PlaySound("TalentScreenOpen", PowaMisc.SoundChannel);
 		if (PowaMisc.Disabled) then
-			self:DisplayText("Power Auras "..self.Colors.Red..ADDON_DISABLED.."|r");
+			self:Message("Power Auras "..self.Colors.Red..ADDON_DISABLED.."|r");
 		end
 	end
 end
 
 function PowaAuras:MainOptionClose()
-	--self:ShowText("MainOptionClose");
+	--self:TraceInfo("MainOptionClose");
 	self:DisableMoveMode();
 	self.ModTest = false;
 	if ColorPickerFrame:IsVisible() then
@@ -1413,8 +1413,8 @@ end
 
 
 function PowaAuras:SetOptionText(aura)
-	--self:ShowText("bufftype=", aura.bufftype);
-	--self:ShowText("typeText=", aura.OptionText.typeText);
+	--self:TraceInfo("bufftype=", aura.bufftype);
+	--self:TraceInfo("typeText=", aura.OptionText.typeText);
 	PowaDropDownBuffTypeText:SetText(aura.OptionText.typeText);
 	if (aura.OptionText.buffNameTooltip) then
 		PowaBarBuffName:Show();
@@ -1458,21 +1458,21 @@ end
 function PowaAuras:ShowOptions(optionsToShow)
 	for k,v in pairs(self.OptionHideables) do
 		if (optionsToShow and optionsToShow[v]) then
-			--self:ShowText(" Show:", v);
+			--self:TraceInfo(" Show:", v);
 			getglobal(v):Show();
 		else
-			--self:ShowText(" Hide:", v);
+			--self:TraceInfo(" Hide:", v);
 			getglobal(v):Hide();
 		end
 	end
 end
 
 function PowaAuras:EnableCheckBoxes(checkBoxesToEnable)
-	--self:ShowText("EnableCheckBoxes");
+	--self:TraceInfo("EnableCheckBoxes");
 	for k,v in pairs(self.OptionCheckBoxes) do
-		--self:ShowText(v, " checkBoxesToEnable=", checkBoxesToEnable[v]);
+		--self:TraceInfo(v, " checkBoxesToEnable=", checkBoxesToEnable[v]);
 		if (checkBoxesToEnable and checkBoxesToEnable[v]) then
-			--self:ShowText(v, " Colours=", self.SetColours[v]);
+			--self:TraceInfo(v, " Colours=", self.SetColours[v]);
 			self:EnableCheckBox(v, self.SetColours[v]);
 		else
 			getglobal(v):SetChecked(false);
@@ -1482,11 +1482,11 @@ function PowaAuras:EnableCheckBoxes(checkBoxesToEnable)
 end
 
 function PowaAuras:EnableTernary(ternariesToEnable)
-	--self:ShowText("EnableTernary");
+	--self:TraceInfo("EnableTernary");
 	for k,v in pairs(self.OptionTernary) do
-		--self:ShowText(v, " ternariesToEnable=", ternariesToEnable[v]);
+		--self:TraceInfo(v, " ternariesToEnable=", ternariesToEnable[v]);
 		if (not ternariesToEnable or not ternariesToEnable[v]) then
-			--self:ShowText("Disable Ternary ",v);
+			--self:TraceInfo("Disable Ternary ",v);
 			--self:Ternary_Set(getglobal(v));
 			self:DisableTernary(getglobal(v));
 		end
@@ -1495,7 +1495,7 @@ end
 
 
 function PowaAuras:SetupOptionsForAuraType(aura)
-	--self:ShowText("aura=", aura);
+	--self:TraceInfo("aura=", aura);
 
 	self:SetOptionText(aura);
 	self:ShowOptions(aura.ShowOptions);
@@ -1518,10 +1518,10 @@ end
 
 function PowaAuras:InitPage(aura)
 
-	--self:ShowText("InitPage ", self.CurrentAuraId);
+	--self:TraceInfo("InitPage ", self.CurrentAuraId);
 
 	if (aura==nil) then
-		--self:ShowText("InitPage - Unknown aura resetting to: ", self.CurrentAuraId)
+		--self:TraceInfo("InitPage - Unknown aura resetting to: ", self.CurrentAuraId)
 		aura = self.Auras[self.CurrentAuraId];
 	end
 	
@@ -1676,7 +1676,7 @@ function PowaAuras:InitPage(aura)
 
 	local checkTexture = 0;
 	if (aura.owntex) then
-		--self:ShowText("owntex tex=", aura.icon);	
+		--self:TraceInfo("owntex tex=", aura.icon);	
 		checkTexture = AuraTexture:SetTexture(PowaIconTexture:GetTexture());
 		PowaBarAuraTextureSlider:Hide();
 		PowaBarCustomTexName:Hide();
@@ -1710,7 +1710,7 @@ function PowaAuras:InitPage(aura)
 		PowaBarCustomTexName:Hide();
 		PowaBarAurasText:Show();
 		PowaFontsButton:Show();
-		--self:ShowText("InitPage: set aurastext to ", aura.aurastext);
+		--self:TraceInfo("InitPage: set aurastext to ", aura.aurastext);
 		PowaBarAurasText:SetText(aura.aurastext);
 		checkTexture = AuraTexture:SetTexture("Interface\\Icons\\INV_Scroll_02");  --- Driizt: check if need to test as well
 	else
@@ -1729,7 +1729,7 @@ function PowaAuras:InitPage(aura)
 		checkTexture = AuraTexture:SetTexture("Interface\\Addons\\PowerAuras\\Auras\\Aura"..aura.texture..".tga");
 	end
 
-	--self:ShowText("checkTexture=", checkTexture);	
+	--self:TraceInfo("checkTexture=", checkTexture);	
 	if (checkTexture ~= 1) then
 		AuraTexture:SetTexture("Interface\\CharacterFrame\\TempPortrait.tga");
 	end
@@ -1775,9 +1775,9 @@ end
 
 function PowaAuras:SetThresholdSlider(aura)
 	if (not aura.MaxRange) then return; end
-	--PowaAuras:ShowText("======SetThresholdSlider=========");
-	--PowaAuras:ShowText("Threshold=", aura.threshold);
-	--PowaAuras:ShowText("MaxRange=", aura.MaxRange..aura.RangeType);
+	--PowaAuras:TraceInfo("======SetThresholdSlider=========");
+	--PowaAuras:TraceInfo("Threshold=", aura.threshold);
+	--PowaAuras:TraceInfo("MaxRange=", aura.MaxRange..aura.RangeType);
 	local curThreshold = aura.threshold;
 	PowaBarThresholdSlider:SetMinMaxValues(0,aura.MaxRange);
 	PowaBarThresholdSlider:SetValue(curThreshold);
@@ -1897,7 +1897,7 @@ function PowaAuras:BarAuraAnimDurationSliderChanged(control)
 
 	getglobal(control:GetName().."Text"):SetText(self.Text.nomDuration.." : "..sliderValue.." sec");
 
-	--self:ShowText("Duration set to ", sliderValue);
+	--self:TraceInfo("Duration set to ", sliderValue);
 	self.Auras[self.CurrentAuraId].duration = sliderValue;
 	self:RedisplayAura(self.CurrentAuraId, true);
 end
@@ -1937,15 +1937,15 @@ end
 
 function PowaAuras:BarThresholdSliderChanged()
 	if (not (self.VariablesLoaded and self.SetupDone)) then return; end
-	--PowaAuras:ShowText("======BarThresholdSliderChanged======");
+	--PowaAuras:TraceInfo("======BarThresholdSliderChanged======");
 	local sliderValue = PowaBarThresholdSlider:GetValue();
-	--PowaAuras:ShowText("sliderValue=", sliderValue);
+	--PowaAuras:TraceInfo("sliderValue=", sliderValue);
 	local aura = self.Auras[self.CurrentAuraId];
-	--PowaAuras:ShowText("Old Threshold=", aura.threshold);
-	--PowaAuras:ShowText("MaxRange=", aura.MaxRange..aura.RangeType);	
+	--PowaAuras:TraceInfo("Old Threshold=", aura.threshold);
+	--PowaAuras:TraceInfo("MaxRange=", aura.MaxRange..aura.RangeType);	
 	PowaBarThresholdSliderText:SetText(self.Text.nomThreshold.." : "..sliderValue..aura.RangeType);
 	aura.threshold = sliderValue;
-	--PowaAuras:ShowText("New Threshold=", aura.threshold);
+	--PowaAuras:TraceInfo("New Threshold=", aura.threshold);
 end
 
 --=============
@@ -2050,14 +2050,14 @@ end
 
 function PowaAuras:AurasTextCancel()
 	local aura = self.Auras[self.CurrentAuraId];
-	--self:ShowText("AurasTextCancel: set aurastext to ", aura.aurastext);
+	--self:TraceInfo("AurasTextCancel: set aurastext to ", aura.aurastext);
 	PowaBarAurasText:SetText(aura.aurastext);
 end
 
 function PowaAuras:AurasTextChanged()
 	local aura = self.Auras[self.CurrentAuraId];
 	aura.aurastext = PowaBarAurasText:GetText();
-	--self:ShowText("AurasTextChanged: aura text changed to ", aura.aurastext);
+	--self:TraceInfo("AurasTextChanged: aura text changed to ", aura.aurastext);
 	self:RedisplayAura(self.CurrentAuraId, false);
 end
 
@@ -2079,11 +2079,11 @@ function PowaAuras:CustomSoundTextChanged(force)
 			else 
 				pathToSound = PowaGlobalMisc.PathToSounds..aura.customsound;
 			end
-			--self:ShowText("Playing sound "..pathToSound);
+			--self:TraceInfo("Playing sound "..pathToSound);
 			local played = PlaySoundFile(pathToSound, PowaMisc.SoundChannel);
-			--self:ShowText("played = "..played);
+			--self:TraceInfo("played = "..played);
 			if (not played) then
-				self:DisplayText("Failed to play sound "..pathToSound);
+				self:Message("Failed to play sound "..pathToSound);
 			end
 		else
 			PowaDropDownSoundButton:Enable();
@@ -2110,13 +2110,13 @@ function PowaAuras:CustomSoundEndTextChanged(force)
 				pathToSound = aura.customsoundend;
 			else 
 				pathToSound = PowaGlobalMisc.PathToSounds..aura.customsoundend;
-				--self:ShowText("Playing sound "..pathToSound);
+				--self:TraceInfo("Playing sound "..pathToSound);
 			end
-			--self:ShowText("Playing sound "..pathToSound);
+			--self:TraceInfo("Playing sound "..pathToSound);
 			local played = PlaySoundFile(pathToSound, PowaMisc.SoundChannel);
-			--self:ShowText("played = "..played);
+			--self:TraceInfo("played = "..played);
 			if (not played) then
-				self:DisplayText("Failed to play sound "..pathToSound);
+				self:Message("Failed to play sound "..pathToSound);
 			end
 		else
 			PowaDropDownSoundEndButton:Enable();
@@ -2267,7 +2267,7 @@ end
 function PowaAuras:TextAuraChecked()
 	local aura = self.Auras[self.CurrentAuraId];
 	if (PowaTextAuraButton:GetChecked()) then
-		--self:ShowText("TextAuraChecked: set");
+		--self:TraceInfo("TextAuraChecked: set");
 		aura.textaura = true;
 		aura.owntex = false;
 		aura.wowtex = false;
@@ -2275,14 +2275,14 @@ function PowaAuras:TextAuraChecked()
 		PowaBarAuraTextureSlider:Hide();
 		PowaBarAurasText:Show();
 		PowaFontsButton:Show();
-		--self:ShowText("TextAuraChecked: aura text changed to ", aura.aurastext);
+		--self:TraceInfo("TextAuraChecked: aura text changed to ", aura.aurastext);
 		PowaBarAurasText:SetText(aura.aurastext);
 		PowaOwntexButton:SetChecked(false);
 		PowaWowTextureButton:SetChecked(false);
 		PowaCustomTextureButton:SetChecked(false);
 		PowaBarCustomTexName:Hide();
 	else
-		--self:ShowText("TextAuraChecked: unset");
+		--self:TraceInfo("TextAuraChecked: unset");
 		aura.textaura = false;
 		PowaBarAuraTextureSlider:Show();
 		PowaBarAurasText:Hide();
@@ -2617,7 +2617,7 @@ end
 function PowaAuras.DropDownMenu_OnClickAnim1(owner)
 	local optionID = owner:GetID();
 	local auraId = PowaAuras.CurrentAuraId;
-	--PowaAuras:ShowText("DropDownMenu_OnClickAnim1 optionID=", optionID, " auraId=", auraId);
+	--PowaAuras:TraceInfo("DropDownMenu_OnClickAnim1 optionID=", optionID, " auraId=", auraId);
 
 	UIDropDownMenu_SetSelectedID(PowaDropDownAnim1, optionID); 
 	--local optionName =  UIDropDownMenu_GetText(PowaDropDownAnim1); 
@@ -2640,7 +2640,7 @@ function PowaAuras.DropDownMenu_OnClickAnim2(owner)
 end
 
 function PowaAuras.DropDownMenu_OnClickSound(self)
-	--PowaAuras:ShowText("DropDownMenu_OnClickSound n=", self.owner:GetName()," v=",self.value, " t=", PowaAuras.Sound[self.value]);
+	--PowaAuras:TraceInfo("DropDownMenu_OnClickSound n=", self.owner:GetName()," v=",self.value, " t=", PowaAuras.Sound[self.value]);
 	UIDropDownMenu_SetSelectedValue(self.owner, self.value);
 
 	if (self.value==0 or self.value==30 or not PowaAuras.Sound[self.value]) then
@@ -2657,17 +2657,17 @@ function PowaAuras.DropDownMenu_OnClickSound(self)
 	end
 
 	if (string.find(PowaAuras.Sound[self.value], "%.")) then
-		--PowaAuras:ShowText("Playing sound "..PowaGlobalMisc.PathToSounds..PowaAuras.Sound[self.value]);
+		--PowaAuras:TraceInfo("Playing sound "..PowaGlobalMisc.PathToSounds..PowaAuras.Sound[self.value]);
 		PlaySoundFile(PowaGlobalMisc.PathToSounds..PowaAuras.Sound[self.value], PowaMisc.SoundChannel);
 	else
-		--PowaAuras:ShowText("Playing WoW sound "..PowaAuras.Sound[self.value]);
+		--PowaAuras:TraceInfo("Playing WoW sound "..PowaAuras.Sound[self.value]);
 		PlaySound(PowaAuras.Sound[self.value], PowaMisc.SoundChannel);
 	end
 end;
 
 
 function PowaAuras.DropDownMenu_OnClickSoundEnd(self)
-	--PowaAuras:ShowText("DropDownMenu_OnClickSoundEnd n=", self.owner:GetName()," v=",self.value, " t=", PowaAuras.Sound[self.value]);
+	--PowaAuras:TraceInfo("DropDownMenu_OnClickSoundEnd n=", self.owner:GetName()," v=",self.value, " t=", PowaAuras.Sound[self.value]);
 	UIDropDownMenu_SetSelectedValue(self.owner, self.value);
 
 	if (self.value==0 or self.value==30 or not PowaAuras.Sound[self.value]) then
@@ -2684,10 +2684,10 @@ function PowaAuras.DropDownMenu_OnClickSoundEnd(self)
 	end
 
 	if (string.find(PowaAuras.Sound[self.value], "%.")) then
-		--PowaAuras:ShowText("Playing sound "..PowaGlobalMisc.PathToSounds..PowaAuras.Sound[self.value]);
+		--PowaAuras:TraceInfo("Playing sound "..PowaGlobalMisc.PathToSounds..PowaAuras.Sound[self.value]);
 		PlaySoundFile(PowaGlobalMisc.PathToSounds..PowaAuras.Sound[self.value], PowaMisc.SoundChannel);
 	else
-		--PowaAuras:ShowText("Playing WoW sound "..PowaAuras.Sound[self.value]);
+		--PowaAuras:TraceInfo("Playing WoW sound "..PowaAuras.Sound[self.value]);
 		PlaySound(PowaAuras.Sound[self.value], PowaMisc.SoundChannel);
 	end
 
@@ -2720,12 +2720,12 @@ function PowaAuras.DropDownMenu_OnClickPowerType(self)
 	local aura = PowaAuras.Auras[PowaAuras.CurrentAuraId];
 
 	if (aura.PowerType ~= self.value) then
-		--PowaAuras:ShowText("PowerType changed to ", self.value);
+		--PowaAuras:TraceInfo("PowerType changed to ", self.value);
 		aura.PowerType = self.value;
 		aura.icon = "";
 		aura:Init();
-		--PowaAuras:ShowText("MaxRange=", aura.MaxRange);
-		--PowaAuras:ShowText("RangeType=", aura.RangeType);
+		--PowaAuras:TraceInfo("MaxRange=", aura.MaxRange);
+		--PowaAuras:TraceInfo("RangeType=", aura.RangeType);
 	end
 	PowaAuras:InitPage();
 end
@@ -2896,7 +2896,7 @@ end
 
 function PowaAuras:EditorToggle()
 	if (PowaBarConfigFrame:IsVisible()) then
-		--self:ShowText("EditorToggle Close");
+		--self:TraceInfo("EditorToggle Close");
 		self:EditorClose();
 		return;
 	end
@@ -3008,7 +3008,7 @@ end
 function PowaAuras.DropDownMenu_OnClickTimerRelative(self)
 	UIDropDownMenu_SetSelectedValue(self.owner, self.value);
 	
-	--PowaAuras:ShowText(PowaAuras.Auras[PowaAuras.CurrentAuraId].id," change timer relative position ", self.value);
+	--PowaAuras:TraceInfo(PowaAuras.Auras[PowaAuras.CurrentAuraId].id," change timer relative position ", self.value);
 	local aura = PowaAuras.Auras[PowaAuras.CurrentAuraId];
 	local timer = aura.Timer;
 	timer.x = 0;
@@ -3110,7 +3110,7 @@ end
 function PowaAuras.DropDownMenu_OnClickStacksRelative(self)
 	UIDropDownMenu_SetSelectedValue(self.owner, self.value);
 
-	--PowaAuras:ShowText(PowaAuras.Auras[PowaAuras.CurrentAuraId].id," change stacks relative position ", self.value);
+	--PowaAuras:TraceInfo(PowaAuras.Auras[PowaAuras.CurrentAuraId].id," change stacks relative position ", self.value);
 	local aura = self.Auras[self.CurrentAuraId];
 	local stacks = aura.Stacks;
 	stacks.x = 0;
@@ -3197,12 +3197,12 @@ function PowaAuras:DisableCheckBox(checkBox)
 end
 
 function PowaAuras:EnableCheckBox(checkBox, colour)
-	--self:ShowText("EnableCheckBox ", checkBox); 
+	--self:TraceInfo("EnableCheckBox ", checkBox); 
 	getglobal(checkBox):Enable();
 	if (not colour) then
 		colour = NORMAL_FONT_COLOR;
 	end
-	--self:ShowText("r=", color.r, " g=", color.g, " b=", color.b); 
+	--self:TraceInfo("r=", color.r, " g=", color.g, " b=", color.b); 
 	getglobal(checkBox.."Text"):SetTextColor(colour.r, colour.g, colour.b);	
 end
 
@@ -3217,7 +3217,7 @@ end
 --==== Blizzard Addon ====
 
 function PowaAuras:EnableChecked()
-	--PowaAuras:ShowText("EnableChecked");
+	--PowaAuras:TraceInfo("EnableChecked");
 	if (PowaEnableButton:GetChecked()) then
 		self:Toggle(true);
 	else
@@ -3243,7 +3243,7 @@ function PowaAuras:GlobalMiscChecked(control, setting)
 end
 
 local function OptionsOK()
-	--PowaAuras:DisplayText("OptionsOK");
+	--PowaAuras:Message("OptionsOK");
 	PowaMisc.OnUpdateLimit = (100 - PowaOptionsUpdateSlider2:GetValue()) / 200;
 	PowaMisc.UserSetMaxTextures = PowaOptionsTextureCount:GetValue();
 	if (PowaMisc.OverrideMaxTextures) then
@@ -3287,7 +3287,7 @@ local function OptionsOK()
 end
 
 local function OptionsCancel()
-	--PowaAuras:DisplayText("OptionsCancel");
+	--PowaAuras:Message("OptionsCancel");
 	PowaAuras.ModTest = false;
 	PowaAuras.DoCheck.All = true;
 end
@@ -3299,16 +3299,16 @@ local function OptionsDefault()
 	for k, v in pairs(PowaAuras.PowaGlobalMiscDefault) do
 		PowaGlobalMisc[k] = v;
 	end
-	self:DisplayText("Power Aura Options Reset to Defaults");
+	self:Message("Power Aura Options Reset to Defaults");
 end
 
 local function OptionsRefresh()
-	--PowaAuras:ShowText("OptionsRefresh");
-	--PowaAuras:ShowText("OnUpdateLimit=", PowaMisc.OnUpdateLimit);
-	--PowaAuras:ShowText("AnimationLimit=", PowaMisc.AnimationLimit);
-	--PowaAuras:ShowText("Disabled=", PowaMisc.Disabled ~= false);
-	--PowaAuras:ShowText("debug=", PowaMisc.debug);
-	--PowaAuras:ShowText("UserSetMaxTextures=", PowaMisc.UserSetMaxTextures);
+	--PowaAuras:TraceInfo("OptionsRefresh");
+	--PowaAuras:TraceInfo("OnUpdateLimit=", PowaMisc.OnUpdateLimit);
+	--PowaAuras:TraceInfo("AnimationLimit=", PowaMisc.AnimationLimit);
+	--PowaAuras:TraceInfo("Disabled=", PowaMisc.Disabled ~= false);
+	--PowaAuras:TraceInfo("debug=", PowaMisc.debug);
+	--PowaAuras:TraceInfo("UserSetMaxTextures=", PowaMisc.UserSetMaxTextures);
 	PowaOptionsUpdateSlider2:SetValue(100-200*PowaMisc.OnUpdateLimit); 
 	PowaOptionsTimerUpdateSlider2:SetValue(100-1000*PowaMisc.AnimationLimit);
 	PowaOptionsTextureCount:SetValue(PowaMisc.UserSetMaxTextures);
@@ -3360,7 +3360,7 @@ function PowaAuras.DropDownMenu_OnClickDefault(self)
 end
 
 function PowaAuras:InitializeTextureDropdown(owner, onClick, currentValue, addDefaultOption)
-	--self:ShowText("InitializeTextureDropdown currentValue=", currentValue, " addDefaultOption=", addDefaultOption);
+	--self:TraceInfo("InitializeTextureDropdown currentValue=", currentValue, " addDefaultOption=", addDefaultOption);
 	local info = {func = onClick, owner = owner, text=PowaAuras.Text.Default};
 	if (addDefaultOption) then
 		UIDropDownMenu_AddButton(info);
@@ -3427,7 +3427,7 @@ end
 function PowaAuras.Ternary_OnClick(self)
 
 	local aura = PowaAuras.Auras[PowaAuras.CurrentAuraId];
-	--PowaAuras:ShowText("Ternary_OnClick control=",self:GetName(), " Parameter=", self.Parameter);
+	--PowaAuras:TraceInfo("Ternary_OnClick control=",self:GetName(), " Parameter=", self.Parameter);
 	if (aura[self.Parameter]==0) then
 		aura[self.Parameter] = true; -- Ignore => On
 	elseif (aura[self.Parameter]==true) then
@@ -3449,7 +3449,7 @@ end
 
 
 function PowaAuras:ToggleTesting()
-	--self:ShowText("ToggleTesting for ", self.CurrentAuraId);
+	--self:TraceInfo("ToggleTesting for ", self.CurrentAuraId);
 	local aura = self.Auras[self.CurrentAuraId];
 	if (not aura or aura.buffname == "" or aura.buffname == " ") then
 		return;
@@ -3465,7 +3465,7 @@ end
 
 function PowaAuras:TestAllAuras()
 	self:OptionHideAll();
-	--self:ShowText("Test All Active Auras");
+	--self:TraceInfo("Test All Active Auras");
 	for id, aura in pairs(self.Auras) do
 		if (not aura.off) then
 			aura:CheckActive(true, true, true);
@@ -3474,7 +3474,7 @@ function PowaAuras:TestAllAuras()
 end
 
 function PowaAuras:OptionHideAll()
-	--self:ShowText("Hide All Auras");
+	--self:TraceInfo("Hide All Auras");
 	for id, aura in pairs(self.Auras) do
 		self:ResetDragging(aura, self.Frames[aura.id]);
 		aura:CheckActive(false, true, true);
@@ -3510,9 +3510,9 @@ function PowaAuras:RedisplayAura(auraId, recreateTriggers) ---Re-show aura after
 	if (not aura) then
 		return;
 	end
-	--self:ShowText("RedisplayAura auraId=", aura.id, " showing=", aura.Showing, " recreateTriggers=", recreateTriggers);
+	--self:TraceInfo("RedisplayAura auraId=", aura.id, " showing=", aura.Showing, " recreateTriggers=", recreateTriggers);
 	--if (recreateTriggers) then
-		--self:ShowText("RedisplayAura ", aura.id," Recreate Triggers");
+		--self:TraceInfo("RedisplayAura ", aura.id," Recreate Triggers");
 	--	aura:CreateDefaultTriggers();
 	--end
 	--if (aura.Showing) then

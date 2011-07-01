@@ -1097,7 +1097,7 @@ PowaAuras.DebuffTypeSpellIds={
 PowaAuras.Text = setmetatable({}, { 
 	__index = function(_, k)
 		if(not k or k == "") then return; end
-		PowaAuras:ShowText("|cFFCC5252Power Auras Classic: |rMissing Localization Key: \"", k, "\", Stack Trace: ", debugstack(2));
+		PowaAuras:Message("|cFFCC5252Power Auras Classic: |rMissing Localization Key: \"", k, "\", Stack Trace: ", debugstack(2));
 		return k;
 	end,
 	__call = function(self, k, ...)
@@ -1111,36 +1111,41 @@ end
 function PowaAuras:UnitTestInfo(...)
 end
 
-function PowaAuras:Debug(...)
+--- Display a message in the chat frame, if global debugging is enabled
+function PowaAuras:GlobalDebug(...)
 	if (PowaMisc.debug == true) then
-		self:Message(...) --OK
+		self:TraceInfo(...);
 	end
 	--self:UnitTestDebug(...);
 end
 
+--- Display a message in the chat frame, used by aura level tracing
+function PowaAuras:Debug(...)
+	self:TraceInfo(...);
+end
 --- Display a message in the chat frame, comma seperate arguments rather than use string concatination as this will do nil protection
 function PowaAuras:Message(...)
 	args={...};
 	if (args==nil or #args==0) then
 		return;
 	end
-	local Message = "";
+	local message = "";
 	for i=1, #args do
-		Message = Message..tostring(args[i]);
+		message = message..tostring(args[i]);
 	end
-	DEFAULT_CHAT_FRAME:AddMessage(Message);
+	DEFAULT_CHAT_FRAME:AddMessage(message);
 end
 
 --- Display a message in the chat frame, comma seperate arguments rather than use string concatination as this will do nil protection
--- Use this for temp debug messages
-function PowaAuras:ShowText(...)
-	self:Message(...); -- OK
+-- Use this for debug information messages
+function PowaAuras:TraceInfo(...)
+	self:Message(GetTime(), " ", ...); 
 end
 
 --- Display a message in the chat frame, comma seperate arguments rather than use string concatination as this will do nil protection
--- Use this for real messages instead of ShowText
-function PowaAuras:DisplayText(...)
-	self:Message(...);
+-- Use this for debug error messages
+function PowaAuras:TraceError(...)
+	self:TraceInfo(self:Colors.Red, ...); 
 end
 
 --- Dump out a table to the chat frame
@@ -1353,7 +1358,7 @@ function PowaClass(base,ctor)
 		local obj = {}
 		setmetatable(obj,c)
 		if ctor then
-			--PowaAuras:ShowText("Call constructor "..tostring(ctor));
+			--PowaAuras:TraceInfo("Call constructor "..tostring(ctor));
 			ctor(obj,...)
 		end 
 		return obj
