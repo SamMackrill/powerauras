@@ -51,7 +51,8 @@ function PowaAuras.UI:BuildFrameFromDefinition(def, parent)
 	if(def.Points) then
 		-- Convert the relative anchor into something useful.
 		if(def.RelativeAnchor) then
-			def.RelativeAnchor = parent[def.RelativeAnchor] or _G[def.RelativeAnchor] or nil;
+			def.RelativeAnchor = ((def.RelativeAnchor == true and parent) or parent[def.RelativeAnchor] 
+				or _G[def.RelativeAnchor] or nil);
 		end
 		-- Boolean true = SetAllPoints.
 		if(type(def.Points) == "boolean" and def.Points == true) then
@@ -74,7 +75,12 @@ function PowaAuras.UI:BuildFrameFromDefinition(def, parent)
 	end
 	-- OnLoad func.
 	if(def.OnLoad) then
-		def.OnLoad(frame);
+		-- Allow a string function name.
+		if(type(def.OnLoad) == "string") then
+			frame[def.OnLoad](frame);
+		else
+			def.OnLoad(frame);
+		end
 	end
 	-- Done.
 	return frame;

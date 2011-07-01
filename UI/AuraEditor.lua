@@ -159,6 +159,27 @@ local AuraEditor = {
 														[1] = { "TOPLEFT", "BOTTOMLEFT", 0, -8 },
 														[2] = { "TOPRIGHT", "BOTTOMRIGHT", 0, -8 },
 													},
+													Children = {
+														[1] = {
+															ParentKey = "SizeX",
+															Type = "Slider",
+															Inherits = "PowaSliderTemplate",
+															RelativeAnchor = true,
+															Points = {
+																[1] = { "TOPLEFT", 4, -48 },
+																[2] = { "TOPRIGHT", "TOP", -4, -48 },
+															},
+															OnLoad = function(self)
+																-- Set min/max.
+																self:SetMinMaxValues(16, 512);
+																self:SetValueStep(1);
+																-- Slider, go!
+																PowaAuras.UI:Slider(self, "UI_Editor_Aura_SizeX", 
+																	"Aura.SizeX");
+															end,
+														},
+													},
+													OnLoad = "UpdateChildren",
 												},
 											},
 											OnLoad = function(self)

@@ -962,6 +962,11 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	UI_Editor_Rules            = "Rules",
 	UI_Editor_RulesDesc        = "Configures additional criteria that must be met for the aura to show, such as being in or out of combat.",
 	
+	-- Editor widgets.
+	UI_Editor_Aura_SizeX       = "Width",
+	UI_Editor_Aura_SizeXDesc   = "Sets the width of the texture frame. If you are using an aura that appears to be stretched, try altering the Width and Height sliders.",
+	UI_Editor_Aura_SizeY       = "Height",
+	UI_Editor_Aura_SizeYDesc   = "Sets the height of the texture frame. If you are using an aura that appears to be stretched, try altering the Width and Height sliders.",
 	
 	UI_TriggerAdd              = "Add",
 	UI_TriggerDelete           = "Delete",

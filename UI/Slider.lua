@@ -1,5 +1,8 @@
 -- Create definition.
 PowaAuras.UI:Register("Slider", {
+	Hooks = {
+		"SetMinMaxValues",
+	},
 	Scripts = {
 		OnSettingChanged = true,
 		OnValueChanged = true,
@@ -30,12 +33,14 @@ PowaAuras.UI:Register("Slider", {
 		self.Value.Title:Hide();
 		-- Link slider to settings mixin.
 		PowaAuras.UI:Settings(self, setting);
+		-- Update min/max labels.
+		self:SetMinMaxLabels();
 	end,
 	GetMaxValue = function(self)
-		return select(2, self:GetMinMaxValues());
+		return (select(2, self:GetMinMaxValues()));
 	end,
 	GetMinValue = function(self)
-		return select(1, self:GetMinMaxValues());
+		return (select(1, self:GetMinMaxValues()));
 	end,
 	GetUnit = function(self)
 		return self.Unit;
@@ -47,14 +52,17 @@ PowaAuras.UI:Register("Slider", {
 	end,
 	OnEditBoxValueChanged = function(self)
 		-- Store value.
-		if(self:GetSetting() ~= self:GetText()) then
-			self:SaveSetting(self:GetText());
+		local num = tonumber(self:GetText());
+		if(self:GetSetting() ~= self:GetText() and num) then
+			self:SaveSetting(PowaAuras:Range(num, self:GetParent():GetMinValue(), self:GetParent():GetMaxValue()));
+		else
+			self:SetText(self:GetSetting());
 		end
 		-- Always clear ze focus.
 		self:ClearFocus();
 	end,
 	OnSettingChanged = function(self, value)
-		if(self:GetValue() ~= value) then
+		if(self:GetValue() ~= value and value ~= nil) then
 			self:SetValue(value);
 		end
 	end,
@@ -74,6 +82,12 @@ PowaAuras.UI:Register("Slider", {
 		-- Store so SetUnit can be called later on.
 		self.MinLabel = labelMin;
 		self.MaxLabel = labelMax;
+	end,
+	SetMinMaxValues = function(self, min, max)
+		-- Normal func.
+		self:__SetMinMaxValues(min, max);
+		-- Update labels.
+		self:SetMinMaxLabels(self.MinLabel, self.MaxLabel);
 	end,
 	SetTitle = function(self, title)
 		self.Text:SetText(PowaAuras.Text[title]);	
