@@ -1184,7 +1184,7 @@ function PowaAuras:InitialiseAuraFrame(aura, frame, texture, alpha)
 	  end	
 	end
 
-	PowaAuras:SetFrameSize(frame, texture, aura.size, aura.torsion, aura.textaura, aura.aurastextfont);
+	PowaAuras:SetFrameSize(frame, aura, texture, aura.size, aura.torsion, aura.textaura, aura.aurastextfont);
 
 	frame:SetAlpha(math.min(alpha,0.99));
 	frame:SetPoint("CENTER",aura.x, aura.y);
@@ -1194,8 +1194,8 @@ function PowaAuras:InitialiseAuraFrame(aura, frame, texture, alpha)
 
 end
 
-function PowaAuras:SetFrameSize(frame, texture, size, torsion, textaura, aurastextfont)
-	frame.baseH = 256 * size * (2-torsion);
+function PowaAuras:SetFrameSize(frame, aura, texture, size, torsion, textaura, aurastextfont)
+	frame.baseH = aura.SizeY * size * (2-torsion);
 	if (textaura == true) then
 		local fontsize = math.min(33, math.max(10, math.floor(frame.baseH / 12.8)));
 		local checkfont = texture:SetFont(self.Fonts[aurastextfont], fontsize, "OUTLINE, MONOCHROME");
@@ -1204,7 +1204,7 @@ function PowaAuras:SetFrameSize(frame, texture, size, torsion, textaura, auraste
 		end
 		frame.baseL = texture:GetStringWidth() + 5;
 	else
-		frame.baseL = 256 * size * torsion;
+		frame.baseL = aura.SizeX * size * torsion;
 	end
 end
 

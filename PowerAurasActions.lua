@@ -316,7 +316,7 @@ end
 cPowaAuraSizeAction = PowaClass(cPowaAuraSettingAction, { Type = "AuraSize" });
 
 function cPowaAuraSizeAction:Set(value)
-	PowaAuras:SetFrameSize(self.Parameters.Frame, self.Parameters.Texture, value, self.Parameters.Aura.torsion, self.Parameters.Aura.textaura, self.Parameters.Aura.aurastextfont)
+	PowaAuras:SetFrameSize(self.Parameters.Frame, self.Parameters.Aura, self.Parameters.Texture, value, self.Parameters.Aura.torsion, self.Parameters.Aura.textaura, self.Parameters.Aura.aurastextfont)
 end
 
 function cPowaAuraSizeAction:Get()
