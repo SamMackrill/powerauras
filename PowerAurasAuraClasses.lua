@@ -630,7 +630,7 @@ function cPowaAura:CreateTrigger(tType, parameters)
 	local trigger = tType(self.id, self.NextTriggerId, parameters);
 	self.NextTriggerId = self.NextTriggerId + 1;
 	if (PowaAuras.DebugTriggers) then
-		PowaAuras:Message("Creating ", parameters.Name, " ", trigger.Type, " Trigger (", self.id, "_", trigger.Id, ") initial value=", parameters.Value, " compare=", parameters.Compare);
+		PowaAuras:Debug("Creating ", parameters.Name, " ", trigger.Type, " Trigger (", self.id, "_", trigger.Id, ") initial value=", parameters.Value, " compare=", parameters.Compare);
 	end
 	table.insert(self.Triggers, trigger);
 	if (not self.TriggersByType[trigger.Type]) then
@@ -663,14 +663,14 @@ end
 function cPowaAura:ProcessTriggerQueue()
 	if (not self.TriggerActionQueue or #self.TriggerActionQueue==0 or PowaAuras.ModTest) then return; end
 	if (PowaAuras.DebugTriggers) then
-		PowaAuras:Message("Aura ", self.id, " ProcessTriggerQueue ", #self.TriggerActionQueue);
+		PowaAuras:Debug("Aura ", self.id, " ProcessTriggerQueue ", #self.TriggerActionQueue);
 	end
 	local i = 1;
 	while i<=#self.TriggerActionQueue do
 		local action = self.TriggerActionQueue[i];
 		if (PowaAuras.DebugTriggers) then
 			local trigger = action.Trigger;
-			PowaAuras:Message("==AF [", trigger.Name, ":", action.Name, "] ", action.AuraId, "_", trigger.Id, "_", action.Id, " (", trigger.Type, " : ", action.Type, ")");
+			PowaAuras:Debug("==AF [", trigger.Name, ":", action.Name, "] ", action.AuraId, "_", trigger.Id, "_", action.Id, " (", trigger.Type, " : ", action.Type, ")");
 		end
 		action:Fire(self);
 		i = i + 1;
@@ -678,7 +678,7 @@ function cPowaAura:ProcessTriggerQueue()
 
 	wipe(self.TriggerActionQueue);
 	if (PowaAuras.DebugTriggers) then
-		PowaAuras:Message("Wipe ProcessTriggerQueue");
+		PowaAuras:Debug("Wipe ProcessTriggerQueue");
 	end
 end
 
@@ -686,13 +686,13 @@ function cPowaAura:CheckTriggers(triggerType, value, qualifier, invertOnly)
 	local triggersByType = self.TriggersByType[triggerType];
 	if (not triggersByType or #triggersByType==0) then return; end
 	if (PowaAuras.DebugTriggers) then
-		PowaAuras:Message("Checking all ",triggerType, " auras");
+		PowaAuras:Debug("Checking all ",triggerType, " auras");
 	end
 	local i = 1;
 	while i<=#triggersByType do
 		local trigger = triggersByType[i];
 		--if (PowaAuras.DebugTriggers) then
-		--	PowaAuras:Message("==TF [", trigger.Name, "] ", trigger.AuraId, "_", trigger.Id, " (", trigger.Type, ")");
+		--	PowaAuras:Debug("==TF [", trigger.Name, "] ", trigger.AuraId, "_", trigger.Id, " (", trigger.Type, ")");
 		--end
 		if (trigger:Check(value, qualifier)) then
 			self:QueueActions(trigger, invertOnly);
@@ -710,7 +710,7 @@ function cPowaAura:QueueActions(trigger, invertOnly)
 			action.TriggerValue = trigger.Value;
 			local insertPosition = #self.TriggerActionQueue + 1;
 			if (PowaAuras.DebugTriggers) then
-				PowaAuras:Message("==AQ [", trigger.Name, ":", action.Name, "] ",  action.AuraId, "_", action.Trigger.Id, "_", action.Id, " insert@=", insertPosition);
+				PowaAuras:Debug("==AQ [", trigger.Name, ":", action.Name, "] ",  action.AuraId, "_", action.Trigger.Id, "_", action.Id, " insert@=", insertPosition);
 			end
 			self.TriggerActionQueue[insertPosition] = action;
 		end
@@ -729,7 +729,7 @@ function cPowaAura:Show(testing)
 	if (frame == nil) then return; end
 
 	if (self.Debug) then
-		PowaAuras:Message("Aura Show() ", self.id, " frame:Show() ", frame);
+		PowaAuras:Debug("Aura Show() ", self.id, " frame:Show() ", frame);
 	end
 	frame:Show();
 
@@ -761,7 +761,7 @@ end
 function cPowaAura:IncrementInvertCount(now)
 	self.InvertCount = (self.InvertCount or 0) + 1;
 	if (PowaAuras.DebugTriggers or self.Debug) then
-		PowaAuras:Message(self.id, " Aura IncrementInvertCount InvertCount=", self.InvertCount);
+		PowaAuras:Debug(self.id, " Aura IncrementInvertCount InvertCount=", self.InvertCount);
 	end
 	if (self.InvertCount==1) then
 		if (self.Active) then
@@ -866,7 +866,7 @@ end
 function cPowaAura:UpdateAura(testing)
 	
 	--if (self.Debug) then
-	--	PowaAuras:Message("UpdateAura ", self.id);
+	--	PowaAuras:Debug("UpdateAura ", self.id);
 	--end
 	
 	if (self.off) then
@@ -1019,15 +1019,15 @@ function cPowaAura:UpdateText(texture)
 	if (not self.textaura) then return; end
 	local newText = self:GetAuraText();
 	if (self.Debug) then
-		PowaAuras:Message("CurrentText=", self.CurrentText);
-		PowaAuras:Message("newText    =", newText);
+		PowaAuras:Debug("CurrentText=", self.CurrentText);
+		PowaAuras:Debug("newText    =", newText);
 	end
 	if (newText~=self.CurrentText or texture==nil) then
 		if (texture==nil) then
 			texture = self:GetTexture();
 		end
 		if (self.Debug) then
-			PowaAuras:Message("texture=", texture);
+			PowaAuras:Debug("texture=", texture);
 		end
 		if (texture~=nil) then
 			texture:SetText(newText);
@@ -1106,13 +1106,13 @@ end
 
 function cPowaAura:SetIcon(texturePath)
 	if (self.Debug) then
-		PowaAuras:Message("SetIcon texturePath=", texturePath, " IconIsRequired=", self:IconIsRequired());
+		PowaAuras:Debug("SetIcon texturePath=", texturePath, " IconIsRequired=", self:IconIsRequired());
 	end
 	if (texturePath==nil or string.len(texturePath)==0 or not self:IconIsRequired()) then
 		return;
 	end
 	if (self.Debug) then
-		PowaAuras:Message("self.icon=", self.icon);
+		PowaAuras:Debug("self.icon=", self.icon);
 	end
 	if (texturePath ~= self.icon) then
 		if (self.owntex) then
@@ -1122,7 +1122,7 @@ function cPowaAura:SetIcon(texturePath)
 			end
 		end
 		if (self.Debug) then
-			PowaAuras:Message("Setting icon to ", texturePath);
+			PowaAuras:Debug("Setting icon to ", texturePath);
 		end
 		self.icon = texturePath;
 	end
@@ -1300,7 +1300,7 @@ end
 
 function cPowaAura:CheckInstanceType(giveReason)
 	if (self.Debug) then
-		PowaAuras:Message("Instance ", PowaAuras.Instance);
+		PowaAuras:Debug("Instance ", PowaAuras.Instance);
 	end
 	local show, reason, now, noShowReason;
 	local showTotal = true;
@@ -1349,7 +1349,7 @@ end
 function cPowaAura:ShouldShowForInstanceType(instanceType, giveReason)
 	local flag = "Instance"..instanceType;
 	if (self.Debug) then
-		PowaAuras:Message(PowaAuras.Instance, "  ", instanceType, "  ", flag, "=", self[flag]);
+		PowaAuras:Debug(PowaAuras.Instance, "  ", instanceType, "  ", flag, "=", self[flag]);
 	end
 	if (self[flag]==0) then return; end
 	
@@ -1391,8 +1391,8 @@ function cPowaAura:ShouldShow(giveReason, reverse, ignoreGCD)
 	self.InactiveDueToState = false;
 	local result, reason = self:CheckIfShouldShow(giveReason, ignoreGCD);
 	if (self.Debug) then
-		PowaAuras:Message("ShouldShow result=",result, " inv=", self.inverse, " rev=", reverse);
-		PowaAuras:Message("           reason=",reason);
+		PowaAuras:Debug("ShouldShow result=",result, " inv=", self.inverse, " rev=", reverse);
+		PowaAuras:Debug("           reason=",reason);
 	end
 	if (result==-1) then
 		return result, reason;
@@ -1498,15 +1498,15 @@ function cPowaAura:MatchSpell(spellName, spellTexture, spellId, matchString)
 
 	end
 	if (self.Debug) then
-		PowaAuras:Message("--MatchSpell--"); --OK
-		PowaAuras:Message("  spellName   =",spellName, " ID=", spellId); --OK
-		PowaAuras:Message("  matchString =",matchString); --OK
+		PowaAuras:Debug("--MatchSpell--"); --OK
+		PowaAuras:Debug("  spellName   =",spellName, " ID=", spellId); --OK
+		PowaAuras:Debug("  matchString =",matchString); --OK
 	end
 	for pword in string.gmatch(matchString, "[^/]+") do
 		pword = self:Trim(pword);
 		if (string.len(pword)>0) then
 			if (self.Debug) then
-				PowaAuras:Message("  Looking for ", pword); --OK
+				PowaAuras:Debug("  Looking for ", pword); --OK
 			end
 			local textToSearch;
 			local textureMatch;
@@ -1524,7 +1524,7 @@ function cPowaAura:MatchSpell(spellName, spellTexture, spellId, matchString)
 			else
 				if (spellIdMatch and spellId) then
 					if (self.Debug) then
-						PowaAuras:Message("Check Spell Ids match spell=", spellId, " looking for Id=", spellIdMatch, " found=", (spellIdMatch==spellId)); --OK
+						PowaAuras:Debug("Check Spell Ids match spell=", spellId, " looking for Id=", spellIdMatch, " found=", (spellIdMatch==spellId)); --OK
 					end
 					if (spellIdMatch==spellId) then
 						return true;
@@ -1538,19 +1538,19 @@ function cPowaAura:MatchSpell(spellName, spellTexture, spellId, matchString)
 							matchName = string.upper(matchName);
 						end
 						if (self.Debug) then
-							PowaAuras:Message("matchName="..tostring(matchName).."<<");
-							PowaAuras:Message("search="..tostring(textToSearch).."<<");
+							PowaAuras:Debug("matchName="..tostring(matchName).."<<");
+							PowaAuras:Debug("search="..tostring(textToSearch).."<<");
 						end
 						if (self.exact) then
 							if (self.Debug) then
-								PowaAuras:Message("exact=", (textToSearch == matchName)); --OK
+								PowaAuras:Debug("exact=", (textToSearch == matchName)); --OK
 							end
 							if (textToSearch == matchName) then
 								return true;
 							end
 						else
 							if (self.Debug) then
-								PowaAuras:Message("find=", string.find(textToSearch, matchName, 1, true)); --OK
+								PowaAuras:Debug("find=", string.find(textToSearch, matchName, 1, true)); --OK
 							end
 							if (string.find(textToSearch, matchName, 1, true)) then
 								return true;
@@ -1574,18 +1574,18 @@ function cPowaAura:MatchText(textToSearch, textToFind)
 		return true;
 	end
 	if (self.Debug) then
-		PowaAuras:Message("MatchText textToSearch=",textToSearch," textToFind=",textToFind); --OK
+		PowaAuras:Debug("MatchText textToSearch=",textToSearch," textToFind=",textToFind); --OK
 	end
 	if (self.ignoremaj) then
 		textToFind = string.upper(textToFind);
 		textToSearch = string.upper(textToSearch);
 	end
 	if (self.Debug) then
-		PowaAuras:Message("MatchText textToSearch=",textToSearch," textToFind=",textToFind, " ignoremaj=", self.ignoremaj, " exact=", self.exact); --OK
+		PowaAuras:Debug("MatchText textToSearch=",textToSearch," textToFind=",textToFind, " ignoremaj=", self.ignoremaj, " exact=", self.exact); --OK
 	end
 	for pword in string.gmatch(textToFind, "[^/]+") do	
 		if (self.Debug) then
-			PowaAuras:Message("pword=", pword," find=",string.find(textToSearch, pword, 1, true)); --OK
+			PowaAuras:Debug("pword=", pword," find=",string.find(textToSearch, pword, 1, true)); --OK
 		end
 		if (self.exact and textToSearch == textToFind) then
 			return true;
@@ -1667,7 +1667,7 @@ function cPowaAura:CheckAllUnits(giveReason)
 	local unit = self:GetUnit();
 	local postfix = self:GetExtendedUnit();
 	if (self.Debug) then
-		PowaAuras:Message("on unit "..unit..postfix);
+		PowaAuras:Debug("on unit "..unit..postfix);
 	end
 	local numpm = GetNumPartyMembers();
 	local numrm = GetNumRaidMembers();
@@ -1884,7 +1884,7 @@ function cPowaBuffBase:IsPresent(unit, s, giveReason, textToCheck)
 	--PowaAuras:TraceInfo("IsPresent on ",unit," buffid ",s," type ", self.buffAuraType);
 	--PowaAuras.BuffSlotCount = PowaAuras.BuffSlotCount + 1;
 	if (self.Debug) then
-		PowaAuras:Message("IsPresent on ",unit," buffid=",s," type=", self.buffAuraType);
+		PowaAuras:Debug("IsPresent on ",unit," buffid=",s," type=", self.buffAuraType);
 	end
 
 	local auraName, auraTexture, count, expirationTime, caster, auraId;
@@ -1899,20 +1899,20 @@ function cPowaBuffBase:IsPresent(unit, s, giveReason, textToCheck)
 
 	PowaAuras:GlobalDebug("Aura=",auraName," count=",count," expirationTime=", expirationTime," caster=",caster);
 	if (self.Debug) then
-		PowaAuras:Message("Aura=",auraName," count=",count," expirationTime=", expirationTime," caster=",caster);
+		PowaAuras:Debug("Aura=",auraName," count=",count," expirationTime=", expirationTime," caster=",caster);
 	end
 
 	if (not self:CompareAura(unit, s, auraName, auraTexture, auraId, textToCheck)) then
 		PowaAuras:GlobalDebug("CompareAura not found");
 		if (self.Debug) then
-			PowaAuras:Message("CompareAura not found");
+			PowaAuras:Debug("CompareAura not found");
 		end
 		self.DisplayValue = textToCheck;
 		self.DisplayUnit = unit;
 		return false;
 	end
 	if (self.Debug) then
-		PowaAuras:Message("  Present!");
+		PowaAuras:Debug("  Present!");
 	end
 	
 	local isMine = (caster~=nil) and UnitExists(caster) and UnitIsUnit("player", caster);
@@ -1984,7 +1984,7 @@ function cPowaBuffBase:CompareAura(target, z, auraName, auraTexture, auraId, tex
 	
 	PowaAuras:GlobalDebug("CompareAura",z," ",auraName, auraTexture);
 	if (self.Debug) then
-		PowaAuras:Message("CompareAura",z," ",auraName, " ", auraTexture);
+		PowaAuras:Debug("CompareAura",z," ",auraName, " ", auraTexture);
 	end
 
 	if self:MatchSpell(auraName, auraTexture, auraId, textToCheck) then
@@ -2005,7 +2005,7 @@ function cPowaBuffBase:CheckAllAuraSlots(target, giveReason)
 	--PowaAuras:UnitTestDebug("CheckAllAuraSlots for ", target);
 	--PowaAuras.BuffUnitCount = PowaAuras.BuffUnitCount + 1;
 	if (self.Debug) then
-		PowaAuras:Message("CheckAllAuraSlots for ", target, " reason=", giveReason);
+		PowaAuras:Debug("CheckAllAuraSlots for ", target, " reason=", giveReason);
 	end
 
 	local present, reason;
@@ -2023,7 +2023,7 @@ function cPowaBuffBase:CheckAllAuraSlots(target, giveReason)
 	local startFrom = 1;
 	if (self.CurrentSlot and self.CurrentMatch) then
 		if (self.Debug) then
-			PowaAuras:Message("buff for current slot (", self.CurrentSlot, ")");
+			PowaAuras:Debug("buff for current slot (", self.CurrentSlot, ")");
 		end
 		present, reason = self:IsPresent(target, self.CurrentSlot, giveReason, self.CurrentMatch);
 		if (present) then
@@ -2038,17 +2038,17 @@ function cPowaBuffBase:CheckAllAuraSlots(target, giveReason)
 	if (not startFrom) then startFrom = 1; end
 	for pword in string.gmatch(self.buffname, "[^/]+") do
 		if (self.Debug) then
-			PowaAuras:Message("Check Auras for >>", pword,"<<");
+			PowaAuras:Debug("Check Auras for >>", pword,"<<");
 		end
 		for i = startFrom - 1, 1, -1 do
 			if (self.Debug) then
-				PowaAuras:Message("  down (", i, ") ");
+				PowaAuras:Debug("  down (", i, ") ");
 			end
 			present, reason = self:IsPresent(target, i, giveReason, pword);
 			if (present) then
 				--PowaAuras:UnitTestDebug("CheckAllAuraSlots Present!");
 				if (self.Debug) then
-					PowaAuras:Message("Found ", i);
+					PowaAuras:Debug("Found ", i);
 				end
 				self.CurrentSlot = i;
 				self.CurrentMatch = pword;
@@ -2058,7 +2058,7 @@ function cPowaBuffBase:CheckAllAuraSlots(target, giveReason)
 		end
 		for i = startFrom, 40 do
 			if (self.Debug) then
-				PowaAuras:Message("  up (", i, ") ");
+				PowaAuras:Debug("  up (", i, ") ");
 			end
 			present, reason = self:IsPresent(target, i, giveReason, pword);
 			if (present==nil) then
@@ -2067,7 +2067,7 @@ function cPowaBuffBase:CheckAllAuraSlots(target, giveReason)
 			if (present) then
 				--PowaAuras:UnitTestDebug("CheckAllAuraSlots Present!");
 				if (self.Debug) then
-					PowaAuras:Message("Found ", i);
+					PowaAuras:Debug("Found ", i);
 				end
 				self.CurrentSlot = i;
 				self.CurrentMatch = pword;
@@ -2090,7 +2090,7 @@ end
 function cPowaBuffBase:CheckSingleUnit(group, unit, giveReason)
 	if (not unit) then return; end
 	if (self.Debug) then
-		PowaAuras:Message("CheckSingleUnit ", unit);
+		PowaAuras:Debug("CheckSingleUnit ", unit);
 	end
 	local present, reason = self:CheckAllAuraSlots(unit, giveReason);
 	if (present) then
@@ -2098,7 +2098,7 @@ function cPowaBuffBase:CheckSingleUnit(group, unit, giveReason)
 			--PowaAuras:UnitTestDebug("CheckGroup("..group..") Present!");
 			self.CurrentUnit = unit;
 			if (self.Debug) then
-				PowaAuras:Message("CheckSingleUnit ", unit, " Present!");
+				PowaAuras:Debug("CheckSingleUnit ", unit, " Present!");
 			end
 			if (not giveReason) then return true; end
 			return true, PowaAuras:InsertText(PowaAuras.Text.nomReasonOneInGroupHasBuff, unit, self.OptionText.typeText, self.buffname);
@@ -2112,12 +2112,12 @@ end
 
 function cPowaBuffBase:CheckGroup(group, count, giveReason)
 	if (self.Debug) then
-		PowaAuras:Message("CheckGroup ", group, " ", count, " ", self.CurrentUnit);
+		PowaAuras:Debug("CheckGroup ", group, " ", count, " ", self.CurrentUnit);
 	end
 	local show, reason = self:CheckSingleUnit(group, self.CurrentUnit, giveReason);
 	if (show ~= nil) then
 		if (self.Debug) then
-			PowaAuras:Message("buff for existing unit (", self.CurrentUnit, ") found");
+			PowaAuras:Debug("buff for existing unit (", self.CurrentUnit, ") found");
 		end
 		return show, reason;
 	end
@@ -2126,7 +2126,7 @@ function cPowaBuffBase:CheckGroup(group, count, giveReason)
 		--PowaAuras.BuffUnitSetCount = PowaAuras.BuffUnitSetCount + 1;
 		for unit in pairs(PowaAuras.ChangedUnits.Buffs) do
 			if (self.Debug) then
-				PowaAuras:Message("Detected buff change in unit ", unit);
+				PowaAuras:Debug("Detected buff change in unit ", unit);
 			end
 			if (unit~=self.CurrentUnit and string.find(unit, group, 1, true)) then
 				--PowaAuras:TraceInfo("Checking buff for changed unit (", unit, ")");
