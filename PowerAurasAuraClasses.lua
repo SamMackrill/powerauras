@@ -128,6 +128,7 @@ cPowaAura.ExportSettings = {
 	b = 1.0,
 	SizeX = 256,
 	SizeY = 256,
+	Rotate = 0,
 	
 	inverse = false,
 	ignoremaj = true,
@@ -991,6 +992,7 @@ end
 , PowaAuras.Text.Unknown);
 	return text;
 end
+
 
 function cPowaAura:SpellPower()
 	local spellPower = 0;

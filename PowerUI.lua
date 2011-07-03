@@ -20,7 +20,7 @@ function PowaAuras.UI:BuildFrameFromDefinition(def, parent)
 		frame = CreateFrame(def.Type or "Frame", def.Name, parent, def.Inherits);
 	end
 	-- Classes.
-	if(type(def.Class) == "string") then
+	if(type(def.Class) == "string" and self[def.Class]) then
 		if(def.Type == "Class") then
 			if(def.ClassArgs and type(def.ClassArgs) == "table") then
 				frame = self[def.Class](self, parent, unpack(def.ClassArgs));
@@ -58,8 +58,9 @@ function PowaAuras.UI:BuildFrameFromDefinition(def, parent)
 	if(def.Points) then
 		-- Convert the relative anchor into something useful.
 		if(def.RelativeAnchor) then
-			def.RelativeAnchor = ((def.RelativeAnchor == true and parent) or parent[def.RelativeAnchor] 
-				or _G[def.RelativeAnchor] or nil);
+			def.RelativeAnchor = ((type(def.RelativeAnchor) == "table" and def.RelativeAnchor) 
+				or (def.RelativeAnchor == true and parent) or parent[def.RelativeAnchor] or _G[def.RelativeAnchor] 
+				or nil);
 		end
 		-- Boolean true = SetAllPoints.
 		if(type(def.Points) == "boolean" and def.Points == true) then

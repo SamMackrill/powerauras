@@ -1,6 +1,8 @@
 -- UI upvalue.
 local UI = PowaAuras.UI;
--- Dropdown widget base.
+--- Base Dropdown widget definition, handles all of the core dropdown code but does not interact with any frames.
+-- @name PowaAuras.UI.DropdownBase
+-- @class table
 UI:Register("DropdownBase", {
 	AllowSelection = true,
 	Scripts = {
@@ -130,17 +132,17 @@ UI:Register("Dropdown", {
 	Scripts = {
 		OnSettingChanged = true,
 	},
-	Init = function(self, setting, closeOnSelect)
+	Init = function(self, setting, closeOnSelect, title)
 		-- Call parent init func.
 		UI.DropdownBase.Init(self, closeOnSelect);
 		-- Set the title and tooltip if we can.
-		if(self:GetText()) then
+		if(title or self:GetText()) then
 			-- Title (optional fontstring element)
 			if(self.Title) then
-				self.Title:SetText(PowaAuras.Text[self:GetText()]);
+				self.Title:SetText(PowaAuras.Text[title or self:GetText()]);
 			end
 			-- Tooltip.
-			UI:Tooltip(self, self:GetText(), (self:GetText() .. "Desc"));
+			UI:Tooltip(self, (title or self:GetText()), ((title or self:GetText()) .. "Desc"));
 		end
 		-- Make sure our text is blank...
 		self.Text:SetText(PowaAuras.Text["UI_DropdownNone"]);
@@ -230,6 +232,7 @@ UI:Register("DropdownList", {
 	Hooks = {
 		"Hide",
 		"Show",
+		"SetFrameStrata",
 	},
 	Construct = function(class, ui)
 		if(not class.Menu) then
@@ -251,18 +254,21 @@ UI:Register("DropdownList", {
 	Hide = function(self, owner)
 		-- Only hide if the owner matches.
 		if(self.Owner and self.Owner ~= owner) then return; end
-		-- Call Hide callback.
-		self.Owner:CallScript("OnDropdownMenuHide");
-		-- Clear parent, points and so on.
-		self:ClearAllPoints();
-		self:SetParent(UIParent);
 		-- Remove owner.
+		local callOwner = self.Owner;
 		self.Owner = nil;
 		self.SelectedKey = nil;
 		-- Recycle items.
 		self:UpdateItems();
+		-- Clear parent, points and so on.
+		self:ClearAllPoints();
+		self:SetParent(UIParent);
 		-- Hide.
 		self:__Hide();
+		-- Call Hide callback.
+		if(callOwner) then
+			callOwner:CallScript("OnDropdownMenuHide");
+		end
 	end,
 	IsOwned = function(self, owner)
 		return (self.Owner == owner);
@@ -274,6 +280,10 @@ UI:Register("DropdownList", {
 		-- Fire update callback.
 		self.Owner:CallScript("OnDropdownMenuSelectionUpdated", key);
 	end,
+	SetFrameStrata = function(self)
+		-- Force DIALOG strata.
+		self:__SetFrameStrata("DIALOG");
+	end,
 	Show = function(self, owner, defaultKey, allowSelection)
 		-- If owner has changed, tell them to GTFO.
 		if(self.Owner and self.Owner ~= owner) then
@@ -283,14 +293,12 @@ UI:Register("DropdownList", {
 		self.Owner = owner;
 		self.SelectedKey = defaultKey or nil;
 		self.AllowSelection = allowSelection;
-		-- Call Show callback.
-		self.Owner:CallScript("OnDropdownMenuShow");
 		-- Update items.
 		self:UpdateItems();
 		-- Show.
 		self:__Show();
-		-- Fix strata.
-		self:SetFrameStrata("DIALOG");
+		-- Call Show callback.
+		self.Owner:CallScript("OnDropdownMenuShow");
 	end,
 	Toggle = function(self, owner, ...)
 		-- Show or hide?
@@ -345,6 +353,7 @@ UI:Register("DropdownList", {
 		self:SetSize(168, math.min(168, 8+(count*20)));
 		-- Position dropdown.
 		self:SetParent(self.Owner);
+		self:SetFrameStrata("DIALOG");
 		self.Owner:CallScript("OnDropdownMenuPosition");
 	end,
 });

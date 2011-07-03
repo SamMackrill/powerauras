@@ -24,6 +24,13 @@ PowaAuras.UI:Register("AuraEditor", {
 		PowaBrowser:HookScript("OnSelectedAuraChanged", function(browser, id) self:UpdateElements(id); end);
 		-- Close on escape key.
 --		tinsert(UISpecialFrames, self:GetName());
+		-- When the editor is up, we redisplay the aura a lot - but we don't want to do it too often so we need a
+		-- throttle!
+		self.IsUpdatePending = false;
+		self.IsThrottled = false;
+		self.Throttle = 0;
+		-- And how do we know when to update, you ask? Simple, we need a callback too.
+		PowaAuras:RegisterSettingCallback(self.OnSettingChanged);
 	end,
 	Show = function(self)
 		-- Make sure this stuff is correct...
@@ -38,6 +45,51 @@ PowaAuras.UI:Register("AuraEditor", {
 	end,
 	OnShow = function(self)
 		PlaySound("igCharacterInfoTab");
+	end,
+	OnSettingChanged = function(key, value, location)
+		-- Discard if not an aura setting.
+		if(not PowaAuras.ModTest or location ~= PowaAuras.SettingLocations.Aura) then
+			return;
+		end
+		local self = PowaEditor;
+		-- Throttled or not?
+		if(not self.IsThrottled) then
+			-- Throttle now.
+			self.IsThrottled = true;
+			self:SetScript("OnUpdate", self.OnUpdate);
+			-- Redisplay aura.
+			local aura = PowaBrowser:GetSelectedAura() or -1;
+			-- Call twice in no-update mode.
+			PowaAuras:ToggleAuraDisplay(aura, false, true);
+			PowaAuras:ToggleAuraDisplay(aura, true, true);
+		else
+			-- We're throttled!
+			self.IsUpdatePending = true;
+		end
+	end,
+	OnUpdate = function(self, elapsed)
+		-- Cancel script if ModTest is false.
+		if(not PowaAuras.ModTest) then
+			self:SetScript("OnUpdate", nil);
+			self.IsThrottled = false;
+			self.IsUpdatePending = false;
+			self.Throttle = 0;
+		end
+		-- Update progress.
+		self.Throttle = self.Throttle+elapsed;
+		if(self.Throttle < 1) then
+			return;
+		end
+		-- No longer throttled.
+		self:SetScript("OnUpdate", nil);
+		self.IsThrottled = false;
+		self.Throttle = 0;
+		-- Pending?
+		if(self.IsUpdatePending) then
+			-- Update forcibly.
+			self.IsUpdatePending = false;
+			self.OnSettingChanged(nil, nil, PowaAuras.SettingLocations.Aura);
+		end
 	end,
 	UpdateElements = function(self, auraID)
 		-- Hide old aura if it exists.
@@ -122,123 +174,147 @@ local AuraEditor = {
 									Children = {
 										Child = {
 											Inherits = "PowaTitledFrameTemplate",
-											Class = "EditorScrollChild",
-											Size = { 419, 1 },
+											Class = "LayoutFrame",
+											Size = { 350, 1 },
 											Points = {
 												[1] = { "TOPLEFT", 0, 0 },
 											},
 											Children = {
 												[1] = {
-													ParentKey = "Texture",
+													ParentKey = "CatTexture",
 													Type = "Class",
 													Class = "FrameCategory",
 													ClassArgs = PowaAuras.Text["UI_Editor_Aura_CatTexture"],
-													Points = {
-														[1] = { "TOPLEFT", 15, -70 },
-														[2] = { "TOPRIGHT", -15, -70 },
-													},
 												},
 												[2] = {
-													ParentKey = "Style",
+													Type = "Texture",
+													Layer = "BACKGROUND",
+													Size = { 30, 1205 },
+													RelativeAnchor = "CatTexture",
+													OnLoad = function(self)
+														self:SetTexture(0, 0, 1);
+													end,
+												},
+												[3] = {
+													ParentKey = "CatStyle",
 													Type = "Class",
 													Class = "FrameCategory",
 													ClassArgs = PowaAuras.Text["UI_Editor_Aura_CatStyle"],
-													RelativeAnchor = "Texture",
-													Points = {
-														[1] = { "TOPLEFT", "BOTTOMLEFT", 0, -8 },
-														[2] = { "TOPRIGHT", "BOTTOMRIGHT", 0, -8 },
-													},
+													RelativeAnchor = "CatTexture",
 												},
-												[3] = {
-													ParentKey = "Size",
+												[4] = {
+													ParentKey = "StyleOpacity",
+													Type = "Slider",
+													Inherits = "PowaSliderTemplate",
+													Size = { 158, 15 },
+													OnLoad = function(self)
+														-- Set min/max.
+														self:SetMinMaxValues(0, 1);
+														self:SetValueStep(0.01);
+														-- Slider, go!
+														PowaAuras.UI:Slider(self, "UI_Editor_Aura_Opacity", 
+															"Aura.alpha");
+														-- Helper method to make this easier.
+														self:SetFormat("%.2f");
+													end,
+												},
+												[5] = {
+													ParentKey = "StyleRotate",
+													Type = "Slider",
+													Inherits = "PowaSliderTemplate",
+													Size = { 158, 15 },
+													OnLoad = function(self)
+														-- Set min/max.
+														self:SetMinMaxValues(0, 360);
+														self:SetValueStep(1);
+														-- Slider, go!
+														PowaAuras.UI:Slider(self, "UI_Editor_Aura_Rotate", 
+															"Aura.Rotate");
+													end,
+												},
+												[6] = {
+													ParentKey = "CatSize",
 													Type = "Class",
 													Class = "FrameCategory",
 													ClassArgs = PowaAuras.Text["UI_Editor_Aura_CatSize"],
-													RelativeAnchor = "Style",
-													Points = {
-														[1] = { "TOPLEFT", "BOTTOMLEFT", 0, -8 },
-														[2] = { "TOPRIGHT", "BOTTOMRIGHT", 0, -8 },
-													},
-													Children = {
-														[1] = {
-															ParentKey = "SizeX",
-															Type = "Slider",
-															Inherits = "PowaSliderTemplate",
-															Size = { 158, 15 },
-															Points = {
-																[1] = { "TOPLEFT", 4, -48 },
-															},
-															OnLoad = function(self)
-																-- Set min/max.
-																self:SetMinMaxValues(16, 512);
-																self:SetValueStep(1);
-																-- Slider, go!
-																PowaAuras.UI:Slider(self, "UI_Editor_Aura_SizeX", 
-																	"Aura.SizeX");
-															end,
-														},
-														[2] = {
-															ParentKey = "SizeY",
-															Type = "Slider",
-															Inherits = "PowaSliderTemplate",
-															Size = { 158, 15 },
-															Points = {
-																[1] = { "TOP", 0, -48 },
-															},
-															OnLoad = function(self)
-																-- Set min/max.
-																self:SetMinMaxValues(16, 512);
-																self:SetValueStep(1);
-																-- Slider, go!
-																PowaAuras.UI:Slider(self, "UI_Editor_Aura_SizeY", 
-																	"Aura.SizeY");
-															end,
-														},
-														[3] = {
-															ParentKey = "Scale",
-															Type = "Slider",
-															Inherits = "PowaSliderTemplate",
-															Size = { 158, 15 },
-															Points = {
-																[1] = { "TOPRIGHT", -4, -48 },
-															},
-															OnLoad = function(self)
-																-- Set min/max.
-																self:SetMinMaxValues(0.01, 5);
-																self:SetValueStep(0.01);
-																-- Slider, go!
-																PowaAuras.UI:Slider(self, "UI_Editor_Aura_Scale", 
-																	"Aura.size");
-																-- Helper method to make this easier.
-																self:SetFormat("%.2f");
-															end,
-														},
-														[4] = {
-															ParentKey = "PosX",
-															Type = "EditBox",
-															Inherits = "PowaLabelledEditBoxTemplate",
-															Class = "NumericSettingsEditBox",
-															ClassArgs = { "UI_Editor_Aura_PosX", "Aura.x", 0 },
-															RelativeAnchor = "SizeX",
-															Points = {
-																[1] = { "TOPLEFT", 0, -64 },
-																[2] = { "TOPRIGHT", 0, -64 },
-															},
-														},
-														[5] = {
-															ParentKey = "PosY",
-															Type = "EditBox",
-															Inherits = "PowaLabelledEditBoxTemplate",
-															Class = "NumericSettingsEditBox",
-															ClassArgs = { "UI_Editor_Aura_PosY", "Aura.y", 0 },
-															RelativeAnchor = "SizeY",
-															Points = {
-																[1] = { "TOPLEFT", 0, -64 },
-																[2] = { "TOPRIGHT", 0, -64 },
-															},
-														},
-													},
-													OnLoad = "UpdateChildren",
+													RelativeAnchor = "CatStyle",
+												},
+												[7] = {
+													ParentKey = "SizeSizeX",
+													Type = "Slider",
+													Inherits = "PowaSliderTemplate",
+													Size = { 158, 15 },
+													OnLoad = function(self)
+														-- Set min/max.
+														self:SetMinMaxValues(16, 512);
+														self:SetValueStep(1);
+														-- Slider, go!
+														PowaAuras.UI:Slider(self, "UI_Editor_Aura_SizeX", 
+															"Aura.SizeX");
+													end,
+												},
+												[8] = {
+													ParentKey = "SizeSizeY",
+													Type = "Slider",
+													Inherits = "PowaSliderTemplate",
+													Size = { 158, 15 },
+													OnLoad = function(self)
+														-- Set min/max.
+														self:SetMinMaxValues(16, 512);
+														self:SetValueStep(1);
+														-- Slider, go!
+														PowaAuras.UI:Slider(self, "UI_Editor_Aura_SizeY", 
+															"Aura.SizeY");
+													end,
+												},
+												[9] = {
+													ParentKey = "SizeScale",
+													Type = "Slider",
+													Inherits = "PowaSliderTemplate",
+													Size = { 158, 15 },
+													OnLoad = function(self)
+														-- Set min/max.
+														self:SetMinMaxValues(0.01, 5);
+														self:SetValueStep(0.01);
+														-- Slider, go!
+														PowaAuras.UI:Slider(self, "UI_Editor_Aura_Scale", 
+															"Aura.size");
+														-- Helper method to make this easier.
+														self:SetFormat("%.2f");
+													end,
+												},
+												[10] = {
+													ParentKey = "SizePosX",
+													Type = "EditBox",
+													Inherits = "PowaLabelledEditBoxTemplate",
+													Class = "NumericSettingsEditBox",
+													ClassArgs = { "UI_Editor_Aura_PosX", "Aura.x", 0 },
+												},
+												[11] = {
+													ParentKey = "SizePosY",
+													Type = "EditBox",
+													Inherits = "PowaLabelledEditBoxTemplate",
+													Class = "NumericSettingsEditBox",
+													ClassArgs = { "UI_Editor_Aura_PosY", "Aura.y", 0 },
+												},
+												-- Do dropdowns last to prevent the child frame strata bug.
+												[12] = {
+													ParentKey = "StyleFlip",
+													Type = "Button",
+													Inherits = "PowaLabelledDropdownTemplate",
+													Class = "Dropdown",
+													ClassArgs = { 
+														"Aura.symetrie", true, "UI_Editor_Aura_Flip" },
+													OnLoad = function(self)
+														-- Add necessary items.
+														for i=0, 3 do
+															self:AddItem(i, 
+																PowaAuras.Text["UI_Editor_Aura_FlipTypes"][i]);
+														end
+														-- Update.
+														self:SetSelectedKey(self:GetSetting());
+														self:UpdateText(self:GetSetting());
+													end,
 												},
 											},
 											OnLoad = function(self)
@@ -246,12 +322,48 @@ local AuraEditor = {
 												self:SetTitle(PowaAuras.Text["UI_Editor_Aura"]);
 												self:SetDescription(PowaAuras.Text("UI_Editor_CatSuffix", 
 													PowaAuras.Text["UI_Editor_AuraDesc"]));
+												-- Add elements to their separators.
+												self.CatTexture:AddChild(self[2]);
+												self.CatStyle:AddChild(self.StyleOpacity);
+												self.CatStyle:AddChild(self.StyleRotate);
+												self.CatStyle:AddChild(self.StyleFlip);
+												self.CatSize:AddChild(self.SizeSizeX);
+												self.CatSize:AddChild(self.SizeSizeY);
+												self.CatSize:AddChild(self.SizeScale);
+												self.CatSize:AddChild(self.SizePosX);
+												self.CatSize:AddChild(self.SizePosY);
+												-- Add columns. Use 6 columns because we can then split into 2/3 nicely.
+												self:AddColumn((1/6), 5, 5);
+												self:AddColumn((1/6), 5, 5);
+												self:AddColumn((1/6), 5, 5);
+												self:AddColumn((1/6), 5, 5);
+												self:AddColumn((1/6), 5, 5);
+												self:AddColumn((1/6), 5, 5);
+												-- Boundaries.
+												self:SetBounds(15, 15, 70);
+												self:SetRowSpacing(8);
+												-- Add elements.
+												self:AddChild(self.CatTexture, 6, true);
+												self:AddChild(self[2], 3);
+												self:AddChild(self.CatStyle, 6, true);
+												-- I actually used GIMP to make sure these were pixel perfect.
+												-- Pad the first elements of each row of a category down an extra 4px.
+												self:AddChild(self.StyleOpacity, 2, false, 14+4, 14+4);
+												self:AddChild(self.StyleRotate, 2, false, 14+4, 14+4);
+												self:AddChild(self.StyleFlip, 2, false, 17+4, 0+4);
+												self:AddChild(self.CatSize, 6, true);
+												self:AddChild(self.SizeSizeX, 2, false, 14+4, 14);
+												self:AddChild(self.SizeSizeY, 2, false, 14+4, 14);
+												self:AddChild(self.SizeScale, 2, false, 14+4, 14);
+												self:AddChild(self.SizePosX, 3, false, 20, 0+4);
+												self:AddChild(self.SizePosY, 3, false, 20, 0+4);
 											end,
 										},
 									},
 									OnLoad = function(self)
 										-- Set scroll child.
 										self:SetScrollChild(self.Child);
+										-- Easy update, bro.
 										self:ScrollUpdate();
 									end,
 								},

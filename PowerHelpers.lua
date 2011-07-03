@@ -18,6 +18,7 @@ PowaAuras.SettingLocations = {
 	AuraTimer = 0x8,
 	AuraStacks = 0x10,
 };
+-- TODO Split SettingCallbacks by location for performance improvement. Make it so that RegisterSettingCallback accepts multiple locations to bind a callback to.
 --- Registers a saved variable as a setting, assigning it a key and allowing callbacks to be assigned to the setting.
 -- The key should be different from the actual variable name to prevent conflicts.
 -- @param key The key to assign to the specified setting.
@@ -191,7 +192,7 @@ function PowaAuras:ChangeAuraType(id, new)
 	-- Dispose of old aura.
 	oldAura:Dispose();
 	-- Clear icon on old aura.
-	oldAura.IconPath = "";
+	oldAura.icon = "";
 	-- Build the new aura.
 	aura = self:AuraFactory(new, id, oldAura);
 	-- Initialise it.
@@ -484,18 +485,14 @@ for k, _ in pairs(cPowaStacks.ExportSettings) do
 end
 
 -- Add a general update function for when these settings change.
-do
-	local lastUpdate = 0;
-	PowaAuras:RegisterSettingCallback(function(key, value, location)
-		-- Redisplay auras if testing mode is on.
-		if(PowaAuras.ModTest and lastUpdate < time()) then
-			-- Get the selected aura.
-			local aura = PowaBrowser:GetSelectedAura() or -1;
-			-- Call twice in no-update mode.
-			PowaAuras:ToggleAuraDisplay(aura, false, true);
-			PowaAuras:ToggleAuraDisplay(aura, true, true);
-			-- Throttle mass updates to one per sec.
-			lastUpdate = time();
-		end
-	end);
-end
+PowaAuras:RegisterSettingCallback(function(key, value, location)
+	-- Redisplay auras if testing mode is on.
+	if(PowaAuras.ModTest 
+	and (location == PowaAuras.SettingLocations.Global or location == PowaAuras.SettingLocations.Char)) then
+		-- Get the selected aura.
+		local aura = PowaBrowser:GetSelectedAura() or -1;
+		-- Call twice in no-update mode.
+		PowaAuras:ToggleAuraDisplay(aura, false, true);
+		PowaAuras:ToggleAuraDisplay(aura, true, true);
+	end
+end);

@@ -19,7 +19,7 @@ PowaAuras.UI:Register("AuraBrowser", {
 		-- Close on escape key.
 		tinsert(UISpecialFrames, self:GetName());
 	end,
-	GetPageName = function(self)
+	GetPageName = function(self) -- TODO Move to Helper functions.
 		local page = self.Tabs.Auras.Tree:GetSelectedKey();
 		if(not page) then return ""; end
 		if(page <= 5) then
@@ -403,10 +403,10 @@ PowaAuras.UI:Register("AuraButton", {
 			self.OffText:Hide();
 		elseif(state == self.Flags["NORMAL"] or state == self.Flags["MOVING"]) then		
 			-- Icons.
-			if(not aura.IconPath or aura.IconPath == "") then
+			if(not aura.icon or aura.icon == "") then
 				self.Icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");
 			else
-				self.Icon:SetTexture(aura.IconPath);
+				self.Icon:SetTexture(aura.icon);
 			end
 			-- Restore texcoords.
 			self.Icon:SetTexCoord(0.07, 0.93, 0.07, 0.93);
