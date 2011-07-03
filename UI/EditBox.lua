@@ -116,15 +116,20 @@ PowaAuras.UI:Register("NumericSettingsEditBox", {
 	},
 	Scripts = {
 		OnSettingChanged = "SetText",
+		OnMouseWheel = true,
 	},
 	Init = function(self, title, setting, decimals)
 		-- Call main init func.
 		self.Decimals = decimals or 0;
+		self.ValueStep = 1;
 		-- Fix meh!
 		PowaAuras.UI.SettingsEditBox.Init(self, title, setting);
 	end,
 	GetDecimals = function(self)
 		return self.Decimals;
+	end,
+	GetValueStep = function(self)
+		return self.ValueStep;
 	end,
 	OnEnterPressed = function(self)
 		-- Save setting.
@@ -136,6 +141,13 @@ PowaAuras.UI:Register("NumericSettingsEditBox", {
 		end
 		self:ClearFocus();
 	end,
+	OnMouseWheel = function(self, delta)
+		if(delta > 0) then
+			self:SaveSetting(self:GetSetting()+(self:GetValueStep()*(IsShiftKeyDown() and 10 or 1)));
+		else
+			self:SaveSetting(self:GetSetting()-(self:GetValueStep()*(IsShiftKeyDown() and 10 or 1)));
+		end			
+	end,
 	Round = function(self, src)
 		return floor(src*(10^self.Decimals)+0.5)/(10^self.Decimals);
 	end,
@@ -144,6 +156,9 @@ PowaAuras.UI:Register("NumericSettingsEditBox", {
 		if(not self:HasFocus()) then
 			self:OnEscapePressed();
 		end
+	end,
+	SetValueStep = function(self, step)
+		self.ValueStep = step;
 	end,
 	SetText = function(self, text)
 		-- Fix the value.

@@ -76,9 +76,9 @@ PowaAuras.UI:Register("Slider", {
 	end,
 	OnMouseWheel = function(self, delta)
 		if(delta > 0) then
-			self:SetValue(self:GetValue()+self:GetValueStep());
+			self:SetValue(self:GetValue()+(self:GetValueStep()*(IsShiftKeyDown() and 10 or 1)));
 		else
-			self:SetValue(self:GetValue()-self:GetValueStep());
+			self:SetValue(self:GetValue()-(self:GetValueStep()*(IsShiftKeyDown() and 10 or 1)));
 		end			
 	end,
 	OnSettingChanged = function(self, value)
