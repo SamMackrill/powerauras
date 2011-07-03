@@ -6,6 +6,7 @@ PowaAuras.UI:Register("Slider", {
 	Scripts = {
 		OnSettingChanged = true,
 		OnValueChanged = true,
+		OnMouseWheel = true,
 	},
 	Init = function(self, title, setting)
 		-- Vars.
@@ -39,6 +40,8 @@ PowaAuras.UI:Register("Slider", {
 		PowaAuras.UI:Settings(self, setting);
 		-- Update min/max labels.
 		self:SetMinMaxLabels();
+		-- Enable hardcore mouse wheel action!
+		self:EnableMouseWheel(true);
 	end,
 	GetFormat = function(self)
 		return self.Format;
@@ -70,6 +73,13 @@ PowaAuras.UI:Register("Slider", {
 			and format(self:GetParent().Format, tonumber(value)) or tostring(value)));
 		-- Always clear ze focus.
 		self:ClearFocus();
+	end,
+	OnMouseWheel = function(self, delta)
+		if(delta > 0) then
+			self:SetValue(self:GetValue()+self:GetValueStep());
+		else
+			self:SetValue(self:GetValue()-self:GetValueStep());
+		end			
 	end,
 	OnSettingChanged = function(self, value)
 		if(self:GetValue() ~= value and value ~= nil) then

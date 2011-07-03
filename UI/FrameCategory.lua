@@ -34,9 +34,17 @@ PowaAuras.UI:Register("FrameCategory", {
 	Init = function(self, title)
 		-- Update textures immediately.
 		self:UpdateTextures();
-		self:SetChecked(self:GetChecked());
+		-- Keep a list of children.
+		self.Children = {};
+		-- Initial update.
+		self:UpdateChildren();
 		-- Title?
 		self:SetTitle(title or "");
+	end,
+	AddChild = function(self, frame)
+		-- Add, update.
+		tinsert(self.Children, frame);
+		self:UpdateChildren();
 	end,
 	GetTitle = function(self)
 		return self.Title:GetText();
@@ -45,7 +53,7 @@ PowaAuras.UI:Register("FrameCategory", {
 		-- Sound effects are cool.
 		PlaySound("igMainMenuOptionCheckBoxOn");
 		-- Invert checked status (this inverts automatically, no questions why).
-		self:SetChecked(self:GetChecked());
+		self:UpdateChildren();
 	end,
 	OnSizeChanged = function(self, width, height)
 		-- Updates the insets.
@@ -60,27 +68,31 @@ PowaAuras.UI:Register("FrameCategory", {
 		-- Call normal func.
 		self:__SetChecked(checked);
 		-- Hide/Show children.
-		local count = self:GetNumChildren();
-		for i=1, count do
-			if(checked) then
-				select(i, self:GetChildren()):Show();
-			else
-				select(i, self:GetChildren()):Hide();
-			end
+		for _, child in pairs(self.Children) do
+			child[checked and "Show" or "Hide"](child);
 		end
-		-- Same for regions, except start at #7 - 1 through 6 are all internal ones.
-		count = self:GetNumRegions();
-		for i=7, count do
-			if(checked) then
-				select(i, self:GetRegions()):Show();
-			else
-				select(i, self:GetRegions()):Hide();
-			end
-		end
+--		local count = self:GetNumChildren();
+--		for i=1, count do
+--			if(checked) then
+--				select(i, self:GetChildren()):Show();
+--			else
+--				select(i, self:GetChildren()):Hide();
+--			end
+--		end
+--		-- Same for regions, except start at #7 - 1 through 6 are all internal ones.
+--		local count = self:GetNumRegions();
+--		for i=7, count do
+--			if(checked) then
+--				select(i, self:GetRegions()):Show();
+--			else
+--				select(i, self:GetRegions()):Hide();
+--			end
+--		end
 		-- Update.
 		if(checked) then
 			self:LockHighlight();
-			self:SetHeight(select(4, self:GetBoundsRect()));
+--			self:SetHeight((select(4, self:GetBoundsRect())) or 25);
+			self:SetHeight(25);
 			self.Expand:SetTexCoord(0, 0, 0, 0.6875, 0.9375, 0, 0.9375, 0.6875);
 			self.Expand:SetSize(15, 11);
 		else
