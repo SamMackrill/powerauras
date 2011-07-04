@@ -48,6 +48,7 @@ PowerUI.lua
 UI\Fonts.xml
 
 # Mixins
+UI\Mixins\LayoutFrame.lua
 UI\Mixins\Scripts.lua
 UI\Mixins\Settings.lua
 UI\Mixins\Tooltip.lua

@@ -16,7 +16,7 @@ PowaAuras.UI:Register("Slider", {
 		-- Set the title....
 		self:SetTitle(title or "");
 		-- Add tooltips to the slider, background frame and editbox.
-		PowaAuras.UI:Tooltip(self, title, (title .. "Desc"), "Value");
+		PowaAuras.UI:Tooltip(self, title, (title .. "Desc"));
 		-- Set up the editbox. Use an anonymous class and link it to this one directly.
 		PowaAuras.UI:AnonymousWidget("SettingsEditBox", {
 			Scripts = {

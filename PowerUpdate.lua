@@ -1,12 +1,17 @@
 -- Define a function per version here.
 PowaAuras.UpdateFunctions = {
---	[1] = {
---		Version = 50000,
---		Function = function(self, aura, auraID)
---			print(auraID, "-->");
---			-- Store the version.
---			-- aura.Version = 50000;
---			-- Handle spec things.
+	[1] = {
+		Version = 50000,
+		Function = function(self, aura, auraID)
+			-- Store the version.
+			-- aura.Version = 50000;
+			-- Fix texmode/glow.
+			if(aura.texmode == 1 or aura.texmode == true) then
+				aura.texmode = true;
+			else
+				aura.texmode = false;
+			end
+			-- Handle spec things.
 --			for i=1, 2 do
 --				if(aura["spec" .. i]) then
 --					aura["Spec" .. i] = bit.bor(cPowaAura.SpecFlags.TREE_FIRST, cPowaAura.SpecFlags.TREE_SECOND, 
@@ -34,8 +39,8 @@ PowaAuras.UpdateFunctions = {
 --			else
 --				aura["Units"]["Focus"] = 0;
 --			end
---		end,
---	},
+		end,
+	},
 };
 
 -- Sort functions by version.

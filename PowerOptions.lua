@@ -1576,7 +1576,7 @@ function PowaAuras:InitPage(aura)
 	PowaThresholdInvertButton:SetChecked(aura.thresholdinvert);
 	PowaExtraButton:SetChecked(aura.Extra);
 
-	PowaTexModeButton:SetChecked(aura.texmode == 1);
+	PowaTexModeButton:SetChecked(aura.texmode);
 
 	-- Ternary Logic
 	self:TernarySetState(PowaInCombatButton, aura.combat);
@@ -2174,9 +2174,9 @@ end
 function PowaAuras:TexModeChecked()
 	local aura = self.Auras[self.CurrentAuraId];
 	if (PowaTexModeButton:GetChecked()) then
-		aura.texmode = 1;
+		aura.texmode = true;
 	else
-		aura.texmode = 2;
+		aura.texmode = false;
 	end
 	self:RedisplayAura(self.CurrentAuraId, false);
 end

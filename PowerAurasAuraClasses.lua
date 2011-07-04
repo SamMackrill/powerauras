@@ -85,7 +85,7 @@ cPowaAura.ExportSettings = {
 	bufftype = PowaAuras.BuffTypes.Buff,
 	buffname = "???",
 	
-	texmode = 1,
+	texmode = true,
 	wowtex = false,
 	customtex = false,
 	textaura = false,
@@ -140,6 +140,9 @@ cPowaAura.ExportSettings = {
 	stacks = 0,
 	stacksLower = 0,
 	stacksOperator = PowaAuras.DefaultOperator,
+	StacksSource = PowaAuras.StackSources.Default,
+	StacksMatch = "",
+	StacksMatchOffset = 0,
 
 	threshold = 50,
 	thresholdinvert = false,
@@ -182,7 +185,7 @@ cPowaAura.ExportSettings = {
 	
 	spec1 = true,
 	spec2 = true,
-	gcd = false,
+--	gcd = false, -- Unused
 	stance = 10,
 	GTFO = 0,
 	PowerType = -1,
@@ -867,7 +870,6 @@ function cPowaAura:GetSingleFrame(secondary)
 		--- Frame --- 
 		frame = CreateFrame("Frame", nil, UIParent);
 		self:SetFrame(frame, secondary);
-		
 		frame:SetFrameStrata(self.strata);
 		frame:Hide();  
 		

@@ -15,20 +15,36 @@
 				<Anchors>
 					<Anchor point="TOPRIGHT" x="0" y="16" />
 				</Anchors>
-				<NormalTexture inherits="UIPanelScrollBarButton" file="Interface\Buttons\UI-ScrollBar-ScrollUpButton-Up" />
-				<PushedTexture inherits="UIPanelScrollBarButton" file="Interface\Buttons\UI-ScrollBar-ScrollUpButton-Down" />
-				<DisabledTexture inherits="UIPanelScrollBarButton" file="Interface\Buttons\UI-ScrollBar-ScrollUpButton-Disabled" />
-				<HighlightTexture inherits="UIPanelScrollBarButton" file="Interface\Buttons\UI-ScrollBar-ScrollUpButton-Highlight" alphaMode="ADD" />
+				<NormalTexture file="Interface\Buttons\UI-ScrollBar-ScrollUpButton-Up">
+					<TexCoords left="0.20" right="0.80" top="0.25" bottom="0.75" />
+				</NormalTexture>
+				<PushedTexture file="Interface\Buttons\UI-ScrollBar-ScrollUpButton-Down" >
+					<TexCoords left="0.20" right="0.80" top="0.25" bottom="0.75" />
+				</PushedTexture>
+				<DisabledTexture file="Interface\Buttons\UI-ScrollBar-ScrollUpButton-Disabled">
+					<TexCoords left="0.20" right="0.80" top="0.25" bottom="0.75" />
+				</DisabledTexture>
+				<HighlightTexture  file="Interface\Buttons\UI-ScrollBar-ScrollUpButton-Highlight" alphaMode="ADD">
+					<TexCoords left="0.20" right="0.80" top="0.25" bottom="0.75" />
+				</HighlightTexture>
 			</Button>
 			<Button parentKey="ScrollDown">
 				<Size x="18" y="16" />
 				<Anchors>
 					<Anchor point="BOTTOMRIGHT" x="0" y="-16" />
 				</Anchors>
-				<NormalTexture inherits="UIPanelScrollBarButton" file="Interface\Buttons\UI-ScrollBar-ScrollDownButton-Up" />
-				<PushedTexture inherits="UIPanelScrollBarButton" file="Interface\Buttons\UI-ScrollBar-ScrollDownButton-Down" />
-				<DisabledTexture inherits="UIPanelScrollBarButton" file="Interface\Buttons\UI-ScrollBar-ScrollDownButton-Disabled" />
-				<HighlightTexture inherits="UIPanelScrollBarButton" file="Interface\Buttons\UI-ScrollBar-ScrollDownButton-Highlight" alphaMode="ADD" />
+				<NormalTexture file="Interface\Buttons\UI-ScrollBar-ScrollDownButton-Up">
+					<TexCoords left="0.20" right="0.80" top="0.25" bottom="0.75" />
+				</NormalTexture>
+				<PushedTexture  file="Interface\Buttons\UI-ScrollBar-ScrollDownButton-Down">
+					<TexCoords left="0.20" right="0.80" top="0.25" bottom="0.75" />
+				</PushedTexture>
+				<DisabledTexture file="Interface\Buttons\UI-ScrollBar-ScrollDownButton-Disabled">
+					<TexCoords left="0.20" right="0.80" top="0.25" bottom="0.75" />
+				</DisabledTexture>
+				<HighlightTexture file="Interface\Buttons\UI-ScrollBar-ScrollDownButton-Highlight" alphaMode="ADD">
+					<TexCoords left="0.20" right="0.80" top="0.25" bottom="0.75" />
+				</HighlightTexture>
 			</Button>
 		</Frames>
 		<ThumbTexture parentKey="Thumb" file="Interface\Buttons\UI-ScrollBar-Knob">
