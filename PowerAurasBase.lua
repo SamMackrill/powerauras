@@ -1328,6 +1328,21 @@ function PowaAuras:GetSettingForExport(prefix, k, v, default)
 	return setting.."; ";
 end
 
+function PowaAuras:ExportTable(name, t)
+	--self:ShowText("Exporting table ", name);
+	local export = name .. "={";
+	for k, v in pairs(t) do
+		if (type(v)=="table") then
+			if (string.sub(k, -1, -1)~="_") then
+				export = export .. self:ExportTable(k, v);
+			end
+		else
+			export = export .. self:GetSettingForExport("", k, v, nil);
+		end
+	end
+	return export .. "};";
+end
+
 -- PowaAura Classes
 -- Compatible with Lua 5.1 (not 5.0).
 function PowaClass(base,ctor)
