@@ -2,7 +2,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.blizzard.com/wow/ui/
     ..\..\FrameXML\UI.xsd">
-	<Script file="Checkbox.lua" />	
+	<Script file="Checkbox.lua" />
 	<CheckButton name="PowaCheckboxTemplate" virtual="true">
 		<Size x="150" y="28" />
 		<NormalFont style="PowaFontNormal" />
@@ -13,7 +13,7 @@
 				<AbsDimension x="24" y="24" />
 			</Size>
 			<Anchors>
-				<Anchor point="LEFT" relativePoint="LEFT" x="2" y="-1" />
+				<Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="2" y="-2" />
 			</Anchors>
 		</NormalTexture>
 		<CheckedTexture file="Interface\Buttons\UI-CheckBox-Check" alphaMode="DISABLE">
@@ -21,7 +21,7 @@
 				<AbsDimension x="24" y="24" />
 			</Size>
 			<Anchors>
-				<Anchor point="LEFT" relativePoint="LEFT" x="2" y="-1" />
+				<Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="2" y="-2" />
 			</Anchors>
 		</CheckedTexture>
 		<Layers>
@@ -73,10 +73,10 @@
 		</Layers>
 		<ButtonText parentKey="Text" justifyH="LEFT" justifyV="MIDDLE">
 			<Size>
-				<AbsDimension y="28" />
+				<AbsDimension x="0" y="28" />
 			</Size>
 			<Anchors>
-				<Anchor point="LEFT" x="28" y="0" />
+				<Anchor point="TOPLEFT" x="28" y="0" />
 			</Anchors>
 		</ButtonText>
 		<Scripts>
@@ -90,5 +90,18 @@
 				self:UpdateColors();
 			</OnLeave>
 		</Scripts>
+	</CheckButton>
+	
+	<CheckButton name="PowaColorPickerTemplate" inherits="PowaCheckboxTemplate" virtual="true">
+		<NormalTexture file="Interface\ChatFrame\ChatFrameColorSwatch" alphaMode="DISABLE">
+			<Size>
+				<AbsDimension x="16" y="16" />
+			</Size>
+			<Anchors>
+				<Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="6" y="-6" />
+			</Anchors>
+			<Color r="1" g="1" b="1" a="1" />
+		</NormalTexture>
+		<CheckedTexture />
 	</CheckButton>
 </Ui>

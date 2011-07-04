@@ -325,7 +325,7 @@ function cPowaStacks:ShowValue(aura, newvalue)
 			texcount = texcount+1;
 		end
 		-- Update blending modes.
-		if (aura.texmode == 1) then
+		if (aura.texmode) then
 			frame.textures[i]:SetBlendMode("ADD");
 		else
 			frame.textures[i]:SetBlendMode("DISABLE");
@@ -528,7 +528,7 @@ function cPowaTimer:SetShowOnAuraHide(aura)
 end
 
 function cPowaTimer:InitFrame(aura, frame)
-	if (aura.texmode == 1) then
+	if (aura.texmode) then
 		frame.texture:SetBlendMode("ADD");
 	else
 		frame.texture:SetBlendMode("DISABLE");

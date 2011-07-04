@@ -1154,7 +1154,7 @@ function PowaAuras:InitialiseAuraFrame(aura, frame, texture, alpha)
 		texture:SetVertexColor(aura.r,aura.g,aura.b);
 	end
   
-	if (aura.texmode == 1) then
+	if (aura.texmode) then
 		if (aura.textaura ~= true) then
 			texture:SetBlendMode("ADD");
 		else
