@@ -581,8 +581,8 @@ function cPowaAura:CreateDefaultTriggers()
 				--if (frame2) then trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_TimerPing2", Frame=frame2, Animation=1000, Alpha=self.alpha, Speed=1}); end
 			end
 			--trigger=self:CreateTrigger(cPowaAuraTimerTrigger, 12, nil, "<");
-			--if (frame1 and frame1.texture) then trigger:AddAction(cPowaAuraColourAction, {Texture=frame1.texture, R=255, G=0, B=0, Revert=true}); end
-			--if (frame2 and frame2.texture) then trigger:AddAction(cPowaAuraColourAction, {Texture=frame2.texture, R=255, G=0, B=0, Revert=true}); end
+			--if (frame1 and frame1.texture) then trigger:AddAction(cPowaAuraColourAction, {FrameSource="TimerFrame", Frame=1, R=255, G=0, B=0, Revert=true}); end
+			--if (frame2 and frame2.texture) then trigger:AddAction(cPowaAuraColourAction, {FrameSource="TimerFrame", Frame=2, R=255, G=0, B=0, Revert=true}); end
 			--trigger:AddAction(cPowaAuraPlaySoundAction, {Sound=11});
 			
 			trigger=self:CreateTrigger(cPowaAuraTimerHideTrigger, {Name="PA_TimerHide", Debug=false});

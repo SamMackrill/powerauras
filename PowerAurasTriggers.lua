@@ -26,6 +26,22 @@ cPowaTrigger = PowaClass(function(trigger, auraId, triggerId, parameters)
 	trigger.NextActionId     = 1;
 end);
 
+--- Create Trigger export string
+function cPowaTrigger:Export()
+	local export = "Trigger={";
+	export = export .. PowaAuras:GetSettingForExport("", "Id", self.Id, nil);
+	export = export .. PowaAuras:GetSettingForExport("", "Name", self.Name, nil);
+	export = export .. PowaAuras:GetSettingForExport("", "Type", self.Type, nil);
+	export = export .. PowaAuras:GetSettingForExport("", "Value", self.Value, nil);
+	export = export .. PowaAuras:GetSettingForExport("", "Qualifier", self.Qualifier, nil);
+	export = export .. PowaAuras:GetSettingForExport("", "CompareOperator", self.CompareOperator, nil);
+	for i = 1, #self.Actions do
+		local action = self.Actions[i];
+		export = export .. action:Export();
+	end	
+	return export.."};";
+end
+
 --- Call Reset on all Actions, used by "Fire Once" Triggers
 function cPowaTrigger:ResetActions()
 	for i = 1, #self.Actions do

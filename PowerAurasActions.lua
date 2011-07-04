@@ -14,6 +14,16 @@ cPowaTriggerAction = PowaClass(function(action, trigger, actionId, parameters)
 	action:Init();
 end);
 
+--- Create Action export string
+function cPowaTriggerAction:Export()
+	local export = "Action={";
+	export = export .. PowaAuras:GetSettingForExport("", "Id", self.Id, nil);
+	export = export .. PowaAuras:GetSettingForExport("", "Name", self.Name, nil);
+	export = export .. PowaAuras:GetSettingForExport("", "Type", self.Type, nil);
+	export = export .. PowaAuras:ExportTable("Parameters", self.Parameters);
+	return export.."};";
+end
+
 -- Optionally override these to do action specific tasks
 function cPowaTriggerAction:Fire()
 end
@@ -26,6 +36,7 @@ end
 
 function cPowaTriggerAction:Reset()
 end
+
 
 --=====Message Action========
 -- Parameters:
@@ -159,8 +170,8 @@ function cPowaAuraAnimationAction:PlayNextAnimation()
 		frame:StopAnimating();
 		frame:Show();
 	end
-	if (not animation.AnimationGroup) then return;	end
-	animation.AnimationGroup:Play();
+	if (not animation.AnimationGroup_) then return;	end
+	animation.AnimationGroup_:Play();
 end
 
 function cPowaAuraAnimationAction:Init()
@@ -173,10 +184,10 @@ function cPowaAuraAnimationAction:Init()
 		local frame = PowaAuras:GetFrame(self.AuraId, animation.FrameSource, animation.Frame);
 		if (frame) then
 			if (animation.Loop) then
-				animation.AnimationGroup = PowaAuras:AddLoopingAnimation(aura, self, frame, animation.Animation, groupName, animation.Speed, animation.Alpha, animation.Secondary, "REPEAT");
+				animation.AnimationGroup_ = PowaAuras:AddLoopingAnimation(aura, self, frame, animation.Animation, groupName, animation.Speed, animation.Alpha, animation.Secondary, "REPEAT");
 				return;
 			else
-				animation.AnimationGroup = PowaAuras:AddAnimation(self, frame, animation.Animation, groupName, animation.Speed, animation.Alpha, animation.BeginSpin, animation.Hide);
+				animation.AnimationGroup_ = PowaAuras:AddAnimation(self, frame, animation.Animation, groupName, animation.Speed, animation.Alpha, animation.BeginSpin, animation.Hide);
 			end
 		end
 	end
