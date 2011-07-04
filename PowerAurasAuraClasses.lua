@@ -486,9 +486,11 @@ function cPowaAura:UpdateTriggerTree(triggersTree)
 	triggersTree:SetScript("OnSelectedKeyChanged", function(self, key)
 		local auraId = PowaBrowser:GetSelectedAura();
 		local aura = PowaAuras.Auras[auraId];
-		PowaAuras:ShowText("Trigger Selection changed: ", (key or "nil"), " auraId=", auraId);
-		PowaAuras:ShowText("Export:");
-		PowaAuras:ShowText(aura.Triggers[key]:Export());
+		if (aura.Triggers[key]) then
+			PowaAuras:TraceInfo("Trigger Selection changed: ", (key or "nil"), " auraId=", auraId);
+			PowaAuras:TraceInfo("Export:");
+			PowaAuras:TraceInfo(aura.Triggers[key]:Export());
+		end
 	end);
 	
 	triggersTree:ClearItems();
@@ -561,7 +563,7 @@ function cPowaAura:CreateDefaultTriggers()
 	trigger=self:CreateTrigger(cPowaAuraHideTrigger, {Name="PA_AuraHide", Debug=false});
 	--trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Hide Aura"});
 	if (self.finish>0 and (self.textaura ~= true)) then
-		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_HideAnim", AnimationChain={{Name="PA_HideAnim", FrameSource="Frames", HideFrameSource="SecondaryFrames", Animation=self.finish + 100, Speed=self.speed, Alpha=self.alpha, Hide=self}}});
+		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_HideAnim", AnimationChain={{Name="PA_HideAnim", FrameSource="Frames", HideFrameSource="SecondaryFrames", Animation=self.finish + 100, Speed=self.speed, Alpha=self.alpha, HideAuraId=self.id}}});
 	else
 		trigger:AddAction(cPowaAuraHideAction, {Name="PA_Hide", Aura=true});
 	end

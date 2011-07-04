@@ -148,8 +148,11 @@ function cPowaAuraAnimationAction:PlayNextAnimation()
 		if (PowaAuras.DebugTriggers or self.Debug) then
 			PowaAuras:Debug("Animation Finished Hide=", animation.Hide);
 		end
-		if (animation.Hide and animation.Hide.Hide) then
-			animation.Hide:Hide("cPowaAuraAnimationAction Finished");
+		if (animation.HideAuraId) then
+			local hideAura = PowaAuras.Auras[animation.HideAuraId];
+			if (hideAura) then
+				hideAura:Hide("cPowaAuraAnimationAction Finished");
+			end
 		end			
 	end
 	self.Current = self.Current + 1;
@@ -170,8 +173,8 @@ function cPowaAuraAnimationAction:PlayNextAnimation()
 		frame:StopAnimating();
 		frame:Show();
 	end
-	if (not animation.AnimationGroup_) then return;	end
-	animation.AnimationGroup_:Play();
+	if (not animation.AnimationGroup) then return;	end
+	animation.AnimationGroup:Play();
 end
 
 function cPowaAuraAnimationAction:Init()
@@ -184,10 +187,10 @@ function cPowaAuraAnimationAction:Init()
 		local frame = PowaAuras:GetFrame(self.AuraId, animation.FrameSource, animation.Frame);
 		if (frame) then
 			if (animation.Loop) then
-				animation.AnimationGroup_ = PowaAuras:AddLoopingAnimation(aura, self, frame, animation.Animation, groupName, animation.Speed, animation.Alpha, animation.Secondary, "REPEAT");
+				animation.AnimationGroup = PowaAuras:AddLoopingAnimation(aura, self, frame, animation.Animation, groupName, animation.Speed, animation.Alpha, animation.Secondary, "REPEAT");
 				return;
 			else
-				animation.AnimationGroup_ = PowaAuras:AddAnimation(self, frame, animation.Animation, groupName, animation.Speed, animation.Alpha, animation.BeginSpin, animation.Hide);
+				animation.AnimationGroup = PowaAuras:AddAnimation(self, frame, animation.Animation, groupName, animation.Speed, animation.Alpha, animation.BeginSpin, animation.Hide);
 			end
 		end
 	end

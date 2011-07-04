@@ -1145,7 +1145,7 @@ end
 --- Display a message in the chat frame, comma seperate arguments rather than use string concatination as this will do nil protection
 -- Use this for debug error messages
 function PowaAuras:TraceError(...)
-	self:TraceInfo(self:Colors.Red, ...); 
+	self:TraceInfo(self.Colors.Red, {...}); 
 end
 
 --- Dump out a table to the chat frame
@@ -1329,11 +1329,11 @@ function PowaAuras:GetSettingForExport(prefix, k, v, default)
 end
 
 function PowaAuras:ExportTable(name, t)
-	--self:ShowText("Exporting table ", name);
+	self:TraceInfo("Exporting table ", name);
 	local export = name .. "={";
 	for k, v in pairs(t) do
 		if (type(v)=="table") then
-			if (string.sub(k, -1, -1)~="_") then
+			if (not v.GetObjectType) then
 				export = export .. self:ExportTable(k, v);
 			end
 		else
