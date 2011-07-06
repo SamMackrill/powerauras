@@ -82,9 +82,9 @@ PowaAuras.UI:Register("LayoutFrame", {
 		-- Cancel if locked.
 		if(self.Locked) then return; end
 		-- Layout variables.
-		local width, maxColumns, column, columnOffset, offsetX, offsetY, rowHeight, rowHasGap = 
+		local width, maxColumns, column, columnOffset, offsetX, offsetY, rowHeight = 
 			self:GetWidth()-self.BoundsLeft-self.BoundsRight, #(self.Columns), 1, 0, self.BoundsLeft, 
-			self.BoundsTop, 0, false;
+			self.BoundsTop, 0;
 		-- Go over my items!
 		for _, item in pairs(self.Children) do
 			-- Extract layout data for the child.
@@ -102,7 +102,6 @@ PowaAuras.UI:Register("LayoutFrame", {
 				offsetY = offsetY+rowHeight+(rowHeight > 0 and self.RowSpacing or 0);
 				offsetX = self.BoundsLeft;
 				rowHeight = 0;
-				rowHasGap = false;
 			end
 			-- Is the item shown?
 			if(item:IsVisible()) then
@@ -132,11 +131,9 @@ PowaAuras.UI:Register("LayoutFrame", {
 				rowHeight = (rowHeight > itemHeight and rowHeight or itemHeight);
 				-- Increment X offset.
 				offsetX = offsetX+columnWidth;
-				rowHasGap = false;
 			else
 				-- Item not shown.
 				columnOffset = 0;
-				rowHasGap = true;
 			end
 		end
 		-- Update my own height. I wish I could do this irl, I'd be a gnome. With a camera. /creepygrin

@@ -244,6 +244,7 @@ PowaAuras.UI:Register("AuraButton", {
 	Scripts = {
 		OnClick = true,
 		OnEnter = true,
+
 		OnLeave = true,
 	},
 	Hooks = {
@@ -446,14 +447,13 @@ PowaAuras.UI:Register("AuraButton", {
 PowaAuras.UI:Register("CreateAuraRadioButton", {
 	Base = "RadioButton",
 	Template = "PowaCreateAuraRadioButtonTemplate",
-	Items = {},
+	RadioItems = {},
 	Hooks = {
 		"SetChecked",
 	},
 	SetChecked = function(self, checked)
 		-- Update state.
 		self:__SetChecked(checked);
-		self.Selected = checked;
 		-- Check new state.
 		if(checked) then
 			SetDesaturation(self.Icon, false);
