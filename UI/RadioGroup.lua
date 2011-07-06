@@ -3,7 +3,8 @@ PowaAuras.UI:Register("RadioGroup", {
 	Init = function(self, class, alwaysSelect)
 		-- Add item register.
 		self.RadioItems = {};
-		self.RadioItemClass = class or "RadioButton";
+		self.RadioItemClass = (class and type(class) == "string" and PowaAuras.UI[class] or class 
+			or PowaAuras.UI.RadioButton);
 		self.RadioAlwaysSelect = alwaysSelect;
 		self.SelectedRadioKey = nil;
 	end,
@@ -11,7 +12,7 @@ PowaAuras.UI:Register("RadioGroup", {
 		-- Make sure it doesn't already exist.
 		if(self.RadioItems[key]) then return; end
 		-- Add frame.
-		self.RadioItems[key] = PowaAuras.UI[self.RadioItemClass](PowaAuras.UI, _, self, key, ...);
+		self.RadioItems[key] = self.RadioItemClass(PowaAuras.UI, _, self, key, ...);
 		-- Update.
 		self:UpdateRadioItems();
 		-- Return item for manual positioning/sizing.
@@ -44,7 +45,10 @@ PowaAuras.UI:Register("RadioGroup", {
 	end,
 	SetSelectedRadioKey = function(self, key)
 		-- Make sure it already exists. Allow nil though.
-		if(key and not self.RadioItems[key] or key == self.SelectedRadioKey) then return; end
+		if(key and not self.RadioItems[key] or key == self.SelectedRadioKey) then
+			self:UpdateRadioItems();
+			return;
+		end
 		-- Select it.
 		self.SelectedRadioKey = key;
 		-- Update.
@@ -54,7 +58,6 @@ PowaAuras.UI:Register("RadioGroup", {
 	UpdateRadioItems = function(self)
 		-- Forcing a selection?
 		if(self.RadioAlwaysSelect and not self.SelectedRadioKey) then
-			-- Umm, isn't there a cleaner way of getting the first key of a hash?
 			for k, v in pairs(self.RadioItems) do
 				if(v) then
 					self:SetSelectedRadioKey(k);
@@ -103,7 +106,6 @@ PowaAuras.UI:Register("RadioButton", {
 		-- Set us up!
 		self:SetParent(parent);
 		self.Key = key;
-		self.Selected = false;
 		self:SetChecked(false);
 		self:Show();
 	end,

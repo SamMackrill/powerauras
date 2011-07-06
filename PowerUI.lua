@@ -5,6 +5,7 @@ PowaAuras.UI = {};
 -- handling all of the boring SetPoint/SetSize calls that are otherwise present.
 -- @param def The definition to load.
 -- @param parent The parent frame of the frame.
+-- @return Returns the constructed frame.
 function PowaAuras.UI:BuildFrameFromDefinition(def, parent)
 	-- Fix type.
 	if(not def.Type) then
@@ -201,19 +202,28 @@ function PowaAuras.UI:Register(name, data, isAnonymous)
 	-- Done.
 	return data;
 end
---- Initialises a frame with an anonymous widget class, which extends a class on the fly to create a class tailored to
--- specific needs at runtime. The class is then immediately constructed afterwards.
+--- Creates an anonymous widget class, which extends a class on the fly to create a class tailored to
+-- specific needs at runtime.
 -- @param class The name of the class to extend.
 -- @param data The data table of the class to merge in.
--- @param ... Any arguments to pass to the constructor and init functions.
-function PowaAuras.UI:AnonymousWidget(class, data, ...)
+-- @return Returns the constructed class.
+function PowaAuras.UI:AnonymousClass(class, data, ...)
 	-- Extend base.
 	if(not data.Base) then
 		data.Base = class;
 	end
 	-- Make class, construct, done.
-	local class = self:Register(nil, data, true);
-	class(self, ...);
+	return self:Register(nil, data, true);
+end
+--- Initialises a frame with an anonymous widget class, which extends a class on the fly to create a class tailored to
+-- specific needs at runtime. The class is then immediately constructed afterwards.
+-- @param class The name of the class to extend.
+-- @param data The data table of the class to merge in.
+-- @param ... Any arguments to pass to the constructor and init functions.
+-- @return Returns the constructed frame.
+function PowaAuras.UI:AnonymousWidget(class, data, ...)
+	-- Make class, construct, done.
+	return self:AnonymousClass(class, data)(self, ...);
 end
 
 -- Accepted definition keys:
@@ -221,6 +231,10 @@ end
 -- Type (string): Represents the type of frame to create via the CreateFrame call, defaults to "Frame" if not given.
 -- "FontString" and "Texture" are handled specially, along with "Class" which will not create a frame and instead relies
 -- on the Class definition key to create a frame.
+--
+-- Layer (string):
+-- Only valid if the type is set to "FontString" or "Texture". Defines the layer to place the object on, such as 
+-- "ARTWORK".
 --
 -- Inherits (string): Used to determine what frame template to inherit. Only valid if Type is not "Class".
 --
@@ -238,11 +252,11 @@ end
 -- SetAllPoints is called, otherwise each element in the table is unpacked and passed to a SetPoint call in turn.
 --
 -- RelativeAnchor (string): Allows you to set the relative anchor for all your points to another frame in the current
--- parent by naming its key.
+-- parent by naming its key. Setting to true will make the anchor the parent element.
 --
 -- Children (table[]): Table of child frame definitions, following this same format. Keys can either be numeric to 
 -- assure ordered creation of frames, or string values which will represent the ParentKey attribute for this frame.
 --
--- ParentKey (string): Defines the key to assign this frame to in the parent. Can be implied implicitly.
+-- ParentKey (string): Defines the key to assign this frame to in the parent. Can be set implicitly.
 --
 -- OnLoad (function): Optional function to be called after the frame has been created.

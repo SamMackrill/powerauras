@@ -180,15 +180,7 @@ local AuraEditor = {
 												[1] = { "TOPLEFT", 0, 0 },
 											},
 											Children = {
---												[1] = {
---													ParentKey = "CatTexture",
---													Type = "Class",
---													Class = "FrameCategory",
---													ClassArgs = PowaAuras.Text["UI_Editor_Aura_CatTexture"],
---												},
-												[2] = {
-													ParentKey = "TextureDummy",
-													Inherits = "PowaBorderedFrameTemplate",
+												TextureDummy = {
 													Size = { 1, 128 },
 													Children = {
 														Texture = {
@@ -199,19 +191,39 @@ local AuraEditor = {
 																[1] = { "CENTER", 0, 0 },
 															},
 															OnLoad = function(self)
-																self:SetTexture(1, 0, 0);
+																self:SetTexture(0, 1, 0);
 															end,
 														},
 													},
 												},
-												[3] = {
-													ParentKey = "CatStyle",
+												TextureSource = {
+													Size = { 1, 128 },
+													Children = {
+														Label = {
+															Type = "FontString",
+															Inherits = "PowaFontNormal",
+															Size = { 256, 16 },
+															Points = {
+																[1] = { "TOPLEFT", 4, 0 },
+																[2] = { "TOPRIGHT", -4, 0 },
+															},
+															OnLoad = function(self)
+																-- Set up title string.
+																self:SetJustifyH("LEFT");
+																self:SetJustifyV("MIDDLE");
+																self:SetText(PowaAuras.Text["UI_Editor_Aura_Source"]);
+															end,
+														},
+													},
+													OnLoad = function(self)
+													end,
+												},
+												CatStyle = {
 													Type = "Class",
 													Class = "FrameCategory",
 													ClassArgs = PowaAuras.Text["UI_Editor_Aura_CatStyle"],
 												},
-												[4] = {
-													ParentKey = "StyleOpacity",
+												StyleOpacity = {
 													Type = "Slider",
 													Inherits = "PowaSliderTemplate",
 													OnLoad = function(self)
@@ -225,8 +237,7 @@ local AuraEditor = {
 														self:SetFormat("%.2f");
 													end,
 												},
-												[5] = {
-													ParentKey = "StyleRotate",
+												StyleRotate = {
 													Type = "Slider",
 													Inherits = "PowaSliderTemplate",
 													OnLoad = function(self)
@@ -238,8 +249,7 @@ local AuraEditor = {
 															"Aura.Rotate");
 													end,
 												},
-												[6] = {
-													ParentKey="StyleColor",
+												StyleColor = {
 													Type = "CheckButton",
 													Inherits = "PowaColorPickerTemplate",
 													Class = "AuraColorPicker",
@@ -247,8 +257,7 @@ local AuraEditor = {
 														self:SetText("UI_Editor_Aura_Color");
 													end,
 												},
-												[7] = {
-													ParentKey="StyleRndColor",
+												StyleRndColor = {
 													Type = "CheckButton",
 													Inherits = "PowaCheckboxTemplate",
 													Class = "Checkbox",
@@ -257,8 +266,7 @@ local AuraEditor = {
 														self:SetText("UI_Editor_Aura_RndColor");
 													end,
 												},
-												[8] = {
-													ParentKey="StyleGlow",
+												StyleGlow = {
 													Type = "CheckButton",
 													Inherits = "PowaCheckboxTemplate",
 													Class = "Checkbox",
@@ -267,14 +275,12 @@ local AuraEditor = {
 														self:SetText("UI_Editor_Aura_Glow");
 													end,
 												},
-												[9] = {
-													ParentKey = "CatSize",
+												CatSize = {
 													Type = "Class",
 													Class = "FrameCategory",
 													ClassArgs = PowaAuras.Text["UI_Editor_Aura_CatSize"],
 												},
-												[10] = {
-													ParentKey = "SizeSizeX",
+												SizeSizeX = {
 													Type = "Slider",
 													Inherits = "PowaSliderTemplate",
 													OnLoad = function(self)
@@ -285,8 +291,7 @@ local AuraEditor = {
 														PowaAuras.UI:Slider(self, "UI_Editor_Aura_SizeX", "Aura.SizeX");
 													end,
 												},
-												[11] = {
-													ParentKey = "SizeSizeY",
+												SizeSizeY = {
 													Type = "Slider",
 													Inherits = "PowaSliderTemplate",
 													OnLoad = function(self)
@@ -297,8 +302,7 @@ local AuraEditor = {
 														PowaAuras.UI:Slider(self, "UI_Editor_Aura_SizeY", "Aura.SizeY");
 													end,
 												},
-												[12] = {
-													ParentKey = "SizeScale",
+												SizeScale = {
 													Type = "Slider",
 													Inherits = "PowaSliderTemplate",
 													OnLoad = function(self)
@@ -311,23 +315,20 @@ local AuraEditor = {
 														self:SetFormat("%.2f");
 													end,
 												},
-												[13] = {
-													ParentKey = "SizePosX",
+												SizePosX = {
 													Type = "EditBox",
 													Inherits = "PowaLabelledEditBoxTemplate",
 													Class = "NumericSettingsEditBox",
 													ClassArgs = { "UI_Editor_Aura_PosX", "Aura.x", 0 },
 												},
-												[14] = {
-													ParentKey = "SizePosY",
+												SizePosY = {
 													Type = "EditBox",
 													Inherits = "PowaLabelledEditBoxTemplate",
 													Class = "NumericSettingsEditBox",
 													ClassArgs = { "UI_Editor_Aura_PosY", "Aura.y", 0 },
 												},
 												-- Do dropdowns last to prevent the child frame strata bug.
-												[15] = {
-													ParentKey = "StyleFlip",
+												StyleFlip = {
 													Type = "Button",
 													Inherits = "PowaLabelledDropdownTemplate",
 													Class = "Dropdown",
@@ -349,8 +350,7 @@ local AuraEditor = {
 														end);
 													end,
 												},
-												[16] = {
-													ParentKey = "SizeStrata",
+												SizeStrata = {
 													Type = "Button",
 													Inherits = "PowaLabelledDropdownTemplate",
 													Class = "Dropdown",
@@ -381,7 +381,6 @@ local AuraEditor = {
 												self:SetDescription(PowaAuras.Text("UI_Editor_CatSuffix", 
 													PowaAuras.Text["UI_Editor_AuraDesc"]));
 												-- Add elements to their separators.
---												self.CatTexture:AddChild(self.TextureTree);
 												self.CatStyle:AddChild(self.StyleOpacity);
 												self.CatStyle:AddChild(self.StyleRotate);
 												self.CatStyle:AddChild(self.StyleFlip);
@@ -394,7 +393,6 @@ local AuraEditor = {
 												self.CatSize:AddChild(self.SizePosX);
 												self.CatSize:AddChild(self.SizePosY);
 												self.CatSize:AddChild(self.SizeStrata);
-												self.CatSize:AddChild(self[17]);
 												-- Add columns. Use 6 columns because we can then split into 2/3 nicely.
 												self:LockLayout();
 												self:AddColumn((1/6), 5, 5);
@@ -408,10 +406,9 @@ local AuraEditor = {
 												self:SetRowSpacing(12);
 												-- Add elements.
 												-- I actually used GIMP to make sure these were pixel perfect.
---												self:AddChild(self.CatTexture, 6, true);
 												self:AddChild(self.TextureDummy, 2, false, 0);
+												self:AddChild(self.TextureSource, 4, false, 0);
 												self:AddChild(self.CatStyle, 6, true);
-												-- Pad the first elements of each row of a category down an extra 4px.
 												self:AddChild(self.StyleOpacity, 2, false, 14, 22);
 												self:AddChild(self.StyleRotate, 2, false, 14, 22);
 												self:AddChild(self.StyleFlip, 2, false, 17, 0);
