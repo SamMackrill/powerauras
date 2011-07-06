@@ -825,7 +825,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 		[3] = "Medium",
 		[4] = "High",
 	},
-	
+	-- Flips are 0 based.
 	UI_FlipTypes               = {
 		[0] = "None",
 		[1] = "Horizontal",

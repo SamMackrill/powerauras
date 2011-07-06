@@ -109,7 +109,7 @@ UI:Register("AuraColorPicker", {
 		self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
 		-- Keep the previous colour available.
 		self.PreviousColor = { 1, 1, 1 };
-		-- Add functions now.
+		-- Add functions now. Doing so here allows them to access self from this scope.
 		self.OnSettingChanged = function(key, value)
 			--  Update me, baby.
 			local r, g, b = self:GetNormalTexture():GetVertexColor();
@@ -135,9 +135,7 @@ UI:Register("AuraColorPicker", {
 			self:SaveSetting(r, g, b);
 			self:UpdateColors();
 		end
-		-- This one is fun because we need three setting hooks...
-		PowaAuras:RegisterSettingCallback(self.OnSettingChanged);
-		PowaAuras:RegisterSettingCallback(self.OnSettingChanged);
+		-- This one is fun because we need to listen to three settings.
 		PowaAuras:RegisterSettingCallback(self.OnSettingChanged);
 	end,
 	OnClick = function(self, button)

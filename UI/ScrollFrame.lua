@@ -37,13 +37,14 @@ PowaAuras.UI:Register("ScrollFrame", {
 		self:ScrollUpdate();
 	end,
 	ScrollUpdate = function(self)
-		if(not self:GetScrollChild()) then return; end
-		if(self:GetScrollChild():GetHeight() > self:GetHeight()) then
+		local child = self:GetScrollChild();
+		if(not child) then return; end
+		if(child:GetHeight() > self:GetHeight()) then
 			self.ScrollBar:Show();
-			self:GetScrollChild():SetWidth(self:GetWidth()-18);
+			child:SetWidth(self:GetWidth()-18);
 		else
 			self.ScrollBar:Hide();
-			self:GetScrollChild():SetWidth(self:GetWidth());
+			child:SetWidth(self:GetWidth());
 		end
 		if(self:GetVerticalScroll() == 0) then
 			self.ScrollBar.ScrollUp:Disable();

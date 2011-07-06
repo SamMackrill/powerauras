@@ -180,15 +180,29 @@ local AuraEditor = {
 												[1] = { "TOPLEFT", 0, 0 },
 											},
 											Children = {
-												[1] = {
-													ParentKey = "CatTexture",
-													Type = "Class",
-													Class = "FrameCategory",
-													ClassArgs = PowaAuras.Text["UI_Editor_Aura_CatTexture"],
-												},
+--												[1] = {
+--													ParentKey = "CatTexture",
+--													Type = "Class",
+--													Class = "FrameCategory",
+--													ClassArgs = PowaAuras.Text["UI_Editor_Aura_CatTexture"],
+--												},
 												[2] = {
-													ParentKey = "TextureAura",
-													Type = "Texture",
+													ParentKey = "TextureDummy",
+													Inherits = "PowaBorderedFrameTemplate",
+													Size = { 1, 128 },
+													Children = {
+														Texture = {
+															Type = "Texture",
+															Layer = "ARTWORK",
+															Size = { 128, 128 },
+															Points = {
+																[1] = { "CENTER", 0, 0 },
+															},
+															OnLoad = function(self)
+																self:SetTexture(1, 0, 0);
+															end,
+														},
+													},
 												},
 												[3] = {
 													ParentKey = "CatStyle",
@@ -367,7 +381,7 @@ local AuraEditor = {
 												self:SetDescription(PowaAuras.Text("UI_Editor_CatSuffix", 
 													PowaAuras.Text["UI_Editor_AuraDesc"]));
 												-- Add elements to their separators.
-												self.CatTexture:AddChild(self.TextureAura);
+--												self.CatTexture:AddChild(self.TextureTree);
 												self.CatStyle:AddChild(self.StyleOpacity);
 												self.CatStyle:AddChild(self.StyleRotate);
 												self.CatStyle:AddChild(self.StyleFlip);
@@ -391,25 +405,26 @@ local AuraEditor = {
 												self:AddColumn((1/6), 5, 5);
 												-- Boundaries.
 												self:SetBounds(15, 15, 70);
-												self:SetRowSpacing(8);
+												self:SetRowSpacing(12);
 												-- Add elements.
 												-- I actually used GIMP to make sure these were pixel perfect.
-												self:AddChild(self.CatTexture, 6, true);
+--												self:AddChild(self.CatTexture, 6, true);
+												self:AddChild(self.TextureDummy, 2, false, 0);
 												self:AddChild(self.CatStyle, 6, true);
 												-- Pad the first elements of each row of a category down an extra 4px.
-												self:AddChild(self.StyleOpacity, 2, false, 14+4, 22);
-												self:AddChild(self.StyleRotate, 2, false, 14+4, 22);
-												self:AddChild(self.StyleFlip, 2, false, 17+4, 0);
-												self:AddChild(self.StyleColor, 2, false, 0, 0+4);
-												self:AddChild(self.StyleRndColor, 2, false, 0, 0+4);
-												self:AddChild(self.StyleGlow, 2, false, 0, 0+4);
+												self:AddChild(self.StyleOpacity, 2, false, 14, 22);
+												self:AddChild(self.StyleRotate, 2, false, 14, 22);
+												self:AddChild(self.StyleFlip, 2, false, 17, 0);
+												self:AddChild(self.StyleColor, 2, true, 0, 0);
+												self:AddChild(self.StyleRndColor, 2, false, 0, 0);
+												self:AddChild(self.StyleGlow, 2, false, 0, 0);
 												self:AddChild(self.CatSize, 6, true);
-												self:AddChild(self.SizeSizeX, 2, false, 14+4, 22);
-												self:AddChild(self.SizeSizeY, 2, false, 14+4, 22);
-												self:AddChild(self.SizeScale, 2, false, 14+4, 22);
-												self:AddChild(self.SizePosX, 2, false, 20, 0+4);
-												self:AddChild(self.SizePosY, 2, false, 20, 0+4);
-												self:AddChild(self.SizeStrata, 2, false, 20, 0+4);
+												self:AddChild(self.SizeSizeX, 2, false, 14, 22);
+												self:AddChild(self.SizeSizeY, 2, false, 14, 22);
+												self:AddChild(self.SizeScale, 2, false, 14, 22);
+												self:AddChild(self.SizePosX, 2, false, 20, 0);
+												self:AddChild(self.SizePosY, 2, false, 20, 0);
+												self:AddChild(self.SizeStrata, 2, false, 20, 0);
 												self:UnlockLayout();
 											end,
 										},

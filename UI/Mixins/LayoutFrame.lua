@@ -92,8 +92,7 @@ PowaAuras.UI:Register("LayoutFrame", {
 				min(item.LayoutColumnSpan, #(self.Columns)), item.LayoutMarginTop, item.LayoutMarginBottom;
 			local itemWidth, itemHeight = item:GetSize();
 			-- Increment column.
-			if((((column+columnOffset)-1)+itemColumnSpan) <= maxColumns 
-			and not (rowHasGap == true and itemWrap == true)) then
+			if((((column+columnOffset)-1)+itemColumnSpan) <= maxColumns and not itemWrap == true) then
 				column = (column+columnOffset);
 				columnOffset = itemColumnSpan;
 			else
@@ -139,8 +138,8 @@ PowaAuras.UI:Register("LayoutFrame", {
 				columnOffset = 0;
 				rowHasGap = true;
 			end
-			-- Update my own height.
-			self:SetHeight(offsetY+rowHeight+self.RowSpacing);
 		end
+		-- Update my own height. I wish I could do this irl, I'd be a gnome. With a camera. /creepygrin
+		self:SetHeight(ceil(offsetY+rowHeight+self.RowSpacing));
 	end
 });
