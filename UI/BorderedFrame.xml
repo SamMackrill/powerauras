@@ -1,0 +1,132 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+    ..\..\FrameXML\UI.xsd">
+	<Frame name="PowaBorderedFrameTemplate" virtual="true">
+        <Backdrop bgFile="Interface\Buttons\WHITE8X8" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+			<BackgroundInsets>
+				<AbsInset left="2" right="2" top="2" bottom="2" />
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="16" />
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="14" />
+			</EdgeSize>
+			<Color r="0.0" g="0.0" b="0.0" a="0.5" />
+			<BorderColor r="0.3" g="0.3" b="0.3" a="1.0" />
+		</Backdrop>
+	</Frame>
+	
+	<Frame name="PowaTitledFrameTemplate" virtual="true">
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString parentKey="Title" justifyH="LEFT" justifyV="MIDDLE" font="PowaFontNormalLarge">
+					<Size x="225" y="16" />
+					<Anchors>
+						<Anchor point="TOPLEFT" x="15" y="-15" />
+						<Anchor point="TOPRIGHT" x="-15" y="-15" />
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Description" justifyH="LEFT" justifyV="TOP" font="PowaFontHighlightSmall">
+					<Size x="225" y="24" />
+					<Anchors>
+						<Anchor point="TOPLEFT" x="15" y="-40" />
+						<Anchor point="TOPRIGHT" x="-15" y="-40" />
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				-- We don't need a class definition just for this, I think.
+				self.SetTitle = function(self, title)
+					self.Title:SetText(title);
+				end
+				self.GetTitle = function(self)
+					return self.Title:GetText();
+				end
+				-- Descriptive text.
+				self.SetDescription = function(self, description)
+					self.Description:SetText(description);
+				end
+				self.GetDescription = function(self)
+					return self.Description:GetText();
+				end
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	
+	<Frame name="PowaGenericFrameTemplate" virtual="true" toplevel="true" movable="true" hidden="false" frameStrata="MEDIUM" enableMouse="true" enableKeyboard="true">
+		<Size>
+          <AbsDimension x="550" y="456" />
+        </Size>
+        <Anchors>
+			<Anchor point="CENTER" relativeTo="UIParent" x="0" y="50" />
+        </Anchors>
+		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+			<BackgroundInsets>
+				<AbsInset left="11" right="12" top="12" bottom="11" />
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="32" />
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="32" />
+			</EdgeSize>
+		</Backdrop>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture file="Interface\DialogFrame\UI-DialogBox-Header">
+					<Size>
+						<AbsDimension x="300" y="68" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOP" relativePoint="TOP" x="0" y="13" />
+					</Anchors>					
+				</Texture>
+				<FontString parentKey="Title" inherits="PowaFontNormal" text="Power Auras %s" justifyH="CENTER" justifyV="TOP">
+					<Size>
+						<AbsDimension x="300" y="68" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOP" relativePoint="TOP" x="0" y="-2" />
+					</Anchors>
+				</FontString>
+				<Texture file="Interface\DialogFrame\UI-DialogBox-Corner">
+					<Size x="32" y="32" />	
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="-4" y="-4" />	
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button inherits="UIPanelCloseButton">
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="0" y="0" />
+				</Anchors>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnMouseDown>
+				if(button == "LeftButton" and not self.isMoving) then
+					self:StartMoving();
+					self.isMoving = true;
+				end
+			</OnMouseDown>
+			<OnMouseUp>
+				if(button == "LeftButton" and self.isMoving) then
+					self:StopMovingOrSizing();
+					self.isMoving = false;
+				end
+			</OnMouseUp>
+			<OnHide>
+				if(self.isMoving) then
+					self:StopMovingOrSizing();
+					self.isMoving = false;
+				end
+			</OnHide>
+		</Scripts>
+	</Frame>
+</Ui>
