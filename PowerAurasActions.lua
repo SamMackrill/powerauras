@@ -209,7 +209,7 @@ function cPowaAuraStateAction:Fire()
 	end
 	local aura = PowaAuras.Auras[self.AuraId];
 	if (aura==nil) then
-		PowaAuras:Message("cPowaAuraStateAction Fire: Aura nil!!! id=", self.AuraId );
+		PowaAuras:TraceInfo("cPowaAuraStateAction Fire: Aura nil!!! id=", self.AuraId );
 		return;
 	end
 	aura:SetState(self.Parameters.StateName, self.Parameters.StateValue);

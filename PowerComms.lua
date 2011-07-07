@@ -38,11 +38,11 @@ function PowaComms:Register()
 	RegisterAddonMessagePrefix("POWA");
 	-- Check to see if it's registered (RegisterAddonMessagePrefix may return true even if it fails, just playing safe!).
 	if(not IsAddonMessagePrefixRegistered("POWA")) then
-		if(PowaMisc.debug) then PowaAuras:Message("PowaComms:Register() |cFFFF0000failed!|r"); end
+		PowaAuras:GlobalDebug("PowaComms:Register() |cFFFF0000failed!|r");
 		self.Registered = false;
 		return false;
 	else
-		if(PowaMisc.debug) then PowaAuras:Message("PowaComms:Register() |cFF00FF00succeeded!|r"); end
+		PowaAuras:GlobalDebug("PowaComms:Register() |cFF00FF00succeeded!|r");
 		self.Registered = true;
 		return true;
 	end
