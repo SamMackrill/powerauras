@@ -127,7 +127,7 @@ end
 -- @param v2 RHS value for compare
 function cPowaTrigger:Compare(op, v1, v2)
 	--if (PowaAuras.DebugTriggers or self.Debug) then
-	--	PowaAuras:Message("Compare: ", v1, " ", op, " ", v2);
+	--	PowaAuras:Debug("Compare: ", v1, " ", op, " ", v2);
 	--end
 	if (op==nil) then return true; end
 	if (v1==nil or v2==nil) then return false; end

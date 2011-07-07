@@ -127,7 +127,7 @@ function PowaAuras:RegisterEvents(frame)
 		if (self[event]) then
 			frame:RegisterEvent(event);
 		else
-			self:Message("Event has no method ", event); --OK
+			self:Message("Event has no method ", event);
 		end
 	end
 end
@@ -179,7 +179,7 @@ function PowaAuras:LoadAuras()
 	
 	self:DiscoverLinkedAuras();
 
-	--self:Message("backwards combatiblity");
+	--self:TraceInfo("backwards combatiblity");
 	--self.Auras[0] = cPowaAura(0, {off=true});
 	if (self.VersionUpgraded) then
 		self:UpdateOldAuras();
@@ -302,10 +302,10 @@ function PowaAuras:UpdateOldAuras()
 			end
 			aura.isDead = nil;
 			if (aura.buffname == "") then
-				--self:Message("Delete aura "..i);
+				--self:TraceInfo("Delete aura "..i);
 				self.Auras[i] = nil;
 			elseif (aura.bufftype == nil) then
-				--self:Message("Repair bufftype for #"..i);
+				--self:TraceInfo("Repair bufftype for #"..i);
 				
 				if (oldaura.isdebuff) then
 					aura.bufftype = self.BuffTypes.Debuff;
@@ -342,13 +342,13 @@ function PowaAuras:UpdateOldAuras()
 			-- Rescale if required
 			if (PowaSet[i]~=nil and PowaSet[i].RoleTank==nil and math.abs(rescaleRatio-1.0)>0.01) then
 				if (aura.Timer) then
-					--self:Message("Rescaling aura ", i, " Timer");
+					--self:TraceInfo("Rescaling aura ", i, " Timer");
 					aura.Timer.x = aura.Timer.x * rescaleRatio;
 					aura.Timer.y = aura.Timer.y * rescaleRatio;
 					aura.Timer.h = aura.Timer.h * rescaleRatio;
 				end	
 				if (aura.Stacks) then
-					--self:Message("Rescaling aura ", i, " Stacks");
+					--self:TraceInfo("Rescaling aura ", i, " Stacks");
 					aura.Stacks.x = aura.Stacks.x * rescaleRatio;
 					aura.Stacks.y = aura.Stacks.y * rescaleRatio;
 					aura.Stacks.h = aura.Stacks.h * rescaleRatio;
@@ -451,7 +451,7 @@ function PowaAuras:CreateEffectLists()
 	if (PowaMisc.debug == true) then
 		for k in pairs(self.AurasByType) do
 			if (#self.AurasByType[k]>0) then
-				self:Message(k .. " : " .. #self.AurasByType[k]);
+				self:Debug(k .. " : " .. #self.AurasByType[k]);
 			end
 		end
 	end
@@ -589,18 +589,18 @@ function PowaAuras:OnUpdate(elapsed)
 	self.UpdateCount = self.UpdateCount + 1;
 	if (self.NextProfileCheck>0 and self.ProfileTimer > self.NextProfileCheck) then
 		self.ProfileTimer = 0;
-		PowaAuras:Message("========ProfileCycle========");
-		PowaAuras:Message("UpdateCount=", self.UpdateCount);
-		PowaAuras:Message("CheckCount=", self.CheckCount);
-		PowaAuras:Message("EffectCount=", self.EffectCount);
-		PowaAuras:Message("AuraCheckCount=", self.AuraCheckCount);
-		PowaAuras:Message("AuraCheckShowCount=", self.AuraCheckShowCount);
-		PowaAuras:Message("BuffUnitSetCount=", self.BuffUnitSetCount);
-		PowaAuras:Message("BuffRaidCount=", self.BuffRaidCount);
-		PowaAuras:Message("BuffUnitCount=", self.BuffUnitCount);
-		PowaAuras:Message("BuffSlotCount=", self.BuffSlotCount);
+		PowaAuras:TraceInfo("========ProfileCycle========");
+		PowaAuras:TraceInfo("UpdateCount=", self.UpdateCount);
+		PowaAuras:TraceInfo("CheckCount=", self.CheckCount);
+		PowaAuras:TraceInfo("EffectCount=", self.EffectCount);
+		PowaAuras:TraceInfo("AuraCheckCount=", self.AuraCheckCount);
+		PowaAuras:TraceInfo("AuraCheckShowCount=", self.AuraCheckShowCount);
+		PowaAuras:TraceInfo("BuffUnitSetCount=", self.BuffUnitSetCount);
+		PowaAuras:TraceInfo("BuffRaidCount=", self.BuffRaidCount);
+		PowaAuras:TraceInfo("BuffUnitCount=", self.BuffUnitCount);
+		PowaAuras:TraceInfo("BuffSlotCount=", self.BuffSlotCount);
 		for k, v in pairs (self.AuraTypeCount) do
-			PowaAuras:Message("AuraTypeCount[",k,"]=", v);
+			PowaAuras:TraceInfo("AuraTypeCount[",k,"]=", v);
 		end
 		
 		self.UpdateCount = 0;
@@ -638,7 +638,7 @@ function PowaAuras:OnUpdate(elapsed)
 
 		--self.CheckCount = self.CheckCount + 1;
 
-	    --self:Message("OnUpdate ",elapsedCheck, " ", self.ChecksTimer);
+	    --self:TraceInfo("OnUpdate ",elapsedCheck, " ", self.ChecksTimer);
 		--self:UnitTestInfo("ChecksTimer", self.ChecksTimer, self.NextCheck);
 		if ((self.ChecksTimer > (self.NextCheck + PowaMisc.OnUpdateLimit))) then
 			self.ChecksTimer = 0;
@@ -714,7 +714,7 @@ function PowaAuras:OnUpdate(elapsed)
 		-- Refresh Inspect, check timeout
 		if (self.NextInspectUnit ~= nil) then
 			if (GetTime() > self.NextInspectTimeOut) then
-				--self:Message("Inspection timeout for ", self.NextInspectUnit);
+				--self:TraceInfo("Inspection timeout for ", self.NextInspectUnit);
 				self:SetRoleUndefined(self.NextInspectUnit);
 				self.NextInspectUnit = nil;
 				self.InspectAgain = GetTime() + self.InspectDelay;
@@ -733,7 +733,7 @@ function PowaAuras:OnUpdate(elapsed)
 	--self:UnitTestInfo("Aura updates");
 	for i = 1, #self.AuraSequence do
 		local aura = self.AuraSequence[i];
-		--self:Message("UpdateAura Call id=", aura.id, " ", aura);
+		--self:TraceInfo("UpdateAura Call id=", aura.id, " ", aura);
 		if (aura:UpdateAura(self.ModTest)) then
 
 			if (not skipTimerUpdate) then
@@ -834,10 +834,10 @@ function PowaAuras:TestThisEffect(auraId, giveReason, ignoreCascade)
 	--self.EffectCount = self.EffectCount + 1;
 
 	if (debugEffectTest) then
-		self:Message("===================================");
-		self:Message("Test Aura for Hide/Show = ",auraId);
-		self:Message("Active= ", aura.Active);
-		self:Message("Showing= ", aura.Showing);
+		self:Debug("===================================");
+		self:Debug("Test Aura for Hide/Show = ",auraId);
+		self:Debug("Active= ", aura.Active);
+		self:Debug("Showing= ", aura.Showing);
 	end
 	
 	-- Prevent crash if class not set-up properly
@@ -858,7 +858,7 @@ function PowaAuras:TestThisEffect(auraId, giveReason, ignoreCascade)
 	
 	if (shouldShow == -1) then
 		if (debugEffectTest) then
-			self:Message("TestThisEffect unchanged");
+			self:Debug("TestThisEffect unchanged");
 		end
 		return aura.Active, reason;
 	end
@@ -878,7 +878,7 @@ function PowaAuras:TestThisEffect(auraId, giveReason, ignoreCascade)
 	end
 	
 	if (debugEffectTest) then
-		self:Message("shouldShow=", shouldShow, " because ", reason);
+		self:Debug("shouldShow=", shouldShow, " because ", reason);
 	end
 	
 	aura:CheckActive(shouldShow, ignoreCascade);

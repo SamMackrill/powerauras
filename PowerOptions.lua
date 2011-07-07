@@ -24,7 +24,7 @@ function PowaAuras:UpdateMainOption()
 	-- attach the icons
 	for i = 1, 24 do
 		local k = ((self.CurrentAuraPage-1)*24) + i;
-		--self:Message("icon ", k);
+		--self:TraceInfo("icon ", k);
 		local aura = self.Auras[k];
 		local icon = getglobal("PowaIcone"..i);
 		-- icone
@@ -34,7 +34,7 @@ function PowaAuras:UpdateMainOption()
 			icon:SetText("");
 			icon:SetAlpha(0.33);
 		else
-			--self:Message("buffname ", aura.buffname, "icon", aura.icon);
+			--self:TraceInfo("buffname ", aura.buffname, "icon", aura.icon);
 			if (aura.buffname == "" or aura.buffname == " ") then -- pas de nom -> desactive
 				icon:SetNormalTexture("Interface\\PaperDoll\\UI-Backpack-EmptySlot");
 			elseif (aura.icon == "") then -- active mais pas d'icone
@@ -91,9 +91,9 @@ function PowaAuras:IconClick(owner, button)
 	elseif IsControlKeyDown() then
 		local show, reason = self:TestThisEffect(aura.id, true);
 		if (show) then
-			self:Message(self:InsertText(self.Text.nomReasonShouldShow, reason)); --OK
+			self:Message(self:InsertText(self.Text.nomReasonShouldShow, reason));
 		else	
-			self:Message(self:InsertText(self.Text.nomReasonWontShow, reason)); --OK
+			self:Message(self:InsertText(self.Text.nomReasonWontShow, reason));
 		end
 	elseif (self.CurrentAuraId == aura.id) then
 		if (button == "RightButton") then
@@ -360,7 +360,7 @@ end
 
 function PowaAuras:DeleteAura(aura)
 	if (not aura) then return; end
-	--self:Message("DeleteAura ", aura.id);
+	--self:TraceInfo("DeleteAura ", aura.id);
 
 	if (aura.Timer) then aura.Timer:Dispose(); end
 	if (aura.Stacks) then aura.Stacks:Dispose(); end
@@ -407,15 +407,15 @@ function PowaAuras:OptionNewEffect()
 
 	local i = self:GetNextFreeSlot();
 	if (not i) then
-		self:Message("All aura slots filled"); --OK
+		self:Message("All aura slots filled");
 		return;
 	end
                    
-	--self:Message("New Effect slot=", i)
+	--self:TraceInfo("New Effect slot=", i)
 	self.CurrentAuraId = i;
 	self.CurrentAuraPage = self.CurrentAuraPage;
 	local aura = self:AuraFactory(self.BuffTypes.Buff, i);
-	--self:Message("Timer.enabled=", aura.Timer.enabled);
+	--self:TraceInfo("Timer.enabled=", aura.Timer.enabled);
 	aura:Init();
 	self.Auras[i] = aura;
 	-- effet global ?
@@ -448,7 +448,7 @@ function PowaAuras:OptionNewEffect()
 end
 
 function PowaAuras:ExtractImportValue(valueType, value)
-	--self:Message("valueType=", valueType," value=", value);
+	--self:TraceInfo("valueType=", valueType," value=", value);
 	if (string.sub(valueType,1,2) == "st") then
 		return value;
 	end
@@ -472,8 +472,8 @@ end
 
 function PowaAuras:ImportAura(aurastring, auraId, offset)
 
-	--self:Message("Import ", auraId);
-	--self:Message(aurastring);
+	--self:TraceInfo("Import ", auraId);
+	--self:TraceInfo(aurastring);
 
 	local aura = cPowaAura(auraId);
 
@@ -491,12 +491,12 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 	else
 		hasTypePrefix = string.find(aurastring,"Version:st", 1, true);
 	end
-	--self:Message("hasTypePrefix=", hasTypePrefix);
+	--self:TraceInfo("hasTypePrefix=", hasTypePrefix);
 
 	if (hasTypePrefix) then
 		for _, val in ipairs(settings) do
 			local key, var = strsplit(":", val);
-			--self:Message("key ",key,"=", var);
+			--self:TraceInfo("key ",key,"=", var);
 			local varType = string.sub(var,1,2);
 			var = string.sub(var,3);
 			if (key=="Version") then
@@ -526,13 +526,13 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 		for _, val in ipairs(settings) do
 			local key, var = strsplit(":", val);
 			oldSpellAlertLogic = false;
-			--self:Message("val=", val);
-			--self:Message(key,"=", var);
+			--self:TraceInfo("val=", val);
+			--self:TraceInfo(key,"=", var);
 			if (key=="Version") then
 			elseif (string.sub(key,1,6) == "timer.") then
 				key = string.sub(key,7);
 				if (cPowaTimer.ExportSettings[key]~=nil) then
-					--self:Message("cPowaTimer.ExportSettings[key]=",cPowaTimer.ExportSettings[key]," type=", type(cPowaTimer.ExportSettings[key]));
+					--self:TraceInfo("cPowaTimer.ExportSettings[key]=",cPowaTimer.ExportSettings[key]," type=", type(cPowaTimer.ExportSettings[key]));
 					importTimerSettings[key] = self:ExtractImportValue(type(cPowaTimer.ExportSettings[key]), var);
 					hasTimerSettings = true;
 				end
@@ -543,7 +543,7 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 					hasStacksSettings = true;
 				end
 			else
-				--self:Message("cPowaAura.ExportSettings[",key,"]=", cPowaAura.ExportSettings[key]);
+				--self:TraceInfo("cPowaAura.ExportSettings[",key,"]=", cPowaAura.ExportSettings[key]);
 				if (cPowaAura.ExportSettings[key]~= nil) then
 					importAuraSettings[key] = self:ExtractImportValue(type(cPowaAura.ExportSettings[key]), var);
 				end
@@ -554,7 +554,7 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 	for k, v in pairs(aura) do
 		if (importAuraSettings[k]~=nil) then
 			local varType = type(v);
-			--self:Message("k=",k, " v=",importAuraSettings[k]);
+			--self:TraceInfo("k=",k, " v=",importAuraSettings[k]);
 			if (k=="combat") then
 				if (importAuraSettings[k]==0) then
 					aura[k] = 0;
@@ -592,10 +592,10 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 						negate = "!";
 					end						
 					local multiIdNumber = tonumber(multiId);
-					--self:Message("multiId=", multiId, " multiIdNumber=", multiIdNumber, " offset=", offset);
+					--self:TraceInfo("multiId=", multiId, " multiIdNumber=", multiIdNumber, " offset=", offset);
 					if (multiIdNumber) then
 						newMultiids = newMultiids .. sep .. negate .. tostring(offset + multiIdNumber);
-						--self:Message("newMultiids=", newMultiids);
+						--self:TraceInfo("newMultiids=", newMultiids);
 						sep = "/";
 					end
 				end
@@ -641,7 +641,7 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 		aura.Stacks = cPowaStacks(aura, importStacksSettings);
 	end
 	
-	--self:Message("new Aura created from import");
+	--self:TraceInfo("new Aura created from import");
 	--aura:Display();
 	return self:AuraFactory(aura.bufftype, auraId, aura);
 end
@@ -729,7 +729,7 @@ function PowaAuras:OptionImportEffect()
 
 	local i = self:GetNextFreeSlot();
 	if (not i) then
-		self:Message("All aura slots filled"); -- OK
+		self:Message("All aura slots filled");
 		return;
 	end
                        
@@ -949,7 +949,7 @@ function PowaAuras:ExportDialogInit(self)
 	PowaComms:AddHandler("EXPORT_REJECT", function(_, data, from)
 		-- Were we sending to this person?
 		if(PowaAuraExportDialog.sendTo == from) then
-			if(PowaMisc.debug) then PowaAuras:Message("Comms: EXPORT_REJECT from " .. from); end
+			PowaAuras:GlobalDebug("Comms: EXPORT_REJECT from ", from);
 			PowaAuraExportDialog.sendTo = nil;
 			PowaAuraExportDialog.errorReason = tonumber((data or 1), 10);
 			PowaAuraExportDialog:SetStatus(3);
@@ -960,7 +960,7 @@ function PowaAuras:ExportDialogInit(self)
 	PowaComms:AddHandler("EXPORT_ACCEPT", function(_, _, from)
 		-- Were we sending to this person?
 		if(PowaAuraExportDialog.sendTo == from) then
-			if(PowaMisc.debug) then PowaAuras:Message("Comms: EXPORT_ACCEPT from " .. from); end
+			PowaAuras:GlobalDebug("Comms: EXPORT_ACCEPT from ", from);
 			PowaAuraExportDialog:SetStatus(4);
 			-- Let's get busy!
 			PowaComms:SendAddonMessage("EXPORT_DATA", PowaAuraExportDialog.sendString, from);
@@ -1121,17 +1121,17 @@ function PowaAuras:PlayerImportDialogInit(self)
 	PowaComms:AddHandler("EXPORT_REQUEST", function(_, data, from)
 		-- If we're busy, reject. If we're in combat, reject. If we're autoblocking, reject.
 		if(PowaAuraPlayerImportDialog.receiveFrom) then
-			if(PowaMisc.debug) then PowaAuras:Message("Comms: Rejected EXPORT_REQUEST - Busy."); end
+			PowaAuras:GlobalDebug("Comms: Rejected EXPORT_REQUEST - Busy.");
 			PowaComms:SendAddonMessage("EXPORT_REJECT", 4, from);
 			return;
 		end
 		if(InCombatLockdown()) then
-			if(PowaMisc.debug) then PowaAuras:Message("Comms: Rejected EXPORT_REQUEST - In combat."); end
+			PowaAuras:GlobalDebug("Comms: Rejected EXPORT_REQUEST - In combat.");
 			PowaComms:SendAddonMessage("EXPORT_REJECT", 1, from);
 			return;
 		end
 		if(PowaGlobalMisc.BlockIncomingAuras == true) then
-			if(PowaMisc.debug) then PowaAuras:Message("Comms: Rejected EXPORT_REQUEST - BlockIncomingAuras = true."); end
+			PowaAuras:GlobalDebug("Comms: Rejected EXPORT_REQUEST - BlockIncomingAuras = true."); 
 			PowaComms:SendAddonMessage("EXPORT_REJECT", 2, from);
 			return;
 		end
@@ -1147,7 +1147,7 @@ function PowaAuras:PlayerImportDialogInit(self)
 	PowaComms:AddHandler("EXPORT_DATA", function(_, data, from)
 		-- Were we receiving from this person?
 		if(PowaAuraPlayerImportDialog.receiveFrom == from) then
-			if(PowaMisc.debug) then PowaAuras:Message("Comms: Receiving EXPORT_DATA"); end
+			PowaAuras:GlobalDebug("Comms: Receiving EXPORT_DATA");
 			-- Status code 4 - we are pro.
 			PowaAuraPlayerImportDialog:SetStatus(4);
 			-- Store the data.
@@ -1217,7 +1217,7 @@ function PowaAuras:BeginMoveEffect(Pfrom, ToPage)
 
 	local i = self:GetNextFreeSlot(ToPage);
 	if (not i) then
-		self:Message("All aura slots filled"); --OK
+		self:Message("All aura slots filled");
 		return;
 	end
 
@@ -1235,7 +1235,7 @@ end
 function PowaAuras:BeginCopyEffect(Pfrom, ToPage)
  	local i = self:GetNextFreeSlot(ToPage);
 	if (not i) then
-		self:Message("All aura slots filled"); --OK
+		self:Message("All aura slots filled");
 		return;
 	end
 
@@ -2510,7 +2510,7 @@ function PowaAuras.DropDownMenu_Initialize(owner)
 		end
 		UIDropDownMenu_SetSelectedValue(PowaDropDownAnimEnd, aura.finish);
 	elseif (owner:GetName() == "PowaDropDownBuffTypeButton" or owner:GetName() == "PowaDropDownBuffType") then
-		--PowaAuras:Message("DropDownMenu_Initialize for buff type");
+		--PowaAuras:TraceInfo("DropDownMenu_Initialize for buff type");
 
 		PowaAuras:FillDropdownSorted(PowaAuras.Text.AuraType, {func = PowaAuras.DropDownMenu_OnClickBuffType, owner = owner});
 		
@@ -2541,7 +2541,7 @@ function PowaAuras:FillDropdownSorted(t, info)
 	local names = PowaAuras:CopyTable(t);
 	local values = PowaAuras:ReverseTable(names);
 	table.sort(names);
-	--for k,v in ipairs(names) do PowaAuras:Message(k, " ", v, " ", auraReverse[v]) end
+	--for k,v in ipairs(names) do PowaAuras:TraceInfo(k, " ", v, " ", auraReverse[v]) end
 
 	for _,name in pairs(names) do
 		info.text = name;
@@ -2551,7 +2551,7 @@ function PowaAuras:FillDropdownSorted(t, info)
 end
 
 function PowaAuras.DropDownMenu_OnClickBuffType(self)
-	--PowaAuras:Message("DropDownMenu_OnClickBuffType bufftype ", self.value, " for aura ", PowaAuras.CurrentAuraId, " ", self.owner);
+	--PowaAuras:TraceInfo("DropDownMenu_OnClickBuffType bufftype ", self.value, " for aura ", PowaAuras.CurrentAuraId, " ", self.owner);
 	UIDropDownMenu_SetSelectedValue(self.owner, self.value);
 
 	PowaAuras:ChangeAuraType(PowaAuras.CurrentAuraId, self.value);
@@ -2774,7 +2774,7 @@ function PowaAuras.CancelColor()
 end
 
 function PowaAuras:SetAuraColor(r, g, b)
-	--self:Message("SetColor r=", r, " g=",g, " b=", b);
+	--self:TraceInfo("SetColor r=", r, " g=",g, " b=", b);
 
 	local swatch = getglobal(ColorPickerFrame.Button:GetName().."NormalTexture"); -- juste le visuel
 	swatch:SetVertexColor(r,g,b);
@@ -3134,9 +3134,9 @@ end
 function PowaAuras_CommanLine(msg)
 	if (msg=="dump") then
 		PowaAuras:Dump();
-		PowaAuras:Message("State dumped to"); -- OK
-		PowaAuras:Message("WTF \\ Account \\ <ACCOUNT> \\ "..GetRealmName().." \\ "..UnitName("player").." \\ SavedVariables \\ PowerAuras.lua"); -- OK
-		PowaAuras:Message("You must log-out to save the values to disk (at end of fight/raid is fine)"); -- OK
+		PowaAuras:Message("State dumped to");
+		PowaAuras:Message("WTF \\ Account \\ <ACCOUNT> \\ "..GetRealmName().." \\ "..UnitName("player").." \\ SavedVariables \\ PowerAuras.lua");
+		PowaAuras:Message("You must log-out to save the values to disk (at end of fight/raid is fine)");
 	elseif (msg=="toggle" or msg=="tog") then
 		PowaAuras:Toggle();
 	elseif (msg=="showbuffs") then
@@ -3243,7 +3243,7 @@ function PowaAuras:GlobalMiscChecked(control, setting)
 end
 
 local function OptionsOK()
-	--PowaAuras:Message("OptionsOK");
+	--PowaAuras:TraceInfo("OptionsOK");
 	PowaMisc.OnUpdateLimit = (100 - PowaOptionsUpdateSlider2:GetValue()) / 200;
 	PowaMisc.UserSetMaxTextures = PowaOptionsTextureCount:GetValue();
 	if (PowaMisc.OverrideMaxTextures) then
@@ -3287,7 +3287,7 @@ local function OptionsOK()
 end
 
 local function OptionsCancel()
-	--PowaAuras:Message("OptionsCancel");
+	--PowaAuras:TraceInfo("OptionsCancel");
 	PowaAuras.ModTest = false;
 	PowaAuras.DoCheck.All = true;
 end
@@ -3528,7 +3528,7 @@ end
 
 function PowaAuras:ResetSlotsToEmpty()
 	for _, child in ipairs({ PowaEquipmentSlotsFrame:GetChildren() }) do
-		--self:Message(child:GetName(), " ", child:GetObjectType());
+		--self:TraceInfo(child:GetName(), " ", child:GetObjectType());
 		if (child:IsObjectType("Button")) then
 			local slotName = string.gsub(child:GetName(), "Powa", "");
 			if (string.match(slotName, "Slot")) then
@@ -3554,7 +3554,7 @@ function PowaAuras:EquipmentSlotsShow()
 		pword = aura:Trim(pword);
 		if (string.len(pword)>0 and pword~="???") then
 			local slotId = GetInventorySlotInfo(pword.."Slot");
-			--PowaAuras:Message("pword=",pword, " slotId= ",slotId);
+			--PowaAuras:TraceInfo("pword=",pword, " slotId= ",slotId);
 			if (slotId) then
 				local ok, texture = pcall(GetInventoryItemTexture, "player", slotId);
 				if (not ok) then
@@ -3595,7 +3595,7 @@ function PowaAuras:EquipmentSlot_OnClick(slotButton)
 	aura.buffname = "";
 	local sep = "";
 	for _, child in ipairs({ PowaEquipmentSlotsFrame:GetChildren() }) do
-		--self:Message(child:GetName(), " ", child:GetObjectType());
+		--self:TraceInfo(child:GetName(), " ", child:GetObjectType());
 		if (child:IsObjectType("Button")) then
 			local slotName = string.gsub(child:GetName(), "Powa", "");
 			if (string.match(slotName, "Slot")) then
@@ -3606,6 +3606,6 @@ function PowaAuras:EquipmentSlot_OnClick(slotButton)
 			end
 		end
 	end
-	--self:Message("aura.buffname=", aura.buffname);
+	--self:TraceInfo("aura.buffname=", aura.buffname);
 
 end

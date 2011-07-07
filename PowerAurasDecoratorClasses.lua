@@ -173,7 +173,7 @@ function cPowaDecorator:DecrementInvertCount(aura, now)
 	self.InvertCount = (self.InvertCount or 1) - 1;
 	local aura = PowaAuras.Auras[self.id];
 	if (aura.Debug) then
-		PowaAuras:Message(self.id, " ", self.Type, " DecrementInvertCount InvertCount=", self.InvertCount);
+		PowaAuras:Debug(self.id, " ", self.Type, " DecrementInvertCount InvertCount=", self.InvertCount);
 	end
 	if (self.InvertCount==0) then
 		if (aura.Active or self.ShowOnAuraHide) then
@@ -370,20 +370,20 @@ function cPowaStacks:SetStackCount(count)
 	local aura = PowaAuras.Auras[self.id];
 	if (aura == nil) then
 		--PowaAuras:UnitTestInfo("Stacks aura missing");
-		--PowaAuras:Message("Stacks aura missing");
+		--PowaAuras:TraceInfo("Stacks aura missing");
 		return;
 	end
 
 	if (not self.enabled or aura.InactiveDueToMulti) then 
 		--PowaAuras:UnitTestInfo("Stacks disabled");
 		--if (aura.Debug) then
-		--	PowaAuras:Message("Stacks disabled");
+		--	PowaAuras:Debug("Stacks disabled");
 		--end
 		return;
 	end
 
 	if (aura.Debug) then
-		PowaAuras:Message("SetStackCount Id=",self.id," Count=",count);
+		PowaAuras:Debug("SetStackCount Id=",self.id," Count=",count);
 	end
 
 	if (not count or count==0) then
@@ -397,7 +397,7 @@ function cPowaStacks:SetStackCount(count)
 	if (self.LastShownValue==count and self.Showing) then
 		self.UpdateValueTo = nil;
 		if (aura.Debug) then
-			PowaAuras:Message("Stacks unchanged");
+			PowaAuras:Debug("Stacks unchanged");
 		end
 		return;
 	end
@@ -646,7 +646,7 @@ function cPowaTimer:GetDisplayValue(aura, elapsed)
 	end
 
 	if (PowaAuras.DebugCycle) then
-		PowaAuras:Message("newvalue=",newvalue); --OK
+		PowaAuras:Debug("newvalue=",newvalue); --OK
 	end
 	return newvalue;
 end
@@ -669,7 +669,7 @@ function cPowaTimer:Display(aura, newvalue)
 		split = 100;
 	end
 	if (PowaAuras.DebugCycle) then
-		PowaAuras:Message("cents=",self.cents); --OK
+		PowaAuras:Debug("cents=",self.cents); --OK
 	end
 	if (self.cents) then
 		local small;
@@ -683,7 +683,7 @@ function cPowaTimer:Display(aura, newvalue)
 		end
 
 		if (PowaAuras.DebugCycle) then
-			PowaAuras:Message("small=",small); --OK
+			PowaAuras:Debug("small=",small); --OK
 		end
 		if (self.lastShownSmall~=small) then
 			self:ShowValue(aura, 2, small);
@@ -703,7 +703,7 @@ function cPowaTimer:Display(aura, newvalue)
 	end
 
 	if (PowaAuras.DebugCycle) then
-		PowaAuras:Message("large=",large); --OK
+		PowaAuras:Debug("large=",large); --OK
 	end
 	if (self.lastShownLarge~=large) then
 		self:ShowValue(aura, 1, large);
@@ -729,7 +729,7 @@ function cPowaTimer:Update(aura, elapsed, testing)
 	end
 	
 	if (PowaAuras.DebugCycle) then
-		PowaAuras:Message("Timer.Update ",self.id);
+		PowaAuras:Debug("Timer.Update ",self.id);
 	end
 	
 	if (self.Start==nil) then
@@ -742,7 +742,7 @@ function cPowaTimer:Update(aura, elapsed, testing)
 	if (self.enabled==false and not self:HasDependants(aura)) then
 		--PowaAuras:UnitTestInfo("Timer disabled");
 		if (PowaAuras.DebugCycle) then
-			PowaAuras:Message("Timer disabled");
+			PowaAuras:Debug("Timer disabled");
 		end
 		return;
 	end

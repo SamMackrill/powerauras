@@ -1111,7 +1111,7 @@ end
 function PowaAuras:UnitTestInfo(...)
 end
 
---- Display a message in the chat frame, if global debugging is enabled
+--- Display a debug message in the chat frame, if global debugging is enabled
 function PowaAuras:GlobalDebug(...)
 	if (PowaMisc.debug == true) then
 		self:TraceInfo(...);
@@ -1119,7 +1119,7 @@ function PowaAuras:GlobalDebug(...)
 	--self:UnitTestDebug(...);
 end
 
---- Display a message in the chat frame, used by aura level tracing
+--- Display a debug message in the chat frame, used by aura and event level tracing
 function PowaAuras:Debug(...)
 	self:TraceInfo(...);
 end
