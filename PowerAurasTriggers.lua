@@ -12,7 +12,7 @@
 cPowaTrigger = PowaClass(function(trigger, auraId, triggerId, parameters)
 	if(not auraId or not triggerId or not PowaAuras.Auras[auraId]) then return; end
 	if (PowaAuras.DebugTriggers) then
-		PowaAuras:DisplayText("Constructing Trigger type ", trigger.Type);
+		PowaAuras:Debug("Constructing Trigger type ", trigger.Type);
 	end
 	trigger.Id               = triggerId;
 	trigger.AuraId           = auraId;
@@ -25,6 +25,22 @@ cPowaTrigger = PowaClass(function(trigger, auraId, triggerId, parameters)
 	trigger.Set              = false;
 	trigger.NextActionId     = 1;
 end);
+
+--- Create Trigger export string
+function cPowaTrigger:Export()
+	local export = "Trigger={";
+	export = export .. PowaAuras:GetSettingForExport("", "Id", self.Id, nil);
+	export = export .. PowaAuras:GetSettingForExport("", "Name", self.Name, nil);
+	export = export .. PowaAuras:GetSettingForExport("", "Type", self.Type, nil);
+	export = export .. PowaAuras:GetSettingForExport("", "Value", self.Value, nil);
+	export = export .. PowaAuras:GetSettingForExport("", "Qualifier", self.Qualifier, nil);
+	export = export .. PowaAuras:GetSettingForExport("", "CompareOperator", self.CompareOperator, nil);
+	for i = 1, #self.Actions do
+		local action = self.Actions[i];
+		export = export .. action:Export();
+	end	
+	return export.."};";
+end
 
 --- Call Reset on all Actions, used by "Fire Once" Triggers
 function cPowaTrigger:ResetActions()
@@ -41,7 +57,7 @@ function cPowaTrigger:AddAction(actionClass, parameters)
 	local action = actionClass(self, self.NextActionId, parameters);
 	self.NextActionId = self.NextActionId + 1;
 	if (PowaAuras.DebugTriggers or self.Debug) then
-		PowaAuras:DisplayText("Creating ", action.Type, " Action - Aura=", self.AuraId, " Trigger=", self.Id, " Action=", action.Id, " name=", action.Name);
+		PowaAuras:Debug("Creating ", action.Type, " Action - Aura=", self.AuraId, " Trigger=", self.Id, " Action=", action.Id, " name=", action.Name);
 	end
 	table.insert(self.Actions, action);
 	return action;	
@@ -73,12 +89,12 @@ function cPowaTrigger:Check(value, qualifier)
 	if (not self:CheckQulifier(qualifier)) then return false; end
 	local result = self:Compare(self.CompareOperator, value, self.Value);
 	--if (PowaAuras.DebugTriggers or self.Debug) then
-	--	PowaAuras:DisplayText("Check result=", result);
+	--	PowaAuras:Debug("Check result=", result);
 	--end
 	if (not result) then
 		if (self.Once and self.Set) then 
 			if (PowaAuras.DebugTriggers or self.Debug) then
-				PowaAuras:DisplayText(self.Name, " Once Match! reset value=", value, " ", self.CompareOperator, " ", self.Value);
+				PowaAuras:Debug(self.Name, " Once Match! reset value=", value, " ", self.CompareOperator, " ", self.Value);
 			end
 			self:ResetActions();
 		end
@@ -89,7 +105,7 @@ function cPowaTrigger:Check(value, qualifier)
 				return false;
 			else
 				if (PowaAuras.DebugTriggers or self.Debug) then
-					PowaAuras:DisplayText(self.Name, " Once Match! value=", value, " ", self.CompareOperator, " ", self.Value);
+					PowaAuras:Debug(self.Name, " Once Match! value=", value, " ", self.CompareOperator, " ", self.Value);
 				end
 			end
 		end
@@ -111,7 +127,7 @@ end
 -- @param v2 RHS value for compare
 function cPowaTrigger:Compare(op, v1, v2)
 	--if (PowaAuras.DebugTriggers or self.Debug) then
-	--	PowaAuras:DisplayText("Compare: ", v1, " ", op, " ", v2);
+	--	PowaAuras:Debug("Compare: ", v1, " ", op, " ", v2);
 	--end
 	if (op==nil) then return true; end
 	if (v1==nil or v2==nil) then return false; end
