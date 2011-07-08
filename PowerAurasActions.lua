@@ -143,7 +143,7 @@ function cPowaAuraAnimationAction:Fire()
 end
 
 function cPowaAuraAnimationAction:PlayNextAnimation()
-	animation = self.Parameters.AnimationChain[self.Current];
+	local animation = self.Parameters.AnimationChain[self.Current];
 	if (animation) then
 		if (PowaAuras.DebugTriggers or self.Debug) then
 			PowaAuras:Debug("Animation Finished Hide=", animation.Hide);

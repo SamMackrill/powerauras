@@ -236,7 +236,7 @@ function PowaAuras:DetermineRole(unit)
 	elseif (class=="DRUID") then
 		local _, powerType = UnitPowerType(unit);
 		if (powerType == "MANA") then
-			_, _, tBuffExist = UnitBuff(unit, self.Spells.MOONKIN_FORM);
+			local _, _, tBuffExist = UnitBuff(unit, self.Spells.MOONKIN_FORM);
 			if (tBuffExist) then
 				self.FixRoles[unitName] = "RoleRangeDps";
 				return "RoleRangeDps", "Guess";

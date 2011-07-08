@@ -2970,6 +2970,7 @@ function cPowaSpellCooldown:SkipTargetChecks()
 end
 
 function cPowaSpellCooldown:CheckIfShouldShow(giveReason, ignoreGCD)
+	local reason;
 	--PowaAuras:UnitTestDebug("Check Spell:", self.buffname);
 	if (self.Debug) then
 		PowaAuras:Message("====SPELL COOLDOWN====");
@@ -3171,6 +3172,7 @@ function cPowaAuraStats:CheckUnit(unit)
 		PowaAuras:DisplayText(curValue..self.RangeType, " threshold=",self.threshold);
 	end
 
+	local thresholdvalidate;
 	if self.thresholdinvert then 
 		thresholdvalidate = (curValue >= self.threshold);
 	else
@@ -3287,7 +3289,7 @@ function cPowaPowerType:UnitValueMax(unit)
 	if (self.Debug) then
 		PowaAuras:DisplayText("UnitValueMax for ", unit, " type=",self.PowerType);
 	end
-	local power;
+	local power, maxpower;
 	if (not self.PowerType or self.PowerType==-1) then
 		maxpower = UnitPowerMax(unit);
 	elseif (self.PowerType==SPELL_POWER_LUNAR_ECLIPSE or self.PowerType==SPELL_POWER_SOLAR_ECLIPSE) then
@@ -4117,7 +4119,7 @@ function cPowaRunes:RunesPresent(giveReason)
 			wipe(self.timeList);
 			local missing = deathRunesRequired - deathRunesAvailable;
 			if (missing>0) then
-				gaps = 0;
+				local gaps = 0;
 				for runeType = 1, 3 do
 					gaps = gaps + self:AddRuneTimeLeft(runeType * 2 - 1, self.runesMissingPlusDeath[runeType]);
 				end
@@ -4182,6 +4184,7 @@ function cPowaSlots:SetFixedIcon()
 end
 
 function cPowaSlots:CheckIfShouldShow(giveReason, ignoreGCD)
+	local reason;
 	if (self.Debug) then
 		PowaAuras:Message("Slots Aura CheckIfShouldShow buffname=",self.buffname); --OK
 	end
@@ -4314,6 +4317,7 @@ function cPowaItems:IsItemInBag(itemName)
 end
 
 function cPowaItems:CheckIfShouldShow(giveReason, ignoreGCD)
+	local reason;
 	if (self.Debug) then
 		PowaAuras:Message("Items Aura CheckIfShouldShow buffname=",self.buffname); --OK
 	end

@@ -104,7 +104,23 @@ function PowaAuras:OnLoad(frame)
 	frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 
 	--- options init
-	SlashCmdList["POWA"] = PowaAuras_CommanLine;
+	SlashCmdList["POWA"] = function(msg)
+		if (msg=="dump") then
+			PowaAuras:Dump();
+			PowaAuras:Message("State dumped to");
+			PowaAuras:Message("WTF \\ Account \\ <ACCOUNT> \\ "..GetRealmName().." \\ "..UnitName("player").." \\ SavedVariables \\ PowerAuras.lua");
+			PowaAuras:Message("You must log-out to save the values to disk (at end of fight/raid is fine)");
+		elseif (msg=="toggle" or msg=="tog") then
+			PowaAuras:Toggle();
+		elseif (msg=="showbuffs") then
+			PowaAuras:ShowAurasOnUnit("Buffs", "HELPFUL");
+		elseif (msg=="showdebuffs") then
+			PowaAuras:ShowAurasOnUnit("Debuffs", "HARMFUL");
+		else
+			PowaAuras:MainOptionShow();
+		end
+	end
+	
 	SLASH_POWA1 = "/powa";
 	
 	SlashCmdList["POWA2"] = function()

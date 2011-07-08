@@ -135,7 +135,7 @@ PowaAuras.UI:Register("AuraEditor", {
 			label:SetText(PowaAuras.Text("UI_Editor_Aura_SourceNum", num, self.WoWCount));
 			texture:SetTexture(PowaAuras.WowTextures[num]);
 		end
-		-- Attempt to scale to aspect ratio.
+		-- Attempt to scale to aspect ratio. Limit to 128px on either axis.
 		local maxX, maxY = 128, 128;
 		local x, y = PowaAuras:GetSetting("Aura.SizeX")*PowaAuras:GetSetting("Aura.size"), 
 			PowaAuras:GetSetting("Aura.SizeY")*PowaAuras:GetSetting("Aura.size");

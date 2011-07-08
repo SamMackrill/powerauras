@@ -2786,7 +2786,7 @@ function PowaAuras:OpenColorPicker(control, source, setTexture)
 		PowaAuras.CancelColor();
 		ColorPickerFrame:Hide();
 	else
-		button = PowaColor_SwatchBg;
+		local button = PowaColor_SwatchBg;
 
 		ColorPickerFrame.Source = source;
 		ColorPickerFrame.Button = control;
@@ -2848,7 +2848,7 @@ end
 
 function PowaAuras.FontScrollBar_Update(owner)
 	local fontOffset = FauxScrollFrame_GetOffset(FontSelectorEditorScrollFrame); 
-	local fontIndex;
+	local fontIndex, fontText, fontButton;
 	local fontName, namestart, nameend;
 	
 	for i=1, 10, 1 do
@@ -3118,23 +3118,6 @@ function PowaAuras:StacksChecked(control, setting)
 	stacks:Redisplay(aura, true);
 end
 
-function PowaAuras_CommanLine(msg)
-	if (msg=="dump") then
-		PowaAuras:Dump();
-		PowaAuras:Message("State dumped to");
-		PowaAuras:Message("WTF \\ Account \\ <ACCOUNT> \\ "..GetRealmName().." \\ "..UnitName("player").." \\ SavedVariables \\ PowerAuras.lua");
-		PowaAuras:Message("You must log-out to save the values to disk (at end of fight/raid is fine)");
-	elseif (msg=="toggle" or msg=="tog") then
-		PowaAuras:Toggle();
-	elseif (msg=="showbuffs") then
-		PowaAuras:ShowAurasOnUnit("Buffs", "HELPFUL");
-	elseif (msg=="showdebuffs") then
-		PowaAuras:ShowAurasOnUnit("Debuffs", "HARMFUL");
-	else
-		PowaAuras:MainOptionShow();
-	end
-end
-
 function PowaAuras:ShowAurasOnUnit(display, auraType)
 	local index = 1;
 	local unit = "player";
@@ -3199,193 +3182,6 @@ end
 
 function PowaAuras:ShowCheckBox(checkBox)
 	getglobal(checkBox):Show();
-end
-
---==== Blizzard Addon ====
-
-function PowaAuras:EnableChecked()
-	--PowaAuras:TraceInfo("EnableChecked");
-	if (PowaEnableButton:GetChecked()) then
-		self:Toggle(true);
-	else
-		self:MainOptionClose();
-		self:Toggle(false);
-	end
-end
-
-function PowaAuras:MiscChecked(control, setting)
-	if (control:GetChecked()) then
-		PowaMisc[setting] = true;
-	else
-		PowaMisc[setting] = false;
-	end
-end
-
-function PowaAuras:GlobalMiscChecked(control, setting)
-	if (control:GetChecked()) then
-		PowaGlobalMisc[setting] = true;
-	else
-		PowaGlobalMisc[setting] = false;
-	end
-end
-
-local function OptionsOK()
-	--PowaAuras:TraceInfo("OptionsOK");
-	PowaMisc.OnUpdateLimit = (100 - PowaOptionsUpdateSlider2:GetValue()) / 200;
-	PowaMisc.UserSetMaxTextures = PowaOptionsTextureCount:GetValue();
-	if (PowaMisc.OverrideMaxTextures) then
-		PowaAuras.MaxTextures = PowaMisc.UserSetMaxTextures;
-	else
-		PowaAuras.MaxTextures = PowaAuras.TextureCount;
-	end
-	PowaAuras:EnableChecked();
-	PowaAuras:MiscChecked(PowaDebugButton, "debug");
-	PowaAuras:MiscChecked(PowaTimerRoundingButton, "TimerRoundUp");
-	PowaAuras:GlobalMiscChecked(PowaBlockIncomingAurasButton, "BlockIncomingAuras");
-
-	local newDefaultTimerTexture = UIDropDownMenu_GetSelectedValue(PowaDropDownDefaultTimerTexture);
-	if (newDefaultTimerTexture~=PowaMisc.DefaultTimerTexture) then
-		PowaMisc.DefaultTimerTexture = newDefaultTimerTexture;
-		for auraId, aura in pairs(PowaAuras.Auras) do
-			if (aura.Timer and aura.Timer.Texture == "Default") then
-				aura.Timer:Hide();
-				PowaAuras.TimerFrame[auraId] = {};
-				aura.Timer:CreateFrame(aura, 1);
-				aura.Timer:CreateFrame(aura, 2);
-			end
-		end
-	end
-	local newDefaultStacksTexture = UIDropDownMenu_GetSelectedValue(PowaDropDownDefaultStacksTexture);
-	if (newDefaultStacksTexture~=PowaMisc.DefaultStacksTexture) then
-		PowaMisc.DefaultStacksTexture = newDefaultStacksTexture;
-		for auraId, aura in pairs(PowaAuras.Auras) do
-			if (aura.Stacks and aura.Stacks.Texture == "Default") then
-				aura.Stacks:Hide();
-				local frame = aura.Stacks:GetFrame();
-				frame.texture:SetTexture(aura.Stacks:GetTexture());
-			end
-		end
-	end
-	PowaGlobalMisc.PathToSounds = PowaCustomSoundPath:GetText();
-	PowaGlobalMisc.PathToAuras = PowaCustomAuraPath:GetText();
-	
-	PowaAuras.ModTest = false;
-	PowaAuras.DoCheck.All = true;
-end
-
-local function OptionsCancel()
-	--PowaAuras:TraceInfo("OptionsCancel");
-	PowaAuras.ModTest = false;
-	PowaAuras.DoCheck.All = true;
-end
-
-local function OptionsDefault()
-	for k, v in pairs(PowaAuras.PowaMiscDefault) do
-		PowaMisc[k] = v;
-	end
-	for k, v in pairs(PowaAuras.PowaGlobalMiscDefault) do
-		PowaGlobalMisc[k] = v;
-	end
-	self:Message("Power Aura Options Reset to Defaults");
-end
-
-local function OptionsRefresh()
-	--PowaAuras:TraceInfo("OptionsRefresh");
-	--PowaAuras:TraceInfo("OnUpdateLimit=", PowaMisc.OnUpdateLimit);
-	--PowaAuras:TraceInfo("AnimationLimit=", PowaMisc.AnimationLimit);
-	--PowaAuras:TraceInfo("Disabled=", PowaMisc.Disabled ~= false);
-	--PowaAuras:TraceInfo("debug=", PowaMisc.debug);
-	--PowaAuras:TraceInfo("UserSetMaxTextures=", PowaMisc.UserSetMaxTextures);
-	PowaOptionsUpdateSlider2:SetValue(100-200*PowaMisc.OnUpdateLimit); 
-	PowaOptionsTimerUpdateSlider2:SetValue(100-1000*PowaMisc.AnimationLimit);
-	PowaOptionsTextureCount:SetValue(PowaMisc.UserSetMaxTextures);
-	PowaOverrideTextureCountButton:SetChecked(PowaMisc.OverrideMaxTextures ~= true);
-	PowaEnableButton:SetChecked(PowaMisc.Disabled ~= true);
-	PowaDebugButton:SetChecked(PowaMisc.debug);
-	PowaTimerRoundingButton:SetChecked(PowaMisc.TimerRoundUp);
-	PowaAllowInspectionsButton:SetChecked(PowaMisc.AllowInspections);
-	PowaBlockIncomingAurasButton:SetChecked(PowaGlobalMisc.BlockIncomingAuras);
-	UIDropDownMenu_SetSelectedValue(PowaDropDownDefaultTimerTexture, PowaMisc.DefaultTimerTexture);
-	UIDropDownMenu_SetSelectedValue(PowaDropDownDefaultStacksTexture, PowaMisc.DefaultStacksTexture);
-	PowaCustomSoundPath:SetText(PowaGlobalMisc.PathToSounds);
-	PowaCustomSoundPath:SetCursorPosition(0)
-	PowaCustomAuraPath:SetText(PowaGlobalMisc.PathToAuras);
-	PowaCustomAuraPath:SetCursorPosition(0)
-end
-
-function PowaOptionsCpuFrame2_OnLoad(panel)
-	panel.name = GetAddOnMetadata("PowerAuras", "Title");
-	panel.okay = function (self) OptionsOK();  end;
-	panel.cancel = function (self) OptionsCancel();  end;
-	panel.default = function (self) OptionsDefault();  end;
-	panel.refresh = function (self) OptionsRefresh();  end;
-	InterfaceOptions_AddCategory(panel);
-end
-
-function PowaAuras:PowaOptionsUpdateSliderChanged2(control)
-	PowaOptionsUpdateSlider2Text:SetText(self.Text.nomUpdateSpeed.." : "..control:GetValue().."%");
-end
-
-function PowaAuras:PowaOptionsTimerUpdateSliderChanged2(control)
-	PowaOptionsTimerUpdateSlider2Text:SetText(self.Text.nomTimerUpdate.." : "..control:GetValue().."%");
-end
-
-function PowaAuras:PowaOptionsMaxTexturesSliderChanged(control)
-	PowaOptionsTextureCountText:SetText(self.Text.nomTextureCount.." : "..control:GetValue());
-end
-
-function PowaAuras.DropDownDefaultTimerMenu_Initialize(owner)
-	PowaAuras:InitializeTextureDropdown(owner, PowaAuras.DropDownMenu_OnClickDefault, PowaMisc.DefaultTimerTexture, false);
-end
-
-function PowaAuras.DropDownDefaultStacksMenu_Initialize(owner)
-	PowaAuras:InitializeTextureDropdown(owner, PowaAuras.DropDownMenu_OnClickDefault, PowaMisc.DefaultStacksTexture, false);
-end
-
-function PowaAuras.DropDownMenu_OnClickDefault(self)
-	UIDropDownMenu_SetSelectedValue(self.owner, self.value);
-end
-
-function PowaAuras:InitializeTextureDropdown(owner, onClick, currentValue, addDefaultOption)
-	--self:TraceInfo("InitializeTextureDropdown currentValue=", currentValue, " addDefaultOption=", addDefaultOption);
-	local info = {func = onClick, owner = owner, text=PowaAuras.Text.Default};
-	if (addDefaultOption) then
-		UIDropDownMenu_AddButton(info);
-	end
-	for k,v in pairs(PowaAuras.TimerTextures) do
-		info.text = v;
-		info.value = v;
-		UIDropDownMenu_AddButton(info);
-	end
-	UIDropDownMenu_SetSelectedValue(owner, currentValue);
-end
-
-function PowaAuras.DropDownTimerMenu_Initialize(owner)
-	local aura = PowaAuras.Auras[PowaAuras.CurrentAuraId];
-	if (aura==nil or aura.Timer==nil) then return; end
-	PowaAuras:InitializeTextureDropdown(owner, PowaAuras.DropDownMenu_OnClickTimerTexture, aura.Timer.Texture, true);
-end
-
-function PowaAuras.DropDownMenu_OnClickTimerTexture(self)
-	UIDropDownMenu_SetSelectedValue(self.owner, self.value);
-	local aura = PowaAuras.Auras[PowaAuras.CurrentAuraId];
-	if (aura==nil or aura.Timer==nil) then return; end
-	aura.Timer.Texture = self.value;
-	aura.Timer:Dispose();
-end
-
-function PowaAuras.DropDownStacksMenu_Initialize(owner)
-	local aura = PowaAuras.Auras[PowaAuras.CurrentAuraId];
-	if (aura==nil or aura.Stacks==nil) then return; end
-	PowaAuras:InitializeTextureDropdown(owner, PowaAuras.DropDownMenu_OnClickStacksTexture, aura.Stacks.Texture, true);
-end
-
-function PowaAuras.DropDownMenu_OnClickStacksTexture(self)
-	UIDropDownMenu_SetSelectedValue(self.owner, self.value);
-	local aura = PowaAuras.Auras[PowaAuras.CurrentAuraId];
-	if (aura==nil or aura.Stacks==nil) then return; end
-	aura.Stacks.Texture = self.value;
-	aura.Stacks:Dispose();
 end
 
 --- Ternary Logic ---

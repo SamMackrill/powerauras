@@ -151,7 +151,7 @@ function PowaAuras:GetInstanceType()
 	elseif (instanceType=="arena") then
 		instanceType = "Arena";
 	elseif (instanceType=="party" or instanceType=="raid") then
-		instanceDifficulty = GetInstanceDifficulty();
+		local instanceDifficulty = GetInstanceDifficulty();
 		if (instanceType=="party") then
 			if (instanceDifficulty==1) then
 				instanceType = "5Man";
