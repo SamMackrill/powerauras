@@ -970,7 +970,7 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	UI_Editor_Aura_RndColor      = "Random Color",
 	UI_Editor_Aura_RndColorDesc  = "Allows you to apply color tinting to the aura texture. Right click to reset the color tint.",
 	UI_Editor_Aura_Rotate        = "Rotation",
-	UI_Editor_Aura_RotateDesc    = "Allows you to rotate the texture from its center by a given amount of degrees.",
+	UI_Editor_Aura_RotateDesc    = "Allows you to rotate the texture by a given amount of degrees.",
 	
 	UI_TriggerAdd              = "Add",
 	UI_TriggerDelete           = "Delete",

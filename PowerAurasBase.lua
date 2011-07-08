@@ -1057,17 +1057,20 @@ end
 function PowaAuras:Debug(...)
 	self:TraceInfo(...);
 end
---- Display a message in the chat frame, comma seperate arguments rather than use string concatination as this will do nil protection
-function PowaAuras:Message(...)
-	args={...};
-	if (args==nil or #args==0) then
-		return;
+do
+	local tmp = {};
+	--- Display a message in the chat frame, comma seperate arguments rather than use string concatination as this will do nil protection
+	function PowaAuras:Message(...)
+		-- Add all args to tmp.
+		local count = select("#", ...);
+		for i=1, count do
+			tmp[i] = tostring((select(i, ...)));
+		end
+		-- Print it.
+		print(table.concat(tmp, ""));
+		-- Wipe temporary table.
+		wipe(tmp);
 	end
-	local message = "";
-	for i=1, #args do
-		message = message..tostring(args[i]);
-	end
-	DEFAULT_CHAT_FRAME:AddMessage(message);
 end
 
 --- Display a message in the chat frame, comma seperate arguments rather than use string concatination as this will do nil protection
@@ -1079,7 +1082,7 @@ end
 --- Display a message in the chat frame, comma seperate arguments rather than use string concatination as this will do nil protection
 -- Use this for debug error messages
 function PowaAuras:TraceError(...)
-	self:TraceInfo(self.Colors.Red, {...}); 
+	self:TraceInfo(self.Colors.Red, ...); 
 end
 
 --- Dump out a table to the chat frame
@@ -1097,9 +1100,9 @@ function PowaAuras:DisplayTable(t, indent)
 	for i,v in pairs(t) do
 		if (type(v)~="function") then
 			if (type(v)~="table") then
-				self:Message(indent..tostring(i).." = "..tostring(v))
+				self:Message(indent, tostring(i), " = ", tostring(v))
 			else
-				self:Message(indent..tostring(i))
+				self:Message(indent, tostring(i))
 				self:DisplayTable(v, indent);
 			end
 		end

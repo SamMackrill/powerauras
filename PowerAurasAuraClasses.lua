@@ -253,6 +253,17 @@ cPowaAura.UI = {
 			},
 		},
 	},
+	Rules = {
+		[1] = {
+			Text = function(self, setting)
+				return "Rule: combat (" .. tostring(setting) .. ")";
+			end,
+			Setting = "combat",
+			Editor = {
+				
+			},
+		},
+	},
 };
 
 --- Aura Initialisation call, 
