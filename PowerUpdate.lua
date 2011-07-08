@@ -11,6 +11,24 @@ PowaAuras.UpdateFunctions = {
 			else
 				aura.texmode = false;
 			end
+			-- Texture source.
+			if(aura.owntex or aura.SourceType == PowaAuras.SourceTypes.Icon) then
+				aura.SourceType = PowaAuras.SourceTypes.Icon;
+			elseif(aura.wowtex or aura.SourceType == PowaAuras.SourceTypes.WoW) then
+				aura.SourceType = PowaAuras.SourceTypes.WoW;
+			elseif(aura.customtex or aura.SourceType == PowaAuras.SourceTypes.Custom) then
+				aura.SourceType = PowaAuras.SourceTypes.Custom;
+			elseif(aura.textaura or aura.SourceType == PowaAuras.SourceTypes.Text) then
+				aura.SourceType = PowaAuras.SourceTypes.Text;
+			else
+				aura.SourceType = PowaAuras.SourceTypes.Default;
+			end
+			-- Clear old keys.
+			aura.texmode = nil;
+--			aura.owntex = nil;
+--			aura.customtex = nil;
+--			aura.textaura = nil;
+--			aura.wowtex = nil;
 			-- Handle spec things.
 --			for i=1, 2 do
 --				if(aura["spec" .. i]) then

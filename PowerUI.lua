@@ -16,9 +16,20 @@ function PowaAuras.UI:BuildFrameFromDefinition(def, parent)
 	if(def.Type == "FontString" or def.Type == "Texture") then
 		-- Make layered object.
 		frame = parent["Create" .. def.Type](parent, def.Name, def.Layer, def.Inherits, def.SubLevel);
+		-- Additional keys.
+		if(def.Color and frame.SetVertexColor) then
+			frame:SetVertexColor(unpack(def.Color));
+		end
+		if(def.Texture and frame.SetTexture) then
+			frame:SetTexture(unpack(def.Texture));
+		end
 	elseif(def.Type ~= "Class") then
 		-- Make frame if not Class type. Class type means instantiate the class without a frame.
 		frame = CreateFrame(def.Type or "Frame", def.Name, parent, def.Inherits);
+	end
+	-- More keys!
+	if(def.Text and frame.SetText) then
+		frame:SetText(def.Text);
 	end
 	-- Classes.
 	if(type(def.Class) == "string" and self[def.Class]) then

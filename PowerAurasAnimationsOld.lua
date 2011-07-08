@@ -541,7 +541,7 @@ function cPowaAnimationOrbit:Initialise()
 	self.Height    = self.TargetHeight / (2-self.Aura.torsion);
 	self.Angle = 0;
 	--- annule la symetrie
-	if self.Aura.textaura ~= true then
+	if self.Aura.SourceType ~= PowaAuras.SourceTypes.Text then
 		local texture = self.Aura:GetTexture();
 		if (texture) then
 			texture:SetTexCoord(0, 1, 0, 1);

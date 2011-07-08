@@ -133,6 +133,10 @@
 	</li>
 
 	<li>
+		<a href="../files/UI/Mixins/LayoutFrame.html">UI/Mixins/LayoutFrame.lua</a>
+	</li>
+
+	<li>
 		<a href="../files/UI/Mixins/Scripts.html">UI/Mixins/Scripts.lua</a>
 	</li>
 
@@ -233,6 +237,11 @@
 <table class="function_list">
 
 	<tr>
+	<td class="name" nowrap><a href="#PowaAuras.UI:AnonymousClass">PowaAuras.UI:AnonymousClass</a>&nbsp;(class, data, ...)</td>
+	<td class="summary">Creates an anonymous widget class, which extends a class on the fly to create a class tailored to specific needs at runtime.</td>
+	</tr>
+
+	<tr>
 	<td class="name" nowrap><a href="#PowaAuras.UI:AnonymousWidget">PowaAuras.UI:AnonymousWidget</a>&nbsp;(class, data, ...)</td>
 	<td class="summary">Initialises a frame with an anonymous widget class, which extends a class on the fly to create a class tailored to specific needs at runtime.</td>
 	</tr>
@@ -270,6 +279,43 @@
 
 
 
+<dt><a name="PowaAuras.UI:AnonymousClass"></a><strong>PowaAuras.UI:AnonymousClass</strong>&nbsp;(class, data, ...)</dt>
+<dd>
+Creates an anonymous widget class, which extends a class on the fly to create a class tailored to specific needs at runtime.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  class: The name of the class to extend.
+	</li>
+	
+	<li>
+	  data: The data table of the class to merge in.
+	</li>
+	
+	<li>
+	  ...: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+Returns the constructed class.
+
+
+
+</dd>
+
+
+
+
 <dt><a name="PowaAuras.UI:AnonymousWidget"></a><strong>PowaAuras.UI:AnonymousWidget</strong>&nbsp;(class, data, ...)</dt>
 <dd>
 Initialises a frame with an anonymous widget class, which extends a class on the fly to create a class tailored to specific needs at runtime. The class is then immediately constructed afterwards.
@@ -296,6 +342,9 @@ Initialises a frame with an anonymous widget class, which extends a class on the
 
 
 
+
+<h3>Return value:</h3>
+Returns the constructed frame.
 
 
 
@@ -326,6 +375,9 @@ Builds a frame from a table based definition. This allows you to bypass using XM
 
 
 
+
+<h3>Return value:</h3>
+Returns the constructed frame.
 
 
 

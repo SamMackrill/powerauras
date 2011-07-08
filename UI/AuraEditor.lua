@@ -29,6 +29,30 @@ PowaAuras.UI:Register("AuraEditor", {
 		self.IsUpdatePending = false;
 		self.IsThrottled = false;
 		self.Throttle = 0;
+		-- Count the total # of aura textures for Default/WoW.
+		self.DefaultCount = 0;
+		self.WoWCount = 0;
+		local defaultExists, wowExists, texobj, i = true, true, self.Tabs.Display.Tabs[1].Child.TextureDummy.Texture, 1;
+		while(defaultExists or wowExists) do
+			-- Defaults first.
+			texobj:SetTexture(strconcat(PowaAuras.AuraSource, "Aura", i, ".tga"));
+			if(texobj:GetTexture()) then
+				self.DefaultCount = self.DefaultCount+1;
+				defaultExists = true;
+			else
+				defaultExists = false;
+			end
+			-- WoW next.
+			texobj:SetTexture(PowaAuras.WowTextures[i]);
+			if(texobj:GetTexture()) then
+				self.WoWCount = self.WoWCount+1;
+				wowExists = true;
+			else
+				wowExists = false;
+			end
+			-- Next!
+			i = i+1;
+		end
 		-- And how do we know when to update, you ask? Simple, we need a callback too.
 		PowaAuras:RegisterSettingCallback(self.OnSettingChanged);
 	end,
@@ -51,7 +75,10 @@ PowaAuras.UI:Register("AuraEditor", {
 		if(not PowaAuras.ModTest or location ~= PowaAuras.SettingLocations.Aura) then
 			return;
 		end
+		-- Get editor.
 		local self = PowaEditor;
+		-- Always update the editor, regardless of the throttle.
+		self:UpdateAuraPreview();
 		-- Throttled or not?
 		if(not self.IsThrottled) then
 			-- Throttle now.
@@ -91,6 +118,34 @@ PowaAuras.UI:Register("AuraEditor", {
 			self.OnSettingChanged(nil, nil, PowaAuras.SettingLocations.Aura);
 		end
 	end,
+	UpdateAuraPreview = function(self)
+		-- Update the preview based on the source type of the aura.
+		local source = PowaAuras:GetSetting("Aura.SourceType");
+		local label, texture = self.Tabs.Display.Tabs[1].Child.TextureSource.Default.Label, 
+			self.Tabs.Display.Tabs[1].Child.TextureDummy.Texture;
+		if(source == PowaAuras.SourceTypes.Default) then
+			-- Default texture.
+			local num = PowaAuras:GetSetting("Aura.texture");
+			label:SetText(PowaAuras.Text("UI_Editor_Aura_SourceNum", num, self.DefaultCount));
+			texture:SetTexture(strconcat(PowaAuras.AuraSource, "Aura", num, ".tga"));
+		elseif(source == PowaAuras.SourceTypes.WoW) then
+			-- WoW texture.
+			local num = PowaAuras:GetSetting("Aura.texture");
+			label:SetText(PowaAuras.Text("UI_Editor_Aura_SourceNum", num, self.WoWCount));
+			texture:SetTexture(PowaAuras.WowTextures[num]);
+		end
+		-- Style it. Trim its nails and stuff.
+		if(PowaAuras:GetSetting("Aura.randomcolor")) then
+			texture:SetVertexColor(random(20,100)/100, random(20,100)/100, random(20,100)/100);
+		else
+			texture:SetVertexColor(PowaAuras:GetSetting("Aura.r"), PowaAuras:GetSetting("Aura.g"), 
+				PowaAuras:GetSetting("Aura.b"));
+		end
+		texture:SetBlendMode(PowaAuras:GetSetting("Aura.texmode") and "ADD" or "DISABLE");
+		texture:SetAlpha(min(0.99, PowaAuras:GetSetting("Aura.alpha")));
+		-- Rotation, rotation, rotation.
+		PowaAuras:RotateTexture(texture, PowaAuras:GetSetting("Aura.Rotate"), PowaAuras:GetFlipTexCoords());
+	end,
 	UpdateElements = function(self, auraID)
 		-- Hide old aura if it exists.
 		if(self.AuraID and PowaAuras.Auras[self.AuraID]) then
@@ -122,7 +177,6 @@ PowaAuras.UI:Register("AuraEditor", {
 local AuraEditor = {
 	Inherits = "PowaGenericFrameTemplate",
 	Name = "PowaEditor",
-	Class = "AuraEditor",
 	Size = { 760, 528 },
 	Points = {
 		[1] = { "CENTER" },
@@ -154,6 +208,7 @@ local AuraEditor = {
 								self:AddItem(1, PowaAuras.Text["UI_Editor_Aura"]);
 								self:AddItem(2, PowaAuras.Text["UI_Editor_Timer"]);
 								self:AddItem(3, PowaAuras.Text["UI_Editor_Stacks"]);
+								self:AddItem(4, PowaAuras.Text["UI_Editor_Text"]);
 							end,
 						},
 						[2] = {
@@ -199,23 +254,185 @@ local AuraEditor = {
 												TextureSource = {
 													Size = { 1, 128 },
 													Children = {
-														Label = {
-															Type = "FontString",
-															Inherits = "PowaFontNormal",
-															Size = { 256, 16 },
+														Source = {
+															Type = "Button",
+															Inherits = "PowaLabelledDropdownTemplate",
+															Class = "Dropdown",
+															ClassArgs = { 
+																"Aura.SourceType", true, "UI_Editor_Aura_Source" },
 															Points = {
-																[1] = { "TOPLEFT", 4, 0 },
-																[2] = { "TOPRIGHT", -4, 0 },
+																[1] = { "TOPLEFT", 4, -17 },
 															},
 															OnLoad = function(self)
-																-- Set up title string.
-																self:SetJustifyH("LEFT");
-																self:SetJustifyV("MIDDLE");
-																self:SetText(PowaAuras.Text["UI_Editor_Aura_Source"]);
+																-- Add necessary items.
+																for k, v in pairs(PowaAuras.Text["UI_Sources"]) do
+																	self:AddItem(k, v);
+																end
+																-- Scrollframe fix.
+																self:SetScript("OnDropdownMenuPosition", function(self)
+																	-- Normal position.
+																	self.Menu:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 
+																		0, 0);
+																	self.Menu:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 
+																		0, 0);
+																	-- Update.
+																	self:UpdateText(self:GetSetting());
+																	-- Parent to scrollframe.
+																	self.Menu:SetParent(
+																		self:GetParent():GetParent():GetParent());
+																end);
 															end,
 														},
+														Default = {
+															Points = {
+																[1] = { "TOPLEFT", 4, -43 },
+																[2] = { "BOTTOMRIGHT", -4, 0 },
+															},
+															Children = {
+																Prev = {
+																	Type = "Button",
+																	Size = { 32, 32 },
+																	Points = {
+																		[1] = { "BOTTOMLEFT", 0, 0 }
+																	},
+																	OnLoad = function(self)
+																		self:SetNormalTexture("Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Up");
+																		self:SetPushedTexture("Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Down");
+																		self:SetDisabledTexture("Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Disabled");
+																		self:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight", "ADD");
+																		-- OnClicky.
+																		self:SetScript("OnClick", function(self)
+																			PowaAuras:SaveSetting("Aura.texture", 
+																				max(1, PowaAuras:GetSetting("Aura.texture")-1));
+																		end);
+																	end,
+																},
+																Label = {
+																	Type = "FontString",
+																	Inherits = "PowaFontHighlight",
+																	RelativeAnchor = true,
+																	Points = {
+																		[1] = { "TOPLEFT", "BOTTOMLEFT", 36, 32 },
+																		[2] = { "BOTTOMRIGHT", -36, 16 },
+																	},
+																},
+																Error = {
+																	Type = "FontString",
+																	Inherits = "PowaFontHighlight",
+																	RelativeAnchor = true,
+																	Points = {
+																		[1] = { "TOPLEFT", "BOTTOMLEFT", 36, 16 },
+																		[2] = { "BOTTOMRIGHT", -36, 0 },
+																	},
+																	Text = PowaAuras.Text["UI_Editor_Aura_SourceErr"],
+																},
+																Next = {
+																	Type = "Button",
+																	Size = { 32, 32 },
+																	Points = {
+																		[1] = { "BOTTOMRIGHT", 0, 0 }
+																	},
+																	OnLoad = function(self)
+																		self:SetNormalTexture("Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up");
+																		self:SetPushedTexture("Interface\\Buttons\\UI-SpellbookIcon-NextPage-Down");
+																		self:SetDisabledTexture("Interface\\Buttons\\UI-SpellbookIcon-NextPage-Disabled");
+																		self:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight", "ADD");
+																		-- OnClicky.
+																		self:SetScript("OnClick", function(self)
+																			PowaAuras:SaveSetting("Aura.texture", 
+																				PowaAuras:GetSetting("Aura.texture")+1);
+																		end);
+																	end,
+																},
+															},
+														},
+														WoW = {
+															Points = {
+																[1] = { "TOPLEFT", 4, -43 },
+																[2] = { "BOTTOMRIGHT", -4, 0 },
+															},
+															Children = {
+																Prev = {
+																	Type = "Button",
+																	Size = { 32, 32 },
+																	Points = {
+																		[1] = { "BOTTOMLEFT", 0, 0 }
+																	},
+																	OnLoad = function(self)
+																		self:SetNormalTexture("Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Up");
+																		self:SetPushedTexture("Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Down");
+																		self:SetDisabledTexture("Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Disabled");
+																		self:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight", "ADD");
+																		-- OnClicky.
+																		self:SetScript("OnClick", function(self)
+																			PowaAuras:SaveSetting("Aura.texture", 
+																				max(1, PowaAuras:GetSetting("Aura.texture")-1));
+																		end);
+																	end,
+																},
+																Label = {
+																	Type = "FontString",
+																	Inherits = "PowaFontHighlight",
+																	RelativeAnchor = true,
+																	Points = {
+																		[1] = { "TOPLEFT", "BOTTOMLEFT", 36, 32 },
+																		[2] = { "BOTTOMRIGHT", -36, 16 },
+																	},
+																},
+																Error = {
+																	Type = "FontString",
+																	Inherits = "PowaFontHighlight",
+																	RelativeAnchor = true,
+																	Points = {
+																		[1] = { "TOPLEFT", "BOTTOMLEFT", 36, 16 },
+																		[2] = { "BOTTOMRIGHT", -36, 0 },
+																	},
+																	Text = PowaAuras.Text["UI_Editor_Aura_SourceErr"],
+																},
+																Next = {
+																	Type = "Button",
+																	Size = { 32, 32 },
+																	Points = {
+																		[1] = { "BOTTOMRIGHT", 0, 0 }
+																	},
+																	OnLoad = function(self)
+																		self:SetNormalTexture("Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up");
+																		self:SetPushedTexture("Interface\\Buttons\\UI-SpellbookIcon-NextPage-Down");
+																		self:SetDisabledTexture("Interface\\Buttons\\UI-SpellbookIcon-NextPage-Disabled");
+																		self:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight", "ADD");
+																		-- OnClicky.
+																		self:SetScript("OnClick", function(self)
+																			PowaAuras:SaveSetting("Aura.texture", 
+																				PowaAuras:GetSetting("Aura.texture")+1);
+																		end);
+																	end,
+																},
+															},
+														},
+														Custom = {
+															Type = "Texture",
+															Points = {
+																[1] = { "TOPLEFT", 4, -43 },
+																[2] = { "BOTTOMRIGHT", -4, 0 },
+															},
+															Layer = "BACKGROUND",
+															Texture = { 0.75, 0, 0.75 },
+														},
+														Text = {},
+														Icon = {}, -- Blank frame for icon.
 													},
 													OnLoad = function(self)
+														-- I am tab frame, the framiest of the tabs. Behold my glory.
+														PowaAuras.UI:SourceControlledTabFrame(self, self.Source, 
+															"OnDropdownItemSelected");
+														-- Add tabs.
+														self:AddTab(self.Default);
+														self:AddTab(self.WoW);
+														self:AddTab(self.Custom);
+														self:AddTab(self.Text);
+														self:AddTab(self.Icon);
+														-- Update selection.
+														self:SetSelectedTab(self.Source:GetSelectedKey());
 													end,
 												},
 												CatStyle = {
@@ -253,27 +470,21 @@ local AuraEditor = {
 													Type = "CheckButton",
 													Inherits = "PowaColorPickerTemplate",
 													Class = "AuraColorPicker",
-													OnLoad = function(self)
-														self:SetText("UI_Editor_Aura_Color");
-													end,
+													Text = "UI_Editor_Aura_Color",
 												},
 												StyleRndColor = {
 													Type = "CheckButton",
 													Inherits = "PowaCheckboxTemplate",
 													Class = "Checkbox",
 													ClassArgs = "Aura.randomcolor",
-													OnLoad = function(self)
-														self:SetText("UI_Editor_Aura_RndColor");
-													end,
+													Text = "UI_Editor_Aura_RndColor",
 												},
 												StyleGlow = {
 													Type = "CheckButton",
 													Inherits = "PowaCheckboxTemplate",
 													Class = "Checkbox",
 													ClassArgs = "Aura.texmode",
-													OnLoad = function(self)
-														self:SetText("UI_Editor_Aura_Glow");
-													end,
+													Text = "UI_Editor_Aura_Glow",
 												},
 												CatSize = {
 													Type = "Class",
@@ -339,7 +550,6 @@ local AuraEditor = {
 															self:AddItem(i, PowaAuras.Text["UI_FlipTypes"][i]);
 														end
 														-- Update.
-														self:SetSelectedKey(self:GetSetting());
 														self:UpdateText(self:GetSetting());
 														self:SetScript("OnDropdownMenuPosition", function(self)
 															-- Normal position.
@@ -363,7 +573,6 @@ local AuraEditor = {
 														self:AddItem("MEDIUM", levels[3]);
 														self:AddItem("HIGH", levels[4]);
 														-- Update.
-														self:SetSelectedKey(self:GetSetting());
 														self:UpdateText(self:GetSetting());
 														self:SetScript("OnDropdownMenuPosition", function(self)
 															-- Normal position.
@@ -441,6 +650,7 @@ local AuraEditor = {
 										[2] = { "BOTTOMRIGHT", -4, 4 },
 									},
 									Children = {
+
 										Child = {
 											Inherits = "PowaTitledFrameTemplate",
 											Class = "LayoutFrame",
@@ -494,7 +704,7 @@ local AuraEditor = {
 							},
 							OnLoad = function(self)
 								-- Register class manually.
-								PowaAuras.UI:TreeControlledTabFrame(self, self:GetParent().Tree);
+								PowaAuras.UI:SourceControlledTabFrame(self, self:GetParent().Tree);
 								-- Add tabs.
 								self:AddTab(self[1]);
 								self:AddTab(self[2]);
@@ -551,7 +761,7 @@ local AuraEditor = {
 												-- Set localized title.
 												self:SetText("UI_Editor_Type");
 												-- Initialise as dropdown. No settings, though.
-												PowaAuras.UI:Dropdown(self);
+												PowaAuras.UI:LabelledDropdown(self);
 												-- Add all possible types.
 												for k, v in pairs(PowaAuras.BuffTypes) do
 													self:AddItem(v, PowaAuras.Text["AuraType"][v], 
@@ -559,22 +769,15 @@ local AuraEditor = {
 												end
 												-- Sort.
 												self:SortItems();
-												-- Register settings callback to update the text.
-												PowaAuras:RegisterSettingCallback(function(key, value)
-													if(key ~= "Aura.bufftype") then
-														return;
-													end
-													-- Fix selection.
-													self:SetSelectedKey(value);
-												end);
+												self:UpdateText(PowaAuras:GetSetting("Aura.bufftype"));
 												-- Register callback script.
 												self:SetScript("OnDropdownItemSelected", function(self, key)
 													-- Change selected aura type.
 													local id = PowaBrowser:GetSelectedAura() or 0;
 													if(PowaAuras.Auras[id]) then
 														PowaAuras:ChangeAuraType(id, key);
-														PowaAuras:UpdateSetting("Aura.bufftype", key);
 														PowaAuras:ToggleAuraDisplay(id, true);
+														PowaAuras:UpdateSetting("Aura.bufftype", key);
 													end
 												end);
 											end,
@@ -590,6 +793,8 @@ local AuraEditor = {
 											if(key ~= "Aura.bufftype") then
 												return;
 											end
+											-- Update dropdown text.
+											self.Type:UpdateText(value);
 											-- Get edited aura.
 											local aura = PowaAuras.Auras[(PowaBrowser:GetSelectedAura() or 0)];
 											if(not aura) then return; end
@@ -641,7 +846,7 @@ local AuraEditor = {
 							},
 							OnLoad = function(self)
 								-- Register class manually.
-								PowaAuras.UI:TreeControlledTabFrame(self, self:GetParent().Tree);
+								PowaAuras.UI:SourceControlledTabFrame(self, self:GetParent().Tree);
 								-- Add tabs.
 								self:AddTab(self[1]);
 								self:AddTab(self[2]);
@@ -694,6 +899,8 @@ local AuraEditor = {
 		},
 	},
 	OnLoad = function(self)
+		-- Do class now.
+		PowaAuras.UI:AuraEditor(self);
 		-- Localize title.
 		self.Title:SetText(PowaAuras.Text["UI_Editor"]);
 	end,
@@ -701,6 +908,7 @@ local AuraEditor = {
 
 
 -- Build editor.
+
 PowaAuras.UI:BuildFrameFromDefinition(AuraEditor, UIParent);
 -- Nil out the definition to save memory. Garbage collector will pick it up at some point.
 AuraEditor = nil;

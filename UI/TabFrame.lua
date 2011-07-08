@@ -86,29 +86,28 @@ PowaAuras.UI:Register("TabFrame", {
 });
 
 -- Tab frame that is linked to a tree view. If either changes the selected index/key, then they are both updated.
-PowaAuras.UI:Register("TreeControlledTabFrame", {
+PowaAuras.UI:Register("SourceControlledTabFrame", {
 	Base = "TabFrame",
-	Init = function(self, tree)
-		-- Initialize tab frame.
+	Init = function(self, frame, script, getterFunc, setterFunc)
+		-- Normal init.
 		PowaAuras.UI.TabFrame.Init(self, "TabButtonBase");
-		-- Need a tree.
-		if(not tree) then
+		if(not frame) then
 			return;
 		end
-		-- Replace tree view update func.
-		tree:SetScript("OnSelectedKeyChanged", function(tree, key)
-			-- Update selected tab.
+		-- I like big scripts and I cannot lie.
+		frame:SetScript(script or "OnSelectedKeyChanged", function(frame, key)
 			self:SetSelectedTab(key);
 		end);
-		-- Store tree.
-		self.Tree = tree;
+		self.ControllerFrame = frame;
+		self.ControllerKeyGetter = getterFunc or "GetSelectedKey";
+		self.ControllerKeySetter = setterFunc or "SetSelectedKey";
 	end,
 	SetSelectedTab = function(self, index)
 		-- Call parent func.
 		PowaAuras.UI.TabFrame.SetSelectedTab(self, index);
-		-- Make sure keys/indexes match.
-		if(self.Tree:GetSelectedKey() ~= index) then
-			self.Tree:SetSelectedKey(index);
+		-- Update.
+		if(self.ControllerFrame[self.ControllerKeyGetter](self.ControllerFrame) ~= index) then
+			self.ControllerFrame[self.ControllerKeySetter](self.ControllerFrame, index);
 		end
 	end,
 });
