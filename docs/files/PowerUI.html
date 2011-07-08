@@ -321,19 +321,19 @@ Returns the constructed class.
 Initialises a frame with an anonymous widget class, which extends a class on the fly to create a class tailored to specific needs at runtime. The class is then immediately constructed afterwards.
 
 
-<h3>Parameters</h3>
+<h3>Parameters:</h3>
 <ul>
 	
 	<li>
-	  class: The name of the class to extend.
+	  <code><em>class</em></code>: The name of the class to extend.
 	</li>
 	
 	<li>
-	  data: The data table of the class to merge in.
+	  <code><em>data</em></code>: The data table of the class to merge in.
 	</li>
 	
 	<li>
-	  ...: Any arguments to pass to the constructor and init functions.
+	  <code><em>...</em></code>: Any arguments to pass to the constructor and init functions.
 	</li>
 	
 </ul>
@@ -358,15 +358,15 @@ Returns the constructed frame.
 Builds a frame from a table based definition. This allows you to bypass using XML for frame creation while also handling all of the boring SetPoint/SetSize calls that are otherwise present.
 
 
-<h3>Parameters</h3>
+<h3>Parameters:</h3>
 <ul>
 	
 	<li>
-	  def: The definition to load.
+	  <code><em>def</em></code>: The definition to load.
 	</li>
 	
 	<li>
-	  parent: The parent frame of the frame.
+	  <code><em>parent</em></code>: The parent frame of the frame.
 	</li>
 	
 </ul>
@@ -391,19 +391,19 @@ Returns the constructed frame.
 Generic constructor function for all UI widgets. Performs the mundane functions of copying the Hooks and values from the class definitions, registering scripts and initialising the widget.
 
 
-<h3>Parameters</h3>
+<h3>Parameters:</h3>
 <ul>
 	
 	<li>
-	  ui: The PowaAuras.UI table.
+	  <code><em>ui</em></code>: The PowaAuras.UI table.
 	</li>
 	
 	<li>
-	  widget: The frame to be constructed with a class.
+	  <code><em>widget</em></code>: The frame to be constructed with a class.
 	</li>
 	
 	<li>
-	  ...: Arguments to be passed to the Init function of the class, if it exists.
+	  <code><em>...</em></code>: Arguments to be passed to the Init function of the class, if it exists.
 	</li>
 	
 </ul>
@@ -425,19 +425,19 @@ Generic constructor function for all UI widgets. Performs the mundane functions 
 Turns a widget definition table into metatables with constructor-like functionality.
 
 
-<h3>Parameters</h3>
+<h3>Parameters:</h3>
 <ul>
 	
 	<li>
-	  name: The name of the widget class to define.
+	  <code><em>name</em></code>: The name of the widget class to define.
 	</li>
 	
 	<li>
-	  data: The table of data to use when defining the class.
+	  <code><em>data</em></code>: The table of data to use when defining the class.
 	</li>
 	
 	<li>
-	  isAnonymous: Defaults to false, if set to true then the name of the class is not checked and it will not be registered with the UI table.
+	  <code><em>isAnonymous</em></code>: Defaults to false, if set to true then the name of the class is not checked and it will not be registered with the UI table.
 	</li>
 	
 </ul>
