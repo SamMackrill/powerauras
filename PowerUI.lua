@@ -141,14 +141,14 @@ end
 function PowaAuras.UI:Register(name, data, isAnonymous)
 	-- Simple check...
 	if(not isAnonymous and self[name]) then
-		return PowaAuras:Debug("Widget type with name ", name, " already exists.");
+		return PowaAuras:GlobalDebug("Widget type with name ", name, " already exists.");
 	end
 	-- Does the data reference a parent class?
 	if(data.Base) then
 		-- Turn the base class name into a direct reference.
 		if(not self[data.Base]) then
 			-- Error!
-			return PowaAuras:ShowText("No class named ", data.Base, " could be inherited for class ", name, ".");
+			return PowaAuras:Message("No class named ", data.Base, " could be inherited for class ", name, ".");
 		else
 			data.Base = self[data.Base];
 		end

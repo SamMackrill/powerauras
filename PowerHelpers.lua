@@ -441,7 +441,7 @@ end
 -- @param auraID The ID of the aura to use when updating a saved variable table. If omitted, then both the Global and
 -- Class tables are updated for all auras.
 function PowaAuras:UpdateAuraTables(auraID)
-	PowaAuras:ShowText("Updating aura tables for id: " .. tostring(auraID));
+	PowaAuras:TraceInfo("Updating aura tables for id: ", auraID);
 	-- Any aura ID?
 	if(auraID and auraID > 0) then
 		if(auraID > 120 and auraID < 361) then

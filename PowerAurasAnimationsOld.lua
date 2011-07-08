@@ -22,19 +22,19 @@ end);
 
 
 function cPowaAnimationBase:InitialiseBase()
-	--PowaAuras:Message("Base:InitialiseBase aura="..tostring(self.Aura).." frame="..tostring(self.Frame));
+	--PowaAuras:TraceInfo("Base:InitialiseBase aura="..tostring(self.Aura).." frame="..tostring(self.Frame));
 	self.StartWidth = self.TargetWidth;
 	self.StartHeight = self.TargetHeight;
 	self.StartAlpha = self.TargetAlpha;
 	self:Reset();
 end
 function cPowaAnimationBase:Initialise()
-	--PowaAuras:Message("Base:Initialise aura="..tostring(self.Aura).." frame="..tostring(self.Frame));
+	--PowaAuras:TraceInfo("Base:Initialise aura="..tostring(self.Aura).." frame="..tostring(self.Frame));
 	self:InitialiseBase();
 end
 
 function cPowaAnimationBase:ResetBase()
-	--PowaAuras:Message("Base:ResetBase aura="..tostring(self.Aura).." frame="..tostring(self.Frame));
+	--PowaAuras:TraceInfo("Base:ResetBase aura="..tostring(self.Aura).." frame="..tostring(self.Frame));
 	self.State = 0;
 	self.Width = self.StartWidth;
 	self.Height = self.StartHeight;
@@ -43,19 +43,19 @@ function cPowaAnimationBase:ResetBase()
 end
 
 function cPowaAnimationBase:Reset()
-	--PowaAuras:Message("Base:Reset aura="..tostring(self.Aura).." frame="..tostring(self.Frame));
+	--PowaAuras:TraceInfo("Base:Reset aura="..tostring(self.Aura).." frame="..tostring(self.Frame));
 	self:ResetBase();
 end
 
 function cPowaAnimationBase:UpdateFrameBase()
-	--PowaAuras:Message("Base:UpdateFrameBase aura="..tostring(self.Aura).." frame="..tostring(self.Frame));
+	--PowaAuras:TraceInfo("Base:UpdateFrameBase aura="..tostring(self.Aura).." frame="..tostring(self.Frame));
 	self.Frame:SetWidth(self.Width);
 	self.Frame:SetHeight(self.Height);
 	self.Frame:SetAlpha(math.min(self.Alpha,0.99));
 end 
 
 function cPowaAnimationBase:UpdateFrame()
-	--PowaAuras:Message("Base:UpdateFrame aura="..tostring(self.Aura).." frame="..tostring(self.Frame));
+	--PowaAuras:TraceInfo("Base:UpdateFrame aura="..tostring(self.Aura).." frame="..tostring(self.Frame));
 	self:UpdateFrameBase();
 end 
 
@@ -66,12 +66,12 @@ end
 
 cPowaAnimationBaseTranslate = PowaClass(cPowaAnimationBase);
 function cPowaAnimationBaseTranslate:UpdateFrame()
-	--PowaAuras:Message("BaseTranslate:UpdateFrame aura="..tostring(self.Aura).." frame="..tostring(self.Frame));
+	--PowaAuras:TraceInfo("BaseTranslate:UpdateFrame aura="..tostring(self.Aura).." frame="..tostring(self.Frame));
 	self.Frame:SetPoint("Center", self.X, self.Y);
 	self:UpdateFrameBase();
 end 
 function cPowaAnimationBaseTranslate:InitialiseBase()
-	--PowaAuras:Message("BaseTranslate:Initialise aura="..tostring(self.Aura).." frame="..tostring(self.Frame));
+	--PowaAuras:TraceInfo("BaseTranslate:Initialise aura="..tostring(self.Aura).." frame="..tostring(self.Frame));
 	self.StartWidth = self.TargetWidth;
 	self.StartHeight = self.TargetHeight;
 	self.TargetX = self.Aura.x;
@@ -79,7 +79,7 @@ function cPowaAnimationBaseTranslate:InitialiseBase()
 	self.X = self.TargetX + self.OffsetX;
 	self.Y = self.TargetY + self.OffsetY;
 	self.StartAlpha = 0.0;
-	--PowaAuras:Message("BaseTranslate:Initialise X="..tostring(self.X).." Y="..tostring(self.Y));
+	--PowaAuras:TraceInfo("BaseTranslate:Initialise X="..tostring(self.X).." Y="..tostring(self.Y));
 	self:ResetBase();
 end
 function cPowaAnimationBaseTranslate:Initialise()
@@ -116,7 +116,7 @@ end
 
 cPowaAnimationBeginZoomOut = PowaClass(cPowaAnimationBase);
 function cPowaAnimationBeginZoomOut:Initialise()
-	--PowaAuras:Message("BeginZoomOut:Reset aura="..tostring(self.Aura).." frame="..tostring(self.Frame));
+	--PowaAuras:TraceInfo("BeginZoomOut:Reset aura="..tostring(self.Aura).." frame="..tostring(self.Frame));
 	self.StartWidth = self.TargetWidth * 0.5;
 	self.StartHeight = self.TargetHeight * 0.5;
 	self.StartAlpha = 0.0;
@@ -144,14 +144,14 @@ end
 
 cPowaAnimationBeginFadeIn = PowaClass(cPowaAnimationBase);
 function cPowaAnimationBeginFadeIn:Initialise()
-	--PowaAuras:Message("BeginFadeIn:Initialise aura="..tostring(self.Aura).." frame="..tostring(self.Frame));
+	--PowaAuras:TraceInfo("BeginFadeIn:Initialise aura="..tostring(self.Aura).." frame="..tostring(self.Frame));
 	self.StartWidth = self.TargetWidth;
 	self.StartHeight = self.TargetHeight;
 	self.StartAlpha = 0.0;
 	self:Reset();
 end
 function cPowaAnimationBeginFadeIn:Update(elapsed)
-	--PowaAuras:Message("BeginFadeIn Update ", elapsed);
+	--PowaAuras:TraceInfo("BeginFadeIn Update ", elapsed);
 
 	self.Alpha  = self.Alpha + elapsed * 2 * self.Aura.speed * self.TargetAlpha;
 	local result = false;
@@ -165,24 +165,24 @@ end
 
 cPowaAnimationBeginTranslate = PowaClass(cPowaAnimationBaseTranslate);
 function cPowaAnimationBeginTranslate:Update(elapsed)
-	--PowaAuras:Message("BeginTranslate Update ", elapsed);
+	--PowaAuras:TraceInfo("BeginTranslate Update ", elapsed);
 
 	self.Alpha  = math.max(self.TargetAlpha + elapsed * self.TranslationSpeed * self.Aura.speed * self.TargetAlpha, self.TargetAlpha);
 
 	local step = elapsed * self.TranslationSpeed * 100 * self.Aura.speed;
 
-	--PowaAuras:Message("step ", step);
-	--PowaAuras:Message("X=", self.X, " Y=", self.Y);
+	--PowaAuras:TraceInfo("step ", step);
+	--PowaAuras:TraceInfo("X=", self.X, " Y=", self.Y);
 	
 	self.X = self.X + self.DirectionX * step;
 	self.Y = self.Y + self.DirectionY * step;
-	--PowaAuras:Message("X=", self.X, " Y=", self.Y);
-	--PowaAuras:Message("TargetX=", self.TargetX, " TargetY=", self.TargetY);
-	--PowaAuras:Message("dX=", self.DirectionX * (self.X - self.TargetX), " dY=", self.DirectionY * (self.Y - self.TargetY));
+	--PowaAuras:TraceInfo("X=", self.X, " Y=", self.Y);
+	--PowaAuras:TraceInfo("TargetX=", self.TargetX, " TargetY=", self.TargetY);
+	--PowaAuras:TraceInfo("dX=", self.DirectionX * (self.X - self.TargetX), " dY=", self.DirectionY * (self.Y - self.TargetY));
 	
 	local result = false;
 	if (((self.DirectionX * (self.X - self.TargetX)) >= 0) and (self.DirectionY * (self.Y - self.TargetY) >= 0)) then
-		--PowaAuras:Message("Finished");
+		--PowaAuras:TraceInfo("Finished");
 		self.X = self.TargetX;
 		self.Y = self.TargetY;
 		self.Alpha = self.TargetAlpha;
@@ -207,7 +207,7 @@ cPowaAnimationBeginBounce = PowaClass(cPowaAnimationBaseTranslate, {OffsetX=0, O
 function cPowaAnimationBeginBounce:Initialise()
 	self.Velocity = 0;
 	self:InitialiseBase();
-	--PowaAuras:Message("Bounce Init v=", self.Velocity, " Y=", self.Y);
+	--PowaAuras:TraceInfo("Bounce Init v=", self.Velocity, " Y=", self.Y);
 end
 function cPowaAnimationBeginBounce:Update(elapsed)
 	----PowaAuras:UnitTestInfo("BeginBounce Update ", elapsed);
@@ -535,8 +535,8 @@ function cPowaAnimationOrbit:Initialise()
 	self.Y = self.TargetY;
 	self.MaxWidth  = math.max(self.TargetX, -self.TargetX, 5) * 1.0;
 	self.MaxHeight = self.MaxWidth * (1.6 - self.Aura.torsion);
-	--PowaAuras:ShowText("MaxWidth ", self.MaxWidth);
-	--PowaAuras:ShowText("MaxHeight ", self.MaxHeight);
+	--PowaAuras:TraceInfo("MaxWidth ", self.MaxWidth);
+	--PowaAuras:TraceInfo("MaxHeight ", self.MaxHeight);
 	self.Width     = self.TargetWidth / self.Aura.torsion;
 	self.Height    = self.TargetHeight / (2-self.Aura.torsion);
 	self.Angle = 0;
@@ -618,7 +618,7 @@ PowaAuras.AnimationBeginClasses = {
 }
 
 function PowaAuras:AnimationBeginFactory(animationType, aura, frame, base)
-	--self:Message("AnimationBeginFactory "..tostring(animationType).." aura.id="..tostring(aura.id).." frame="..tostring(frame));
+	--self:TraceInfo("AnimationBeginFactory "..tostring(animationType).." aura.id="..tostring(aura.id).." frame="..tostring(frame));
 	if (not base) then
 		base = {};
 	end
@@ -635,7 +635,7 @@ PowaAuras.AnimationEndClasses = {
 }
 
 function PowaAuras:AnimationEndFactory(animationType, aura, frame, base)
-	--self:Message("AnimationEndFactory type="..tostring(animationType).." aura.id="..tostring(aura.id).." frame="..tostring(frame));
+	--self:TraceInfo("AnimationEndFactory type="..tostring(animationType).." aura.id="..tostring(aura.id).." frame="..tostring(frame));
 	if (aura.isSecondary) then
 		return nil;
 	end
@@ -647,7 +647,7 @@ function PowaAuras:AnimationEndFactory(animationType, aura, frame, base)
 end
 
 function PowaAuras:AnimationMainFactory(animationType, aura, frame, base)
-	--self:ShowText("AnimationMainFactory type="..tostring(animationType).." aura.id="..tostring(aura.id).." frame="..tostring(frame));
+	--self:TraceInfo("AnimationMainFactory type="..tostring(animationType).." aura.id="..tostring(aura.id).." frame="..tostring(frame));
 	if (animationType==PowaAuras.AnimationTypes.Invisible) then
 		return nil;
 	end
@@ -661,7 +661,7 @@ function PowaAuras:AnimationFactory(animationType, classList, aura, frame, base)
 	end
 	local class = classList[animationType];
 	if (class) then
-		--self:ShowText("AnimationFactory type="..tostring(animationType).." aura.id="..tostring(aura.id).." class="..tostring(class).." frame="..tostring(frame));
+		--self:TraceInfo("AnimationFactory type="..tostring(animationType).." aura.id="..tostring(aura.id).." class="..tostring(class).." frame="..tostring(frame));
 		if (not base) then
 			base = {};
 		end
@@ -672,6 +672,6 @@ function PowaAuras:AnimationFactory(animationType, classList, aura, frame, base)
 		end
 		return animation;
 	end
-	--self:ShowText("AnimationFactory Unknown "..tostring(animationType).." auraId="..tostring(aura.id)); --OK
+	--self:TraceInfo("AnimationFactory Unknown "..tostring(animationType).." auraId="..tostring(aura.id)); --OK
 	return nil;
 end
