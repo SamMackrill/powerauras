@@ -237,13 +237,13 @@
 <table class="function_list">
 
 	<tr>
-	<td class="name" nowrap><a href="#PowaAuras:DisplayTable">PowaAuras:DisplayTable</a>&nbsp;(t, indent)</td>
-	<td class="summary">Dump out a table to the chat frame </td>
+	<td class="name" nowrap><a href="#PowaAuras:Debug">PowaAuras:Debug</a>&nbsp;(...)</td>
+	<td class="summary">Display a debug message in the chat frame, used by aura and event level tracing </td>
 	</tr>
 
 	<tr>
-	<td class="name" nowrap><a href="#PowaAuras:DisplayText">PowaAuras:DisplayText</a>&nbsp;(...)</td>
-	<td class="summary">Display a message in the chat frame, comma seperate arguments rather than use string concatination as this will do nil protection Use this for real messages instead of ShowText </td>
+	<td class="name" nowrap><a href="#PowaAuras:DisplayTable">PowaAuras:DisplayTable</a>&nbsp;(t, indent)</td>
+	<td class="summary">Dump out a table to the chat frame </td>
 	</tr>
 
 	<tr>
@@ -254,6 +254,11 @@
 	<tr>
 	<td class="name" nowrap><a href="#PowaAuras:GetFlipTexCoords">PowaAuras:GetFlipTexCoords</a>&nbsp;(flipMode)</td>
 	<td class="summary">Returns the texture coordinates to apply to an image which needs to be flipped horizontally, vertically or both.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:GlobalDebug">PowaAuras:GlobalDebug</a>&nbsp;(...)</td>
+	<td class="summary">Display a debug message in the chat frame, if global debugging is enabled </td>
 	</tr>
 
 	<tr>
@@ -287,11 +292,6 @@
 	</tr>
 
 	<tr>
-	<td class="name" nowrap><a href="#PowaAuras:ShowText">PowaAuras:ShowText</a>&nbsp;(...)</td>
-	<td class="summary">Display a message in the chat frame, comma seperate arguments rather than use string concatination as this will do nil protection Use this for temp debug messages </td>
-	</tr>
-
-	<tr>
 	<td class="name" nowrap><a href="#PowaAuras:TableEmpty">PowaAuras:TableEmpty</a>&nbsp;(t)</td>
 	<td class="summary">Check if table is empty </td>
 	</tr>
@@ -299,6 +299,16 @@
 	<tr>
 	<td class="name" nowrap><a href="#PowaAuras:TableSize">PowaAuras:TableSize</a>&nbsp;(t)</td>
 	<td class="summary">Get number of element in table, does not require indicies to be sequencial like #t </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:TraceError">PowaAuras:TraceError</a>&nbsp;(...)</td>
+	<td class="summary">Display a message in the chat frame, comma seperate arguments rather than use string concatination as this will do nil protection Use this for debug error messages </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:TraceInfo">PowaAuras:TraceInfo</a>&nbsp;(...)</td>
+	<td class="summary">Display a message in the chat frame, comma seperate arguments rather than use string concatination as this will do nil protection Use this for debug information messages </td>
 	</tr>
 
 </table>
@@ -389,20 +399,16 @@
 
 
 
-<dt><a name="PowaAuras:DisplayTable"></a><strong>PowaAuras:DisplayTable</strong>&nbsp;(t, indent)</dt>
+<dt><a name="PowaAuras:Debug"></a><strong>PowaAuras:Debug</strong>&nbsp;(...)</dt>
 <dd>
-Dump out a table to the chat frame
+Display a debug message in the chat frame, used by aura and event level tracing
 
 
 <h3>Parameters</h3>
 <ul>
 	
 	<li>
-	  t: 
-	</li>
-	
-	<li>
-	  indent: 
+	  ...: 
 	</li>
 	
 </ul>
@@ -419,16 +425,20 @@ Dump out a table to the chat frame
 
 
 
-<dt><a name="PowaAuras:DisplayText"></a><strong>PowaAuras:DisplayText</strong>&nbsp;(...)</dt>
+<dt><a name="PowaAuras:DisplayTable"></a><strong>PowaAuras:DisplayTable</strong>&nbsp;(t, indent)</dt>
 <dd>
-Display a message in the chat frame, comma seperate arguments rather than use string concatination as this will do nil protection Use this for real messages instead of ShowText
+Dump out a table to the chat frame
 
 
 <h3>Parameters</h3>
 <ul>
 	
 	<li>
-	  ...: 
+	  t: 
+	</li>
+	
+	<li>
+	  indent: 
 	</li>
 	
 </ul>
@@ -496,6 +506,32 @@ Returns the texture coordinates to apply to an image which needs to be flipped h
 
 <h3>Return value:</h3>
 8 texture coordinates, which can be passed directly to a SetTexCoord call.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:GlobalDebug"></a><strong>PowaAuras:GlobalDebug</strong>&nbsp;(...)</dt>
+<dd>
+Display a debug message in the chat frame, if global debugging is enabled
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  ...: 
+	</li>
+	
+</ul>
+
+
+
+
+
 
 
 
@@ -742,32 +778,6 @@ Rotates the given texture by a certain amount of degrees.
 
 
 
-<dt><a name="PowaAuras:ShowText"></a><strong>PowaAuras:ShowText</strong>&nbsp;(...)</dt>
-<dd>
-Display a message in the chat frame, comma seperate arguments rather than use string concatination as this will do nil protection Use this for temp debug messages
-
-
-<h3>Parameters</h3>
-<ul>
-	
-	<li>
-	  ...: 
-	</li>
-	
-</ul>
-
-
-
-
-
-
-
-
-</dd>
-
-
-
-
 <dt><a name="PowaAuras:TableEmpty"></a><strong>PowaAuras:TableEmpty</strong>&nbsp;(t)</dt>
 <dd>
 Check if table is empty
@@ -818,6 +828,58 @@ Get number of element in table, does not require indicies to be sequencial like 
 
 <h3>Return value:</h3>
 integer count or nil if not a table
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:TraceError"></a><strong>PowaAuras:TraceError</strong>&nbsp;(...)</dt>
+<dd>
+Display a message in the chat frame, comma seperate arguments rather than use string concatination as this will do nil protection Use this for debug error messages
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  ...: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:TraceInfo"></a><strong>PowaAuras:TraceInfo</strong>&nbsp;(...)</dt>
+<dd>
+Display a message in the chat frame, comma seperate arguments rather than use string concatination as this will do nil protection Use this for debug information messages
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  ...: 
+	</li>
+	
+</ul>
+
+
+
+
+
 
 
 

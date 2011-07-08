@@ -374,15 +374,15 @@
 Attempts to change the type of the aura with the given ID.
 
 
-<h3>Parameters:</h3>
+<h3>Parameters</h3>
 <ul>
 	
 	<li>
-	  <code><em>id</em></code>: The iD of the aura to change type.
+	  id: The iD of the aura to change type.
 	</li>
 	
 	<li>
-	  <code><em>new</em></code>: The new type of aura.
+	  new: The new type of aura.
 	</li>
 	
 </ul>
@@ -404,11 +404,11 @@ Attempts to change the type of the aura with the given ID.
 Creates a new aura with the default settings and type (Buff) on the given page. If a page is not given, then the currently selected page in the AuraEditor is used.
 
 
-<h3>Parameters:</h3>
+<h3>Parameters</h3>
 <ul>
 	
 	<li>
-	  <code><em>page</em></code>: The page to create the aura on. Leaving this blank will default to the selected page in the aura browser.
+	  page: The page to create the aura on. Leaving this blank will default to the selected page in the aura browser.
 	</li>
 	
 </ul>
@@ -430,11 +430,11 @@ Creates a new aura with the default settings and type (Buff) on the given page. 
 Creates a single aura or an entire aura set from the given import string. The type is determined automatically and if a set is to be imported then all auras on the currently selected page in the editor are deleted. If no page is selected, then it will default to the first page. If you are only importing a single aura, then it will attempt to find space on the currently selected page in the editor. If no space is found then false is returned, and importing is cancelled. It is recommended that you wrap any calls to this function inside of pcall() to prevent lua errors from being displayed to the user.
 
 
-<h3>Parameters:</h3>
+<h3>Parameters</h3>
 <ul>
 	
 	<li>
-	  <code><em>importString</em></code>: The string to read as an import code. The string is trimmed automatically.
+	  importString: The string to read as an import code. The string is trimmed automatically.
 	</li>
 	
 </ul>
@@ -445,7 +445,7 @@ Creates a single aura or an entire aura set from the given import string. The ty
 
 
 <h3>Return value:</h3>
-<ul>True if the import has probably succeeded, false otherwise.</ul>
+True if the import has probably succeeded, false otherwise.
 
 
 
@@ -459,15 +459,15 @@ Creates a single aura or an entire aura set from the given import string. The ty
 Attempts to delete the aura with the given ID. This will in turn invoke an aura reindexing after the aura has been deleted.
 
 
-<h3>Parameters:</h3>
+<h3>Parameters</h3>
 <ul>
 	
 	<li>
-	  <code><em>id</em></code>: The ID of the aura to delete.
+	  id: The ID of the aura to delete.
 	</li>
 	
 	<li>
-	  <code><em>quickDelete</em></code>: Defaults to false, if set to true then ReindexAuras will not be called.
+	  quickDelete: Defaults to false, if set to true then ReindexAuras will not be called.
 	</li>
 	
 </ul>
@@ -489,11 +489,11 @@ Attempts to delete the aura with the given ID. This will in turn invoke an aura 
 Calls UpdateSetting for all Aura related setting keys if the passed aura ID exists.
 
 
-<h3>Parameters:</h3>
+<h3>Parameters</h3>
 <ul>
 	
 	<li>
-	  <code><em>id</em></code>: The ID of the aura to use.
+	  id: The ID of the aura to use.
 	</li>
 	
 </ul>
@@ -515,11 +515,11 @@ Calls UpdateSetting for all Aura related setting keys if the passed aura ID exis
 Determines what page number the given aura ID belongs to.
 
 
-<h3>Parameters:</h3>
+<h3>Parameters</h3>
 <ul>
 	
 	<li>
-	  <code><em>auraID</em></code>: 
+	  auraID: 
 	</li>
 	
 </ul>
@@ -530,7 +530,7 @@ Determines what page number the given aura ID belongs to.
 
 
 <h3>Return value:</h3>
-<ul>The page number the aura ID belongs to.</ul>
+The page number the aura ID belongs to.
 
 
 
@@ -544,11 +544,11 @@ Determines what page number the given aura ID belongs to.
 Determines the next free aura slot on the given page. If no page is specified then the selected page in the aura browser is used.
 
 
-<h3>Parameters:</h3>
+<h3>Parameters</h3>
 <ul>
 	
 	<li>
-	  <code><em>page</em></code>: The page to find a free slot on. If no page is given, the currently selected page is used.
+	  page: The page to find a free slot on. If no page is given, the currently selected page is used.
 	</li>
 	
 </ul>
@@ -561,9 +561,9 @@ Determines the next free aura slot on the given page. If no page is specified th
 <h3>Return values:</h3>
 <ol>
 	
-	<li>A mixed value based on whether or not a free slot could be found on the page. An integer representing the empty aura ID slot if found, or false if no free slot was found on the page.</li>
+	<li>A mixed value based on whether or not a free slot could be found on the page. An integer representing the empty aura ID slot if found, or false if no free slot was found on the page.
 	
-	<li>The page index scanned. You can use this to determine the page scanned if you didn't pass one as a parameter.</li>
+	<li>The page index scanned. You can use this to determine the page scanned if you didn't pass one as a parameter.
 	
 </ol>
 
@@ -579,15 +579,15 @@ Determines the next free aura slot on the given page. If no page is specified th
 Retrieves a setting with the associated key.
 
 
-<h3>Parameters:</h3>
+<h3>Parameters</h3>
 <ul>
 	
 	<li>
-	  <code><em>key</em></code>: The setting to be retrieved.
+	  key: The setting to be retrieved.
 	</li>
 	
 	<li>
-	  <code><em>id</em></code>: The ID of the aura to retrieve settings for, if the key represents an aura setting.
+	  id: The ID of the aura to retrieve settings for, if the key represents an aura setting.
 	</li>
 	
 </ul>
@@ -598,7 +598,7 @@ Retrieves a setting with the associated key.
 
 
 <h3>Return value:</h3>
-<ul>Returns the value associated with the specified setting, or false if the setting does not exist.</ul>
+Returns the value associated with the specified setting, or false if the setting does not exist.
 
 
 
@@ -612,19 +612,19 @@ Retrieves a setting with the associated key.
 Registers a saved variable as a setting, assigning it a key and allowing callbacks to be assigned to the setting. The key should be different from the actual variable name to prevent conflicts.
 
 
-<h3>Parameters:</h3>
+<h3>Parameters</h3>
 <ul>
 	
 	<li>
-	  <code><em>key</em></code>: The key to assign to the specified setting.
+	  key: The key to assign to the specified setting.
 	</li>
 	
 	<li>
-	  <code><em>name</em></code>: The name of the subkey in the location which represents this setting.
+	  name: The name of the subkey in the location which represents this setting.
 	</li>
 	
 	<li>
-	  <code><em>location</em></code>: The location of the setting, use a value from PowaAuras.SettingLocations for this parameter.
+	  location: The location of the setting, use a value from PowaAuras.SettingLocations for this parameter.
 	</li>
 	
 </ul>
@@ -646,11 +646,11 @@ Registers a saved variable as a setting, assigning it a key and allowing callbac
 Registers a callback to be called whenever a setting is updated. Callbacks are supplied two parameters when called, which represent the key of the setting that was updated and the value that was set.
 
 
-<h3>Parameters:</h3>
+<h3>Parameters</h3>
 <ul>
 	
 	<li>
-	  <code><em>func</em></code>: The function to set as a callback. Callbacks cannot be unset.
+	  func: The function to set as a callback. Callbacks cannot be unset.
 	</li>
 	
 </ul>
@@ -661,7 +661,7 @@ Registers a callback to be called whenever a setting is updated. Callbacks are s
 
 
 <h3>Return value:</h3>
-<ul>Returns true if the callback was successfully set, false if the callback already existed.</ul>
+Returns true if the callback was successfully set, false if the callback already existed.
 
 
 
@@ -675,19 +675,19 @@ Registers a callback to be called whenever a setting is updated. Callbacks are s
 Reindexes a specific aura from one ID to another, and updates the aura chains to reflect the change. By default the operation performed is a move, and the aura at the old location will be replaced with a nil value. Note that reindexing auras is a slow operation.
 
 
-<h3>Parameters:</h3>
+<h3>Parameters</h3>
 <ul>
 	
 	<li>
-	  <code><em>oldID</em></code>: The current location of the aura.
+	  oldID: The current location of the aura.
 	</li>
 	
 	<li>
-	  <code><em>newID</em></code>: The new location of the aura.
+	  newID: The new location of the aura.
 	</li>
 	
 	<li>
-	  <code><em>doCopy</em></code>: Optional boolean, set to true if you want the aura to remain in the old location and to copy it to the new location. False is the default behaviour and moves the aura.
+	  doCopy: Optional boolean, set to true if you want the aura to remain in the old location and to copy it to the new location. False is the default behaviour and moves the aura.
 	</li>
 	
 </ul>
@@ -709,15 +709,15 @@ Reindexes a specific aura from one ID to another, and updates the aura chains to
 Reindexes auras both internally and on the AuraBrowser interface, with an optional check to make sure no "gaps" are present.
 
 
-<h3>Parameters:</h3>
+<h3>Parameters</h3>
 <ul>
 	
 	<li>
-	  <code><em>fullCheck</em></code>: Set to true if you want a longer, more costly check to take place. This will move auras around to prevent gaps appearing. The full check is applied to all pages unless specified.
+	  fullCheck: Set to true if you want a longer, more costly check to take place. This will move auras around to prevent gaps appearing. The full check is applied to all pages unless specified.
 	</li>
 	
 	<li>
-	  <code><em>checkPage</em></code>: Optional integer. Pass a specific page number to limit the reindexing operation to that specific page for a significant speed improvement.
+	  checkPage: Optional integer. Pass a specific page number to limit the reindexing operation to that specific page for a significant speed improvement.
 	</li>
 	
 </ul>
@@ -739,19 +739,19 @@ Reindexes auras both internally and on the AuraBrowser interface, with an option
 Saves the given value into a specific setting, and fires any callbacks associated with the setting in the process.
 
 
-<h3>Parameters:</h3>
+<h3>Parameters</h3>
 <ul>
 	
 	<li>
-	  <code><em>key</em></code>: The key of the setting to modify.
+	  key: The key of the setting to modify.
 	</li>
 	
 	<li>
-	  <code><em>value</em></code>: The value to be stored.
+	  value: The value to be stored.
 	</li>
 	
 	<li>
-	  <code><em>id</em></code>: The ID of the aura to set settings for, if the key represents an aura setting.
+	  id: The ID of the aura to set settings for, if the key represents an aura setting.
 	</li>
 	
 </ul>
@@ -762,7 +762,7 @@ Saves the given value into a specific setting, and fires any callbacks associate
 
 
 <h3>Return value:</h3>
-<ul>Returns true if the saving is successful, false otherwise.</ul>
+Returns true if the saving is successful, false otherwise.
 
 
 
@@ -776,11 +776,11 @@ Saves the given value into a specific setting, and fires any callbacks associate
 Checks if the setting with the given key exists.
 
 
-<h3>Parameters:</h3>
+<h3>Parameters</h3>
 <ul>
 	
 	<li>
-	  <code><em>key</em></code>: The settings key to check for.
+	  key: The settings key to check for.
 	</li>
 	
 </ul>
@@ -791,7 +791,7 @@ Checks if the setting with the given key exists.
 
 
 <h3>Return value:</h3>
-<ul>Returns true if the setting exists, false otherwise.</ul>
+Returns true if the setting exists, false otherwise.
 
 
 
@@ -805,19 +805,19 @@ Checks if the setting with the given key exists.
 Toggles the displays of all auras. Can optionally force a specific display state, force a refresh or only update auras that are already actively displaying.
 
 
-<h3>Parameters:</h3>
+<h3>Parameters</h3>
 <ul>
 	
 	<li>
-	  <code><em>activeOnly</em></code>: Set to true if you only want to toggle auras that are actively displaying. Defaults to false.
+	  activeOnly: Set to true if you only want to toggle auras that are actively displaying. Defaults to false.
 	</li>
 	
 	<li>
-	  <code><em>forceDisplay</em></code>: Set to true if you want to force the aura to refresh by toggling it off and then on immediately afterwards. Setting this to true will ignore the state parameter. Defaults to false.
+	  forceDisplay: Set to true if you want to force the aura to refresh by toggling it off and then on immediately afterwards. Setting this to true will ignore the state parameter. Defaults to false.
 	</li>
 	
 	<li>
-	  <code><em>state</em></code>: Forces a specific state to be applied to the auras, set to true if you want the auras to show or false if you want the auras to hide. Nil values will toggle the state to be the inverse of what it is currently, and is the default.
+	  state: Forces a specific state to be applied to the auras, set to true if you want the auras to show or false if you want the auras to hide. Nil values will toggle the state to be the inverse of what it is currently, and is the default.
 	</li>
 	
 </ul>
@@ -839,19 +839,19 @@ Toggles the displays of all auras. Can optionally force a specific display state
 Toggles the display state of an aura, hiding it if already shown and vice versa. Can optionally force a specific state to be used.
 
 
-<h3>Parameters:</h3>
+<h3>Parameters</h3>
 <ul>
 	
 	<li>
-	  <code><em>id</em></code>: The ID of the aura to toggle.
+	  id: The ID of the aura to toggle.
 	</li>
 	
 	<li>
-	  <code><em>state</em></code>: A state to force upon the aura. Pass true to force it to show, or false to force it to hide.
+	  state: A state to force upon the aura. Pass true to force it to show, or false to force it to hide.
 	</li>
 	
 	<li>
-	  <code><em>noUpdate</em></code>: Set to true if you want the aura to display without triggering an update on the AuraBrowser.
+	  noUpdate: Set to true if you want the aura to display without triggering an update on the AuraBrowser.
 	</li>
 	
 </ul>
@@ -873,15 +873,15 @@ Toggles the display state of an aura, hiding it if already shown and vice versa.
 Enables or Disables an aura. Can optionally use this to force a specific state on the aura.
 
 
-<h3>Parameters:</h3>
+<h3>Parameters</h3>
 <ul>
 	
 	<li>
-	  <code><em>id</em></code>: The ID of the aura to enable or disable.
+	  id: The ID of the aura to enable or disable.
 	</li>
 	
 	<li>
-	  <code><em>state</em></code>: An optional state to force on the aura. Set to true if you want the aura to be enabled, false otherwise.
+	  state: An optional state to force on the aura. Set to true if you want the aura to be enabled, false otherwise.
 	</li>
 	
 </ul>
@@ -903,11 +903,11 @@ Enables or Disables an aura. Can optionally use this to force a specific state o
 Updates the global saved variable tables for Global/Class auras to reflect any changes to a specific aura ID or all aura ID's.
 
 
-<h3>Parameters:</h3>
+<h3>Parameters</h3>
 <ul>
 	
 	<li>
-	  <code><em>auraID</em></code>: The ID of the aura to use when updating a saved variable table. If omitted, then both the Global and Class tables are updated for all auras.
+	  auraID: The ID of the aura to use when updating a saved variable table. If omitted, then both the Global and Class tables are updated for all auras.
 	</li>
 	
 </ul>
@@ -929,15 +929,15 @@ Updates the global saved variable tables for Global/Class auras to reflect any c
 Fires all of the setting callbacks, passing the key of the setting that was updated and the new value to the functions.
 
 
-<h3>Parameters:</h3>
+<h3>Parameters</h3>
 <ul>
 	
 	<li>
-	  <code><em>key</em></code>: The key of the setting which has been updated.
+	  key: The key of the setting which has been updated.
 	</li>
 	
 	<li>
-	  <code><em>value</em></code>: The value to be passed to the callback functions.
+	  value: The value to be passed to the callback functions.
 	</li>
 	
 	<li>
@@ -952,7 +952,7 @@ Fires all of the setting callbacks, passing the key of the setting that was upda
 
 
 <h3>Return value:</h3>
-<ul>Returns false if the setting does not exist.</ul>
+Returns false if the setting does not exist.
 
 
 
@@ -968,7 +968,7 @@ Fires all of the setting callbacks, passing the key of the setting that was upda
 <dl class="table">
 
 <dt><a name="PowaAuras.SettingCallbacks"></a><strong>PowaAuras.SettingCallbacks</strong></dt>
-<dd>Stores all of the callbacks to be fired when a setting is updated.<br /><br />
+<dd>Stores all of the callbacks to be fired when a setting is updated.
 
 
 
@@ -976,7 +976,7 @@ Fires all of the setting callbacks, passing the key of the setting that was upda
 
 
 <dt><a name="PowaAuras.SettingLocations"></a><strong>PowaAuras.SettingLocations</strong></dt>
-<dd>Enumeration of possible location types that are accepted by PowaAuras:RegisterSetting().<br /><br />
+<dd>Enumeration of possible location types that are accepted by PowaAuras:RegisterSetting().
 
 
 
@@ -984,7 +984,7 @@ Fires all of the setting callbacks, passing the key of the setting that was upda
 
 
 <dt><a name="PowaAuras.SettingsByKey"></a><strong>PowaAuras.SettingsByKey</strong></dt>
-<dd>Stores all of the registered settings by their associated keys.<br /><br />
+<dd>Stores all of the registered settings by their associated keys.
 
 
 
