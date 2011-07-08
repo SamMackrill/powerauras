@@ -8,7 +8,7 @@ function PowaAuras:ResetTalentScan(unit)
 	end
 	local unitName = UnitName(unit);
 	if (unitName == nil) then return; end
-	--self:Message("Resetting inspect for ",unitName);
+	--self:TraceInfo("Resetting inspect for ",unitName);
 	self.InspectedRoles[unitName] = nil;
 	self.FixRoles[unitName] = nil;
 end
@@ -46,7 +46,7 @@ function PowaAuras:ShouldBeInspected(unit)
 	end
 	
 	local name = self.GroupUnits[unit].Name;
-	--self:Message("ShouldBeInspected? ",unit, " - ", name);
+	--self:TraceInfo("ShouldBeInspected? ",unit, " - ", name);
 
 	if (self.InspectedRoles[name] ~= nil) then
 		return false;
@@ -83,7 +83,7 @@ function PowaAuras:TryInspectNext()
 				self.NextInspectTimeOut = GetTime() + self.InspectTimeOut;
 				self.NextInspectUnit = unit;
 				NotifyInspect(unit);
-				--self:Message("Inspect requested for ",unitInfo.Name);
+				--self:TraceInfo("Inspect requested for ",unitInfo.Name);
 			end
 			return;
 		end
@@ -99,7 +99,7 @@ function PowaAuras:InspectRole()
 		return;
 	end
 	local role = self:InspectUnit(self.NextInspectUnit);
-	--self:Message("Role=",self.Text.Role[role]);
+	--self:TraceInfo("Role=",self.Text.Role[role]);
 	return role;
 end
 
@@ -114,11 +114,11 @@ function PowaAuras:InspectUnit(unit)
 
 	local unitInfo = self.GroupUnits[unit];
 	if (unitInfo == nil) then
-		--self:Message(" Not Found!");
+		--self:TraceInfo(" Not Found!");
 		return;
 	end
 
-	--self:Message("InspectRole: ",unitInfo.Name, " (", unit,")");
+	--self:TraceInfo("InspectRole: ",unitInfo.Name, " (", unit,")");
 
 	local activeTree = GetActiveTalentGroup(isInspect);
 	local _, _, points1 = GetTalentTabInfo(1, isInspect, false, activeTree);

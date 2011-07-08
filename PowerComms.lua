@@ -38,11 +38,11 @@ function PowaComms:Register()
 	RegisterAddonMessagePrefix("POWA");
 	-- Check to see if it's registered (RegisterAddonMessagePrefix may return true even if it fails, just playing safe!).
 	if(not IsAddonMessagePrefixRegistered("POWA")) then
-		if(PowaMisc.debug) then PowaAuras:ShowText("PowaComms:Register() |cFFFF0000failed!|r"); end
+		PowaAuras:GlobalDebug("PowaComms:Register() |cFFFF0000failed!|r");
 		self.Registered = false;
 		return false;
 	else
-		if(PowaMisc.debug) then PowaAuras:ShowText("PowaComms:Register() |cFF00FF00succeeded!|r"); end
+		PowaAuras:GlobalDebug("PowaComms:Register() |cFF00FF00succeeded!|r");
 		self.Registered = true;
 		return true;
 	end
@@ -96,7 +96,7 @@ function PowaComms:SendAddonMessage(instruction, data, to, segment, total)
 	if(not self:IsRegistered()) then return false; end
 	-- Check length.
 	local length = strlen(data);
-	if(PowaMisc.debug) then PowaAuras:ShowText("Comms: Sending instruction " .. instruction .. " (data length " .. length .. ")"); end
+	PowaAuras:DebugGlobal("Comms: Sending instruction ", instruction, " (data length ", length, ")");
 	if(length <= 200) then
 		-- And AWAY!
 		data = "<" .. instruction .. ";" .. (segment or 1) .. ";" .. (total or 1) .. "/>" .. data;
@@ -136,7 +136,7 @@ Executes any handlers for the given instruction.
 --]]
 function PowaComms:FireHandler(instruction, data, from, segpos, segtotal)
 	-- Send data to the appropriate place.
-	if(PowaMisc.debug) then PowaAuras:ShowText("Comms: Firing handler for instruction: " .. instruction); end
+	PowaAuras:DebugGlobal("Comms: Firing handler for instruction: ", instruction);
 	if(self.Handlers[instruction]) then
 		for index, func in pairs(self.Handlers[instruction]) do
 			if(func(self, data, from, segpos, segtotal) == true) then
@@ -326,5 +326,5 @@ Responds to a version request. Prints it out (send VERSION_REQUEST for debugging
 ------------------------------------------------------------------------------------------------------------------------
 --]]
 PowaComms:AddHandler("VERSION_RESPONSE", function(self, data, from)
---	PowaAuras:ShowText(from, " is using version ", data, ".");
+--	PowaAuras:TraceInfo(from, " is using version ", data, ".");
 end);
