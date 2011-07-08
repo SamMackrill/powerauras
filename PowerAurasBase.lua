@@ -1216,7 +1216,7 @@ function PowaAuras:MergeTables(desTable, sourceTable)
 end
 
 function PowaAuras:InsertText(text, ...)
-	args={...};
+	local args={...};
 	if (args==nil or #args==0) then
 		return text;
 	end
@@ -1303,7 +1303,7 @@ function PowaAuras:RotateCoordPair(x, y, ox, oy, a, asp)
 	return ox + (x-ox)*math.cos(a) - (y-oy)*math.sin(a), (oy + (y-oy)*math.cos(a) + (x-ox)*math.sin(a))*asp;
 end
 
---- Rotates the given texture by a certain amount of degrees.
+--- Rotates the given texture around the centre by a certain amount of degrees.
 -- @param texture The texture object to modify.
 -- @param deg The amount of rotation to apply in degrees. Positive values rotate clockwise.
 -- @param ULx The top left corner X coordinate of the texture segment to be rotated.
