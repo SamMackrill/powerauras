@@ -15,11 +15,6 @@ function PowaAuras:UpdateMainOption()
 	PowaMainTestButton:SetText(self.Text.nomTest);
 	PowaEditButton:SetText(self.Text.nomEdit);
 	PowaOptionsRename:SetText(self.Text.nomRename);
-	PowaEnableButton:SetChecked(PowaMisc.Disabled~=true);
-	PowaDebugButton:SetChecked(PowaMisc.debug==true);
-	PowaTimerRoundingButton:SetChecked(PowaMisc.TimerRoundUp==true);
-	PowaAllowInspectionsButton:SetChecked(PowaMisc.AllowInspections==true);
-	PowaOptionsTextureCount:SetValue(self.MaxTextures);
 
 	-- attach the icons
 	for i = 1, 24 do
@@ -435,8 +430,6 @@ function PowaAuras:OptionNewEffect()
 	self:InitPage(aura);
 
 	self:UpdateMainOption();
-
-	if (PowaEquipmentSlotsFrame:IsVisible()) then PowaEquipmentSlotsFrame:Hide(); end
 	
 	if (not PowaBarConfigFrame:IsVisible()) then
 		PowaBarConfigFrame:Show();
@@ -2577,12 +2570,6 @@ function PowaAuras:ChangeAuraType(id, newType)
 		PowaGlobalSet[id] = aura;
 	end				
 	self:CalculateAuraSequence();
-	
-	if (aura.bufftype == self.BuffTypes.Slots) then
-		if (not PowaEquipmentSlotsFrame:IsVisible()) then PowaEquipmentSlotsFrame:Show(); end
-	else
-		if (PowaEquipmentSlotsFrame:IsVisible()) then PowaEquipmentSlotsFrame:Hide(); end
-	end
 
 	if (aura.CheckBoxes.PowaOwntexButton~=1) then
 		aura.owntex = false;
@@ -3523,89 +3510,5 @@ function PowaAuras:RedisplayAura(auraId, recreateTriggers) ---Re-show aura after
 	--end
 	if (aura.Timer) then aura.Timer:Redisplay(aura, true); end
 	if (aura.Stacks) then aura.Stacks:Redisplay(aura, true); end
-
-end
-
-function PowaAuras:ResetSlotsToEmpty()
-	for _, child in ipairs({ PowaEquipmentSlotsFrame:GetChildren() }) do
-		--self:TraceInfo(child:GetName(), " ", child:GetObjectType());
-		if (child:IsObjectType("Button")) then
-			local slotName = string.gsub(child:GetName(), "Powa", "");
-			if (string.match(slotName, "Slot")) then
-				local slotId, emptyTexture = GetInventorySlotInfo(slotName);
-				getglobal(child:GetName().."IconTexture"):SetTexture(emptyTexture);
-				child.SlotId = slotId;
-				child.Set = false;
-				child.EmptyTexture = emptyTexture;
-			end
-		end
-	end
-end
-
-function PowaAuras:EquipmentSlotsShow()
-
-	self:ResetSlotsToEmpty();
-	local aura = self.Auras[self.CurrentAuraId];
-	if (not aura) then
-		return;
-	end
-
-	for pword in string.gmatch(aura.buffname, "[^/]+") do
-		pword = aura:Trim(pword);
-		if (string.len(pword)>0 and pword~="???") then
-			local slotId = GetInventorySlotInfo(pword.."Slot");
-			--PowaAuras:TraceInfo("pword=",pword, " slotId= ",slotId);
-			if (slotId) then
-				local ok, texture = pcall(GetInventoryItemTexture, "player", slotId);
-				if (not ok) then
-					self:Message("Slot definitions are invalid!");
-					self:ResetSlotsToEmpty();
-					aura.buffname = "";
-					return;
-				end
-				if (texture~=nil) then
-					getglobal("Powa"..pword.."SlotIconTexture"):SetTexture(texture);
-					getglobal("Powa"..pword.."Slot").Set = true;
-				end
-			end
-		end
-	end
-			
-end
-
-function PowaAuras:EquipmentSlotsHide()
-end
-
-function PowaAuras:EquipmentSlot_OnClick(slotButton)
-	if (not slotButton.SlotId) then return; end
-	local aura = self.Auras[self.CurrentAuraId];
-	if (not aura) then
-		return;
-	end
-	if (slotButton.Set) then
-		getglobal(slotButton:GetName().."IconTexture"):SetTexture(slotButton.EmptyTexture);
-		slotButton.Set = false;
-	else
-		local texture = GetInventoryItemTexture("player", slotButton.SlotId);
-		if (texture~=nil) then
-			getglobal(slotButton:GetName().."IconTexture"):SetTexture(texture);
-			slotButton.Set = true;
-		end
-	end
-	aura.buffname = "";
-	local sep = "";
-	for _, child in ipairs({ PowaEquipmentSlotsFrame:GetChildren() }) do
-		--self:TraceInfo(child:GetName(), " ", child:GetObjectType());
-		if (child:IsObjectType("Button")) then
-			local slotName = string.gsub(child:GetName(), "Powa", "");
-			if (string.match(slotName, "Slot")) then
-				if (child.Set) then
-					aura.buffname = aura.buffname..sep..string.gsub(slotName, "Slot", "");
-					sep = "/";
-				end
-			end
-		end
-	end
-	--self:TraceInfo("aura.buffname=", aura.buffname);
 
 end

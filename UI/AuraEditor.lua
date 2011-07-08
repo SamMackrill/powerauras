@@ -123,6 +123,7 @@ PowaAuras.UI:Register("AuraEditor", {
 		local source = PowaAuras:GetSetting("Aura.SourceType");
 		local label, texture = self.Tabs.Display.Tabs[1].Child.TextureSource.Default.Label, 
 			self.Tabs.Display.Tabs[1].Child.TextureDummy.Texture;
+		-- NOW update!
 		if(source == PowaAuras.SourceTypes.Default) then
 			-- Default texture.
 			local num = PowaAuras:GetSetting("Aura.texture");
@@ -133,6 +134,17 @@ PowaAuras.UI:Register("AuraEditor", {
 			local num = PowaAuras:GetSetting("Aura.texture");
 			label:SetText(PowaAuras.Text("UI_Editor_Aura_SourceNum", num, self.WoWCount));
 			texture:SetTexture(PowaAuras.WowTextures[num]);
+		end
+		-- Attempt to scale to aspect ratio.
+		local maxX, maxY = 128, 128;
+		local x, y = PowaAuras:GetSetting("Aura.SizeX")*PowaAuras:GetSetting("Aura.size"), 
+			PowaAuras:GetSetting("Aura.SizeY")*PowaAuras:GetSetting("Aura.size");
+		local newX, newY = (maxX >= x and x or maxX), 0;
+		newY = (y*(newX/x));
+		if(newY > maxY) then
+			texture:SetSize((x*(maxY/y)), maxY);
+		else
+			texture:SetSize(newX, newY);																		
 		end
 		-- Style it. Trim its nails and stuff.
 		if(PowaAuras:GetSetting("Aura.randomcolor")) then
@@ -145,6 +157,9 @@ PowaAuras.UI:Register("AuraEditor", {
 		texture:SetAlpha(min(0.99, PowaAuras:GetSetting("Aura.alpha")));
 		-- Rotation, rotation, rotation.
 		PowaAuras:RotateTexture(texture, PowaAuras:GetSetting("Aura.Rotate"), PowaAuras:GetFlipTexCoords());
+	end,
+	UpdateRulesTab = function(self)
+		-- Hide all rules, bro.
 	end,
 	UpdateElements = function(self, auraID)
 		-- Hide old aura if it exists.
@@ -241,13 +256,9 @@ local AuraEditor = {
 														Texture = {
 															Type = "Texture",
 															Layer = "ARTWORK",
-															Size = { 128, 128 },
 															Points = {
 																[1] = { "CENTER", 0, 0 },
 															},
-															OnLoad = function(self)
-																self:SetTexture(0, 1, 0);
-															end,
 														},
 													},
 												},
@@ -812,6 +823,8 @@ local AuraEditor = {
 											self.Editor:SetPoint("TOPLEFT", 15, -125);
 											self.Editor:SetPoint("BOTTOMRIGHT", -15, 15);
 											self.Editor:Show();
+											-- Make sure the correct rules UI is done.
+											PowaEditor:UpdateRulesTab();
 										end);
 									end,
 								},

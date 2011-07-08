@@ -76,7 +76,7 @@
 			</EdgeSize>
 		</Backdrop>
 		<Layers>
-			<Layer level="ARTWORK">
+			<Layer level="OVERLAY">
 				<Texture file="Interface\DialogFrame\UI-DialogBox-Header">
 					<Size>
 						<AbsDimension x="300" y="68" />
