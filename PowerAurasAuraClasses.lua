@@ -4109,7 +4109,7 @@ function cPowaRunes:RunesPresent(giveReason)
 			wipe(self.timeList);
 			local missing = deathRunesRequired - deathRunesAvailable;
 			if (missing>0) then
-				gaps = 0;
+				local gaps = 0;
 				for runeType = 1, 3 do
 					gaps = gaps + self:AddRuneTimeLeft(runeType * 2 - 1, self.runesMissingPlusDeath[runeType]);
 				end
@@ -4309,6 +4309,7 @@ function cPowaItems:CheckIfShouldShow(giveReason, ignoreGCD)
 	if (self.Debug) then
 		PowaAuras:Debug("Items Aura CheckIfShouldShow buffname=",self.buffname); --OK
 	end
+	local reason;
 	for pword in string.gmatch(self.buffname, "[^/]+") do
 		pword = self:Trim(pword);
 		if (string.len(pword)>0) then
