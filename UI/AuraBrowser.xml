@@ -657,7 +657,7 @@
 														self.Code.ErrorFailure:Show();
 														-- Ctrl = Debug.
 														if(IsControlKeyDown()) then
-															PowaAuras:ShowText("|cFFFF0000Import Error: |r" .. result);
+															PowaAuras:Message("|cFFFF0000Import Error: |r" .. result);
 														end
 													end
 												end
