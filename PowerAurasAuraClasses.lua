@@ -86,10 +86,11 @@ cPowaAura.ExportSettings = {
 	buffname = "???",
 	
 	texmode = true,
-	wowtex = false,
+	SourceType = 1,
+	owntex = false, -- To be removed.
 	customtex = false,
+	wowtex = false,
 	textaura = false,
-	owntex = false,
 	texture = 1,
 	customname = "",
 	aurastext = "",
@@ -327,6 +328,7 @@ end
 -- @param parent The parent of the activation UI frame.
 function cPowaAura:GetActivationUI(parent)
 	-- Is the UI a frame or table?
+
 	if(not self.UI.Activation.GetObjectType) then
 		-- Table, build frame.
 		self.UI.Activation = PowaAuras.UI:BuildFrameFromDefinition(self.UI.Activation, parent);
@@ -446,7 +448,7 @@ function cPowaAura:CreateDefaultTriggers()
 	-- On Show
 	-- =======
 	local trigger=self:CreateTrigger(cPowaAuraShowTrigger, {Name="PA_AuraShow", Debug=false});
-	if (self.textaura ~= true) then
+	if (self.SourceType ~= PowaAuras.SourceTypes.Text) then
 		--trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Show Aura"});
 		if (self.begin>0) then
 			table.insert(AnimationChain, {Name="PA_ShowAnim", FrameSource="Frames", HideFrameSource="SecondaryFrames", Animation=self.begin, Speed=self.speed, Alpha=self.alpha, BeginSpin=self.beginSpin});
@@ -483,7 +485,7 @@ function cPowaAura:CreateDefaultTriggers()
 	-- =======
 	trigger=self:CreateTrigger(cPowaAuraHideTrigger, {Name="PA_AuraHide", Debug=false});
 	--trigger:AddAction(cPowaAuraMessageAction, {Message="Action Fired! Hide Aura"});
-	if (self.finish>0 and (self.textaura ~= true)) then
+	if (self.finish>0 and (self.SourceType ~= PowaAuras.SourceTypes.Text)) then
 		trigger:AddAction(cPowaAuraAnimationAction, {Name="PA_HideAnim", AnimationChain={{Name="PA_HideAnim", FrameSource="Frames", HideFrameSource="SecondaryFrames", Animation=self.finish + 100, Speed=self.speed, Alpha=self.alpha, Hide=self}}});
 	else
 		trigger:AddAction(cPowaAuraHideAction, {Name="PA_Hide", Aura=true});
@@ -765,6 +767,7 @@ function cPowaAura:CheckActive(shouldShow, ignoreCascade, testing)
 			PowaAuras:ShowText("Setting Timer.Start to ", self.Timer.Start, " aura=", self.id);	
 		end
 		
+
 		if (not ignoreCascade and not testing) then PowaAuras:AddChildrenToCascade(self); end
 	end
 		
@@ -886,7 +889,7 @@ function cPowaAura:GetSingleTexture(frame, secondary)
 	local texture = self:GetTexture(secondary);
 	if (texture==nil) then
 		--PowaAuras:UnitTestInfo("New Texture", self.id);
-		if self.textaura then
+		if self.SourceType == PowaAuras.SourceTypes.Text then
 			--PowaAuras:UnitTestDebug("Creating new textstring texture for aura ", self.id);
 			texture = frame:CreateFontString(nil, "OVERLAY");
 			texture:ClearAllPoints();
@@ -900,8 +903,7 @@ function cPowaAura:GetSingleTexture(frame, secondary)
 			texture:SetAllPoints(frame); --- attache la texture a la frame
 		end
 	else
-		if self.textaura then
-			--PowaAuras:UnitTestDebug("textaura ", texture:GetObjectType());
+		if self.SourceType == PowaAuras.SourceTypes.Text then
 			if texture:GetObjectType() == "Texture" then
 				--PowaAuras:UnitTestInfo("Converting to textstring texture for aura ", self.id);
 				--PowaAuras:UnitTestDebug("Converting to textstring texture for aura ", self.id);
@@ -942,7 +944,7 @@ function cPowaAura:CreateFrames()
 end
 
 function cPowaAura:UpdateText(texture)
-	if (not self.textaura) then return; end
+	if (self.SourceType ~= PowaAuras.SourceTypes.Text) then return; end
 	local newText = self:GetAuraText();
 	if (self.Debug) then
 		PowaAuras:Message("CurrentText=", self.CurrentText);
@@ -988,6 +990,7 @@ end
 function()
 	if (self.DisplayUnit==nil) then return nil; end
 	local name = UnitName(self.DisplayUnit);
+
 	if (name~=nil) then return name; end
 	return self.DisplayUnit;
 end
@@ -1027,8 +1030,8 @@ function cPowaAura:ShowTimerDurationSlider()
 end
 
 function cPowaAura:IconIsRequired()
-	--PowaAuras:Message("  owntex=",self.owntex, " .icon=",self.icon, " ForceIconCheck=",self.ForceIconCheck);
-	return (self.owntex == true or self.icon == "" or self.icon == nil or self.ForceIconCheck);
+	return (self.SourceType == PowaAuras.SourceTypes.Icon or self.icon == "" or self.icon == nil 
+		or self.ForceIconCheck);
 end
 
 function cPowaAura:SetIcon(texturePath)
@@ -1042,7 +1045,7 @@ function cPowaAura:SetIcon(texturePath)
 		PowaAuras:Message("self.icon=", self.icon);
 	end
 	if (texturePath ~= self.icon) then
-		if (self.owntex) then
+		if (self.SourceType == PowaAuras.SourceTypes.Icon) then
 			local texture = self:GetTexture();
 			if (texture and texture.SetTexture) then
 				texture:SetTexture(texturePath);

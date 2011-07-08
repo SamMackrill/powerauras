@@ -12,6 +12,7 @@ PowaAuras = {
 	WoWBuild = tonumber(select(2, GetBuildInfo()), 10);
 	
 	IconSource = "Interface\\Icons\\";
+	AuraSource = "Interface\\AddOns\\PowerAuras\\Auras\\";
 	
 	CurrentAuraId = 1;
 	NextCheck = 0.2; 
@@ -341,7 +342,15 @@ PowaAuras = {
 		Default = 0x1, -- Read stacks like normal, so from the buff information.
 		Tooltip = 0x2, -- Read stacks from the tooltip, used for things like Vengeance or trinkets that store stuff.
 	};
-
+	
+	SourceTypes = {
+		Default = 1,
+		WoW = 2,
+		Custom = 3,
+		Text = 4,
+		Icon = 5,
+	};
+	
 	AnimationBeginTypes =
 	{
 		None=0,
@@ -1198,31 +1207,6 @@ function PowaAuras:MergeTables(desTable, sourceTable)
 
 end
 
---- Merges the contents of many tables, with tables specified later in the argument chain taking precendence over ones
--- earlier in the chain.
-function PowaAuras:MergeManyTables(key, ...)
-	-- I need a new table.
-	local newTable, count = self:CopyTable(key), select("#", ...);
-	-- Now go over the other tables.
-	for i=1, count do
-		-- Merge table in.
-		local table = select(i, ...);
-		for k, v in pairs(table) do
-			-- Replace if we're allowed to.
-			if(newTable[k] ~= nil) then
-				if(type(v) ~= "table") then
-					newTable[k] = v;
-				elseif(type(v) == "table") then
-					-- It's a table, merge!
-					newTable[k] = self:MergeManyTables(newTable[k], v);
-				end
-			end
-		end
-	end
-	-- Done.
-	return newTable;
-end
-
 function PowaAuras:InsertText(text, ...)
 	args={...};
 	if (args==nil or #args==0) then
@@ -1278,6 +1262,60 @@ function PowaAuras:Range(num, min, max)
 	-- Need number.
 	if(not num or not min or not max) then return; end
 	return math.min(math.max(num, min), max);
+end
+
+--- Used for rotating a pair of coordinates by a given amount of radians about any origin point with any aspect ratio.
+-- @see http://www.wowpedia.org/SetTexCoord_Transformations#Rotation_of_textures_about_any_point_with_any_aspect
+-- @param x The X coordinate of the pair to rotate.
+-- @param y The Y coordinate of the pair to rotate.
+-- @param ox The origin X coordinate of the texture, as a float. 0.5 represents the center of the image.
+-- @param oy The origin Y coordinate of the texture, as a float. 0.5 represents the center of the image.
+-- @param a The rotation to be applied in radians. Use math.rad to convert degrees to radians.
+-- @param asp The aspect ratio of the image.
+-- @return An X and Y coordinate pair to be used as a corner in a SetTexCoord call.
+function PowaAuras:RotateCoordPair(x, y, ox, oy, a, asp)
+	y = y/asp;
+	oy = oy/asp;
+	return ox + (x-ox)*math.cos(a) - (y-oy)*math.sin(a), (oy + (y-oy)*math.cos(a) + (x-ox)*math.sin(a))*asp;
+end
+
+--- Rotates the given texture by a certain amount of degrees.
+-- @param texture The texture object to modify.
+-- @param deg The amount of rotation to apply in degrees. Positive values rotate clockwise.
+-- @param ULx The top left corner X coordinate of the texture segment to be rotated.
+-- @param ULy The top left corner Y coordinate of the texture segment to be rotated.
+-- @param LLx The bottom left corner X coordinate of the texture segment to be rotated.
+-- @param LLy The bottom left corner Y coordinate of the texture segment to be rotated.
+-- @param URx The top right corner X coordinate of the texture segment to be rotated.
+-- @param URy The top right corner Y coordinate of the texture segment to be rotated.
+-- @param LRx The bottom right corner X coordinate of the texture segment to be rotated.
+-- @param LRy The bottom right corner Y coordinate of the texture segment to be rotated.
+function PowaAuras:RotateTexture(texture, deg, ULx, ULy, LLx, LLy, URx, URy, LRx, LRy)
+	-- Get coords.
+	local o = math.rad(-deg);
+	ULx, ULy = self:RotateCoordPair(ULx, ULy, 0.5, 0.5, o, 1);
+	LLx, LLy = self:RotateCoordPair(LLx, LLy, 0.5, 0.5, o, 1);
+	URx, URy = self:RotateCoordPair(URx, URy, 0.5, 0.5, o, 1);
+	LRx, LRy = self:RotateCoordPair(LRx, LRy, 0.5, 0.5, o, 1);
+	-- Set coords!
+	texture:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
+end
+
+--- Returns the texture coordinates to apply to an image which needs to be flipped horizontally, vertically or both.
+-- @param flipMode An integer representing the flip mode. If not given, it will default to the mode of the currently 
+-- selected aura.
+-- @return 8 texture coordinates, which can be passed directly to a SetTexCoord call.
+function PowaAuras:GetFlipTexCoords(flipMode)
+	flipMode = (flipMode == nil and self:GetSetting("Aura.symetrie") or flipMode);
+	if(flipMode == 1) then
+		return 1, 0, 1, 1, 0, 0, 0, 1;
+	elseif(flipMode == 2) then
+		return 0, 1, 0, 0, 1, 1, 1, 0;
+	elseif(flipMode == 3) then
+		return 1, 1, 1, 0, 0, 1, 0, 0;
+	else
+		return 0, 0, 0, 1, 1, 0, 1, 1;
+	end
 end
 
 -- PowaAura Classes

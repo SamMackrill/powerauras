@@ -516,7 +516,7 @@ function PowaAuras:MemorizeActions(actionIndex)
 							--self:ShowText("Name=", name, "Tooltip=", text, " Match=", actionAura.buffname);
 							--- remember the texture
 							local tempicon;
-							if (actionAura.owntex == true) then
+							if (actionAura.SourceType == PowaAuras.SourceTypes.Icon) then
 								PowaIconTexture:SetTexture(GetActionTexture(i));
 								tempicon = PowaIconTexture:GetTexture();
 								if (actionAura.icon ~= tempicon) then
@@ -1132,17 +1132,17 @@ function PowaAuras:GetFrame(auraId, frameSource, frame)
 end
 
 function PowaAuras:InitialiseAuraFrame(aura, frame, texture, alpha)
-	if (aura.owntex == true) then
+	if (aura.SourceType == PowaAuras.SourceTypes.Icon) then
 		if (aura.icon=="") then
 			texture:SetTexture("Interface\\Icons\\Inv_Misc_QuestionMark");
 		else
 			texture:SetTexture(aura.icon);
 		end
-	elseif (aura.wowtex == true) then
+	elseif (aura.SourceType == PowaAuras.SourceTypes.WoW) then
 		texture:SetTexture(self.WowTextures[aura.texture]);
-	elseif (aura.customtex == true) then
+	elseif (aura.SourceType == PowaAuras.SourceTypes.Custom) then
 		texture:SetTexture(self:CustomTexPath(aura.customname));
-	elseif (aura.textaura == true) then
+	elseif (aura.SourceType == PowaAuras.SourceTypes.Text) then
 		aura:UpdateText(texture);  	
 	else
 		texture:SetTexture("Interface\\Addons\\PowerAuras\\Auras\\Aura"..aura.texture..".tga");
@@ -1155,7 +1155,7 @@ function PowaAuras:InitialiseAuraFrame(aura, frame, texture, alpha)
 	end
   
 	if (aura.texmode) then
-		if (aura.textaura ~= true) then
+		if (aura.SourceType ~= PowaAuras.SourceTypes.Text) then
 			texture:SetBlendMode("ADD");
 		else
 			texture:SetShadowColor(0.0, 0.0, 0.0, 0.8);
@@ -1163,7 +1163,7 @@ function PowaAuras:InitialiseAuraFrame(aura, frame, texture, alpha)
 		end
 		frame:SetFrameStrata(aura.strata);
 	else
-		if (aura.textaura ~= true) then
+		if (aura.SourceType ~= PowaAuras.SourceTypes.Text) then
 			texture:SetBlendMode("DISABLE");
 		else
 			texture:SetShadowColor(0.0, 0.0, 0.0, 0.0);
@@ -1171,21 +1171,19 @@ function PowaAuras:InitialiseAuraFrame(aura, frame, texture, alpha)
 		end
 		frame:SetFrameStrata("BACKGROUND");
 	end
+	
+	-- Calculate size.
+	local width, height = (aura.SizeX * aura.size), (aura.SizeY * aura.size);
 
-	if (aura.textaura ~= true) then
-	  if (aura.symetrie == 1) then 
-		texture:SetTexCoord(1, 0, 0, 1); --- inverse X
-	  elseif (aura.symetrie == 2) then 
-		texture:SetTexCoord(0, 1, 1, 0); --- inverse Y
-	  elseif (aura.symetrie == 3) then 
-		texture:SetTexCoord(1, 0, 1, 0); --- inverse XY
-	  else 
-		texture:SetTexCoord(0, 1, 0, 1); 
-	  end	
+	if (aura.SourceType ~= PowaAuras.SourceTypes.Text) then
+		-- Rotate, update size.
+		self:RotateTexture(texture, aura.Rotate, self:GetFlipTexCoords(aura.symetrie));
+		-- Like I said, update size.
+		frame.baseL = width;
+		frame.baseH = height;
+	else
+		PowaAuras:SetFrameSize(frame, aura, texture, aura.size, aura.torsion, (aura.SourceType == PowaAuras.SourceTypes.Text), aura.aurastextfont);
 	end
-
-	PowaAuras:SetFrameSize(frame, aura, texture, aura.size, aura.torsion, aura.textaura, aura.aurastextfont);
-
 	frame:SetAlpha(math.min(alpha,0.99));
 	frame:SetPoint("CENTER",aura.x, aura.y);
 	frame:SetWidth(frame.baseL);
@@ -1195,8 +1193,8 @@ function PowaAuras:InitialiseAuraFrame(aura, frame, texture, alpha)
 end
 
 function PowaAuras:SetFrameSize(frame, aura, texture, size, torsion, textaura, aurastextfont)
-	frame.baseH = aura.SizeY * size * (2-torsion);
-	if (textaura == true) then
+	frame.baseH = aura.SizeY * size;
+	if (aura.SourceType == PowaAuras.SourceTypes.Text) then
 		local fontsize = math.min(33, math.max(10, math.floor(frame.baseH / 12.8)));
 		local checkfont = texture:SetFont(self.Fonts[aurastextfont], fontsize, "OUTLINE, MONOCHROME");
 		if not checkfont then
@@ -1204,7 +1202,7 @@ function PowaAuras:SetFrameSize(frame, aura, texture, size, torsion, textaura, a
 		end
 		frame.baseL = texture:GetStringWidth() + 5;
 	else
-		frame.baseL = aura.SizeX * size * torsion;
+		frame.baseL = aura.SizeX * size;
 	end
 end
 

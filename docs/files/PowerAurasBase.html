@@ -133,6 +133,10 @@
 	</li>
 
 	<li>
+		<a href="../files/UI/Mixins/LayoutFrame.html">UI/Mixins/LayoutFrame.lua</a>
+	</li>
+
+	<li>
 		<a href="../files/UI/Mixins/Scripts.html">UI/Mixins/Scripts.lua</a>
 	</li>
 
@@ -248,6 +252,11 @@
 	</tr>
 
 	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:GetFlipTexCoords">PowaAuras:GetFlipTexCoords</a>&nbsp;(flipMode)</td>
+	<td class="summary">Returns the texture coordinates to apply to an image which needs to be flipped horizontally, vertically or both.</td>
+	</tr>
+
+	<tr>
 	<td class="name" nowrap><a href="#PowaAuras:IsNumeric">PowaAuras:IsNumeric</a>&nbsp;(a)</td>
 	<td class="summary">Check if parameter is a number </td>
 	</tr>
@@ -258,8 +267,23 @@
 	</tr>
 
 	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:Range">PowaAuras:Range</a>&nbsp;(num, min, max)</td>
+	<td class="summary">Caps a number between a specific range.</td>
+	</tr>
+
+	<tr>
 	<td class="name" nowrap><a href="#PowaAuras:ReverseTable">PowaAuras:ReverseTable</a>&nbsp;(t)</td>
 	<td class="summary">Reverse the order of the elements in a table </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:RotateCoordPair">PowaAuras:RotateCoordPair</a>&nbsp;(x, y, ox, oy, a, asp)</td>
+	<td class="summary">Used for rotating a pair of coordinates by a given amount of radians about any origin point with any aspect ratio.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#PowaAuras:RotateTexture">PowaAuras:RotateTexture</a>&nbsp;(texture, deg, ULx, ULy, LLx, LLy, URx, URy, LRx, LRy)</td>
+	<td class="summary">Rotates the given texture by a certain amount of degrees.</td>
 	</tr>
 
 	<tr>
@@ -451,6 +475,35 @@ Print a Message to the GUI screen (not the chat window) then fade.
 
 
 
+<dt><a name="PowaAuras:GetFlipTexCoords"></a><strong>PowaAuras:GetFlipTexCoords</strong>&nbsp;(flipMode)</dt>
+<dd>
+Returns the texture coordinates to apply to an image which needs to be flipped horizontally, vertically or both.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  flipMode: An integer representing the flip mode. If not given, it will default to the mode of the currently selected aura.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+8 texture coordinates, which can be passed directly to a SetTexCoord call.
+
+
+
+</dd>
+
+
+
+
 <dt><a name="PowaAuras:IsNumeric"></a><strong>PowaAuras:IsNumeric</strong>&nbsp;(a)</dt>
 <dd>
 Check if parameter is a number
@@ -506,6 +559,40 @@ Display a message in the chat frame, comma seperate arguments rather than use st
 
 
 
+<dt><a name="PowaAuras:Range"></a><strong>PowaAuras:Range</strong>&nbsp;(num, min, max)</dt>
+<dd>
+Caps a number between a specific range.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  num: 
+	</li>
+	
+	<li>
+	  min: 
+	</li>
+	
+	<li>
+	  max: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
 <dt><a name="PowaAuras:ReverseTable"></a><strong>PowaAuras:ReverseTable</strong>&nbsp;(t)</dt>
 <dd>
 Reverse the order of the elements in a table
@@ -527,6 +614,126 @@ Reverse the order of the elements in a table
 
 <h3>Return value:</h3>
 New table with elements reversed
+
+
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:RotateCoordPair"></a><strong>PowaAuras:RotateCoordPair</strong>&nbsp;(x, y, ox, oy, a, asp)</dt>
+<dd>
+Used for rotating a pair of coordinates by a given amount of radians about any origin point with any aspect ratio.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  x: The X coordinate of the pair to rotate.
+	</li>
+	
+	<li>
+	  y: The Y coordinate of the pair to rotate.
+	</li>
+	
+	<li>
+	  ox: The origin X coordinate of the texture, as a float. 0.5 represents the center of the image.
+	</li>
+	
+	<li>
+	  oy: The origin Y coordinate of the texture, as a float. 0.5 represents the center of the image.
+	</li>
+	
+	<li>
+	  a: The rotation to be applied in radians. Use math.rad to convert degrees to radians.
+	</li>
+	
+	<li>
+	  asp: The aspect ratio of the image.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+An X and Y coordinate pair to be used as a corner in a SetTexCoord call.
+
+
+
+<h3>See also:</h3>
+<ul>
+	
+	<li><a href="">
+		http://www.wowpedia.org/SetTexCoord_Transformations#Rotation_of_textures_about_any_point_with_any_aspect
+	</a>
+	
+</ul>
+
+</dd>
+
+
+
+
+<dt><a name="PowaAuras:RotateTexture"></a><strong>PowaAuras:RotateTexture</strong>&nbsp;(texture, deg, ULx, ULy, LLx, LLy, URx, URy, LRx, LRy)</dt>
+<dd>
+Rotates the given texture by a certain amount of degrees.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  texture: The texture object to modify.
+	</li>
+	
+	<li>
+	  deg: The amount of rotation to apply in degrees. Positive values rotate clockwise.
+	</li>
+	
+	<li>
+	  ULx: The top left corner X coordinate of the texture segment to be rotated.
+	</li>
+	
+	<li>
+	  ULy: The top left corner Y coordinate of the texture segment to be rotated.
+	</li>
+	
+	<li>
+	  LLx: The bottom left corner X coordinate of the texture segment to be rotated.
+	</li>
+	
+	<li>
+	  LLy: The bottom left corner Y coordinate of the texture segment to be rotated.
+	</li>
+	
+	<li>
+	  URx: The top right corner X coordinate of the texture segment to be rotated.
+	</li>
+	
+	<li>
+	  URy: The top right corner Y coordinate of the texture segment to be rotated.
+	</li>
+	
+	<li>
+	  LRx: The bottom right corner X coordinate of the texture segment to be rotated.
+	</li>
+	
+	<li>
+	  LRy: The bottom right corner Y coordinate of the texture segment to be rotated.
+	</li>
+	
+</ul>
+
+
+
+
+
 
 
 

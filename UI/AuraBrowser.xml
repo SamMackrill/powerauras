@@ -253,6 +253,10 @@
 													if(key == 1) then
 														-- Lock/Unlock.
 														PowaAuras:SaveSetting("Locked", not PowaAuras:GetSetting("Locked"));
+														self:UpdateItem(1, (PowaAuras:GetSetting("Locked") == true 
+															and PowaAuras.Text["UI_UnlockAll"] 
+															or PowaAuras.Text["UI_LockAll"]));
+														PowaAuras:ToggleAllAuras(true, true);
 													elseif(key == 2) then
 														-- Show.
 														PowaAuras:ToggleAllAuras(false, true);
@@ -263,11 +267,6 @@
 														-- Export.
 														print("Page Export Dialog NYI");
 													end
-												end);
-												-- Add a callback for the lock setting.
-												PowaAuras:RegisterSettingCallback(function(key, value)
-													if(key ~= "Locked") then return; end
-													self:UpdateItem(1, (value == true and PowaAuras.Text["UI_UnlockAll"] or PowaAuras.Text["UI_LockAll"]));
 												end);
 											</OnLoad>
 											<OnEnter>
@@ -1002,7 +1001,7 @@
 										self[2] = self.Perf;
 										self[3] = self.Cust;
 										-- Auto controlled tab frame.
-										PowaAuras.UI:TreeControlledTabFrame(self, self:GetParent().Tree);
+										PowaAuras.UI:SourceControlledTabFrame(self, self:GetParent().Tree);
 										-- Add tabs.
 										self:AddTab(self[1]);
 										self:AddTab(self[2]);
