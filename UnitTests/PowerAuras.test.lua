@@ -6,6 +6,7 @@ require("WoWmock")
 -- Addon specific Mocking code
 require("PowerAurasUIMock")
 --Addon code
+-- TODO Update required files to match new paths.
 require("PowerAurasBase")
 require("localisation")
 require("localisation_frFR")

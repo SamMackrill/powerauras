@@ -1,4 +1,4 @@
 echo %PATH%
-lua "%LUA_DEV%\lua\luadoc_start.lua" -d docs *.lua UI/*.lua UI/Mixins/*.lua
+lua "%LUA_DEV%\lua\luadoc_start.lua" -d docs *.lua UI/*.lua
 pause
 exit
