@@ -524,15 +524,15 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 			if (key=="Version") then
 			elseif (string.sub(key,1,6) == "timer.") then
 				key = string.sub(key,7);
-				if (cPowaTimer.ExportSettings[key]~=nil) then
+				if (PowaAuras.DecoratorClasses.Timer.ExportSettings[key]~=nil) then
 					--self:TraceInfo("cPowaTimer.ExportSettings[key]=",cPowaTimer.ExportSettings[key]," type=", type(cPowaTimer.ExportSettings[key]));
-					importTimerSettings[key] = self:ExtractImportValue(type(cPowaTimer.ExportSettings[key]), var);
+					importTimerSettings[key] = self:ExtractImportValue(type(PowaAuras.DecoratorClasses.Timer.ExportSettings[key]), var);
 					hasTimerSettings = true;
 				end
 			elseif (string.sub(key,1,7) == "stacks.") then
 				key = string.sub(key,8);
-				if (cPowaStacks.ExportSettings[key]~=nil) then
-					importStacksSettings[key] = self:ExtractImportValue(type(cPowaStacks.ExportSettings[key]), var);
+				if (PowaAuras.DecoratorClasses.Stacks.ExportSettings[key]~=nil) then
+					importStacksSettings[key] = self:ExtractImportValue(type(PowaAuras.DecoratorClasses.Stacks.ExportSettings[key]), var);
 					hasStacksSettings = true;
 				end
 			else
@@ -624,14 +624,14 @@ function PowaAuras:ImportAura(aurastring, auraId, offset)
 	end
 	
 	if (importAuraSettings.timer) then --backwards compatability
-		aura.Timer = cPowaTimer(aura);
+		aura.Timer = PowaAuras.DecoratorClasses.Timer(aura);
 	end
 	
 	if (hasTimerSettings) then
-		aura.Timer = cPowaTimer(aura, importTimerSettings);
+		aura.Timer = PowaAuras.DecoratorClasses.Timer(aura, importTimerSettings);
 	end
 	if (hasStacksSettings) then
-		aura.Stacks = cPowaStacks(aura, importStacksSettings);
+		aura.Stacks = PowaAuras.DecoratorClasses.Stacks(aura, importStacksSettings);
 	end
 	
 	--self:TraceInfo("new Aura created from import");
@@ -1246,11 +1246,11 @@ function PowaAuras:DoCopyEffect(idFrom, idTo, isMove)
 	self.Auras[idTo]:Init();
 	
 	if (self.Auras[idFrom].Timer) then
-		self.Auras[idTo].Timer = cPowaTimer(self.Auras[idTo], self.Auras[idFrom].Timer);
+		self.Auras[idTo].Timer = PowaAuras.DecoratorClasses.Timer(self.Auras[idTo], self.Auras[idFrom].Timer);
 	end
 	
 	if (self.Auras[idFrom].Stacks) then
-		self.Auras[idTo].Stacks = cPowaStacks(self.Auras[idTo], self.Auras[idFrom].Stacks);
+		self.Auras[idTo].Stacks = PowaAuras.DecoratorClasses.Stacks(self.Auras[idTo], self.Auras[idFrom].Stacks);
 	end
 
 	if (idTo > 120) then
@@ -1318,7 +1318,7 @@ function PowaAuras:UpdateTimerOptions(aura)
 	end
 	
 	if (not aura.Timer) then
-		aura.Timer = cPowaTimer(aura);
+		aura.Timer = PowaAuras.DecoratorClasses.Timer(aura);
 	end
 	local timer = aura.Timer;
 	

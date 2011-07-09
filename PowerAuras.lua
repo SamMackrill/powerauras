@@ -44,7 +44,6 @@ PowaMisc = PowaAuras.PowaMiscDefault;
 PowaGlobalMisc = PowaAuras.PowaGlobalMiscDefault;
 
 PowaSet = {};
-PowaTimer = {};
 
 PowaGlobalSet = {};
 PowaGlobalListe = {};
@@ -213,7 +212,6 @@ function PowaAuras:LoadAuras()
 	for i=361,480 do
 		PowaClassSet[class][i] = self.Auras[i];
 	end
-	PowaTimer = {};
 	
 end
 
@@ -260,19 +258,6 @@ end
 	
 function PowaAuras:UpdateOldAuras()
 	self:Message("Upgrading old power auras");
-	-- Copy old timer info (should be once only)
-	for k, v in pairs(PowaTimer) do
-		local aura = self.Auras[k];
-		if (aura) then
-			aura.Timer = cPowaTimer(aura, v);
-			if (PowaSet[k]~=nil and PowaSet[k].timer~=nil) then
-				aura.Timer.enabled = PowaSet[k].timer;
-			end
-			if (PowaGlobalSet[k]~=nil and PowaGlobalSet[k].timer~=nil) then
-				aura.Timer.enabled = PowaGlobalSet[k].timer;
-			end
-		end	
-	end
 	
 	local rescaleRatio = UIParent:GetHeight() / 768;
 	if (not rescaleRatio or rescaleRatio==0) then

@@ -477,10 +477,10 @@ end
 for k, _ in pairs(cPowaAura.ExportSettings) do
 	PowaAuras:RegisterSetting("Aura." .. k, k, PowaAuras.SettingLocations.Aura);
 end
-for k, _ in pairs(cPowaTimer.ExportSettings) do
+for k, _ in pairs(PowaAuras.DecoratorClasses.Timer.ExportSettings) do
 	PowaAuras:RegisterSetting("Aura.Timer." .. k, k, PowaAuras.SettingLocations.AuraTimer);
 end
-for k, _ in pairs(cPowaStacks.ExportSettings) do
+for k, _ in pairs(PowaAuras.DecoratorClasses.Stacks.ExportSettings) do
 	PowaAuras:RegisterSetting("Aura.Stacks." .. k, k, PowaAuras.SettingLocations.AuraStacks);
 end
 

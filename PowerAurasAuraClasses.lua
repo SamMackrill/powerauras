@@ -63,11 +63,11 @@ cPowaAura = PowaClass(function(aura, id, base)
 		local tempForSettings = PowaAuras.AuraClasses[base.bufftype];
 		--PowaAuras:Message("base.Timer ", base.Timer);
 		if (base.Timer) then
-			aura.Timer = cPowaTimer(aura, base.Timer);
+			aura.Timer = PowaAuras.DecoratorClasses.Timer(aura, base.Timer);
 		end				
 		
 		if (base.Stacks and tempForSettings:StacksAllowed()) then
-			aura.Stacks = cPowaStacks(aura, base.Stacks);
+			aura.Stacks = PowaAuras.DecoratorClasses.Stacks(aura, base.Stacks);
 		end				
 	end
 	
@@ -298,10 +298,10 @@ function cPowaAura:CopyDecorators(newID)
 	end
 	-- Copy decorators.
 	if(self.Timer) then
-		newAura.Timer = cPowaTimer(newAura, self.Timer);
+		newAura.Timer = PowaAuras.DecoratorClasses.Timer(newAura, self.Timer);
 	end
 	if(self.Stacks) then
-		newAura.Stacks = cPowaStacks(newAura, self.Stacks);
+		newAura.Stacks = PowaAuras.DecoratorClasses.Stacks(newAura, self.Stacks);
 	end
 	
 	self:CopyTriggers(newAura);
@@ -836,7 +836,7 @@ function cPowaAura:HideShowTabs()
 	if (self:StacksAllowed()) then 
 		PowaEditorTab5:Show();
 		if (not self.Stacks) then
-			self.Stacks = cPowaStacks(self);
+			self.Stacks = PowaAuras.DecoratorClasses.Stacks(self);
 		end
 	else
 		PowaEditorTab5:Hide();
@@ -3538,6 +3538,7 @@ function cPowaSpellAlert:CheckSpellName(unit, spellname, spellicon, endtime, spe
 		self:UpdateText();
 		if (PowaAuras.ExtraUnitEvent[unit]) then
 			if (self.Debug) then
+
 				PowaAuras:DisplayText("Set to Hide in=", self.duration or 1, "s");
 			end
 			PowaAuras.Pending[self.id] =  GetTime() + (self.duration or 1); -- Instant spells may have no complete event
