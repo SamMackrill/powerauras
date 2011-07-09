@@ -236,7 +236,36 @@ PowaAuras.UI:Register("TreeViewItem", {
 			return item;
 		else
 			-- Get making.
-			item = CreateFrame("Button", nil, nil, "PowaTreeViewItemTemplate");
+			item = CreateFrame("Button");
+			item:SetSize(172, 24);
+			-- Fonts.
+			item:SetNormalFontObject(PowaFontNormal);
+			item:SetDisabledFontObject(PowaFontHighlight);
+			item:SetHighlightFontObject(PowaFontNormal);
+			-- Fontstring.
+			item.Text = item:CreateFontString(nil, "OVERLAY");
+			item.Text:SetSize(0, 24);
+			item.Text:SetJustifyH("LEFT");
+			item.Text:SetPoint("LEFT", 24, 0);
+			item.Text:SetPoint("RIGHT", -24, 0);
+			item:SetFontString(item.Text);
+			-- Textures.
+			item:SetNormalTexture("Interface\\FriendsFrame\\UI-FriendsFrame-HighlightBar-Blue", "ADD");
+			item:SetHighlightTexture("Interface\\FriendsFrame\\UI-FriendsFrame-HighlightBar-Blue", "ADD");
+			-- Expando, the super button!
+			item.Expand = CreateFrame("Button", nil, item);
+			item.Expand:SetSize(16, 16);
+			item.Expand:SetPoint("TOPRIGHT", -4, -4);
+			-- Textures.
+			item.Expand:SetNormalTexture("Interface\\Buttons\\UI-MinusButton-Up");
+			item.Expand:SetHighlightTexture("Interface\\Buttons\\UI-PlusButton-Hilight", "ADD");
+			item.Expand:SetPushedTexture("Interface\\Buttons\\UI-MinusButton-Down");
+			item.Expand:SetDisabledTexture("Interface\\Buttons\\UI-MinusButton-Disabled");
+			-- Clicky. Not the best way of doing it, but /tongue
+			item.Expand:SetScript("OnClick", function()
+				item:GetParent():ToggleElementChildren(item.Key);
+				PlaySound("UChatScrollButton");
+			end);
 			-- Reuse existing constructor.
 			return ui.Construct(self, _, item, ...);
 		end

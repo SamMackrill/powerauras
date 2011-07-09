@@ -64,7 +64,7 @@ UI\ScrollFrame.xml
 UI\TabFrame.lua
 UI\TabButton.xml
 UI\TabDialog.lua
-UI\TreeView.xml
+UI\TreeView.lua
 
 # Actual frames!
 UI\AuraBrowser.xml
