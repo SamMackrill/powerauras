@@ -1,5 +1,5 @@
 --===== Base class for Timers and Stacks (virtual) =====
-cPowaDecorator = PowaClass();
+local cPowaDecorator = PowaClass();
 
 function cPowaDecorator:IsRelative()
 	return (self.Relative and self.Relative~="NONE");
@@ -188,6 +188,7 @@ end
 --===== Stacks =====
 --==================
 
+local cPowaStacks;
 cPowaStacks = PowaClass(cPowaDecorator, function(stacker, aura, base)
 	
 	for k, v in pairs (cPowaStacks.ExportSettings) do
@@ -464,6 +465,7 @@ end
 --===== Timer =====
 --=================
 
+local cPowaTimer;
 cPowaTimer = PowaClass(cPowaDecorator, function(timer, aura, base)
 
 	for k, v in pairs (cPowaTimer.ExportSettings) do
@@ -827,3 +829,8 @@ function cPowaTimer:Dispose()
 	PowaAuras:Dispose("TimerFrame", self.id, 2);
 	PowaAuras:Dispose("TimerFrame", self.id);
 end
+
+-- Register classes.
+PowaAuras.DecoratorClasses["Base"] = cPowaDecorator;
+PowaAuras.DecoratorClasses["Timer"] = cPowaTimer;
+PowaAuras.DecoratorClasses["Stacks"] = cPowaStacks;

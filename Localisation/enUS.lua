@@ -836,10 +836,10 @@ PowaAuras:MergeTables(PowaAuras.Text,
 	
 	UI_Sources                 = {
 		[PowaAuras.SourceTypes.Default] = "Default Textures",
-		[PowaAuras.SourceTypes.WoW] = "WoW Textures",
-		[PowaAuras.SourceTypes.Custom] = "Custom Texture",
-		[PowaAuras.SourceTypes.Text] = "Text Display",
-		[PowaAuras.SourceTypes.Icon] = "Ability Icon",
+		[PowaAuras.SourceTypes.WoW]     = "WoW Textures",
+		[PowaAuras.SourceTypes.Custom]  = "Custom Texture",
+		[PowaAuras.SourceTypes.Text]    = "Text Display",
+		[PowaAuras.SourceTypes.Icon]    = "Ability Icon",
 	},
 	
 	UI_Auras                   = "Auras",

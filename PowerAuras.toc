@@ -9,7 +9,7 @@
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: PowaClassSet,PowaGlobalSet,PowaGlobalListe,PowaClassListe,PowaGlobalMisc
-## SavedVariablesPerCharacter: PowaSet,PowaMisc,PowaTimer,PowaPlayerListe,PowaState
+## SavedVariablesPerCharacter: PowaSet,PowaMisc,PowaPlayerListe,PowaState
 PowerAurasBase.lua
 Localisation\enUS.lua
 Localisation\deDE.lua

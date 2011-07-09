@@ -14,6 +14,11 @@ PowaAuras = {
 	IconSource = "Interface\\Icons\\";
 	AuraSource = "Interface\\AddOns\\PowerAuras\\Auras\\";
 	
+	AuraClasses = {};
+	DecoratorClasses = {};
+	TriggerActionClasses = {};
+	TriggerTypeClasses = {};
+	
 	CurrentAuraId = 1;
 	NextCheck = 0.2; 
 	Tstep = 0.09765625;
@@ -156,7 +161,7 @@ PowaAuras = {
 	DebuffCatSpells = {};
 	
 	AoeAuraAdded = {};
-	AoeAuraFaded = {};
+	AoeAuraFaded = {}; -- Unused
 	AoeAuraTexture = {};
 
 	playerclass = "unknown";
@@ -623,21 +628,6 @@ PowaAuras = {
 		"PowaDropDownGTFO",
 		"PowaDropDownPowerType",
 
-	};
-	
-	TriggerTypes = {
-		Timer        = 1,
-		Stacks       = 2,
-		AuraShow     = 3,
-		AuraHide     = 4,
-		TriggerStart = 5,
-		TriggerEnd   = 6,
-	};
-	
-	TriggerActions = {
-		AuraOpacity  = 1,
-		AuraColor    = 2,
-		AuraScale    = 3,
 	};
 
 	Backdrop = {
@@ -1303,7 +1293,8 @@ function PowaAuras:RotateCoordPair(x, y, ox, oy, a, asp)
 	return ox + (x-ox)*math.cos(a) - (y-oy)*math.sin(a), (oy + (y-oy)*math.cos(a) + (x-ox)*math.sin(a))*asp;
 end
 
---- Rotates the given texture around the centre by a certain amount of degrees.
+--- Rotates the given texture around the centre by a certain amount of degrees. Use this as opposed to SetRotation
+-- on textures directly as you can preserve horizontal/vertical flips this way.
 -- @param texture The texture object to modify.
 -- @param deg The amount of rotation to apply in degrees. Positive values rotate clockwise.
 -- @param ULx The top left corner X coordinate of the texture segment to be rotated.
