@@ -1,0 +1,1 @@
+Power Auras allows users to create configurable onscreen displays that trigger on in-game events.
